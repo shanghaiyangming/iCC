@@ -531,8 +531,8 @@ function rangeDownload($file)
  */
 function exceptionMsg($e)
 {
-    if (is_subclass_of($e, 'Exception'))
-        return $e->getFile() . $e->getLine() . $e->getMessage() . $e->getTraceAsString();
+    if (is_subclass_of($e, 'Exception') || $e instanceof Exception)
+        return '<h1>Exception info:</h1>File:' . $e->getFile() . '<br />Line:' . $e->getLine() . '<br />Message:' . $e->getMessage() . '<br />Trace:' . $e->getTraceAsString();
     return false;
 }
 

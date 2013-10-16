@@ -23,12 +23,12 @@ if (file_exists('vendor/autoload.php')) {
 }
 
 if (! class_exists('Zend\Loader\AutoloaderFactory')) {
-    throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
+    exit('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
 }
 
 // 加载自己的函数库
-if (file_exists(__DIR__ . 'library/function.php')) {
-    include __DIR__ . 'library/function.php';
+if (file_exists(__DIR__ . '/library/function.php')) {
+    include __DIR__ . '/library/function.php';
 }
 
 // 加载自己的函数库
@@ -37,20 +37,23 @@ $myAutoLoaderClass = array(
     'Soa' => __DIR__ . '/library/my/soa'
 );
 
-if (is_array($myAutoLoaderClass)) {
-    foreach ($myAutoLoaderClass as $namespace => $libraryPath) {
-        if (is_dir($libraryPath)) {
-            Zend\Loader\AutoloaderFactory::factory(array(
-                'Zend\Loader\StandardAutoloader' => array(
-                    'namespaces' => array(
-                        $namespace => $libraryPath
+try {
+    if (is_array($myAutoLoaderClass)) {
+        foreach ($myAutoLoaderClass as $namespace => $libraryPath) {
+            if (is_dir($libraryPath)) {
+                Zend\Loader\AutoloaderFactory::factory(array(
+                    'Zend\Loader\StandardAutoloader' => array(
+                        'namespaces' => array(
+                            $namespace => $libraryPath
+                        )
                     )
-                )
-            ));
-        } else {
-            throw new Exception($libraryPath . ' is not a dir');
+                ));
+            } else {
+                throw new Exception($libraryPath . ' is not a dir');
+            }
         }
     }
+} catch (Exception $e) {
+    exit(exceptionMsg($e));
 }
-
 
