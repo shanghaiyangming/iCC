@@ -10,10 +10,12 @@
     "require": {
         "php": ">=5.3.3",
         "zendframework/zendframework": ">=2.2.4",
-        "doctrine/annotations": "1.0.*@dev",
-        "ircmaxell/random-lib": "1.0.*@dev",
-        "zendframework/zendpdf": "2.0.*@dev",
-        "zendframework/zendservice-recaptcha": "2.0.*@dev",
-        "monolog/monolog": "1.6.*@dev"
+        "monolog/monolog": ">=1.6.0",
+        "mobiledetect/mobiledetectlib": ">=2.6.9",
+        "codeplex/phpexcel": ">=1.7.8",
+        "doctrine/mongodb-odm": ">=1.0.0-BETA9",
+        "lukaszr/matrixcode": "dev-master",
+        "hwi/oauth-bundle": "0.3.*@dev",
+        "zendframework/zendservice-apple-apns": "dev-master"
     }
 }
