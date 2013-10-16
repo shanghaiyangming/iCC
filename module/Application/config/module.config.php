@@ -44,7 +44,8 @@ return array(
                         'may_terminate' => true,
                         'child_routes' => array(
                             'Wildcard' => array(
-                                'type' => 'Wildcard'
+                                'type' => 'Wildcard',
+                                'may_terminate' => true
                             )
                         )
                         
