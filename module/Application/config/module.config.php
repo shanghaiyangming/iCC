@@ -19,10 +19,6 @@ return array(
                     )
                 )
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
             'application' => array(
                 'type' => 'Literal',
                 'options' => array(
@@ -33,30 +29,35 @@ return array(
                         'action' => 'index'
                     )
                 ),
+                'may_terminate' => true,
                 'child_routes' => array(
-                    'ControllerAction' => array(
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                    'default' => array(
+                        'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:controller[/:action[/]]]',
+                            'route' => '/[:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                            )
+                            ),
+                            'defaults' => array()
                         ),
                         'may_terminate' => true,
                         'child_routes' => array(
                             'Wildcard' => array(
-                                'type' => 'Zend\Mvc\Router\Http\Wildcard'
+                                'type' => 'Wildcard'
                             )
                         )
+                        
                     )
                 )
+                
             )
         )
     ),
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'data_cache' => 'Zend\Cache\StorageFactory'
         )
     ),
     'translator' => array(
@@ -69,7 +70,9 @@ return array(
             )
         )
     ),
-    'controllers' => array(),
+    'controllers' => array(
+        'invokables' => array()
+    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions' => true,

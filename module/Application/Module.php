@@ -6,20 +6,15 @@
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-
 namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\ModuleManager\Feature;
+use Zend\EventManager\EventInterface;
 
-class Module
+class Module implements Feature\AutoloaderProviderInterface, Feature\ServiceProviderInterface, Feature\ConfigProviderInterface, Feature\ControllerProviderInterface, Feature\BootstrapListenerInterface
 {
-    public function onBootstrap(MvcEvent $e)
-    {
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-    }
 
     public function getConfig()
     {
@@ -28,12 +23,23 @@ class Module
 
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+        return include __DIR__ . '/config/autoloader.config.php';
+    }
+
+    public function getServiceConfig()
+    {
+        return include __DIR__ . '/config/service.config.php';
+    }
+
+    public function getControllerConfig()
+    {
+        return include __DIR__ . '/config/controller.config.php';
+    }
+
+    public function onBootstrap(EventInterface $e)
+    {
+        $eventManager = $e->getApplication()->getEventManager();
+        $moduleRouteListener = new ModuleRouteListener();
+        $moduleRouteListener->attach($eventManager);
     }
 }
