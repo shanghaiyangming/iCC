@@ -11,10 +11,6 @@
  */
 
 /**
- *
- *
- *
- *
  * 检测是否为有效的电子邮件地址
  *
  * @param string $email            
@@ -48,9 +44,6 @@ function isValidEmail($email, $getmxrr = 0)
 }
 
 /**
- *
- *
- *
  * 检测是否为有效的手机号码
  *
  * @param string $mobile            
@@ -105,10 +98,6 @@ function excelTitle($i)
 }
 
 /**
- *
- *
- *
- *
  * 导出excel表格
  *
  * @param $name excel表格的名称，不包含.xlsx            
@@ -200,10 +189,6 @@ function arrayToExcel($name, $datas)
 }
 
 /**
- *
- *
- *
- *
  * 提取邮件的用户名
  *
  * @param string $email            
@@ -219,10 +204,6 @@ function getEmailName($email)
 }
 
 /**
- *
- *
- *
- *
  * 发送邮件
  *
  * @param mixed $to
@@ -273,10 +254,6 @@ function sendEmail($to, $subject, $content, $type = 'html')
 }
 
 /**
- *
- *
- *
- *
  * 获取整形的IP地址
  *
  * @return int
@@ -302,10 +279,6 @@ function resetTimeMemLimit($time = 3600, $memory = '2048M')
 }
 
 /**
- *
- *
- *
- *
  * 调用SOAP服务
  *
  * @param string $wsdl            
@@ -319,9 +292,9 @@ function callSoap($wsdl, $options)
             'exceptions' => true,
             'trace' => true,
             'connection_timeout' => 120,
-            'cache_wsdl'=>WSDL_CACHE_DISK
+            'cache_wsdl' => WSDL_CACHE_DISK
         );
-        $options = array_merge($default,$options);
+        $options = array_merge($default, $options);
         
         $client = new SoapClient($wsdl, $options);
         return $client;
@@ -332,9 +305,6 @@ function callSoap($wsdl, $options)
 }
 
 /**
- *
- *
- *
  * 存储图片到GridFS
  *
  * @param string $fileName
@@ -409,10 +379,6 @@ function removeFromGridFS($url)
 }
 
 /**
- *
- *
- *
- *
  * 转化mongo db的输出结果为纯数组
  *
  * @param array $arr            
@@ -439,9 +405,6 @@ function convertToPureArray($arr)
 }
 
 /**
- *
- *
- *
  * 设定浏览器头的缓存时间，默认是一年
  *
  * @param int $expireTime            
@@ -459,9 +422,6 @@ function setHeaderExpires($expireTime = 31536000)
 }
 
 /**
- *
- *
- *
  * 检测一个字符串否为Json字符串
  *
  * @param string $string            
@@ -484,13 +444,10 @@ function isJson($string)
 function cacheKey()
 {
     $args = func_get_args();
-    return md5(serialize($args));
+    return abs(crc32(serialize($args)));
 }
 
 /**
- *
- *
- *
  * 中奖概率 百分比 0.0001-100之间的浮点数
  *
  * @param double $percent            
@@ -504,17 +461,18 @@ function getProbability($percent)
 }
 
 /**
- *
- *
- *
  * 断点续传,仅适合当线程断点续传
  *
  * @param string $file
  *            文件名
  */
-function range_download($file)
+function rangeDownload($file)
 {
-    $fp = @fopen($file, 'rb');
+    if (! is_file($file)) {
+        return false;
+    }
+    
+    $fp = fopen($file, 'rb');
     
     $size = filesize($file);
     $length = $size;
@@ -594,10 +552,10 @@ function doGet($url, $params = array())
             return false;
         }
         
-        $client = new Zend_Http_Client();
+        $client = new Zend\Http\Client();
         $client->setUri($url);
         $client->setParameterGet($params);
-        $client->setEncType(Zend_Http_Client::ENC_URLENCODED);
+        $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
         $client->setConfig(array(
             'maxredirects' => 5
         ));
@@ -628,7 +586,7 @@ function doPost($url, $params = array())
         $client = new Zend\Http\Client();
         $client->setUri($url);
         $client->setParameterPost($params);
-        $client->setEncType(Zend_Http_Client::ENC_URLENCODED);
+        $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
         $client->setConfig(array(
             'maxredirects' => 5
         ));
@@ -656,7 +614,7 @@ function doRequest($url, $get = array(), $post = array())
             throw new Exception('Invalid URL');
             return false;
         }
-        $client = new Zend_Http_Client();
+        $client = new Zend\Http\Client();
         $client->setUri($url);
         
         if (count($get) > 0 && is_array($get))
@@ -665,7 +623,7 @@ function doRequest($url, $get = array(), $post = array())
         if (count($post) > 0 && is_array($post))
             $client->setParameterPost($post);
         
-        $client->setEncType(Zend_Http_Client::ENC_URLENCODED);
+        $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
         $client->setConfig(array(
             'maxredirects' => 5
         ));
@@ -686,9 +644,6 @@ function doRequest($url, $get = array(), $post = array())
 }
 
 /**
- *
- *
- *
  * baidu地图API的文档地址为：
  * http://developer.baidu.com/map/geocoding-api.htm
  * 实例链接：
@@ -894,7 +849,7 @@ if (! function_exists("fastcgi_finish_request")) {
  * @param mixed $var            
  * @return string MongoId
  */
-function mongoId($var = null)
+function myMongoId($var = null)
 {
     if ($var instanceof MongoId) {
         return $var->__toString();
