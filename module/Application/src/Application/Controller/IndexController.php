@@ -37,7 +37,6 @@ class IndexController extends AbstractActionController
 
     public function noViewAction()
     {
-        // 不适用view的情况
         phpinfo();
         return $this->response;
     }
