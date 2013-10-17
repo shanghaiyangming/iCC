@@ -40,4 +40,15 @@ class IndexController extends AbstractActionController
         phpinfo();
         return $this->response;
     }
+    
+    public function cacheAction() {
+        var_dump($this->getServiceLocator()->has('coreCache'));
+        $cache = $this->getServiceLocator()->get('coreCache');
+        if(($data = $cache->load('key'))===false) {
+            $data = array(time());
+            $cache->save($data);
+        }
+        
+        var_dump($data);
+    }
 }
