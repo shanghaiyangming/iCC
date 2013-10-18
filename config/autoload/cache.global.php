@@ -1,4 +1,14 @@
 <?php
+$memcacheServers = array(
+    array(
+        '127.0.0.1',
+        11211
+    ),
+    array(
+        '127.0.0.1',
+        11211
+    )
+);
 return array(
     'caches' => array(
         'coreCache' => array(
@@ -9,14 +19,10 @@ return array(
                 'readable' => true,
                 'writable' => true,
                 'ttl' => 3600,
-                'servers' => array(
-                    array(
-                        '127.0.0.1',
-                        11211
-                    )
-                )
+                'servers' => $memcacheServers
             )
-        ),
+        )
+        ,
         'pageCache' => array(
             'adapter' => array(
                 'name' => 'memcached'
@@ -25,12 +31,7 @@ return array(
                 'readable' => true,
                 'writable' => true,
                 'ttl' => 86400,
-                'servers' => array(
-                    array(
-                        '127.0.0.1',
-                        11211
-                    )
-                )
+                'servers' => $memcacheServers
             )
         )
     )

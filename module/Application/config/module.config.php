@@ -32,7 +32,7 @@ return array(
                 'may_terminate' => true,
                 'child_routes' => array(
                     'default' => array(
-                        'type' => 'Segment',
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => array(
                             'route' => '/[:controller[/:action]]',
                             'constraints' => array(
@@ -44,21 +44,20 @@ return array(
                         'may_terminate' => true,
                         'child_routes' => array(
                             'Wildcard' => array(
-                                'type' => 'Wildcard',
+                                'type' => 'Zend\Mvc\Router\Http\Wildcard',
                                 'may_terminate' => true
                             )
                         )
-                        
                     )
+                    
                 )
-                
             )
+            
         )
     ),
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'data_cache' => 'Zend\Cache\StorageFactory'
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
         )
     ),
     'translator' => array(
