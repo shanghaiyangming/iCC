@@ -20,8 +20,7 @@ return array(
                 'writable' => true,
                 'ttl' => 3600
             )
-        )
-        ,
+        ),
         'pageCache' => array(
             'adapter' => array(
                 'name' => 'filesystem'

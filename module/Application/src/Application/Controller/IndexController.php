@@ -42,10 +42,9 @@ class IndexController extends AbstractActionController
     }
     
     public function cacheAction() {
-        
         $cache = $this->getServiceLocator()->get('coreCache');
         if(($data = $cache->load('key'))===false) {
-            $data = array(time());
+            $data = time();
             $cache->save($data);
         }
         

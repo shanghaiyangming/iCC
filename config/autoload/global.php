@@ -10,29 +10,4 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
-return array(
-    'caches' => array(
-        'coreCache' => array(
-            'adapter' => array(
-                'name' => 'filesystem'
-            ),
-            'options' => array(
-                'readable' => true,
-                'writable' => true,
-                'ttl' => 3600
-            )
-        )
-        ,
-        'pageCache' => array(
-            'adapter' => array(
-                'name' => 'filesystem'
-            ),
-            'options' => array(
-                'readable' => true,
-                'writable' => true,
-                'ttl' => 86400
-            )
-        )
-    )
-);
+return array();

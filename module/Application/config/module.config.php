@@ -51,10 +51,9 @@ return array(
                     )
                 )
             )
-            
         )
-    )
-    ,
+        
+    ),
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
@@ -87,6 +86,28 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view'
+        )
+    ),
+    'caches' => array(
+        'coreCache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array(
+                'readable' => true,
+                'writable' => true,
+                'ttl' => 3600
+            )
+        ),
+        'pageCache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array(
+                'readable' => true,
+                'writable' => true,
+                'ttl' => 86400
+            )
         )
     )
 );
