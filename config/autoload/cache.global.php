@@ -13,25 +13,23 @@ return array(
     'caches' => array(
         'coreCache' => array(
             'adapter' => array(
-                'name' => 'memcached'
+                'name' => 'filesystem'
             ),
             'options' => array(
                 'readable' => true,
                 'writable' => true,
-                'ttl' => 3600,
-                'servers' => $memcacheServers
+                'ttl' => 3600
             )
         )
         ,
         'pageCache' => array(
             'adapter' => array(
-                'name' => 'memcached'
+                'name' => 'filesystem'
             ),
             'options' => array(
                 'readable' => true,
                 'writable' => true,
-                'ttl' => 86400,
-                'servers' => $memcacheServers
+                'ttl' => 86400
             )
         )
     )

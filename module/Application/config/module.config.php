@@ -49,12 +49,12 @@ return array(
                             )
                         )
                     )
-                    
                 )
             )
             
         )
-    ),
+    )
+    ,
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
@@ -87,6 +87,14 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view'
+        )
+    ),
+    array(
+        'cache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array()
         )
     )
 );

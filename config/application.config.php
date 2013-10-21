@@ -51,12 +51,12 @@ return array(
     // Used to create an own service manager. May contain one or more child arrays.
     // 'service_listener_options' => array(
     // array(
-    // 'service_manager' => $stringServiceManagerName,
-    // 'config_key' => $stringConfigKey,
+    // 'service_manager' => '',
+    // 'config_key' => 'service_manager',
     // 'interface' => $stringOptionalInterface,
-    // 'method' => $stringRequiredMethodName,
-    // ),
+    // 'method' => $stringRequiredMethodName
     // )
+    // ),
     
     // Initial configuration with which to seed the ServiceManager.
     // Should be compatible with Zend\ServiceManager\Config.
