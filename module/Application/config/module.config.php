@@ -88,13 +88,5 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view'
         )
-    ),
-    array(
-        'cache' => array(
-            'adapter' => array(
-                'name' => 'filesystem'
-            ),
-            'options' => array()
-        )
     )
 );
