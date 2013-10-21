@@ -12,5 +12,27 @@
  */
 
 return array(
-    // ...
+    'caches' => array(
+        'coreCache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array(
+                'readable' => true,
+                'writable' => true,
+                'ttl' => 3600
+            )
+        )
+        ,
+        'pageCache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array(
+                'readable' => true,
+                'writable' => true,
+                'ttl' => 86400
+            )
+        )
+    )
 );
