@@ -52,7 +52,6 @@ return array(
                 )
             )
         )
-        
     ),
     'service_manager' => array(
         'factories' => array(
@@ -68,6 +67,14 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo'
             )
+        )
+    ),
+    'cache' => array(
+        'adapter' => array(
+            'name' => 'filesystem'
+        ),
+        'options' => array(
+            'cache_dir' => dirname(dirname(dirname(__DIR__))) . '/data/cache/datas'
         )
     ),
     'controllers' => array(
@@ -88,14 +95,5 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view'
         )
-    ),
-    'cache'=> array(
-        'adapter' => array(
-            'name' => 'filesystem'
-        ),
-        'options' => array(
-            'cache_dir' => dirname(dirname(dirname(__DIR__))).'/data/cache/datas',
-        ),
-    ),
-    
+    )
 );

@@ -1,15 +1,4 @@
 <?php
-return array();
-$memcacheServers = array(
-    array(
-        '127.0.0.1',
-        11211
-    ),
-    array(
-        '127.0.0.1',
-        11211
-    )
-);
 return array(
     'caches' => array(
         'coreCache' => array(
@@ -17,8 +6,7 @@ return array(
                 'name' => 'filesystem'
             ),
             'options' => array(
-                'readable' => true,
-                'writable' => true,
+                'cache_dir' => dirname(dirname(__DIR__)) . '/data/cache/datas',
                 'ttl' => 3600
             )
         ),
@@ -27,8 +15,7 @@ return array(
                 'name' => 'filesystem'
             ),
             'options' => array(
-                'readable' => true,
-                'writable' => true,
+                'cache_dir' => dirname(dirname(__DIR__)) . '/data/cache/datas',
                 'ttl' => 86400
             )
         )
