@@ -56,7 +56,8 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'cache' => 'Zend\Cache\Service\StorageCacheFactory'
         )
     ),
     'translator' => array(
@@ -88,26 +89,13 @@ return array(
             __DIR__ . '/../view'
         )
     ),
-    'caches' => array(
-        'coreCache' => array(
-            'adapter' => array(
-                'name' => 'filesystem'
-            ),
-            'options' => array(
-                'readable' => true,
-                'writable' => true,
-                'ttl' => 3600
-            )
+    'cache'=> array(
+        'adapter' => array(
+            'name' => 'filesystem'
         ),
-        'pageCache' => array(
-            'adapter' => array(
-                'name' => 'filesystem'
-            ),
-            'options' => array(
-                'readable' => true,
-                'writable' => true,
-                'ttl' => 86400
-            )
-        )
-    )
+        'options' => array(
+            'cache_dir' => dirname(dirname(dirname(__DIR__))).'/data/cache/datas',
+        ),
+    ),
+    
 );

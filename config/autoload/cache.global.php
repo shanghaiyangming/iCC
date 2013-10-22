@@ -1,4 +1,5 @@
 <?php
+return array();
 $memcacheServers = array(
     array(
         '127.0.0.1',
