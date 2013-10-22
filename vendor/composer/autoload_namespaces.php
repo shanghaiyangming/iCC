@@ -37,6 +37,10 @@ return array(
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
+    'DoctrineMongoODMModule\\' => array($vendorDir . '/doctrine/doctrine-mongo-odm-module/src'),
+    'DoctrineMongoODMModuleTest\\' => array($vendorDir . '/doctrine/doctrine-mongo-odm-module/tests'),
+    'DoctrineModule\\' => array($vendorDir . '/doctrine/doctrine-module/src'),
+    'DoctrineModuleTest\\' => array($vendorDir . '/doctrine/doctrine-module/tests'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
     'Buzz' => array($vendorDir . '/kriswallsmith/buzz/lib'),
 );
