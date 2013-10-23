@@ -10,10 +10,8 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\ModuleManager\Feature;
-use Zend\EventManager\EventInterface;
 
-class Module implements Feature\AutoloaderProviderInterface, Feature\ServiceProviderInterface, Feature\ConfigProviderInterface, Feature\ControllerProviderInterface, Feature\BootstrapListenerInterface
+class Module 
 {
 
     public function getConfig()
@@ -26,17 +24,12 @@ class Module implements Feature\AutoloaderProviderInterface, Feature\ServiceProv
         return include __DIR__ . '/config/autoloader.config.php';
     }
 
-    public function getServiceConfig()
-    {
-        return include __DIR__ . '/config/service.config.php';
-    }
-
     public function getControllerConfig()
     {
         return include __DIR__ . '/config/controller.config.php';
     }
 
-    public function onBootstrap(EventInterface $e)
+    public function onBootstrap(MvcEvent $e)
     {
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
