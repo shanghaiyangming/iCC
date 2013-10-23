@@ -43,7 +43,8 @@ class IndexController extends AbstractActionController
 
     public function cacheAction()
     {
-        $cache = $this->getServiceLocator()->get('cache');
+        ECHO ROOT_PATH;
+        $cache = $this->getServiceLocator()->get('fileCache');
         if (($data = $cache->getItem('key')) === NULL) {
             $data = time();
             $cache->setItem('key',$data);

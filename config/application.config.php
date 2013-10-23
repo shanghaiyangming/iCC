@@ -1,4 +1,7 @@
 <?php
+
+include 'constant.php';
+
 return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
@@ -61,8 +64,6 @@ return array(
     // Initial configuration with which to seed the ServiceManager.
     // Should be compatible with Zend\ServiceManager\Config.
     'service_manager' => array(
-        'factories' => array(
-            'cache' => 'Zend\Cache\Service\StorageCacheFactory'
-        )
+        'factories' => array()
     )
 );

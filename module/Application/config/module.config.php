@@ -56,6 +56,9 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
+        ),
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory'
         )
     ),
     'translator' => array(
@@ -68,12 +71,40 @@ return array(
             )
         )
     ),
-    'cache' => array(
-        'adapter' => array(
-            'name' => 'filesystem'
+    'caches' => array(
+        'fileCache' => array(
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            'options' => array(
+                'cache_dir' => ROOT_PATH . '/data/cache/datas'
+            )
         ),
-        'options' => array(
-            'cache_dir' => dirname(dirname(dirname(__DIR__))) . '/data/cache/datas'
+        'memcachedCache' => array(
+            'adapter' => array(
+                'name' => 'memcached'
+            ),
+            'options' => array(
+                'servers' => array(
+                    array(
+                        '127.0.0.1',
+                        11211
+                    )
+                )
+            )
+        ),
+        'redisCache' => array(
+            'adapter' => array(
+                'name' => 'redis'
+            ),
+            'options' => array(
+                'servers' => array(
+                    array(
+                        '127.0.0.1',
+                        6379
+                    )
+                )
+            )
         )
     ),
     'controllers' => array(
