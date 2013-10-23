@@ -55,8 +55,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'cache' => 'Zend\Cache\Service\StorageCacheFactory'
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
         )
     ),
     'translator' => array(
