@@ -3,7 +3,6 @@ namespace My\Common;
 
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
-use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
 /**
  * $cfg = array(
@@ -52,7 +51,7 @@ abstract class MongoFactory
             throw new \Exception('配置信息中缺少cluster.default参数');
         }
         
-        $cluster = new stdClass();
+        $cluster = new \stdClass();
         foreach ($cfg['cluster'] as $clusterName => $clusterInfo) {
             try {
                 shuffle($clusterInfo['servers']);
@@ -68,12 +67,11 @@ abstract class MongoFactory
             }
             
             try {
-                if(is_array($clusterInfo['dbs']) && !empty($clusterInfo['dbs'])) {
+                if (is_array($clusterInfo['dbs']) && ! empty($clusterInfo['dbs'])) {
                     foreach ($clusterInfo['dbs'] as $db) {
                         $cluster->$clusterName['dbs'][$db] = $connect->selectDB($db);
                     }
-                }
-                else {
+                } else {
                     throw new \Exception('请设定cluster.name.dbs');
                 }
             } catch (\Exception $e) {
