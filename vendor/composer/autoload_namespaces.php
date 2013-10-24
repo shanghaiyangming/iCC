@@ -24,7 +24,6 @@ return array(
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'Symfony\\Bundle\\SecurityBundle\\' => array($vendorDir . '/symfony/security-bundle'),
     'Symfony\\Bundle\\FrameworkBundle\\' => array($vendorDir . '/symfony/framework-bundle'),
-    'SmartyModule\\' => array($vendorDir . '/murganikolay/smarty-module/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'PHPExcel' => array($vendorDir . '/codeplex/phpexcel'),
     'Monolog' => array($vendorDir . '/monolog/monolog/src'),
