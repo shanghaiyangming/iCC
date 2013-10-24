@@ -112,8 +112,8 @@ return array(
         'cluster' => array(
             'default' => array(
                 'servers' => array(
-                    '192.168.5.41:27017',
-                    '192.168.5.41:27017'
+                    '127.0.0.1:27017',
+                    '127.0.0.1:27017'
                 ),
                 'dbs' => array(
                     'ICCv1'
@@ -121,8 +121,8 @@ return array(
             ),
             'analysis' => array(
                 'servers' => array(
-                    '192.168.5.41:27017',
-                    '192.168.5.41:27017'
+                    '127.0.0.1:27017',
+                    '127.0.0.1:27017'
                 ),
                 'dbs' => array(
                     'ICCv1'

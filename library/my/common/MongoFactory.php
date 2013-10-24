@@ -3,6 +3,7 @@ namespace My\Common;
 
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
+use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 
 /**
  * $cfg = array(
@@ -30,11 +31,11 @@ abstract class MongoFactory
         }
         
         if (! is_array($cfg)) {
-            throw new Exception('配置信息未设定');
+            throw new \Exception('配置信息未设定');
         }
         
         if (! isset($cfg['cluster']) || empty($cfg['cluster'])) {
-            throw new Exception('配置信息中缺少cluster参数');
+            throw new \Exception('配置信息中缺少cluster参数');
         }
         
         $options = array();
@@ -47,20 +48,36 @@ abstract class MongoFactory
             $options = array_merge($options, $cfg['options']);
         }
         
-        $cluster = array();
+        if (! isset($cfg['cluster']['default']) || empty($cfg['cluster']['default'])) {
+            throw new \Exception('配置信息中缺少cluster.default参数');
+        }
+        
+        $cluster = new stdClass();
         foreach ($cfg['cluster'] as $clusterName => $clusterInfo) {
             try {
                 shuffle($clusterInfo['servers']);
                 $dnsString = 'mongodb://' . join(',', $clusterInfo['servers']);
                 $connect = new \MongoClient($dnsString, $options);
                 $connect->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
-                $cluster[$clusterName]['connect'] = $connect;
-            } catch (Exception $e) {
-                throw new Exception('无法建立Mongodb连接');
+                $cluster->$clusterName['connect'] = $connect;
+            } catch (\Exception $e) {
+                if ($clusterName == 'default')
+                    throw new \Exception('无法与Mongodb建立连接');
+                else
+                    break;
             }
             
-            foreach ($clusterInfo['dbs'] as $db) {
-                $cluster[$clusterName]['dbs'][$db] = $connect->selectDB($db);
+            try {
+                if(is_array($clusterInfo['dbs']) && !empty($clusterInfo['dbs'])) {
+                    foreach ($clusterInfo['dbs'] as $db) {
+                        $cluster->$clusterName['dbs'][$db] = $connect->selectDB($db);
+                    }
+                }
+                else {
+                    throw new \Exception('请设定cluster.name.dbs');
+                }
+            } catch (\Exception $e) {
+                throw new \Exception('已经建立连接，但是无法访问指定的数据库');
             }
             unset($connect);
         }
