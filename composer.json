@@ -18,7 +18,8 @@
         "hwi/oauth-bundle": "0.3.*@dev",
         "zendframework/zendservice-apple-apns": "dev-master",
         "doctrine/doctrine-mongo-odm-module": "dev-master",
-        "cboden/ratchet": "dev-master"
+        "cboden/ratchet": "dev-master",
+        "react/promise": "2.0.*@dev"
     },
     "config": {
         "process-timeout": 3600
