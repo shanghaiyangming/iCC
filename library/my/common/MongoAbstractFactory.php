@@ -32,7 +32,6 @@ class MongoAbstractFactory implements AbstractFactoryInterface
         if (empty($config)) {
             return false;
         }
-
         return (isset($config[$requestedName]) && is_array($config[$requestedName]));
     }
     
@@ -46,8 +45,9 @@ class MongoAbstractFactory implements AbstractFactoryInterface
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-        $config = $this->getConfig($services);
+        $config = $this->getConfig($serviceLocator);
         $config = $config[$requestedName];
+        var_dump($config);
         return MongoFactory::factory($config);
     }
     
@@ -68,13 +68,7 @@ class MongoAbstractFactory implements AbstractFactoryInterface
             return $this->config;
         }
     
-        $config = $services->get('Config');
-        if (!isset($config[$this->configKey])) {
-            $this->config = array();
-            return $this->config;
-        }
-    
-        $this->config = $config[$this->configKey];
-        return $this->config;
+        return $services->get('Config');
+         
     }
 }

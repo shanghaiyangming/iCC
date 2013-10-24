@@ -111,12 +111,22 @@ return array(
     'mongos' => array(
         'cluster' => array(
             'default' => array(
-                'servers'=>array('127.0.0.1:27017','127.0.0.1:27017'),
-                'dbs'=>array('ICCv1')
+                'servers' => array(
+                    '192.168.5.41:27017',
+                    '192.168.5.41:27017'
+                ),
+                'dbs' => array(
+                    'ICCv1'
+                )
             ),
             'analysis' => array(
-                'servers'=>array('127.0.0.1:27017','127.0.0.1:27017'),
-                'dbs'=>array('ICCv1')
+                'servers' => array(
+                    '192.168.5.41:27017',
+                    '192.168.5.41:27017'
+                ),
+                'dbs' => array(
+                    'ICCv1'
+                )
             )
         )
     ),

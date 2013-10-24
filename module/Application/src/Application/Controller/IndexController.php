@@ -55,4 +55,8 @@ class IndexController extends AbstractActionController
         }
         return $this->response;
     }
+    
+    public function mongoAction() {
+        $db = $this->getServiceLocator()->get('mongos');
+    }
 }
