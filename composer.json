@@ -17,7 +17,8 @@
         "lukaszr/matrixcode": "dev-master",
         "hwi/oauth-bundle": "0.3.*@dev",
         "zendframework/zendservice-apple-apns": "dev-master",
-        "doctrine/doctrine-mongo-odm-module": "dev-master"
+        "doctrine/doctrine-mongo-odm-module": "dev-master",
+        "cboden/ratchet": "dev-master"
     },
     "config": {
         "process-timeout": 3600
