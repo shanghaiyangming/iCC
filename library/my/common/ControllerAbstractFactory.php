@@ -11,7 +11,7 @@ namespace My\Common;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ControllerFactory implements AbstractFactoryInterface
+class ControllerAbstractFactory implements AbstractFactoryInterface
 {
 
     /**
