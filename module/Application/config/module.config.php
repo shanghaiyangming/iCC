@@ -58,7 +58,8 @@ return array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
         ),
         'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory'
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'My\Common\MongoAbstractFactory'
         )
     ),
     'translator' => array(
@@ -104,6 +105,18 @@ return array(
                         6379
                     )
                 )
+            )
+        )
+    ),
+    'mongos' => array(
+        'cluster' => array(
+            'default' => array(
+                'servers'=>array('127.0.0.1:27017','127.0.0.1:27017'),
+                'dbs'=>array('ICCv1')
+            ),
+            'analysis' => array(
+                'servers'=>array('127.0.0.1:27017','127.0.0.1:27017'),
+                'dbs'=>array('ICCv1')
             )
         )
     ),
