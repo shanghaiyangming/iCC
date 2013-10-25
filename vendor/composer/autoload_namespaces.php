@@ -26,6 +26,7 @@ return array(
     'Symfony\\Bundle\\FrameworkBundle\\' => array($vendorDir . '/symfony/framework-bundle'),
     'React\\Stream' => array($vendorDir . '/react/stream'),
     'React\\Socket' => array($vendorDir . '/react/socket'),
+    'React\\Promise' => array($vendorDir . '/react/promise/src'),
     'React\\EventLoop' => array($vendorDir . '/react/event-loop'),
     'Ratchet' => array($vendorDir . '/cboden/ratchet/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),

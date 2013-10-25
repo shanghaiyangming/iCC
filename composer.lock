@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "897fc15b5b7d9de20ee3dff797a1580f",
+    "hash": "3e00a4b233a68dc612d14f017e600003",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -1420,6 +1420,52 @@
             "time": "2013-07-08 22:38:22"
         },
         {
+            "name": "react/promise",
+            "version": "2.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "4807d4373a99bd4ca2055495291b41e0de267342"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/4807d4373a99bd4ca2055495291b41e0de267342",
+                "reference": "4807d4373a99bd4ca2055495291b41e0de267342",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "React\\Promise": "src/"
+                },
+                "files": [
+                    "src/React/Promise/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@googlemail.com",
+                    "homepage": "http://sorgalla.com",
+                    "role": "maintainer"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "time": "2013-10-24 17:45:41"
+        },
+        {
             "name": "react/socket",
             "version": "v0.3.2",
             "target-dir": "React/Socket",
@@ -2564,7 +2610,8 @@
         "hwi/oauth-bundle": 20,
         "zendframework/zendservice-apple-apns": 20,
         "doctrine/doctrine-mongo-odm-module": 20,
-        "cboden/ratchet": 20
+        "cboden/ratchet": 20,
+        "react/promise": 20
     },
     "platform": {
         "php": ">=5.3.3"

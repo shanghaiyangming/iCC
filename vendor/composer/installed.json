@@ -2631,5 +2631,53 @@
             "server",
             "sockets"
         ]
+    },
+    {
+        "name": "react/promise",
+        "version": "2.0.x-dev",
+        "version_normalized": "2.0.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/promise.git",
+            "reference": "4807d4373a99bd4ca2055495291b41e0de267342"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/promise/zipball/4807d4373a99bd4ca2055495291b41e0de267342",
+            "reference": "4807d4373a99bd4ca2055495291b41e0de267342",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "time": "2013-10-24 17:45:41",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "React\\Promise": "src/"
+            },
+            "files": [
+                "src/React/Promise/functions.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jan Sorgalla",
+                "email": "jsorgalla@googlemail.com",
+                "homepage": "http://sorgalla.com",
+                "role": "maintainer"
+            }
+        ],
+        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
     }
 ]
