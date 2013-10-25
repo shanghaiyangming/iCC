@@ -3,6 +3,7 @@ namespace My\Common;
 
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
+use Zend\Config\Config;
 
 /**
  * $cfg = array(
@@ -40,7 +41,7 @@ abstract class MongoFactory
         $options = array();
         $options['connectTimeoutMS'] = 60000;
         $options['socketTimeoutMS'] = 60000;
-        $options['w'] = 2;
+        $options['w'] = 1;
         $options['wTimeout'] = 60000;
         
         if (isset($cfg['options']) && ! empty($cfg['options'])) {
@@ -51,25 +52,29 @@ abstract class MongoFactory
             throw new \Exception('配置信息中缺少cluster.default参数');
         }
         
-        $cluster = new \stdClass();
+        $cluster = array();
         foreach ($cfg['cluster'] as $clusterName => $clusterInfo) {
             try {
                 shuffle($clusterInfo['servers']);
                 $dnsString = 'mongodb://' . join(',', $clusterInfo['servers']);
-                $connect = new \MongoClient($dnsString, $options);
-                $connect->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
-                $cluster->$clusterName['connect'] = $connect;
+                if (class_exists('\MongoClient')) {
+                    $connect = new \MongoClient($dnsString, $options);
+                    $connect->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
+                    $cluster[$clusterName]['connect'] = $connect;
+                } else {
+                    throw new \Exception('请安装PHP的Mongo1.4+版本的扩展');
+                }
             } catch (\Exception $e) {
                 if ($clusterName == 'default')
-                    throw new \Exception('无法与Mongodb建立连接');
+                    throw new \Exception('无法与Mongodb建立连接' . $e->getMessage());
                 else
                     break;
             }
             
             try {
-                if (is_array($clusterInfo['dbs']) && ! empty($clusterInfo['dbs'])) {
+                if (is_array($clusterInfo['dbs']) && ! empty($clusterInfo['dbs']) && $connect instanceof \MongoClient) {
                     foreach ($clusterInfo['dbs'] as $db) {
-                        $cluster->$clusterName['dbs'][$db] = $connect->selectDB($db);
+                        $cluster[$clusterName]['dbs'][$db] = $connect->selectDB($db);
                     }
                 } else {
                     throw new \Exception('请设定cluster.name.dbs');
@@ -80,7 +85,7 @@ abstract class MongoFactory
             unset($connect);
         }
         
-        return $cluster;
+        return new Config($cluster);
     }
 }
 

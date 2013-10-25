@@ -11,7 +11,7 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
-class Module 
+class Module
 {
 
     public function getConfig()
@@ -35,8 +35,27 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
     }
-    
-    public function set() {
+
+    public function registerRendererStrategy($e)
+    {
+        $matches = $e->getRouteMatch();
+        $controller = $matches->getParam('controller');
+        if (false === strpos($controller, __NAMESPACE__)) {
+            // not a controller from this module
+            return;
+        }
         
+        // Potentially, you could be even more selective at this point, and test
+        // for specific controller classes, and even specific actions or request
+        // methods.
+        
+        // Set the JSON strategy when controllers from this module are selected
+        $app = $e->getTarget();
+        $locator = $app->getServiceManager();
+        $view = $locator->get('Zend\View\View');
+        $acceptStrategy = $locator->get('strategies');
+        
+        // Attach strategy, which is a listener aggregate, at high priority
+        $view->getEventManager()->attach($acceptStrategy, 100);
     }
 }

@@ -47,7 +47,6 @@ class MongoAbstractFactory implements AbstractFactoryInterface
     {
         $config = $this->getConfig($serviceLocator);
         $config = $config[$requestedName];
-        var_dump($config);
         return MongoFactory::factory($config);
     }
     
