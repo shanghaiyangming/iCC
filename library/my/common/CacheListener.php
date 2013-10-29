@@ -2,6 +2,7 @@
 namespace My\Common;
 
 use Zend\Cache\StorageFactory;
+use Zend\Cache\Storage\Adapter\AbstractAdapter;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -13,7 +14,7 @@ class CacheListener implements ListenerAggregateInterface
 
     protected $listeners = array();
 
-    public function __construct(StorageFactory $cache)
+    public function __construct(AbstractAdapter $cache)
     {
         $this->cache = $cache;
     }

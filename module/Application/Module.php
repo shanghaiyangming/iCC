@@ -16,6 +16,9 @@ use My\Common\CacheListener;
 class Module
 {
 
+    /**
+     * 加载配置信息
+     */
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -26,7 +29,7 @@ class Module
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
-                    __NAMESPACE__ => dirname(__DIR__) . '/src/' . __NAMESPACE__
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
                 )
             )
         );
@@ -63,7 +66,7 @@ class Module
         
         // 绑定缓存事件
         $cache = $locator->get(CACHE_ADAPTER);
-        $cacheListener = new \My\Common\CacheListener($cache);
+        $cacheListener = new CacheListener($cache);
         $cacheListener->attach($eventManager);
     }
 
