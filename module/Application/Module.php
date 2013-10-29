@@ -11,6 +11,7 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
+use My\Common\CacheListener;
 
 class Module
 {
@@ -22,12 +23,22 @@ class Module
 
     public function getAutoloaderConfig()
     {
-        return include __DIR__ . '/config/autoloader.config.php';
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => dirname(__DIR__) . '/src/' . __NAMESPACE__
+                )
+            )
+        );
     }
 
     public function getControllerConfig()
     {
-        return include __DIR__ . '/config/controller.config.php';
+        return array(
+            'abstract_factories' => array(
+                'My\Common\ControllerAbstractFactory'
+            )
+        );
     }
 
     public function onBootstrap(MvcEvent $e)
@@ -38,17 +49,22 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
-        // attach the JSON view strategy
+        // 绑定响应返回json的策略
         $view = $locator->get('Zend\View\View');
         $strategy = $locator->get('ViewJsonStrategy');
         $view->getEventManager()->attach($strategy, 100);
         
-        // attach a listener to check for errors
+        // 渲染结束绑定onRenderError事件
         $events = $e->getTarget()->getEventManager();
         $events->attach(MvcEvent::EVENT_RENDER, array(
             $this,
             'onRenderError'
         ));
+        
+        // 绑定缓存事件
+        $cache = $locator->get(CACHE_ADAPTER);
+        $cacheListener = new \My\Common\CacheListener($cache);
+        $cacheListener->attach($eventManager);
     }
 
     public function onRenderError($e)
@@ -126,7 +142,6 @@ class Module
             while ($exception = $exception->getPrevious()) {
                 $messages[] = "* " . $exception->getMessage();
             }
-            ;
             if (count($messages)) {
                 $exceptionString = implode("\n", $messages);
                 $model->messages = $exceptionString;
@@ -138,7 +153,4 @@ class Module
         $e->setResult($model);
         $e->setViewModel($model);
     }
-
-    public function registerCacheStrategy(MvcEvent $e)
-    {}
 }
