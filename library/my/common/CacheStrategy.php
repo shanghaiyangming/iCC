@@ -1,8 +1,8 @@
 <?php 
-use Zend\Cache\Cache;
-use Zend\EventManager\EventCollection;
+use Zend\Cache\StorageFactory;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManagerInterface;
 
 class CacheListener implements ListenerAggregateInterface
 {
@@ -10,12 +10,12 @@ class CacheListener implements ListenerAggregateInterface
 
     protected $listeners = array();
 
-    public function __construct(Cache $cache)
+    public function __construct(StorageFactory $cache)
     {
         $this->cache = $cache;
     }
 
-    public function attach(EventCollection $events)
+    public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach('get.pre', array($this, 'load'), 100);
         $this->listeners[] = $events->attach('get.post', array($this, 'save'), -100);
