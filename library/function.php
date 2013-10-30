@@ -79,6 +79,7 @@ function arrayToCVS($name, $datas)
     header('Content-Disposition: attachment; filename="' . $name . '.csv"');
     header("Content-Length:" . filesize($tmpname));
     echo file_get_contents($tmpname);
+    unlink($tmpname);
     exit();
 }
 
@@ -112,7 +113,6 @@ function excelTitle($i)
 function arrayToExcel($name, $datas)
 {
     resetTimeMemLimit();
-    include_once ("PHPExcel/PHPExcel.php");
     // 便于处理大的大型excel表格，存储在磁盘缓存中
     $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
     PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
