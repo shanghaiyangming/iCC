@@ -7,7 +7,7 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 
-class CacheListener implements ListenerAggregateInterface
+class CacheListenerAggregate implements ListenerAggregateInterface
 {
 
     protected $cache;
@@ -16,11 +16,13 @@ class CacheListener implements ListenerAggregateInterface
 
     public function __construct(AbstractAdapter $cache)
     {
+        echo __FUNCTION__.'<br />';
         $this->cache = $cache;
     }
 
     public function attach(EventManagerInterface $events)
     {
+        echo __FUNCTION__.'<br />';
         $this->listeners[] = $events->attach('get.pre', array(
             $this,
             'load'
@@ -33,6 +35,7 @@ class CacheListener implements ListenerAggregateInterface
 
     public function detach(EventManagerInterface $events)
     {
+        echo __FUNCTION__.'<br />';
         foreach ($this->listeners as $index => $listener) {
             if ($events->detach($listener)) {
                 unset($this->listeners[$index]);
@@ -42,6 +45,7 @@ class CacheListener implements ListenerAggregateInterface
 
     public function load(EventInterface $e)
     {
+        echo __FUNCTION__.'<br />';
         $id = get_class($e->getTarget()) . '-' . json_encode($e->getParams());
         if (null !== ($content = $this->cache->getItem($id))) {
             $e->stopPropagation(true);
@@ -51,8 +55,9 @@ class CacheListener implements ListenerAggregateInterface
 
     public function save(EventInterface $e)
     {
+        echo __FUNCTION__.'<br />';
         $params = $e->getParams();
-        $content = $params['__RESULT__'];
+        $content = 'cache'.$params['__RESULT__'];
         unset($params['__RESULT__']);
         
         $id = get_class($e->getTarget()) . '-' . json_encode($params);

@@ -11,7 +11,7 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
-use My\Common\CacheListener;
+use My\Common\CacheListenerAggregate;
 
 class Module
 {
@@ -66,8 +66,10 @@ class Module
         
         // 绑定缓存事件
         $cache = $locator->get(CACHE_ADAPTER);
-        $cacheListener = new CacheListener($cache);
-        $cacheListener->attach($eventManager);
+        $cacheListenerAggregate = new CacheListenerAggregate($cache);
+        $cacheListenerAggregate->attach($eventManager);
+
+
     }
 
     public function onRenderError($e)

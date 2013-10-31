@@ -10,6 +10,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\EventManager\EventInterface;
 
 class IndexController extends AbstractActionController
 {
@@ -21,8 +22,9 @@ class IndexController extends AbstractActionController
         echo $this->params()->fromQuery('get');
         echo $this->params()->fromFiles('file');
         echo $this->params()->fromRoute('r');
-        $events->attach('do', function ($e)
+        $events->attach('do', function (EventInterface $e)
         {
+            var_dump($e->getTarget());
             $event = $e->getName();
             $params = $e->getParams();
             printf('Handled event "%s", with parameters %s', $event, json_encode($params));
@@ -31,7 +33,7 @@ class IndexController extends AbstractActionController
             'foo' => 'bar',
             'baz' => 'bat'
         );
-        $events->trigger('do', null, $params);
+        $events->trigger('do', array(), $params);
         return new ViewModel();
     }
 
@@ -58,6 +60,19 @@ class IndexController extends AbstractActionController
     
     public function mongoAction() {
         $db = $this->getServiceLocator()->get('mongos');
+        return $this->response;
+    }
+    
+    public function triggerAction() {
+        $events = $this->getEventManager();
+        var_dump($events->getListeners('bootstrap'));
+        var_dump($events->getListeners('get.pre'));
+        $params = array();
+        $params = array_merge($params,$this->params()->fromQuery());
+        $events->trigger('get.pre',$this,$params);
+        $params['__RESULT__'] = 123;
+        $events->trigger('get.post',$this,$this->params()->fromQuery());
+        $this->response->setContent('<br />finished');
         return $this->response;
     }
 }
