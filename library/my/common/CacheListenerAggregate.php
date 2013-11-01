@@ -12,7 +12,10 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     protected $cache;
 
+    private $_key = null;
+
     protected $listeners = array();
+    
 
     public function __construct(AbstractAdapter $cache)
     {
@@ -21,11 +24,11 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach('get.pre', array(
+        $this->listeners[] = $events->attach('cache.pre', array(
             $this,
             'load'
         ), 100);
-        $this->listeners[] = $events->attach('get.post', array(
+        $this->listeners[] = $events->attach('cache.post', array(
             $this,
             'save'
         ), - 100);
@@ -40,22 +43,39 @@ class CacheListenerAggregate implements ListenerAggregateInterface
         }
     }
 
+    public function setKey(EventInterface $e)
+    {
+        $params = $e->getParams();
+        if (isset($params) && array_key_exists('__RESULT__', $params)) {
+            unset($params['__RESULT__']);
+        }
+        $this->_key = crc32(get_class($e->getTarget()) . '-' . json_encode($params));
+    }
+
+    public function getKey(EventInterface $e)
+    {
+        if ($this->_key == null) {
+            $this->setKey($e);
+        }
+        return $this->_key;
+    }
+
     public function load(EventInterface $e)
     {
-        $id = get_class($e->getTarget()) . '-' . json_encode($e->getParams());
-        if (null !== ($content = $this->cache->getItem($id))) {
+        if (NULL !== ($content = $this->cache->getItem($this->getKey($e)))) {
             $e->stopPropagation(true);
             return $content;
         }
     }
 
-    public function save(EventInterface $e)
+    /**
+     *
+     * @method 保存缓存
+     * @param EventInterface $e            
+     * @param string $content            
+     */
+    public function save(EventInterface $e, $content = '')
     {
-        $params = $e->getParams();
-        $content = 'cache'.$params['__RESULT__'];
-        unset($params['__RESULT__']);
-        
-        $id = get_class($e->getTarget()) . '-' . json_encode($params);
-        $this->cache->setItem($id, $content);
+        $this->cache->setItem($this->getKey($e), $content);
     }
 }

@@ -11,6 +11,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\GlobalEventManager;
 
 class IndexController extends AbstractActionController
 {
@@ -64,6 +65,12 @@ class IndexController extends AbstractActionController
     }
     
     public function triggerAction() {
+        $eventManager = GlobalEventManager::getEventCollection();
+        $params = $this->params()->fromQuery();
+        $eventManager->trigger('get.pre',null,$params);
+        $params['__RESULT__'] = 123;
+        $this->response->setContent($params['__RESULT__']);
+        $eventManager->trigger('get.post',null,$params);
         return $this->response;
     }
 }

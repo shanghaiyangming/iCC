@@ -12,6 +12,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
 use My\Common\CacheListenerAggregate;
+use Zend\EventManager\GlobalEventManager;
 
 class Module
 {
@@ -69,7 +70,7 @@ class Module
         $cacheListenerAggregate = new CacheListenerAggregate($cache);
         $cacheListenerAggregate->attach($eventManager);
 
-
+        GlobalEventManager::setEventCollection($eventManager);
     }
 
     public function onRenderError($e)
