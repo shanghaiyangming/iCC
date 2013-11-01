@@ -65,12 +65,24 @@ class IndexController extends AbstractActionController
     }
     
     public function triggerAction() {
+        //$view = new ViewModel();
+        //$view->setTerminal(true);
+        
         $eventManager = GlobalEventManager::getEventCollection();
         $params = $this->params()->fromQuery();
-        $eventManager->trigger('get.pre',null,$params);
-        $params['__RESULT__'] = 123;
-        $this->response->setContent($params['__RESULT__']);
-        $eventManager->trigger('get.post',null,$params);
+        $result = $eventManager->trigger('cache.pre',null,$params);
+        if($result->stopped()) {
+            $content = 'cache'.$result->last();
+            $this->response->setContent($content);
+        }
+        else {
+            $content = 123;
+            $params['__RESULT__'] = $content;
+            $this->response->setContent($content);
+            $eventManager->trigger('cache.post',null,$params);
+        }
+        
         return $this->response;
     }
+    
 }

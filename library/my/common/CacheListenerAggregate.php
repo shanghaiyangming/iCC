@@ -14,8 +14,9 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     private $_key = null;
 
+    private $_cache_result = '';
+
     protected $listeners = array();
-    
 
     public function __construct(AbstractAdapter $cache)
     {
@@ -43,23 +44,34 @@ class CacheListenerAggregate implements ListenerAggregateInterface
         }
     }
 
-    public function setKey(EventInterface $e)
+    private function setKey(EventInterface $e)
     {
         $params = $e->getParams();
-        if (isset($params) && array_key_exists('__RESULT__', $params)) {
+        if (array_key_exists('__RESULT__', $params)) {
+            $this->_cache_result = $params['__RESULT__'];
             unset($params['__RESULT__']);
         }
         $this->_key = crc32(get_class($e->getTarget()) . '-' . json_encode($params));
     }
 
-    public function getKey(EventInterface $e)
+    /**
+     *
+     * @method 生成缓存key
+     * @param EventInterface $e            
+     * @return number
+     */
+    private function getKey(EventInterface $e)
     {
-        if ($this->_key == null) {
-            $this->setKey($e);
-        }
+        $this->setKey($e);
         return $this->_key;
     }
 
+    /**
+     *
+     * @method 处理缓存
+     * @param EventInterface $e            
+     * @return string
+     */
     public function load(EventInterface $e)
     {
         if (NULL !== ($content = $this->cache->getItem($this->getKey($e)))) {
@@ -74,8 +86,8 @@ class CacheListenerAggregate implements ListenerAggregateInterface
      * @param EventInterface $e            
      * @param string $content            
      */
-    public function save(EventInterface $e, $content = '')
+    public function save(EventInterface $e)
     {
-        $this->cache->setItem($this->getKey($e), $content);
+        $this->cache->setItem($this->getKey($e), $this->_cache_result);
     }
 }
