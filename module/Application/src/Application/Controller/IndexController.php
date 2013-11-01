@@ -64,15 +64,6 @@ class IndexController extends AbstractActionController
     }
     
     public function triggerAction() {
-        $events = $this->getEventManager();
-        var_dump($events->getListeners('bootstrap'));
-        var_dump($events->getListeners('get.pre'));
-        $params = array();
-        $params = array_merge($params,$this->params()->fromQuery());
-        $events->trigger('get.pre',$this,$params);
-        $params['__RESULT__'] = 123;
-        $events->trigger('get.post',$this,$this->params()->fromQuery());
-        $this->response->setContent('<br />finished');
         return $this->response;
     }
 }
