@@ -385,7 +385,7 @@ function removeFromGridFS($url)
  */
 function convertToPureArray($arr)
 {
-    if (! is_array($arr) || count($arr) == 0 || ! ($arr instanceof Traversable))
+    if (! is_array($arr) || empty($arr))
         return array();
     
     $newArr = array();
