@@ -1,4 +1,9 @@
 <?php
+/**
+ * 用于扩展基础类库
+ * @author yangming
+ *
+ */
 namespace My\Common;
 
 use Zend\Config\Config;
@@ -48,7 +53,16 @@ abstract class Mongo extends \MongoCollection
     public function __construct(Config $config)
     {
         $config = $config->toArray();
+        if (! isset($this->_config[$this->_cluster]))
+            throw new \Exception('Config error:no cluster key');
+        
+        if (! isset($this->_config[$this->_cluster]['dbs'][$this->_database]))
+            throw new \Exception('Config error:no database init');
+        
         $this->_db = $this->_config[$this->_cluster]['dbs'][$this->_database];
+        if (! $this->_db instanceof \MongoDB)
+            throw new \Exception('$this->_db is not instanceof \MongoDB');
+        
         parent::__construct($this->_db, $this->_collection);
     }
 

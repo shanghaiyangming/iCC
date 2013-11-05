@@ -117,7 +117,8 @@ return array(
                     '127.0.0.1:27017'
                 ),
                 'dbs' => array(
-                    'ICCv1'
+                    'ICCv1',
+                    'admin'
                 )
             ),
             'analysis' => array(
@@ -126,7 +127,8 @@ return array(
                     '127.0.0.1:27017'
                 ),
                 'dbs' => array(
-                    'ICCv1'
+                    'ICCv1',
+                    'admin'
                 )
             )
         )
