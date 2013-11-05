@@ -13,6 +13,8 @@ use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
 use My\Common\CacheListenerAggregate;
 use Zend\EventManager\GlobalEventManager;
+use Monolog\Logger;
+use Monolog\Handler\MongoDBHandler;
 
 class Module
 {

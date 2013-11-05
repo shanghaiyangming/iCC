@@ -4,6 +4,7 @@ namespace My\Common;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Config\Config;
+use Zend\ServiceManager\FactoryInterface;
 
 /**
  * $cfg = array(

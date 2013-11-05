@@ -59,7 +59,8 @@ return array(
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'My\Common\MongoAbstractFactory'
+            'My\Common\MongoAbstractFactory',
+            'My\Common\Monolog',
         )
     ),
     'translator' => array(
@@ -129,6 +130,9 @@ return array(
                 )
             )
         )
+    ),
+    'monolog'=>array(
+        
     ),
     'controllers' => array(
         'invokables' => array()
