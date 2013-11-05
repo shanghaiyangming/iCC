@@ -69,7 +69,7 @@ class Module
         $cacheListenerAggregate = new CacheListenerAggregate($cache);
         $cacheListenerAggregate->attach($eventManager);
 
-
+        var_dump($eventManager->getEvents());
     }
 
     public function onRenderError($e)

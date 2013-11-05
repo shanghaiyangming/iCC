@@ -65,8 +65,7 @@ class IndexController extends AbstractActionController
     
     public function triggerAction() {
         $events = $this->getEventManager();
-        var_dump($events->getListeners('bootstrap'));
-        var_dump($events->getListeners('get.pre'));
+        var_dump($events->getEvents());
         $params = array();
         $params = array_merge($params,$this->params()->fromQuery());
         $events->trigger('get.pre',$this,$params);
