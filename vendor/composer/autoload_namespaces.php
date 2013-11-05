@@ -38,6 +38,7 @@ return array(
     'Guzzle\\Parser' => array($vendorDir . '/guzzle/parser'),
     'Guzzle\\Http' => array($vendorDir . '/guzzle/http'),
     'Guzzle\\Common' => array($vendorDir . '/guzzle/common'),
+    'Gregwar\\Captcha' => array($vendorDir . '/gregwar/captcha'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
     'Doctrine\\ODM\\MongoDB' => array($vendorDir . '/doctrine/mongodb-odm/lib'),
     'Doctrine\\MongoDB' => array($vendorDir . '/doctrine/mongodb/lib'),

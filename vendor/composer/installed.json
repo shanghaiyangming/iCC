@@ -352,77 +352,6 @@
         ]
     },
     {
-        "name": "doctrine/cache",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/doctrine/cache.git",
-            "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/cache/zipball/d0e4447707a064a5814b18cb0dcc2f24185f6179",
-            "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2"
-        },
-        "conflict": {
-            "doctrine/common": ">2.2,<2.4"
-        },
-        "time": "2013-09-26 19:23:25",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Doctrine\\Common\\Cache\\": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com",
-                "homepage": "http://www.instaclick.com"
-            },
-            {
-                "name": "Roman Borschel",
-                "email": "roman@code-factory.org"
-            },
-            {
-                "name": "Benjamin Eberlei",
-                "email": "kontakt@beberlei.de"
-            },
-            {
-                "name": "Johannes Schmitt",
-                "email": "schmittjoh@gmail.com",
-                "homepage": "http://jmsyst.com",
-                "role": "Developer of wrapped JMSSerializerBundle"
-            }
-        ],
-        "description": "Caching library offering an object-oriented API for many cache backends",
-        "homepage": "http://www.doctrine-project.org",
-        "keywords": [
-            "cache",
-            "caching"
-        ]
-    },
-    {
         "name": "doctrine/inflector",
         "version": "v1.0",
         "version_normalized": "1.0.0.0",
@@ -789,176 +718,6 @@
         "keywords": [
             "matrixcode",
             "qrcode"
-        ]
-    },
-    {
-        "name": "zendframework/zendframework",
-        "version": "2.2.4",
-        "version_normalized": "2.2.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zf2.git",
-            "reference": "5b03d868755c181fc9b5dc56c1f8c26e73ca0bed"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zf2/zipball/5b03d868755c181fc9b5dc56c1f8c26e73ca0bed",
-            "reference": "5b03d868755c181fc9b5dc56c1f8c26e73ca0bed",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "replace": {
-            "zendframework/zend-authentication": "self.version",
-            "zendframework/zend-barcode": "self.version",
-            "zendframework/zend-cache": "self.version",
-            "zendframework/zend-captcha": "self.version",
-            "zendframework/zend-code": "self.version",
-            "zendframework/zend-config": "self.version",
-            "zendframework/zend-console": "self.version",
-            "zendframework/zend-crypt": "self.version",
-            "zendframework/zend-db": "self.version",
-            "zendframework/zend-debug": "self.version",
-            "zendframework/zend-di": "self.version",
-            "zendframework/zend-dom": "self.version",
-            "zendframework/zend-escaper": "self.version",
-            "zendframework/zend-eventmanager": "self.version",
-            "zendframework/zend-feed": "self.version",
-            "zendframework/zend-file": "self.version",
-            "zendframework/zend-filter": "self.version",
-            "zendframework/zend-form": "self.version",
-            "zendframework/zend-http": "self.version",
-            "zendframework/zend-i18n": "self.version",
-            "zendframework/zend-inputfilter": "self.version",
-            "zendframework/zend-json": "self.version",
-            "zendframework/zend-ldap": "self.version",
-            "zendframework/zend-loader": "self.version",
-            "zendframework/zend-log": "self.version",
-            "zendframework/zend-mail": "self.version",
-            "zendframework/zend-math": "self.version",
-            "zendframework/zend-memory": "self.version",
-            "zendframework/zend-mime": "self.version",
-            "zendframework/zend-modulemanager": "self.version",
-            "zendframework/zend-mvc": "self.version",
-            "zendframework/zend-navigation": "self.version",
-            "zendframework/zend-paginator": "self.version",
-            "zendframework/zend-permissions-acl": "self.version",
-            "zendframework/zend-permissions-rbac": "self.version",
-            "zendframework/zend-progressbar": "self.version",
-            "zendframework/zend-resources": "self.version",
-            "zendframework/zend-serializer": "self.version",
-            "zendframework/zend-server": "self.version",
-            "zendframework/zend-servicemanager": "self.version",
-            "zendframework/zend-session": "self.version",
-            "zendframework/zend-soap": "self.version",
-            "zendframework/zend-stdlib": "self.version",
-            "zendframework/zend-tag": "self.version",
-            "zendframework/zend-test": "self.version",
-            "zendframework/zend-text": "self.version",
-            "zendframework/zend-uri": "self.version",
-            "zendframework/zend-validator": "self.version",
-            "zendframework/zend-version": "self.version",
-            "zendframework/zend-view": "self.version",
-            "zendframework/zend-xmlrpc": "self.version"
-        },
-        "require-dev": {
-            "doctrine/annotations": ">=1.0",
-            "ircmaxell/random-lib": "dev-master",
-            "ircmaxell/security-lib": "dev-master",
-            "ocramius/proxy-manager": "0.4.*",
-            "phpunit/phpunit": "3.7.*"
-        },
-        "suggest": {
-            "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
-            "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
-            "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
-            "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
-            "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
-            "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
-        },
-        "time": "2013-08-26 15:09:04",
-        "bin": [
-            "bin/classmap_generator.php",
-            "bin/pluginmap_generator.php",
-            "bin/templatemap_generator.php"
-        ],
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.2-dev",
-                "dev-develop": "2.3-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Zend\\": "library/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "description": "Zend Framework 2",
-        "homepage": "http://framework.zend.com/",
-        "keywords": [
-            "framework",
-            "zf2"
-        ]
-    },
-    {
-        "name": "mobiledetect/mobiledetectlib",
-        "version": "2.7.1",
-        "version_normalized": "2.7.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/serbanghita/Mobile-Detect.git",
-            "reference": "95677086a516b8eece064be42ca6bd7b3b007172"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/95677086a516b8eece064be42ca6bd7b3b007172",
-            "reference": "95677086a516b8eece064be42ca6bd7b3b007172",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "time": "2013-10-02 08:22:56",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "classmap": [
-                "Mobile_Detect.php"
-            ],
-            "psr-0": {
-                "Detection": "namespaced/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Serban Ghita",
-                "email": "serbanghita@gmail.com",
-                "homepage": "http://mobiledetect.net",
-                "role": "Developer"
-            }
-        ],
-        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
-        "homepage": "https://github.com/serbanghita/Mobile-Detect",
-        "keywords": [
-            "detect mobile devices",
-            "mobile",
-            "mobile detect",
-            "mobile detector",
-            "php mobile detect"
         ]
     },
     {
@@ -2582,6 +2341,301 @@
         ]
     },
     {
+        "name": "react/promise",
+        "version": "2.0.x-dev",
+        "version_normalized": "2.0.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/promise.git",
+            "reference": "4807d4373a99bd4ca2055495291b41e0de267342"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/promise/zipball/4807d4373a99bd4ca2055495291b41e0de267342",
+            "reference": "4807d4373a99bd4ca2055495291b41e0de267342",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "time": "2013-10-24 17:45:41",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "React\\Promise": "src/"
+            },
+            "files": [
+                "src/React/Promise/functions.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jan Sorgalla",
+                "email": "jsorgalla@googlemail.com",
+                "homepage": "http://sorgalla.com",
+                "role": "maintainer"
+            }
+        ],
+        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
+    },
+    {
+        "name": "zendframework/zendframework",
+        "version": "2.2.5",
+        "version_normalized": "2.2.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zf2.git",
+            "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zf2/zipball/4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+            "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "replace": {
+            "zendframework/zend-authentication": "self.version",
+            "zendframework/zend-barcode": "self.version",
+            "zendframework/zend-cache": "self.version",
+            "zendframework/zend-captcha": "self.version",
+            "zendframework/zend-code": "self.version",
+            "zendframework/zend-config": "self.version",
+            "zendframework/zend-console": "self.version",
+            "zendframework/zend-crypt": "self.version",
+            "zendframework/zend-db": "self.version",
+            "zendframework/zend-debug": "self.version",
+            "zendframework/zend-di": "self.version",
+            "zendframework/zend-dom": "self.version",
+            "zendframework/zend-escaper": "self.version",
+            "zendframework/zend-eventmanager": "self.version",
+            "zendframework/zend-feed": "self.version",
+            "zendframework/zend-file": "self.version",
+            "zendframework/zend-filter": "self.version",
+            "zendframework/zend-form": "self.version",
+            "zendframework/zend-http": "self.version",
+            "zendframework/zend-i18n": "self.version",
+            "zendframework/zend-inputfilter": "self.version",
+            "zendframework/zend-json": "self.version",
+            "zendframework/zend-ldap": "self.version",
+            "zendframework/zend-loader": "self.version",
+            "zendframework/zend-log": "self.version",
+            "zendframework/zend-mail": "self.version",
+            "zendframework/zend-math": "self.version",
+            "zendframework/zend-memory": "self.version",
+            "zendframework/zend-mime": "self.version",
+            "zendframework/zend-modulemanager": "self.version",
+            "zendframework/zend-mvc": "self.version",
+            "zendframework/zend-navigation": "self.version",
+            "zendframework/zend-paginator": "self.version",
+            "zendframework/zend-permissions-acl": "self.version",
+            "zendframework/zend-permissions-rbac": "self.version",
+            "zendframework/zend-progressbar": "self.version",
+            "zendframework/zend-resources": "self.version",
+            "zendframework/zend-serializer": "self.version",
+            "zendframework/zend-server": "self.version",
+            "zendframework/zend-servicemanager": "self.version",
+            "zendframework/zend-session": "self.version",
+            "zendframework/zend-soap": "self.version",
+            "zendframework/zend-stdlib": "self.version",
+            "zendframework/zend-tag": "self.version",
+            "zendframework/zend-test": "self.version",
+            "zendframework/zend-text": "self.version",
+            "zendframework/zend-uri": "self.version",
+            "zendframework/zend-validator": "self.version",
+            "zendframework/zend-version": "self.version",
+            "zendframework/zend-view": "self.version",
+            "zendframework/zend-xmlrpc": "self.version"
+        },
+        "require-dev": {
+            "doctrine/annotations": ">=1.0",
+            "fabpot/php-cs-fixer": "*@dev",
+            "ircmaxell/random-lib": "dev-master",
+            "ircmaxell/security-lib": "dev-master",
+            "ocramius/proxy-manager": "0.4.*",
+            "phpunit/phpunit": "3.7.*"
+        },
+        "suggest": {
+            "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
+            "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
+            "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
+            "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
+            "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
+            "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
+        },
+        "time": "2013-10-31 15:48:16",
+        "bin": [
+            "bin/classmap_generator.php",
+            "bin/pluginmap_generator.php",
+            "bin/templatemap_generator.php"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.2-dev",
+                "dev-develop": "2.3-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Zend\\": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Zend Framework 2",
+        "homepage": "http://framework.zend.com/",
+        "keywords": [
+            "framework",
+            "zf2"
+        ]
+    },
+    {
+        "name": "mobiledetect/mobiledetectlib",
+        "version": "2.7.2",
+        "version_normalized": "2.7.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/serbanghita/Mobile-Detect.git",
+            "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/1d709b8f24c1ab8d991e7bb8730cafb0de020641",
+            "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2013-11-01 19:39:17",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "Mobile_Detect.php"
+            ],
+            "psr-0": {
+                "Detection": "namespaced/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Serban Ghita",
+                "email": "serbanghita@gmail.com",
+                "homepage": "http://mobiledetect.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
+        "homepage": "https://github.com/serbanghita/Mobile-Detect",
+        "keywords": [
+            "detect mobile devices",
+            "mobile",
+            "mobile detect",
+            "mobile detector",
+            "php mobile detect"
+        ]
+    },
+    {
+        "name": "doctrine/cache",
+        "version": "v1.3.0",
+        "version_normalized": "1.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/cache.git",
+            "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
+            "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "conflict": {
+            "doctrine/common": ">2.2,<2.4"
+        },
+        "require-dev": {
+            "phpunit/phpunit": ">=3.7",
+            "satooshi/php-coveralls": "~0.6"
+        },
+        "time": "2013-10-25 19:04:14",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Doctrine\\Common\\Cache\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com",
+                "homepage": "http://www.jwage.com/",
+                "role": "Creator"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com",
+                "homepage": "http://www.instaclick.com"
+            },
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Johannes Schmitt",
+                "email": "schmittjoh@gmail.com",
+                "homepage": "http://jmsyst.com",
+                "role": "Developer of wrapped JMSSerializerBundle"
+            }
+        ],
+        "description": "Caching library offering an object-oriented API for many cache backends",
+        "homepage": "http://www.doctrine-project.org",
+        "keywords": [
+            "cache",
+            "caching"
+        ]
+    },
+    {
         "name": "cboden/ratchet",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -2633,38 +2687,32 @@
         ]
     },
     {
-        "name": "react/promise",
-        "version": "2.0.x-dev",
-        "version_normalized": "2.0.9999999.9999999-dev",
+        "name": "gregwar/captcha",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "target-dir": "Gregwar/Captcha",
         "source": {
             "type": "git",
-            "url": "https://github.com/reactphp/promise.git",
-            "reference": "4807d4373a99bd4ca2055495291b41e0de267342"
+            "url": "https://github.com/Gregwar/Captcha.git",
+            "reference": "eb1668366b60b99af727e9342f1551252ace8c15"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/promise/zipball/4807d4373a99bd4ca2055495291b41e0de267342",
-            "reference": "4807d4373a99bd4ca2055495291b41e0de267342",
+            "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/eb1668366b60b99af727e9342f1551252ace8c15",
+            "reference": "eb1668366b60b99af727e9342f1551252ace8c15",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.4.0"
+            "ext-gd": "*",
+            "php": ">=5.3.0"
         },
-        "time": "2013-10-24 17:45:41",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0-dev"
-            }
-        },
+        "time": "2013-10-20 09:43:25",
+        "type": "captcha",
         "installation-source": "source",
         "autoload": {
             "psr-0": {
-                "React\\Promise": "src/"
-            },
-            "files": [
-                "src/React/Promise/functions.php"
-            ]
+                "Gregwar\\Captcha": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -2672,12 +2720,21 @@
         ],
         "authors": [
             {
-                "name": "Jan Sorgalla",
-                "email": "jsorgalla@googlemail.com",
-                "homepage": "http://sorgalla.com",
-                "role": "maintainer"
+                "name": "Grégoire Passault",
+                "email": "g.passault@gmail.com",
+                "homepage": "http://www.gregwar.com/"
+            },
+            {
+                "name": "Jeremy Livingston",
+                "email": "jeremy.j.livingston@gmail.com"
             }
         ],
-        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
+        "description": "Captcha generator",
+        "homepage": "https://github.com/Gregwar/Captcha",
+        "keywords": [
+            "bot",
+            "captcha",
+            "spam"
+        ]
     }
 ]

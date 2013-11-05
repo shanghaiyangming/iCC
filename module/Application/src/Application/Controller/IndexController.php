@@ -18,6 +18,11 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+        
+    }
+
+    public function testAction()
+    {
         $events = $this->getEventManager();
         echo $this->params()->fromRoute('index');
         echo $this->params()->fromQuery('get');
@@ -49,45 +54,44 @@ class IndexController extends AbstractActionController
         $cache = $this->getServiceLocator()->get(CACHE_ADAPTER);
         if (($data = $cache->getItem('key')) === NULL) {
             $data = time();
-            $cache->setItem('key',$data);
-            echo 'no cache'.$data;
-        }
-        else {
-            echo 'cache'.$data;
+            $cache->setItem('key', $data);
+            echo 'no cache' . $data;
+        } else {
+            echo 'cache' . $data;
             $cache->removeItem('key');
         }
         return $this->response;
     }
-    
-    public function mongoAction() {
+
+    public function mongoAction()
+    {
         $db = $this->getServiceLocator()->get('mongos');
         return $this->response;
     }
-    
-    public function triggerAction() {
-        //$view = new ViewModel();
-        //$view->setTerminal(true);
-        
+
+    public function triggerAction()
+    {
+        // $view = new ViewModel();
+        // $view->setTerminal(true);
         $eventManager = GlobalEventManager::getEventCollection();
         $params = $this->params()->fromQuery();
-        $result = $eventManager->trigger('cache.pre',null,$params);
-        if($result->stopped()) {
-            $content = 'cache'.$result->last();
+        $result = $eventManager->trigger('cache.pre', null, $params);
+        if ($result->stopped()) {
+            $content = 'cache' . $result->last();
             $this->response->setContent($content);
-        }
-        else {
+        } else {
             $content = 123;
             $params['__RESULT__'] = $content;
             $this->response->setContent($content);
-            $eventManager->trigger('cache.post',null,$params);
+            $eventManager->trigger('cache.post', null, $params);
         }
         
         return $this->response;
     }
-    
-    public function staticEventAction() {
+
+    public function staticEventAction()
+    {
         $eventManager = new \Zend\EventManager\StaticEventManager();
         $eventManager::getInstance();
     }
-    
 }

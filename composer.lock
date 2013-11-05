@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3e00a4b233a68dc612d14f017e600003",
+    "hash": "71ca8a16db3162e5963e31e26d7b6cb8",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -177,16 +177,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179"
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/d0e4447707a064a5814b18cb0dcc2f24185f6179",
-                "reference": "d0e4447707a064a5814b18cb0dcc2f24185f6179",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
                 "shasum": ""
             },
             "require": {
@@ -194,6 +194,10 @@
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=3.7",
+                "satooshi/php-coveralls": "~0.6"
             },
             "type": "library",
             "extra": {
@@ -214,7 +218,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -242,7 +247,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2013-09-26 19:23:25"
+            "time": "2013-10-25 19:04:14"
         },
         {
             "name": "doctrine/collections",
@@ -834,6 +839,55 @@
             "time": "2012-05-30 15:01:08"
         },
         {
+            "name": "gregwar/captcha",
+            "version": "dev-master",
+            "target-dir": "Gregwar/Captcha",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Gregwar/Captcha.git",
+                "reference": "eb1668366b60b99af727e9342f1551252ace8c15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/eb1668366b60b99af727e9342f1551252ace8c15",
+                "reference": "eb1668366b60b99af727e9342f1551252ace8c15",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "captcha",
+            "autoload": {
+                "psr-0": {
+                    "Gregwar\\Captcha": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Passault",
+                    "email": "g.passault@gmail.com",
+                    "homepage": "http://www.gregwar.com/"
+                },
+                {
+                    "name": "Jeremy Livingston",
+                    "email": "jeremy.j.livingston@gmail.com"
+                }
+            ],
+            "description": "Captcha generator",
+            "homepage": "https://github.com/Gregwar/Captcha",
+            "keywords": [
+                "bot",
+                "captcha",
+                "spam"
+            ],
+            "time": "2013-10-20 09:43:25"
+        },
+        {
             "name": "guzzle/common",
             "version": "v3.7.4",
             "target-dir": "Guzzle/Common",
@@ -1226,16 +1280,16 @@
         },
         {
             "name": "mobiledetect/mobiledetectlib",
-            "version": "2.7.1",
+            "version": "2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/serbanghita/Mobile-Detect.git",
-                "reference": "95677086a516b8eece064be42ca6bd7b3b007172"
+                "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/95677086a516b8eece064be42ca6bd7b3b007172",
-                "reference": "95677086a516b8eece064be42ca6bd7b3b007172",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/1d709b8f24c1ab8d991e7bb8730cafb0de020641",
+                "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641",
                 "shasum": ""
             },
             "require": {
@@ -1274,7 +1328,7 @@
                 "mobile detector",
                 "php mobile detect"
             ],
-            "time": "2013-10-02 08:22:56"
+            "time": "2013-11-01 19:39:17"
         },
         {
             "name": "monolog/monolog",
@@ -2442,16 +2496,16 @@
         },
         {
             "name": "zendframework/zendframework",
-            "version": "2.2.4",
+            "version": "2.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zf2.git",
-                "reference": "5b03d868755c181fc9b5dc56c1f8c26e73ca0bed"
+                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zf2/zipball/5b03d868755c181fc9b5dc56c1f8c26e73ca0bed",
-                "reference": "5b03d868755c181fc9b5dc56c1f8c26e73ca0bed",
+                "url": "https://api.github.com/repos/zendframework/zf2/zipball/4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+                "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
                 "shasum": ""
             },
             "require": {
@@ -2512,6 +2566,7 @@
             },
             "require-dev": {
                 "doctrine/annotations": ">=1.0",
+                "fabpot/php-cs-fixer": "*@dev",
                 "ircmaxell/random-lib": "dev-master",
                 "ircmaxell/security-lib": "dev-master",
                 "ocramius/proxy-manager": "0.4.*",
@@ -2552,7 +2607,7 @@
                 "framework",
                 "zf2"
             ],
-            "time": "2013-08-26 15:09:04"
+            "time": "2013-10-31 15:48:16"
         },
         {
             "name": "zendframework/zendservice-apple-apns",
@@ -2611,7 +2666,8 @@
         "zendframework/zendservice-apple-apns": 20,
         "doctrine/doctrine-mongo-odm-module": 20,
         "cboden/ratchet": 20,
-        "react/promise": 20
+        "react/promise": 20,
+        "gregwar/captcha": 20
     },
     "platform": {
         "php": ">=5.3.3"

@@ -5,7 +5,6 @@
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Form
  */
 
 namespace ZendTest\Form;
@@ -208,6 +207,11 @@ class FormTest extends TestCase
 
     public function testHasValidatedFlag()
     {
+        if (!extension_loaded('intl')) {
+            // Required by \Zend\I18n\Validator\Float
+            $this->markTestSkipped('ext/intl not enabled');
+        }
+
         $form = new TestAsset\NewProductForm();
 
         $this->assertFalse($form->hasValidated());
@@ -247,6 +251,11 @@ class FormTest extends TestCase
 
     public function testSpecifyingValidationGroupForcesPartialValidation()
     {
+        if (!extension_loaded('intl')) {
+            // Required by \Zend\I18n\Validator\Float
+            $this->markTestSkipped('ext/intl not enabled');
+        }
+
         $this->populateForm();
         $invalidSet = array(
             'foo' => 'a',
@@ -264,6 +273,11 @@ class FormTest extends TestCase
 
     public function testSpecifyingValidationGroupForNestedFieldsetsForcesPartialValidation()
     {
+        if (!extension_loaded('intl')) {
+            // Required by \Zend\I18n\Validator\Float
+            $this->markTestSkipped('ext/intl not enabled');
+        }
+
         $form = new TestAsset\NewProductForm();
         $form->setData(array(
             'product' => array(
@@ -985,6 +999,11 @@ class FormTest extends TestCase
 
     public function testCanCorrectlyExtractDataFromOneToManyRelationship()
     {
+        if (!extension_loaded('intl')) {
+            // Required by \Zend\I18n\Validator\Float
+            $this->markTestSkipped('ext/intl not enabled');
+        }
+
         $product = $this->getOneToManyEntity();
 
         $form = new TestAsset\NewProductForm();
@@ -1472,6 +1491,11 @@ class FormTest extends TestCase
 
     public function testPreserveEntitiesBoundToCollectionAfterValidation()
     {
+        if (!extension_loaded('intl')) {
+            // Required by \Zend\I18n\Validator\Float
+            $this->markTestSkipped('ext/intl not enabled');
+        }
+
         $this->form->setInputFilter(new \Zend\InputFilter\InputFilter());
         $fieldset = new TestAsset\ProductCategoriesFieldset();
         $fieldset->setUseAsBaseFieldset(true);
@@ -1675,5 +1699,32 @@ class FormTest extends TestCase
     public function testPreferFormInputFilterFlagIsEnabledByDefault()
     {
         $this->assertTrue($this->form->getPreferFormInputFilter());
+    }
+
+    /**
+     * @group 5050
+     */
+    public function testFileInputFilterNotOverwritten()
+    {
+        $form = new TestAsset\FileInputFilterProviderForm();
+
+        $formInputFilter     = $form->getInputFilter();
+        $fieldsetInputFilter = $formInputFilter->get('file_fieldset');
+        $fileInput           = $fieldsetInputFilter->get('file_field');
+
+        $this->assertInstanceOf('Zend\InputFilter\FileInput', $fileInput);
+
+        $chain = $fileInput->getFilterChain();
+        $this->assertCount(1, $chain, var_export($chain, 1));
+    }
+
+    public function testInputFilterNotAddedTwiceWhenUsingFieldsets()
+    {
+        $form = new Form();
+
+        $fieldset = new TestAsset\FieldsetWithInputFilter('fieldset');
+        $form->add($fieldset);
+        $filters = $form->getInputFilter()->get('fieldset')->get('foo')->getFilterChain();
+        $this->assertEquals(1, $filters->count());
     }
 }
