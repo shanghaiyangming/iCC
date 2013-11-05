@@ -14,6 +14,25 @@ abstract class Mongo extends \MongoCollection
 
     private $_db;
 
+    private $_updateHaystack = array(
+        '$set',
+        '$inc',
+        '$unset',
+        '$rename',
+        '$setOnInsert',
+        '$addToSet',
+        '$pop',
+        '$pullAll',
+        '$pull',
+        '$pushAll',
+        '$push',
+        '$each',
+        '$slice',
+        '$sort',
+        '$bit',
+        '$isolated'
+    );
+
     const timeout = 6000000;
 
     const fsync = false;
@@ -38,8 +57,11 @@ abstract class Mongo extends \MongoCollection
      * @param array $object            
      * @param array $options            
      */
-    public function insert($object, Array $options = NULL)
+    public function insert(array $object = NULL, Array $options = NULL)
     {
+        if ($object === NULL)
+            throw new \Exception('$object is NULL');
+        
         $default = array(
             'fsync' => self::fsync,
             'timeout' => self::timeout
@@ -58,8 +80,21 @@ abstract class Mongo extends \MongoCollection
      * @param array $object            
      * @param array $options            
      */
-    public function update($criteria, $object, Array $options = NULL)
+    public function update(Array $criteria = NULL, Array $object = NULL, Array $options = NULL)
     {
+        if ($criteria === NULL)
+            throw new \Exception('$criteria is NULL');
+        
+        if ($object === NULL)
+            throw new \Exception('$object is NULL');
+        
+        $keys = array_keys($object);
+        foreach ($keys as $key) {
+            $key = strtolower($key);
+            if (! in_array($key, $this->_updateHaystack)) {
+                throw new \Exception('$key must contain ' . join(',', $this->_updateHaystack));
+            }
+        }
         $default = array(
             'upsert' => self::upsert,
             'multiple' => self::multiple,
@@ -79,8 +114,11 @@ abstract class Mongo extends \MongoCollection
      * @param array $criteria            
      * @param array $options            
      */
-    public function remove($criteria = NULL, Array $options = NULL)
+    public function remove(Array $criteria = NULL, Array $options = NULL)
     {
+        if ($criteria === NULL)
+            throw new \Exception('$criteria is NULL');
+        
         $default = array(
             'justOne' => self::justOne,
             'fsync' => self::fsync,
@@ -102,10 +140,11 @@ abstract class Mongo extends \MongoCollection
      *            $collection
      * @return mixed array|null
      */
-    public function findAndModifyByCommand($option, $collection)
+    public function findAndModifyByCommand($option, $collection = null)
     {
         $cmd = array();
-        $cmd['findandmodify'] = $collection == null ? $this->_collection : $collection;
+        $targetCollection = $collection === null ? $this->_collection : $collection;
+        $cmd['findandmodify'] = $targetCollection;
         if (isset($option['query']))
             $cmd['query'] = $option['query'];
         if (isset($option['sort']))
@@ -146,13 +185,15 @@ abstract class Mongo extends \MongoCollection
             logError(json_encode($err));
         }
     }
-    
+
     /**
      * 直接禁止drop操作
+     *
      * @see MongoCollection::drop()
      */
-    public function drop() {
-        return false;
+    public function drop()
+    {
+        throw new \Exception('ICC deny execute "drop()" collection operation');
     }
 
     /**
