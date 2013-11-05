@@ -12,6 +12,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
 use My\Common\CacheListenerAggregate;
+use Zend\EventManager\GlobalEventManager;
 
 class Module
 {
@@ -44,6 +45,15 @@ class Module
         );
     }
 
+    public function getServiceConfig()
+    {
+        return array(
+            'invokables' => array(
+                'Admin\AuthenticationService' => 'Zend\Authentication\AuthenticationService'
+            )
+        );
+    }
+
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
@@ -68,8 +78,16 @@ class Module
         $cache = $locator->get(CACHE_ADAPTER);
         $cacheListenerAggregate = new CacheListenerAggregate($cache);
         $cacheListenerAggregate->attach($eventManager);
+<<<<<<< HEAD
 
         var_dump($eventManager->getEvents());
+=======
+        
+        GlobalEventManager::setEventCollection($eventManager);
+        
+        //也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
+        
+>>>>>>> b757ae26a44150bf52f75d7ae2c9fab6488cd0c3
     }
 
     public function onRenderError($e)

@@ -11,6 +11,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
+use Zend\EventManager\GlobalEventManager;
 
 class IndexController extends AbstractActionController
 {
@@ -64,6 +65,7 @@ class IndexController extends AbstractActionController
     }
     
     public function triggerAction() {
+<<<<<<< HEAD
         $events = $this->getEventManager();
         var_dump($events->getEvents());
         $params = array();
@@ -72,6 +74,31 @@ class IndexController extends AbstractActionController
         $params['__RESULT__'] = 123;
         $events->trigger('get.post',$this,$this->params()->fromQuery());
         $this->response->setContent('<br />finished');
+=======
+        //$view = new ViewModel();
+        //$view->setTerminal(true);
+        
+        $eventManager = GlobalEventManager::getEventCollection();
+        $params = $this->params()->fromQuery();
+        $result = $eventManager->trigger('cache.pre',null,$params);
+        if($result->stopped()) {
+            $content = 'cache'.$result->last();
+            $this->response->setContent($content);
+        }
+        else {
+            $content = 123;
+            $params['__RESULT__'] = $content;
+            $this->response->setContent($content);
+            $eventManager->trigger('cache.post',null,$params);
+        }
+        
+>>>>>>> b757ae26a44150bf52f75d7ae2c9fab6488cd0c3
         return $this->response;
     }
+    
+    public function staticEventAction() {
+        $eventManager = new \Zend\EventManager\StaticEventManager();
+        $eventManager::getInstance();
+    }
+    
 }

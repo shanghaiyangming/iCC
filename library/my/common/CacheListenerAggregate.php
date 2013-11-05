@@ -12,22 +12,24 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     protected $cache;
 
+    private $_key = null;
+
+    private $_cache_result = '';
+
     protected $listeners = array();
 
     public function __construct(AbstractAdapter $cache)
     {
-        echo __FUNCTION__.'<br />';
         $this->cache = $cache;
     }
 
     public function attach(EventManagerInterface $events)
     {
-        echo __FUNCTION__.'<br />';
-        $this->listeners[] = $events->attach('get.pre', array(
+        $this->listeners[] = $events->attach('cache.pre', array(
             $this,
             'load'
         ), 100);
-        $this->listeners[] = $events->attach('get.post', array(
+        $this->listeners[] = $events->attach('cache.post', array(
             $this,
             'save'
         ), - 100);
@@ -35,7 +37,6 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     public function detach(EventManagerInterface $events)
     {
-        echo __FUNCTION__.'<br />';
         foreach ($this->listeners as $index => $listener) {
             if ($events->detach($listener)) {
                 unset($this->listeners[$index]);
@@ -43,24 +44,50 @@ class CacheListenerAggregate implements ListenerAggregateInterface
         }
     }
 
+    private function setKey(EventInterface $e)
+    {
+        $params = $e->getParams();
+        if (is_array($params) && array_key_exists('__RESULT__', $params)) {
+            $this->_cache_result = $params['__RESULT__'];
+            unset($params['__RESULT__']);
+        }
+        $this->_key = crc32(get_class($e->getTarget()) . '-' . json_encode($params));
+    }
+
+    /**
+     *
+     * @method 生成缓存key
+     * @param EventInterface $e            
+     * @return number
+     */
+    private function getKey(EventInterface $e)
+    {
+        $this->setKey($e);
+        return $this->_key;
+    }
+
+    /**
+     *
+     * @method 处理缓存
+     * @param EventInterface $e            
+     * @return string
+     */
     public function load(EventInterface $e)
     {
-        echo __FUNCTION__.'<br />';
-        $id = get_class($e->getTarget()) . '-' . json_encode($e->getParams());
-        if (null !== ($content = $this->cache->getItem($id))) {
+        if (NULL !== ($content = $this->cache->getItem($this->getKey($e)))) {
             $e->stopPropagation(true);
             return $content;
         }
     }
 
+    /**
+     *
+     * @method 保存缓存
+     * @param EventInterface $e            
+     * @param string $content            
+     */
     public function save(EventInterface $e)
     {
-        echo __FUNCTION__.'<br />';
-        $params = $e->getParams();
-        $content = 'cache'.$params['__RESULT__'];
-        unset($params['__RESULT__']);
-        
-        $id = get_class($e->getTarget()) . '-' . json_encode($params);
-        $this->cache->setItem($id, $content);
+        $this->cache->setItem($this->getKey($e), $this->_cache_result);
     }
 }
