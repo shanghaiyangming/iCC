@@ -85,4 +85,9 @@ class IndexController extends AbstractActionController
         return $this->response;
     }
     
+    public function staticEventAction() {
+        $eventManager = new \Zend\EventManager\StaticEventManager();
+        $eventManager::getInstance();
+    }
+    
 }

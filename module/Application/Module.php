@@ -45,6 +45,15 @@ class Module
         );
     }
 
+    public function getServiceConfig()
+    {
+        return array(
+            'invokables' => array(
+                'Admin\AuthenticationService' => 'Zend\Authentication\AuthenticationService'
+            )
+        );
+    }
+
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
@@ -69,8 +78,11 @@ class Module
         $cache = $locator->get(CACHE_ADAPTER);
         $cacheListenerAggregate = new CacheListenerAggregate($cache);
         $cacheListenerAggregate->attach($eventManager);
-
+        
         GlobalEventManager::setEventCollection($eventManager);
+        
+        //也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
+        
     }
 
     public function onRenderError($e)

@@ -47,7 +47,7 @@ class CacheListenerAggregate implements ListenerAggregateInterface
     private function setKey(EventInterface $e)
     {
         $params = $e->getParams();
-        if (array_key_exists('__RESULT__', $params)) {
+        if (is_array($params) && array_key_exists('__RESULT__', $params)) {
             $this->_cache_result = $params['__RESULT__'];
             unset($params['__RESULT__']);
         }
