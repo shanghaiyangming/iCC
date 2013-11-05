@@ -18,7 +18,10 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        
+        echo __CLASS__;
+        echo get_class($this);
+        echo str_replace(array(__NAMESPACE__,'\\'), '', __CLASS__);
+        return $this->response;
     }
 
     public function testAction()

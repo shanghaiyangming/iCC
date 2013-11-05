@@ -61,6 +61,8 @@ class Module
         $app = $e->getApplication();
         $eventManager = $app->getEventManager();
         $locator = $app->getServiceManager();
+        $locator->get('mongos');
+        
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         

@@ -19,7 +19,7 @@
         "zendframework/zendservice-apple-apns": "dev-master",
         "doctrine/doctrine-mongo-odm-module": "dev-master",
         "cboden/ratchet": "dev-master",
-        "react/promise": ">=2.0.0",
+        "react/promise": "2.0.*@dev",
         "gregwar/captcha": "dev-master"
     },
     "config": {
