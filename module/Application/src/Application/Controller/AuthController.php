@@ -15,10 +15,27 @@ use Gregwar\Captcha\CaptchaBuilder;
 
 class AuthController extends AbstractActionController
 {
-
+    /**
+     * (non-PHPdoc)
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
     public function indexAction()
-    {}
+    {
+        
+    }
+    
+    public function loginAction() {
+        
+    }
+    
+    public function logoutAction() {
+        
+    }
 
+    /**
+     * 登录验证码生成
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function captchaAction()
     {
         $builder = new CaptchaBuilder;
@@ -28,7 +45,7 @@ class AuthController extends AbstractActionController
         $_SESSION['phrase'] = $builder->getPhrase();
         //$builder->output($quality = 80);
         header('Content-type: image/jpeg');
-        $builder->output(80);
-        $this->response;
+        $this->response->setContent($builder->output(80));
+        return $this->response;
     }
 }

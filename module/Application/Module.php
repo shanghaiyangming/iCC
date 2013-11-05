@@ -78,8 +78,6 @@ class Module
         $cache = $locator->get(CACHE_ADAPTER);
         $cacheListenerAggregate = new CacheListenerAggregate($cache);
         $cacheListenerAggregate->attach($eventManager);
-
-        var_dump($eventManager->getEvents());
         
         GlobalEventManager::setEventCollection($eventManager);
         
