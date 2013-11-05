@@ -65,16 +65,6 @@ class IndexController extends AbstractActionController
     }
     
     public function triggerAction() {
-<<<<<<< HEAD
-        $events = $this->getEventManager();
-        var_dump($events->getEvents());
-        $params = array();
-        $params = array_merge($params,$this->params()->fromQuery());
-        $events->trigger('get.pre',$this,$params);
-        $params['__RESULT__'] = 123;
-        $events->trigger('get.post',$this,$this->params()->fromQuery());
-        $this->response->setContent('<br />finished');
-=======
         //$view = new ViewModel();
         //$view->setTerminal(true);
         
@@ -92,7 +82,6 @@ class IndexController extends AbstractActionController
             $eventManager->trigger('cache.post',null,$params);
         }
         
->>>>>>> b757ae26a44150bf52f75d7ae2c9fab6488cd0c3
         return $this->response;
     }
     
