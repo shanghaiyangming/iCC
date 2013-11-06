@@ -23,6 +23,8 @@ abstract class MongoAbstract extends \MongoCollection
     private $_db;
 
     private $_admin;
+    
+    private $_config;
 
     private $_updateHaystack = array(
         '$set',
@@ -57,29 +59,28 @@ abstract class MongoAbstract extends \MongoCollection
 
     public function __construct(Config $config)
     {
-        $config = $config->toArray();
+        $this->_config = $config->toArray();
 
         if (! isset($this->_config[$this->_cluster]))
             throw new \Exception('Config error:no cluster key');
-        
+
         if (! isset($this->_config[$this->_cluster]['dbs'][$this->_database]))
             throw new \Exception('Config error:no database init');
-        
+
         $this->_db = $this->_config[$this->_cluster]['dbs'][$this->_database];
         if (! $this->_db instanceof \MongoDB)
             throw new \Exception('$this->_db is not instanceof \MongoDB');
-        
+
         if (! isset($this->_config[$this->_cluster]['dbs']['admin']))
             throw new \Exception('Config error:admin database init');
-        
+
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
         if (! $this->_admin instanceof \MongoDB)
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
-            
+
             // 默认执行几个操作
             // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
         //$this->shardingCollection();
-        
         parent::__construct($this->_db, $this->_collection);
     }
 

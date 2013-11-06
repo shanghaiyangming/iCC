@@ -60,7 +60,7 @@ abstract class MongoFactory
                 $dnsString = 'mongodb://' . join(',', $clusterInfo['servers']);
                 if (class_exists('\MongoClient')) {
                     $connect = new \MongoClient($dnsString, $options);
-                    $connect->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
+                    //$connect->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
                     $cluster[$clusterName]['connect'] = $connect;
                 } else {
                     throw new \Exception('请安装PHP的Mongo1.4+版本的扩展');

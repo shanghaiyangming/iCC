@@ -6,7 +6,6 @@ use Zend\Config\Config;
 
 class Auth extends MongoAbstract
 {
-
     public function __construct(Config $config)
     {
         if (empty($this->_collection))
