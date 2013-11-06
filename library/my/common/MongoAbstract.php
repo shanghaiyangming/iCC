@@ -148,10 +148,10 @@ abstract class MongoAbstract extends \MongoCollection
     public function update($criteria, $object,  array $options = NULL)
     {
         if (empty($criteria))
-            throw new \Exception('$criteria is NULL');
+            throw new \Exception('$criteria is empty');
         
         if (empty($object))
-            throw new \Exception('$object is NULL');
+            throw new \Exception('$object is empty');
         
         $keys = array_keys($object);
         foreach ($keys as $key) {

@@ -20,7 +20,8 @@
         "doctrine/doctrine-mongo-odm-module": "dev-master",
         "cboden/ratchet": "dev-master",
         "react/promise": "2.0.*@dev",
-        "gregwar/captcha": "dev-master"
+        "gregwar/captcha": "dev-master",
+        "enlitepro/enlite-monolog": "~1.1"
     },
     "config": {
         "process-timeout": 3600

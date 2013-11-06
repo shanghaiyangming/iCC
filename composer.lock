@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "71ca8a16db3162e5963e31e26d7b6cb8",
+    "hash": "34609fb3b941a995ffece805bfd9de86",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cboden/Ratchet.git",
-                "reference": "d756e0b507a5f3cdbf8c59dbb7baf68574dc7d58"
+                "reference": "9ab9894a671896a3e36c36af3ebd2738e8222c72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/d756e0b507a5f3cdbf8c59dbb7baf68574dc7d58",
-                "reference": "d756e0b507a5f3cdbf8c59dbb7baf68574dc7d58",
+                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/9ab9894a671896a3e36c36af3ebd2738e8222c72",
+                "reference": "9ab9894a671896a3e36c36af3ebd2738e8222c72",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "server",
                 "sockets"
             ],
-            "time": "2013-10-14 14:38:12"
+            "time": "2013-11-05 23:31:52"
         },
         {
             "name": "codeplex/phpexcel",
@@ -797,6 +797,51 @@
                 "persistence"
             ],
             "time": "2013-06-06 19:15:45"
+        },
+        {
+            "name": "enlitepro/enlite-monolog",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/enlitepro/enlite-monolog.git",
+                "reference": "2a8b83dc3522c9db77f5786287629ab1747218f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/enlitepro/enlite-monolog/zipball/2a8b83dc3522c9db77f5786287629ab1747218f6",
+                "reference": "2a8b83dc3522c9db77f5786287629ab1747218f6",
+                "shasum": ""
+            },
+            "require": {
+                "monolog/monolog": "~1.6.0",
+                "zendframework/zendframework": "~2.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "EnliteMonolog": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Evgeny Shpilevsky",
+                    "email": "evgeny@shpilevsky.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Monolog integration to Zend Framework 2",
+            "keywords": [
+                "monolog",
+                "zend framework 2"
+            ],
+            "time": "2013-10-22 09:51:15"
         },
         {
             "name": "evenement/evenement",

@@ -69,4 +69,10 @@ class AuthController extends AbstractActionController
         $this->response->setContent($builder->output(80));
         return $this->response;
     }
+    
+    public function logAction() {
+        //var_dump($this->getServiceLocator()->get('EnliteMonologService'));
+        var_dump($this->getServiceLocator()->get('EnliteMonologService')->addDebug('hello world'));
+        return $this->response;
+    }
 }
