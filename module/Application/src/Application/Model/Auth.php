@@ -1,12 +1,13 @@
 <?php
 namespace Application\Model;
 
-use My\Common\Mongo;
+use My\Common\MongoAbstract;
+use Zend\Config\Config;
 
-class Auth extends Mongo
+class Auth extends MongoAbstract
 {
 
-    public function __construct()
+    public function __construct(Config $config)
     {
         if (empty($this->_collection))
             $this->_collection = strtolower(str_replace(array(
@@ -14,7 +15,6 @@ class Auth extends Mongo
                 '\\'
             ), '', __CLASS__));
         
-        $config = array();
         parent::__construct($config);
     }
 }

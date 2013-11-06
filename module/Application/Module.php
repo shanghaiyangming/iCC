@@ -56,12 +56,21 @@ class Module
         );
     }
 
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        return array(
+            'Run react application',
+            'react start --all' => 'run all exists servers',
+            'react start [server]' => 'if no server name specified, "default" will be used'
+        );
+    }
+
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
         $eventManager = $app->getEventManager();
         $locator = $app->getServiceManager();
-        $locator->get('mongos');
+        $mongosConfig = $locator->get('mongos');
         
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
@@ -85,8 +94,7 @@ class Module
         
         GlobalEventManager::setEventCollection($eventManager);
         
-        //也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
-        
+        // 也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
     }
 
     public function onRenderError($e)

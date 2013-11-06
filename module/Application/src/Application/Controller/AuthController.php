@@ -15,13 +15,35 @@ use Gregwar\Captcha\CaptchaBuilder;
 
 class AuthController extends AbstractActionController
 {
+    private $_model;
+    
+    private $_mongos;
+    
+    public function __construct() {
+
+    }
+    
     /**
      * (non-PHPdoc)
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction()
     {
-        
+        try {
+            $this->_mongos = $this->getServiceLocator()->get('mongos');
+            $this->_model = new \Application\Model\Auth($this->_mongos);
+            if($this->_model instanceof \MongoCollection)
+                echo '$this->_model instanceof \MongoCollection';
+            else 
+                echo 'error';
+            var_dump($this->_model->insert(array('a'=>1)));
+            var_dump($this->_model->findOne());
+            echo 'OK';
+        }
+        catch (Exception $e) {
+            var_dump($e->getMessage());
+        }
+        return $this->response;
     }
     
     public function loginAction() {

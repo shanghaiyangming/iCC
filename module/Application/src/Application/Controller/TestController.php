@@ -52,4 +52,10 @@ class TestController extends AbstractActionController
         
         var_dump($data);
     }
+    
+    public function mongoAction()
+    {
+        $db = $this->getServiceLocator()->get('mongos');
+        return $this->response;
+    }
 }

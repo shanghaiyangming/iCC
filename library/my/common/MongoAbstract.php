@@ -9,7 +9,7 @@ namespace My\Common;
 use Zend\Config\Config;
 use Doctrine\Tests\Common\Annotations\True;
 
-abstract class Mongo extends \MongoCollection
+abstract class MongoAbstract extends \MongoCollection
 {
 
     protected $_collection = '';
@@ -58,6 +58,7 @@ abstract class Mongo extends \MongoCollection
     public function __construct(Config $config)
     {
         $config = $config->toArray();
+
         if (! isset($this->_config[$this->_cluster]))
             throw new \Exception('Config error:no cluster key');
         
@@ -74,16 +75,17 @@ abstract class Mongo extends \MongoCollection
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
         if (! $this->_admin instanceof \MongoDB)
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
-
-        // 默认执行几个操作
-        // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
-        $this->shardingCollection();
+            
+            // 默认执行几个操作
+            // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
+        //$this->shardingCollection();
         
         parent::__construct($this->_db, $this->_collection);
     }
 
     /**
      * 对于新建集合进行自动分片
+     *
      * @return boolean
      */
     private function shardingCollection()
@@ -92,8 +94,8 @@ abstract class Mongo extends \MongoCollection
             'capped' => false, // 是否开启固定集合
             'size' => pow(1024, 3), // 如果简单开启capped=>true,单个集合的最大尺寸为1G
             'max' => pow(10, 7), // 如果简单开启capped=>true,单个集合的最大条数为1千万条数据
-            'autoIndexId' => true // 自动创建id索引
-                );
+            'autoIndexId' => true
+        );
         
         if ($this->_collectionOptions !== NULL) {
             $this->_collectionOptions = array_merge($defaultCollectionOptions, $this->_collectionOptions);
@@ -114,12 +116,13 @@ abstract class Mongo extends \MongoCollection
 
     /**
      * 插入特定的数据
+     *
      * @param array $object            
      * @param array $options            
      */
-    public function insert(Array $object = NULL, Array $options = NULL)
+    public function insert($a, array $options = NULL)
     {
-        if ($object === NULL)
+        if (empty($a))
             throw new \Exception('$object is NULL');
         
         $default = array(
@@ -131,21 +134,22 @@ abstract class Mongo extends \MongoCollection
         else
             $options = array_merge($default, $options);
         
-        return parent::insert($object, $options);
+        return parent::insert($a, $options);
     }
 
     /**
      * 更新指定范围的数据
+     *
      * @param array $criteria            
      * @param array $object            
      * @param array $options            
      */
-    public function update(Array $criteria = NULL, Array $object = NULL, Array $options = NULL)
+    public function update($criteria, $object,  array $options = NULL)
     {
-        if ($criteria === NULL)
+        if (empty($criteria))
             throw new \Exception('$criteria is NULL');
         
-        if ($object === NULL)
+        if (empty($object))
             throw new \Exception('$object is NULL');
         
         $keys = array_keys($object);
@@ -171,10 +175,11 @@ abstract class Mongo extends \MongoCollection
 
     /**
      * 删除指定范围的数据
+     *
      * @param array $criteria            
      * @param array $options            
      */
-    public function remove(Array $criteria = NULL, Array $options = NULL)
+    public function remove($criteria = NULL, array $options = NULL)
     {
         if ($criteria === NULL)
             throw new \Exception('$criteria is NULL');
@@ -240,8 +245,7 @@ abstract class Mongo extends \MongoCollection
             unset($row['_id']);
             $target->insert($row);
         }
-        
-        return true;
+        return parent::drop();
     }
 
     /**
@@ -249,7 +253,7 @@ abstract class Mongo extends \MongoCollection
      *
      * @see MongoCollection::ensureIndex()
      */
-    public function ensureIndex($key_keys, $options = NULL)
+    public function ensureIndex($key_keys, array $options = NULL)
     {
         $default = array(
             'background' => True
@@ -261,16 +265,6 @@ abstract class Mongo extends \MongoCollection
             $options = array_merge($default, $options);
         
         return parent::ensureIndex($key_keys, $options);
-    }
-
-    /**
-     *
-     * @param array $rst            
-     * @return 处理包含mongo数据为完全的数组，去掉里面的对象类型的数据转化为相应的字符串，如mongoid进行toString() mongodate进行date处理等
-     */
-    private function convertToPureArray($rst)
-    {
-        return convertToPureArray($rst);
     }
 
     /**
