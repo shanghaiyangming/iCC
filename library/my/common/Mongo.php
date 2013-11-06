@@ -74,25 +74,31 @@ abstract class Mongo extends \MongoCollection
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
         if (! $this->_admin instanceof \MongoDB)
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
-        
-        parent::__construct($this->_db, $this->_collection);
-        
-        if ($this->_collectionOptions === NULL) {
-            $this->_collectionOptions = array(
-                'capped' => false,
-                'size' => pow(1024, 3),
-                'max' => pow(10, 7),
-                'autoIndexId' => true
-            );
-        }
-        
+
         // 默认执行几个操作
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
         $this->shardingCollection();
+        
+        parent::__construct($this->_db, $this->_collection);
     }
 
+    /**
+     * 对于新建集合进行自动分片
+     * @return boolean
+     */
     private function shardingCollection()
     {
+        $defaultCollectionOptions = array(
+            'capped' => false, // 是否开启固定集合
+            'size' => pow(1024, 3), // 如果简单开启capped=>true,单个集合的最大尺寸为1G
+            'max' => pow(10, 7), // 如果简单开启capped=>true,单个集合的最大条数为1千万条数据
+            'autoIndexId' => true // 自动创建id索引
+                );
+        
+        if ($this->_collectionOptions !== NULL) {
+            $this->_collectionOptions = array_merge($defaultCollectionOptions, $this->_collectionOptions);
+        }
+        
         $this->_db->createCollection($this->_collection, $this->_collectionOptions);
         $rst = $this->_admin->command(array(
             'shardCollection' => $this->_database . '.' . $this->_collection,
@@ -107,7 +113,7 @@ abstract class Mongo extends \MongoCollection
     }
 
     /**
-     *
+     * 插入特定的数据
      * @param array $object            
      * @param array $options            
      */
@@ -129,7 +135,7 @@ abstract class Mongo extends \MongoCollection
     }
 
     /**
-     *
+     * 更新指定范围的数据
      * @param array $criteria            
      * @param array $object            
      * @param array $options            
@@ -164,7 +170,7 @@ abstract class Mongo extends \MongoCollection
     }
 
     /**
-     *
+     * 删除指定范围的数据
      * @param array $criteria            
      * @param array $options            
      */
@@ -188,10 +194,8 @@ abstract class Mongo extends \MongoCollection
     /**
      * 增加findAndModify方法
      *
-     * @param
-     *            $option
-     * @param
-     *            $collection
+     * @param array $option            
+     * @param string $collection            
      * @return mixed array|null
      */
     public function findAndModifyByCommand($option, $collection = NULL)
@@ -223,39 +227,52 @@ abstract class Mongo extends \MongoCollection
      */
     public function drop()
     {
-        throw new \Exception('ICC deny execute "drop()" collection operation');
+        // 做法1：抛出异常禁止Drop操作
+        // throw new \Exception('ICC deny execute "drop()" collection operation');
+        // 做法2：复制整个集合的数据到新的集合中，用于备份，备份数据不做片键，不做索引以便节约空间，仅出于安全考虑，原有_id使用保留字__OLD_ID__进行保留
+        $targetCollection = $this->_collection . '_bak_' . date('YmdHis');
+        $target = new \MongoCollection($this->db, $targetCollection);
         // 变更为重命名某个集合或者复制某个集合的操作作为替代。
-        $this->_admin->command();
+        $cursor = $this->find(array());
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['__OLD_ID__'] = $row['_id'];
+            unset($row['_id']);
+            $target->insert($row);
+        }
+        
+        return true;
     }
-    
+
     /**
      * ICC系统默认采用后台创建的方式，建立索引
+     *
      * @see MongoCollection::ensureIndex()
      */
-    public function ensureIndex($key_keys,$options = NULL) {
+    public function ensureIndex($key_keys, $options = NULL)
+    {
         $default = array(
-            'background' => True,
-            //'expireAfterSeconds'=>3600, //请充分了解后开启此参数，慎用
-        );
+            'background' => True
+        // 'expireAfterSeconds'=>3600, //请充分了解后开启此参数，慎用
+                );
         if ($options === NULL)
             $options = $default;
         else
             $options = array_merge($default, $options);
         
-        return parent::ensureIndex($key_keys,$options);
+        return parent::ensureIndex($key_keys, $options);
     }
-    
 
     /**
      *
-     * @param array $rst
+     * @param array $rst            
      * @return 处理包含mongo数据为完全的数组，去掉里面的对象类型的数据转化为相应的字符串，如mongoid进行toString() mongodate进行date处理等
      */
     private function convertToPureArray($rst)
     {
         return convertToPureArray($rst);
     }
-    
+
     /**
      * 打印最后一个错误信息
      */
@@ -264,7 +281,7 @@ abstract class Mongo extends \MongoCollection
         $err = $this->_db->lastError();
         if (self::debug)
             var_dump($err);
-        //记录下每一条产生的mongodb错误日志
+            // 记录下每一条产生的mongodb错误日志
         if ($err['err'] != null) {
             logError(json_encode($err));
         }
