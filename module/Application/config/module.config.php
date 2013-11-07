@@ -55,13 +55,13 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'My\Common\MongoAbstractFactory',
-//             'My\Common\Monolog',
-        )
+            'My\Common\MongoAbstractFactory'
+        // 'My\Common\Monolog',
+                )
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -133,11 +133,15 @@ return array(
             )
         )
     ),
-    'monolog'=>array(
-        
-    ),
+    'monolog' => array(),
+    
     'controllers' => array(
         'invokables' => array()
+    ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'logToMongodb' => 'My\Common\Plugin\Log'
+        )
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,

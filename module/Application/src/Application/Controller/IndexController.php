@@ -74,6 +74,9 @@ class IndexController extends AbstractActionController
 
     public function triggerAction()
     {
+        
+        $evt = $this->getEventManager()->getSharedManager();
+        $evt->getEvents();
         // $view = new ViewModel();
         // $view->setTerminal(true);
         $eventManager = GlobalEventManager::getEventCollection();
