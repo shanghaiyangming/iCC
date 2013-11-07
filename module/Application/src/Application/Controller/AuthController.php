@@ -17,29 +17,49 @@ class AuthController extends AbstractActionController
 {
 
     /**
+     * 显示登录页面
+     * @author young
+     * @name 显示登录页面
+     * @version 2013.11.17 young
+     */
+    public function indexAction()
+    {
+        return $this->response;
+    }
+
+    /**
+     * 处理登录请求
+     * @author young
      * @name 处理登录请求
-     * @desc 
+     * @version 2013.11.17 young
      */
     public function loginAction()
     {}
 
     /**
+     * 处理注销请求
+     * @author young
      * @name 处理注销请求
-     * @desc 
+     * @version 2013.11.17 young
      */
     public function logoutAction()
     {}
 
     /**
+     * 生成登录页面的图形验证码
+     * @author young
      * @name 生成登录页面的图形验证码
-     * @desc 
+     * @version 2013.11.17 young
      * @return \Zend\Stdlib\ResponseInterface
      */
     public function captchaAction()
     {
         $builder = new CaptchaBuilder();
-        $builder->build(150, 40);
+        $builder->setBackgroundColor(255, 255, 255);
+        $builder->setTextColor(255, 0, 255);
+        $builder->setPhrase(rand(100000,999999));
         $_SESSION['phrase'] = $builder->getPhrase();
+        $builder->build(150, 40);
         header('Content-type: image/jpeg');
         $this->response->setContent($builder->output(80));
         return $this->response;
