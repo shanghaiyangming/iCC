@@ -9,21 +9,21 @@ namespace My\Common;
 use Zend\Config\Config;
 use Doctrine\Tests\Common\Annotations\True;
 
-abstract class MongoAbstract extends \MongoCollection
+class Mongo extends \MongoCollection
 {
 
-    protected $_collection = '';
+    private $_collection = '';
 
-    protected $_database = 'ICCv1';
+    private $_database = 'ICCv1';
 
-    protected $_cluster = 'default';
+    private $_cluster = 'default';
 
-    protected $_collectionOptions = NULL;
+    private $_collectionOptions = NULL;
 
     private $_db;
 
     private $_admin;
-    
+
     private $_config;
 
     private $_updateHaystack = array(
@@ -57,30 +57,37 @@ abstract class MongoAbstract extends \MongoCollection
 
     const debug = false;
 
-    public function __construct(Config $config)
+    public function __construct(Config $config, $collection = null, $database = 'ICCv1', $cluster = 'default', $collectionOptions = null)
     {
+        if ($collection === null) {
+            throw new \Exception('$collection is null');
+        }
+        
+        $this->_database = $database;
+        $this->_cluster = $cluster;
+        $this->_collectionOptions = $collectionOptions;
         $this->_config = $config->toArray();
-
+        
         if (! isset($this->_config[$this->_cluster]))
             throw new \Exception('Config error:no cluster key');
-
+        
         if (! isset($this->_config[$this->_cluster]['dbs'][$this->_database]))
             throw new \Exception('Config error:no database init');
-
+        
         $this->_db = $this->_config[$this->_cluster]['dbs'][$this->_database];
         if (! $this->_db instanceof \MongoDB)
             throw new \Exception('$this->_db is not instanceof \MongoDB');
-
+        
         if (! isset($this->_config[$this->_cluster]['dbs']['admin']))
             throw new \Exception('Config error:admin database init');
-
+        
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
         if (! $this->_admin instanceof \MongoDB)
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
-
+            
             // 默认执行几个操作
             // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
-        //$this->shardingCollection();
+            // $this->shardingCollection();
         parent::__construct($this->_db, $this->_collection);
     }
 
@@ -145,7 +152,7 @@ abstract class MongoAbstract extends \MongoCollection
      * @param array $object            
      * @param array $options            
      */
-    public function update($criteria, $object,  array $options = NULL)
+    public function update($criteria, $object, array $options = NULL)
     {
         if (empty($criteria))
             throw new \Exception('$criteria is empty');

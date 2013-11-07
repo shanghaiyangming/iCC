@@ -58,4 +58,56 @@ class TestController extends AbstractActionController
         $db = $this->getServiceLocator()->get('mongos');
         return $this->response;
     }
+    
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function insertMongoAction()
+    {
+        try {
+            $this->_mongos = $this->getServiceLocator()->get('mongos');
+            $this->_model = new Auth($this->_mongos);
+            if ($this->_model instanceof \MongoCollection)
+                echo '$this->_model instanceof \MongoCollection';
+            else
+                echo 'error';
+            var_dump($this->_model->insert(array(
+            'a' => time()
+            )));
+            var_dump($this->_model->findOne());
+            echo 'OK';
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+        }
+        return $this->response;
+    }
+    
+    /**
+     * 登录验证码生成
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function captchaAction()
+    {
+        $builder = new CaptchaBuilder();
+        // $builder->setBackgroundColor($r, $g, $b);
+        // $builder->build($width = 150, $height = 40);
+        $builder->build(150, 40);
+        $_SESSION['phrase'] = $builder->getPhrase();
+        // $builder->output($quality = 80);
+        header('Content-type: image/jpeg');
+        $this->response->setContent($builder->output(80));
+        return $this->response;
+    }
+    
+    public function logAction() {
+        //var_dump($this->getServiceLocator()->get('EnliteMonologService'));
+        //var_dump($this->getServiceLocator()->get('LogMongodbService')->addDebug('hello world'));
+        //var_dump($this->log()->logger('OK plugin'));
+        var_dump($this->log('123'));
+    
+        return $this->response;
+    }
 }

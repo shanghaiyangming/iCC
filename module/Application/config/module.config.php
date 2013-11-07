@@ -60,8 +60,7 @@ return array(
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'My\Common\MongoAbstractFactory'
-        // 'My\Common\Monolog',
-                )
+        )
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -133,17 +132,17 @@ return array(
             )
         )
     ),
-    'monolog' => array(),
-    
     'controllers' => array(
         'invokables' => array()
     ),
     'controller_plugins' => array(
         'invokables' => array(
-            'logToMongodb' => 'My\Common\Plugin\Log'
+            'logToMongodb' => 'My\Common\Plugin\Log',
+            'M'=>'My\Common\Plugin\M'
         ),
         'aliases' => array(
-            'log' => 'logToMongodb'
+            'log' => 'logToMongodb',
+            'm' => 'M'
         )
     ),
     'view_manager' => array(
