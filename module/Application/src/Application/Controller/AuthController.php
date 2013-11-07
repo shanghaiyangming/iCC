@@ -72,7 +72,7 @@ class AuthController extends AbstractActionController
     
     public function logAction() {
         //var_dump($this->getServiceLocator()->get('EnliteMonologService'));
-        var_dump($this->getServiceLocator()->get('LogMonologService')->addDebug('hello world'));
+        var_dump($this->getServiceLocator()->get('LogMongodbService')->addDebug('hello world'));
         return $this->response;
     }
 }

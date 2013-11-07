@@ -18,7 +18,7 @@ trait MonologServiceAwareTrait
     /**
      * @var string
      */
-    protected $monologLoggerName = 'LogsMongodbService';
+    protected $monologLoggerName = 'LogMongodbService';
 
     /**
      * @param Logger $monologService

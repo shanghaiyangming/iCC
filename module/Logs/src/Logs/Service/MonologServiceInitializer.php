@@ -18,7 +18,7 @@ class MonologServiceInitializer implements InitializerInterface
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
         if ($instance instanceof MonologServiceAwareInterface) {
-            $instance->setMonologService($serviceLocator->get('LogsMongodbService'));
+            $instance->setMonologService($serviceLocator->get('LogMongodbService'));
         }
     }
 }

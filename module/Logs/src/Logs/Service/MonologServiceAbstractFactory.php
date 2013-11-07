@@ -1,7 +1,6 @@
 <?php
 namespace Logs\Service;
 
-
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -9,12 +8,15 @@ class MonologServiceAbstractFactory implements AbstractFactoryInterface
 {
 
     /**
+     *
      * @var array
      */
     protected $config;
 
     /**
-     * {@inheritdoc}
+     *
+     * @ERROR!!!
+     *
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
@@ -23,18 +25,20 @@ class MonologServiceAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     *
+     * @ERROR!!!
+     *
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $config = $this->getConfig($serviceLocator);
-
         $factory = new MonologServiceFactory();
         return $factory->createLogger($serviceLocator, new MonologOptions($config[$requestedName]));
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @param ServiceLocatorInterface $serviceLocator            
      * @return array
      */
     public function getConfig(ServiceLocatorInterface $serviceLocator)
@@ -42,24 +46,23 @@ class MonologServiceAbstractFactory implements AbstractFactoryInterface
         if (null !== $this->config) {
             return $this->config;
         }
-
+        
         $config = $serviceLocator->get('config');
-
-        if (isset($config['Log'])) {
+        
+        if (isset($config['Logs'])) {
             $this->config = $config['Logs'];
         } else {
             $this->config = array();
         }
-
         return $this->config;
     }
 
     /**
-     * @param array $config
+     *
+     * @param array $config            
      */
     public function setConfig($config)
     {
         $this->config = $config;
     }
-
 }

@@ -18,7 +18,7 @@ class MonologServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         /** @var MonologOptions $options */
-        $options = $serviceLocator->get('LogMonologOptions');
+        $options = $serviceLocator->get('LogsMonologOptions');
         return $this->createLogger($serviceLocator, $options);
     }
 
