@@ -8,6 +8,8 @@ class Cache extends AbstractPlugin
 
     private $_cache;
 
+    private $_key;
+
     public function __invoke($key = null)
     {
         $this->_cache = $this->getController()
@@ -15,8 +17,10 @@ class Cache extends AbstractPlugin
             ->get(CACHE_ADAPTER);
         
         if ($key === null) {
-            return $this->_cache;
+            return $this;
         }
+        
+        $this->_key = $key;
         return $this->load($key);
     }
 
@@ -25,9 +29,12 @@ class Cache extends AbstractPlugin
         return $this->_cache->getItem($key);
     }
 
-    public function save($datas, $key)
+    public function save($datas, $key = null)
     {
-        return $this->_cache->setItem($key, $data);
+        if ($key === null)
+            $key = $this->_key;
+        
+        return $this->_cache->setItem($key, $datas);
     }
 
     public function remove()

@@ -93,10 +93,6 @@ class TestController extends AbstractActionController
         
         return $this->response;
     }
-    
-    public function cachePluginAction() {
-
-    }
 
     public function staticEventAction()
     {
@@ -138,6 +134,15 @@ class TestController extends AbstractActionController
         // $builder->output($quality = 80);
         header('Content-type: image/jpeg');
         $this->response->setContent($builder->output(80));
+        return $this->response;
+    }
+    
+    public function cachePluginAction() {
+        if(($datas = $this->cache('123'))===null) {
+            echo $datas = time();
+            $this->cache()->save($datas);
+        }
+        echo $datas;
         return $this->response;
     }
     
