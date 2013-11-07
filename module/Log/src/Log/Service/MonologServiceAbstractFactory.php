@@ -3,7 +3,7 @@
  * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
  */
 
-namespace EnliteMonolog\Service;
+namespace Log\Service;
 
 
 use Zend\ServiceManager\AbstractFactoryInterface;
@@ -49,8 +49,8 @@ class MonologServiceAbstractFactory implements AbstractFactoryInterface
 
         $config = $serviceLocator->get('config');
 
-        if (isset($config['EnliteMonolog'])) {
-            $this->config = $config['EnliteMonolog'];
+        if (isset($config['Log'])) {
+            $this->config = $config['Log'];
         } else {
             $this->config = array();
         }

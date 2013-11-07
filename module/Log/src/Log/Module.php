@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
- */
-
-namespace EnliteMonolog;
-
+namespace Log;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;

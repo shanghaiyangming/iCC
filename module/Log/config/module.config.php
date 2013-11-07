@@ -1,9 +1,9 @@
 <?php
 
 return array(
-    'EnliteMonolog' => array(
+    'Log' => array(
         // Logger name
-        'EnliteMonologService' => array(
+        'LogMonologService' => array(
             // name of
             'name' => 'default',
             // Handlers, it can be service manager alias(string) or config(array)
@@ -21,10 +21,10 @@ return array(
     ),
     'service_manager' => array(
         'abstract_factories' => array(
-            'EnliteMonolog\Service\MonologServiceAbstractFactory'
+            'Log\Service\MonologServiceAbstractFactory'
         ),
         'initializers' => array(
-            'EnliteMonolog\Service\MonologServiceInitializer'
+            'Log\Service\MonologServiceInitializer'
         )
     )
 );

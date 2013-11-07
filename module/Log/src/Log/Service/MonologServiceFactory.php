@@ -1,9 +1,5 @@
 <?php
-/**
- * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
- */
-
-namespace EnliteMonolog\Service;
+namespace Log\Service;
 
 
 use Monolog\Logger;
@@ -22,7 +18,7 @@ class MonologServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         /** @var MonologOptions $options */
-        $options = $serviceLocator->get('EnliteMonologOptions');
+        $options = $serviceLocator->get('LogMonologOptions');
         return $this->createLogger($serviceLocator, $options);
     }
 

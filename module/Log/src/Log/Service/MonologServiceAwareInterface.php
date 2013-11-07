@@ -3,7 +3,7 @@
  * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
  */
 
-namespace EnliteMonolog\Service;
+namespace Log\Service;
 
 
 use Monolog\Logger;

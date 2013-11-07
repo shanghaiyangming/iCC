@@ -3,7 +3,7 @@
  * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
  */
 
-namespace EnliteMonolog\Service;
+namespace Log\Service;
 
 
 use Zend\ServiceManager\InitializerInterface;
@@ -22,7 +22,7 @@ class MonologServiceInitializer implements InitializerInterface
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
         if ($instance instanceof MonologServiceAwareInterface) {
-            $instance->setMonologService($serviceLocator->get('EnliteMonologService'));
+            $instance->setMonologService($serviceLocator->get('LogMonologService'));
         }
     }
 }

@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
- */
-
-namespace EnliteMonolog\Service;
-
+namespace Log\Service;
 
 use Zend\Stdlib\AbstractOptions;
 
@@ -16,7 +11,7 @@ class MonologOptions extends AbstractOptions
      *
      * @var string
      */
-    protected $name = 'EnliteMonolog';
+    protected $name = 'Log';
 
     /**
      * Handlers

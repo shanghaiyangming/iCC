@@ -2687,53 +2687,6 @@
         ]
     },
     {
-        "name": "enlitepro/enlite-monolog",
-        "version": "v1.1.0",
-        "version_normalized": "1.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/enlitepro/enlite-monolog.git",
-            "reference": "2a8b83dc3522c9db77f5786287629ab1747218f6"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/enlitepro/enlite-monolog/zipball/2a8b83dc3522c9db77f5786287629ab1747218f6",
-            "reference": "2a8b83dc3522c9db77f5786287629ab1747218f6",
-            "shasum": ""
-        },
-        "require": {
-            "monolog/monolog": "~1.6.0",
-            "zendframework/zendframework": "~2.2"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~3.7"
-        },
-        "time": "2013-10-22 09:51:15",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "EnliteMonolog": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Evgeny Shpilevsky",
-                "email": "evgeny@shpilevsky.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Monolog integration to Zend Framework 2",
-        "keywords": [
-            "monolog",
-            "zend framework 2"
-        ]
-    },
-    {
         "name": "cboden/ratchet",
         "version": "dev-master",
         "version_normalized": "9999999-dev",

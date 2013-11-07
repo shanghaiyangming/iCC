@@ -40,7 +40,6 @@ return array(
     'Guzzle\\Common' => array($vendorDir . '/guzzle/common'),
     'Gregwar\\Captcha' => array($vendorDir . '/gregwar/captcha'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
-    'EnliteMonolog' => array($vendorDir . '/enlitepro/enlite-monolog/src'),
     'Doctrine\\ODM\\MongoDB' => array($vendorDir . '/doctrine/mongodb-odm/lib'),
     'Doctrine\\MongoDB' => array($vendorDir . '/doctrine/mongodb/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
