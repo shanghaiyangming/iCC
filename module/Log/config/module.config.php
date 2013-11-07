@@ -1,5 +1,4 @@
 <?php
-
 return array(
     'Log' => array(
         // Logger name
@@ -9,9 +8,11 @@ return array(
             // Handlers, it can be service manager alias(string) or config(array)
             'handlers' => array(
                 'default' => array(
-                    'name' => 'Monolog\Handler\StreamHandler',
+                    'name' => 'Monolog\Handler\MongoDBHandler',
                     'args' => array(
-                        'path' => ROOT_PATH.'/data/log/application.log',
+                        'mongo' => new \MongoClient("mongodb://127.0.0.1:27017"),
+                        'database'=>'logs',
+                        'collection'=>'logs'.date("Ymd"),
                         'level' => \Monolog\Logger::DEBUG,
                         'bubble' => true
                     )
