@@ -141,6 +141,9 @@ return array(
     'controller_plugins' => array(
         'invokables' => array(
             'logToMongodb' => 'My\Common\Plugin\Log'
+        ),
+        'aliases' => array(
+            'log' => 'logToMongodb'
         )
     ),
     'view_manager' => array(
