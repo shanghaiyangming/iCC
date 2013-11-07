@@ -16,5 +16,6 @@ use Zend\EventManager\GlobalEventManager;
 class IndexController extends AbstractActionController
 {
 
-
+    public function indexAction()
+    {}
 }

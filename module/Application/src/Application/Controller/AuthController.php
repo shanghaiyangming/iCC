@@ -16,14 +16,32 @@ use Gregwar\Captcha\CaptchaBuilder;
 class AuthController extends AbstractActionController
 {
 
-    private $_model;
-
-    private $_mongos;
+    /**
+     * @name 处理登录请求
+     * @desc 
+     */
+    public function loginAction()
+    {}
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     * @name 处理注销请求
+     * @desc 
      */
+    public function logoutAction()
+    {}
 
+    /**
+     * @name 生成登录页面的图形验证码
+     * @desc 
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function captchaAction()
+    {
+        $builder = new CaptchaBuilder();
+        $builder->build(150, 40);
+        $_SESSION['phrase'] = $builder->getPhrase();
+        header('Content-type: image/jpeg');
+        $this->response->setContent($builder->output(80));
+        return $this->response;
+    }
 }
