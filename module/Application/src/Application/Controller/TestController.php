@@ -10,19 +10,29 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Gregwar\Captcha\CaptchaBuilder;
 
 class TestController extends AbstractActionController
 {
 
     public function indexAction()
     {
+        echo __CLASS__;
+        echo get_class($this);
+        echo str_replace(array(__NAMESPACE__,'\\'), '', __CLASS__);
+        return $this->response;
+    }
+
+    public function testAction()
+    {
         $events = $this->getEventManager();
         echo $this->params()->fromRoute('index');
         echo $this->params()->fromQuery('get');
         echo $this->params()->fromFiles('file');
         echo $this->params()->fromRoute('r');
-        $events->attach('do', function ($e)
+        $events->attach('do', function (EventInterface $e)
         {
+            var_dump($e->getTarget());
             $event = $e->getName();
             $params = $e->getParams();
             printf('Handled event "%s", with parameters %s', $event, json_encode($params));
@@ -31,44 +41,73 @@ class TestController extends AbstractActionController
             'foo' => 'bar',
             'baz' => 'bat'
         );
-        $events->trigger('do', null, $params);
+        $events->trigger('do', array(), $params);
         return new ViewModel();
     }
 
     public function noViewAction()
     {
-        echo $this->params()->fromRoute('r');
         phpinfo();
         return $this->response;
     }
-    
-    public function cacheAction() {
-        var_dump($this->getServiceLocator()->has('coreCache'));
-        //$cache = $this->getServiceLocator()->get('Application\Cache');
-        if(($data = $cache->load('key'))===false) {
-            $data = array(time());
-            $cache->save($data);
+
+    public function cacheAction()
+    {
+        $cache = $this->getServiceLocator()->get(CACHE_ADAPTER);
+        if (($data = $cache->getItem('key')) === NULL) {
+            $data = time();
+            $cache->setItem('key', $data);
+            echo 'no cache' . $data;
+        } else {
+            echo 'cache' . $data;
+            $cache->removeItem('key');
         }
-        
-        var_dump($data);
+        return $this->response;
     }
-    
+
     public function mongoAction()
     {
         $db = $this->getServiceLocator()->get('mongos');
         return $this->response;
     }
+
+    public function triggerAction()
+    {
+        
+        $evt = $this->getEventManager()->getSharedManager();
+        $evt->getEvents();
+        // $view = new ViewModel();
+        // $view->setTerminal(true);
+        $eventManager = GlobalEventManager::getEventCollection();
+        $params = $this->params()->fromQuery();
+        $result = $eventManager->trigger('cache.pre', null, $params);
+        if ($result->stopped()) {
+            $content = 'cache' . $result->last();
+            $this->response->setContent($content);
+        } else {
+            $content = 123;
+            $params['__RESULT__'] = $content;
+            $this->response->setContent($content);
+            $eventManager->trigger('cache.post', null, $params);
+        }
+        
+        return $this->response;
+    }
     
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
-     */
+    public function cachePluginAction() {
+
+    }
+
+    public function staticEventAction()
+    {
+        $eventManager = new \Zend\EventManager\StaticEventManager();
+        $eventManager::getInstance();
+    }
+    
     public function insertMongoAction()
     {
         try {
-            $this->_mongos = $this->getServiceLocator()->get('mongos');
-            $this->_model = new Auth($this->_mongos);
+            $this->_model = $this->m('yangming');
             if ($this->_model instanceof \MongoCollection)
                 echo '$this->_model instanceof \MongoCollection';
             else

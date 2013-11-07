@@ -137,12 +137,13 @@ return array(
     ),
     'controller_plugins' => array(
         'invokables' => array(
-            'logToMongodb' => 'My\Common\Plugin\Log',
-            'ModelMongoCollection'=>'My\Common\Plugin\ModelMongoCollection'
+            'LogToMongodb' => 'My\Common\Plugin\Log',
+            'ModelMongoCollection' => 'My\Common\Plugin\ModelMongoCollection',
+            'Cache' => 'My\Common\Plugin\Cache'
         ),
         'aliases' => array(
-            'log' => 'logToMongodb',
-            'm'=>'ModelMongoCollection'
+            'log' => 'LogToMongodb',
+            'm' => 'ModelMongoCollection'
         )
     ),
     'view_manager' => array(
