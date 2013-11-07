@@ -20,7 +20,7 @@ class AuthController extends AbstractActionController
      * 显示登录页面
      * @author young
      * @name 显示登录页面
-     * @version 2013.11.17 young
+     * @version 2013.11.07 young
      */
     public function indexAction()
     {
@@ -31,7 +31,7 @@ class AuthController extends AbstractActionController
      * 处理登录请求
      * @author young
      * @name 处理登录请求
-     * @version 2013.11.17 young
+     * @version 2013.11.07 young
      */
     public function loginAction()
     {}
@@ -40,7 +40,7 @@ class AuthController extends AbstractActionController
      * 处理注销请求
      * @author young
      * @name 处理注销请求
-     * @version 2013.11.17 young
+     * @version 2013.11.07 young
      */
     public function logoutAction()
     {}
@@ -49,7 +49,7 @@ class AuthController extends AbstractActionController
      * 生成登录页面的图形验证码
      * @author young
      * @name 生成登录页面的图形验证码
-     * @version 2013.11.17 young
+     * @version 2013.11.07 young
      * @return \Zend\Stdlib\ResponseInterface
      */
     public function captchaAction()
@@ -57,6 +57,7 @@ class AuthController extends AbstractActionController
         $builder = new CaptchaBuilder();
         $builder->setBackgroundColor(255, 255, 255);
         $builder->setTextColor(255, 0, 255);
+        //$builder->setTextColor(68, 134, 246);
         $builder->setPhrase(rand(100000,999999));
         $_SESSION['phrase'] = $builder->getPhrase();
         $builder->build(150, 40);

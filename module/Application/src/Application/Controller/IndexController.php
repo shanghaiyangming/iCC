@@ -15,7 +15,12 @@ use Zend\EventManager\GlobalEventManager;
 
 class IndexController extends AbstractActionController
 {
-
+    /**
+     * ICC系统主控制面板
+     * @author young
+     * @name ICC系统主控制面板
+     * @version 2013.11.07 young
+     */
     public function indexAction()
     {}
 }
