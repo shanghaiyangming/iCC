@@ -1,5 +1,5 @@
 <?php
-namespace Log;
+namespace Logs;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;

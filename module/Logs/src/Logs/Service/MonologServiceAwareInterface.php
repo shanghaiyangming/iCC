@@ -1,5 +1,5 @@
 <?php
-namespace Log\Service;
+namespace Logs\Service;
 
 
 use Monolog\Logger;

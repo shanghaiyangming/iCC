@@ -1,5 +1,5 @@
 <?php
-namespace Log\Service;
+namespace Logs\Service;
 
 
 use Zend\ServiceManager\AbstractFactoryInterface;
@@ -46,7 +46,7 @@ class MonologServiceAbstractFactory implements AbstractFactoryInterface
         $config = $serviceLocator->get('config');
 
         if (isset($config['Log'])) {
-            $this->config = $config['Log'];
+            $this->config = $config['Logs'];
         } else {
             $this->config = array();
         }

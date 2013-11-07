@@ -1,8 +1,8 @@
 <?php
 return array(
-    'Log' => array(
+    'Logs' => array(
         // Logger name
-        'LogMonologService' => array(
+        'LogMongodbService' => array(
             // name of
             'name' => 'default',
             // Handlers, it can be service manager alias(string) or config(array)
@@ -22,10 +22,10 @@ return array(
     ),
     'service_manager' => array(
         'abstract_factories' => array(
-            'Log\Service\MonologServiceAbstractFactory'
+            'Logs\Service\MonologServiceAbstractFactory'
         ),
         'initializers' => array(
-            'Log\Service\MonologServiceInitializer'
+            'Logs\Service\MonologServiceInitializer'
         )
     )
 );

@@ -1,5 +1,5 @@
 <?php
-namespace Log\Service;
+namespace Logs\Service;
 
 use Zend\Stdlib\AbstractOptions;
 
@@ -11,7 +11,7 @@ class MonologOptions extends AbstractOptions
      *
      * @var string
      */
-    protected $name = 'Log';
+    protected $name = 'Logs';
 
     /**
      * Handlers

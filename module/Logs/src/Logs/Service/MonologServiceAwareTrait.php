@@ -1,5 +1,5 @@
 <?php
-namespace Log\Service;
+namespace Logs\Service;
 
 
 use Monolog\Logger;
@@ -18,7 +18,7 @@ trait MonologServiceAwareTrait
     /**
      * @var string
      */
-    protected $monologLoggerName = 'LogMonologService';
+    protected $monologLoggerName = 'LogsMongodbService';
 
     /**
      * @param Logger $monologService

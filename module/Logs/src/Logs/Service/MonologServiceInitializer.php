@@ -1,5 +1,5 @@
 <?php
-namespace Log\Service;
+namespace Logs\Service;
 
 
 use Zend\ServiceManager\InitializerInterface;
@@ -18,7 +18,7 @@ class MonologServiceInitializer implements InitializerInterface
     public function initialize($instance, ServiceLocatorInterface $serviceLocator)
     {
         if ($instance instanceof MonologServiceAwareInterface) {
-            $instance->setMonologService($serviceLocator->get('LogMonologService'));
+            $instance->setMonologService($serviceLocator->get('LogsMongodbService'));
         }
     }
 }
