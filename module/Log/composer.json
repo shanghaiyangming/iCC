@@ -1,14 +1,8 @@
 {
-    "name": "enlitepro/enlite-monolog",
+    "name": "LogWithMonolog",
     "description": "Monolog integration to Zend Framework 2",
     "minimum-stability": "stable",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Evgeny Shpilevsky",
-            "email": "evgeny@shpilevsky.com"
-        }
-    ],
     "keywords": [
         "Zend Framework 2",
         "Monolog"
@@ -22,7 +16,7 @@
     },
     "autoload": {
         "psr-0": {
-            "EnliteMonolog": "src"
+            "LogMonolog": "src"
         }
     }
 }

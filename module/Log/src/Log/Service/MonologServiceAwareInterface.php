@@ -1,8 +1,4 @@
 <?php
-/**
- * @author Evgeny Shpilevsky <evgeny@shpilevsky.com>
- */
-
 namespace Log\Service;
 
 
