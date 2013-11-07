@@ -15,6 +15,10 @@ class CacheListenerAggregate implements ListenerAggregateInterface
     private $_key = null;
 
     private $_cache_result = '';
+    
+    const PRE = 'cache.pre';
+    
+    const POST = 'cache.post';
 
     protected $listeners = array();
 
@@ -25,11 +29,11 @@ class CacheListenerAggregate implements ListenerAggregateInterface
 
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach('cache.pre', array(
+        $this->listeners[] = $events->attach(static::PRE, array(
             $this,
             'load'
         ), 100);
-        $this->listeners[] = $events->attach('cache.post', array(
+        $this->listeners[] = $events->attach(static::POST, array(
             $this,
             'save'
         ), - 100);
