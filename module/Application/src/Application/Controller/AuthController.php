@@ -12,7 +12,6 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Gregwar\Captcha\CaptchaBuilder;
-use Application\Model\Auth;
 
 class AuthController extends AbstractActionController
 {
@@ -29,8 +28,7 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
         try {
-            $this->_mongos = $this->getServiceLocator()->get('mongos');
-            $this->_model = new Auth($this->_mongos);
+            $this->_model = $this->m('yangming');
             if ($this->_model instanceof \MongoCollection)
                 echo '$this->_model instanceof \MongoCollection';
             else

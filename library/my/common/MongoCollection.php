@@ -9,7 +9,7 @@ namespace My\Common;
 use Zend\Config\Config;
 use Doctrine\Tests\Common\Annotations\True;
 
-class Mongo extends \MongoCollection
+class MongoCollection extends \MongoCollection
 {
 
     private $_collection = '';
@@ -63,6 +63,7 @@ class Mongo extends \MongoCollection
             throw new \Exception('$collection is null');
         }
         
+        $this->_collection = $collection;
         $this->_database = $database;
         $this->_cluster = $cluster;
         $this->_collectionOptions = $collectionOptions;

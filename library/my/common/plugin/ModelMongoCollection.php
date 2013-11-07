@@ -2,14 +2,14 @@
 namespace My\Common\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use My\Common\Mongo;
+use My\Common\MongoCollection;
 
-class M extends AbstractPlugin
+class ModelMongoCollection extends AbstractPlugin
 {
 
     public function __invoke($collection = null, $database = 'ICCv1', $cluster = 'default')
     {
-        if ($message === null)
+        if ($collection === null)
             return $this;
         return $this->collection($collection, $database, $cluster);
     }
@@ -20,6 +20,6 @@ class M extends AbstractPlugin
             ->getServiceLocator()
             ->get('mongos');
         
-        return new Mongo($mongoConfig, $collection, $database, $cluster);
+        return new MongoCollection($mongoConfig, $collection, $database, $cluster);
     }
 }

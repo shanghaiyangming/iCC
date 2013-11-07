@@ -138,11 +138,11 @@ return array(
     'controller_plugins' => array(
         'invokables' => array(
             'logToMongodb' => 'My\Common\Plugin\Log',
-            'M'=>'My\Common\Plugin\M'
+            'ModelMongoCollection'=>'My\Common\Plugin\ModelMongoCollection'
         ),
         'aliases' => array(
             'log' => 'logToMongodb',
-            'm' => 'M'
+            'm'=>'ModelMongoCollection'
         )
     ),
     'view_manager' => array(
