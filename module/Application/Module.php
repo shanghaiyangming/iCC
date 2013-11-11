@@ -46,8 +46,6 @@ class Module
         $app = $e->getApplication();
         $eventManager = $app->getEventManager();
         $locator = $app->getServiceManager();
-        $mongosConfig = $locator->get('mongos');
-        
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
@@ -64,12 +62,10 @@ class Module
         ));
         
         // 绑定缓存事件
-        $cache = $locator->get(CACHE_ADAPTER);
-        $cacheListenerAggregate = new CacheListenerAggregate($cache);
-        $cacheListenerAggregate->attach($eventManager);
-        
-        GlobalEventManager::setEventCollection($eventManager);
-        
+        // $cache = $locator->get(CACHE_ADAPTER);
+        // $cacheListenerAggregate = new CacheListenerAggregate($cache);
+        // $cacheListenerAggregate->attach($eventManager);
+        // GlobalEventManager::setEventCollection($eventManager);
         // 也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
     }
 
