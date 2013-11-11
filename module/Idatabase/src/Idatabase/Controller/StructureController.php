@@ -13,7 +13,7 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 
-class StructureController extends ActionController
+class StructureController extends BaseActionController
 {
     /**
      * IDatabase仪表盘显示界面

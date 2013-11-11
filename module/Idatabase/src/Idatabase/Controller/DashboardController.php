@@ -13,7 +13,7 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 
-class DashboardController extends ActionController
+class DashboardController extends BaseActionController
 {
     /**
      * IDatabase仪表盘显示界面

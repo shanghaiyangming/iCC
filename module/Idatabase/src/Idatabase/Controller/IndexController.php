@@ -15,7 +15,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 use My\Common\ActionController;
 
-class IndexController extends ActionController
+class IndexController extends BaseActionController
 {
     private $_model;
     

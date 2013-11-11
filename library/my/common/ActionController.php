@@ -3,11 +3,8 @@ namespace My\Common;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
-use Zend\View\View;
 
 abstract class ActionController extends AbstractActionController
 {
@@ -17,11 +14,13 @@ abstract class ActionController extends AbstractActionController
         // 增加权限控制方法在这里
         
         // 添加初始化事件函数
-        $em = $this->getEventManager();
-        $em->attach(MvcEvent::EVENT_DISPATCH, function ()
+        $eventManager = $this->getEventManager();
+        $serviceLocator = $this->getServiceLocator();
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function () use($serviceLocator)
         {
-            if (method_exists($this, 'init'))
+            if (method_exists($this, 'init')) {
                 $this->init();
+            }
         }, 200);
     }
 
@@ -72,12 +71,15 @@ abstract class ActionController extends AbstractActionController
      * @param array $datas            
      * @return array
      */
-    public function rst($datas)
+    public function rst($datas, $jsonModel = true)
     {
-        return array(
+        $rst = array(
             'result' => $datas,
             'total' => count($datas)
         );
+        if ($jsonModel)
+            return new JsonModel($rst);
+        return $rst;
     }
 
     /**
@@ -87,11 +89,15 @@ abstract class ActionController extends AbstractActionController
      * @param string $message            
      * @return array
      */
-    public function msg($status, $message)
+    public function msg($status, $message, $jsonModel = true)
     {
-        return array(
+        $rst = array(
             'success' => is_bool($status) ? $status : false,
             'msg' => $message
         );
+        
+        if ($jsonModel)
+            return new JsonModel($rst);
+        return $rst;
     }
 }

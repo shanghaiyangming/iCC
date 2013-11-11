@@ -1,6 +1,6 @@
 <?php
 /**
- * iDatabase项目管理
+ * iDatabase项目用户所属组别管理
  *
  * @author young 
  * @version 2013.11.11
@@ -13,8 +13,13 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 
-class ProjectController extends BaseActionController
+class OwnerController extends BaseActionController
 {
+    private $_project_id = null;
+    
+    public function init() {
+        
+    }
 
     /**
      * 读取全部项目列表
@@ -25,8 +30,8 @@ class ProjectController extends BaseActionController
      */
     public function indexAction()
     {
-        $query = array();
-        return $this->findAll(IDATABASE_PROJECTS,$query);
+        
+        return $this->findAll(IDATABASE_PROJECTS);
     }
 
     public function insertAction()
