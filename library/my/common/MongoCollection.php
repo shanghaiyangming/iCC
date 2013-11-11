@@ -244,7 +244,7 @@ class MongoCollection extends \MongoCollection
         // 做法1：抛出异常禁止Drop操作
         // throw new \Exception('ICC deny execute "drop()" collection operation');
         // 做法2：复制整个集合的数据到新的集合中，用于备份，备份数据不做片键，不做索引以便节约空间，仅出于安全考虑，原有_id使用保留字__OLD_ID__进行保留
-        $targetCollection = $this->_collection . '_bak_' . date('YmdHis');
+        $targetCollection = 'bak_' . date('YmdHis') . '_' . $this->_collection;
         $target = new \MongoCollection($this->db, $targetCollection);
         // 变更为重命名某个集合或者复制某个集合的操作作为替代。
         $cursor = $this->find(array());

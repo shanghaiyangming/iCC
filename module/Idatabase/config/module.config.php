@@ -9,22 +9,12 @@
 return array(
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route' => '/',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action' => 'index'
-                    )
-                )
-            ),
-            'application' => array(
+            'idatabase' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/application',
+                    'route' => '/idatabase',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
+                        '__NAMESPACE__' => 'Idatabase\Controller',
                         'controller' => 'Index',
                         'action' => 'index'
                     )
@@ -144,7 +134,7 @@ return array(
         'exception_template' => 'error/index',
         'template_map' => array(
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            'idatabase/index/index' => __DIR__ . '/../view/idatabase/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml'
         ),
