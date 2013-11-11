@@ -15,7 +15,7 @@ return array(
                     'route' => '/idatabase',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Idatabase\Controller',
-                        'controller' => 'Index',
+                        'controller' => 'Project',
                         'action' => 'index'
                     )
                 ),

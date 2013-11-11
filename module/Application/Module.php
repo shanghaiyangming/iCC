@@ -38,32 +38,8 @@ class Module
         );
     }
 
-    public function getControllerConfig()
-    {
-        return array(
-            'abstract_factories' => array(
-                'My\Common\ControllerAbstractFactory'
-            )
-        );
-    }
-
-    public function getServiceConfig()
-    {
-        return array(
-            'invokables' => array(
-                'Admin\AuthenticationService' => 'Zend\Authentication\AuthenticationService'
-            )
-        );
-    }
-
     public function getConsoleUsage(AdapterInterface $console)
-    {
-        return array(
-            'Run react application',
-            'react start --all' => 'run all exists servers',
-            'react start [server]' => 'if no server name specified, "default" will be used'
-        );
-    }
+    {}
 
     public function onBootstrap(MvcEvent $e)
     {

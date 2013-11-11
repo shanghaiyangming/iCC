@@ -38,7 +38,7 @@ return array(
         // Whether or not to enable a module class map cache.
         // If enabled, creates a module class map cache which will be used
         // by in future requests, to reduce the autoloading process.
-        'module_map_cache_enabled' => false,
+        'module_map_cache_enabled' => true,
         
         // The key used to create the class map cache file name.
         'module_map_cache_key' => md5('module.map.cache.key'),

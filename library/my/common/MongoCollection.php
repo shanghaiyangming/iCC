@@ -123,6 +123,32 @@ class MongoCollection extends \MongoCollection
         return false;
     }
 
+    public function search($text)
+    {
+        $search = new MongoRegex('/' . preg_replace("/\s/", '.*', $text) . '/i');
+    }
+
+    /**
+     * 获取符合条件的全部数据
+     *
+     * @param array $query            
+     * @param int $skip            
+     * @param int $limit            
+     * @param array $sort            
+     * @return array
+     */
+    public function findAll($query, $skip = 0, $limit = 20, $sort = array('_id'=>-1))
+    {
+        $cursor = $this->find($query);
+        if (! $cursor instanceof \MongoCursor)
+            throw new \Exception('$query error:' . json_encode($query));
+        
+        $cursor->sort($sort)
+            ->skip($skip)
+            ->limit($limit);
+        return convertToPureArray(iterator_to_array($cursor));
+    }
+
     /**
      * 插入特定的数据
      *

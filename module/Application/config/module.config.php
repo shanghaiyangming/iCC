@@ -59,7 +59,8 @@ return array(
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'My\Common\MongoAbstractFactory'
+            'My\Common\MongoAbstractFactory',
+            'My\Common\MongoModelAbstractFactory'
         )
     ),
     'translator' => array(),
@@ -124,7 +125,9 @@ return array(
         )
     ),
     'controllers' => array(
-        'invokables' => array()
+        'abstract_factories' => array(
+            'My\Common\ControllerAbstractFactory'
+        )
     ),
     'controller_plugins' => array(
         'invokables' => array(
