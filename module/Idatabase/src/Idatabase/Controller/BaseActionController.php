@@ -1,6 +1,6 @@
 <?php
 /**
- * iDatabase基础公共类库
+ * iDatabase基础类库
  *
  * @author young 
  * @version 2013.11.11
@@ -10,6 +10,7 @@ namespace Idatabase\Controller;
 
 use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\Mvc\MvcEvent;
@@ -17,16 +18,19 @@ use Zend\Mvc\MvcEvent;
 abstract class BaseActionController extends ActionController
 {
 
-    private $project_id;
+    protected $project_id;
 
-    private $collection_id;
+    protected $collection_id;
+
+    protected $user_id;
 
     public function __construct()
     {
         // 增加iDatabase模块的公共方法
         $eventManager = $this->getEventManager();
         $serviceLocator = $this->getServiceLocator();
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function () use($serviceLocator)
+        
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function ($event) use($serviceLocator)
         {
             $this->project_id = $this->params()
                 ->fromQuery('project_id', false) ? $this->params()
@@ -37,6 +41,12 @@ abstract class BaseActionController extends ActionController
                 ->fromQuery('collection_id', false) ? $this->params()
                 ->fromPost('collection_id', null) : $this->params()
                 ->fromQuery('collection_id', null);
+            
+            //身份验证不通过的情况下，执行以下操作
+            if (false) {
+                $event->stopPropagation(true);
+                $event->setViewModel($this->msg(false, 'exit'));
+            }
         });
         
         parent::__construct();

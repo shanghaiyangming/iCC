@@ -67,15 +67,18 @@ abstract class ActionController extends AbstractActionController
 
     /**
      * 返回结果集
-     *
+     * 
      * @param array $datas            
-     * @return array
+     * @param number $total            
+     * @param string $jsonModel            
+     * @return \Zend\View\Model\JsonModel multitype:unknown
      */
-    public function rst($datas, $jsonModel = true)
+    public function rst($datas, $total = 0, $jsonModel = false)
     {
+        $total = intval($total);
         $rst = array(
             'result' => $datas,
-            'total' => count($datas)
+            'total' => $total ? $total : count($datas)
         );
         if ($jsonModel)
             return new JsonModel($rst);
@@ -84,10 +87,11 @@ abstract class ActionController extends AbstractActionController
 
     /**
      * 返回信息
-     *
+     * 
      * @param bool $status            
      * @param string $message            
-     * @return array
+     * @param string $jsonModel            
+     * @return \Zend\View\Model\JsonModel multitype:unknown <boolean, unknown>
      */
     public function msg($status, $message, $jsonModel = true)
     {
