@@ -12,11 +12,8 @@ echo $this->headLink(array(
     'type' => 'image/vnd.microsoft.icon',
     'href' => $this->basePath() . '/img/favicon.ico'
 ))
-    ->prependStylesheet($this->basePath() . '/app/bootstrap.css');
-echo $this->headScript()
-    ->prependFile($this->basePath() . '/app/ext/ext-dev.js')
-    ->prependFile($this->basePath() . '/app/bootstrap.js')
-    ->prependFile($this->basePath() . '/app/app.js');
+    ->appendStylesheet($this->basePath() . '/app/build/production/icc/resources/icc-all.css');
+echo $this->headScript()->appendFile($this->basePath() . '/app/build/production/icc/app.js');
 ?>
 </head>
 <body>
