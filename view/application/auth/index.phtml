@@ -13,7 +13,7 @@
 		<div id="left_side">
 			<div id="login_component">
 				<div id="logo_wrapper">
-					<a href="#"><img id="logo" class="logo_salesforce" src="login_source/logo180.png" alt="Salesforce" border="0"></a>
+					<a href="#"><img id="logo" class="logo_salesforce" src="<?php echo $this->basepath()?>/images/logo.png" alt="iCatholic Cloud" border="0"></a>
 				</div>
 				<div id="loginwidget">
 					<form name="login" method="post" action="<?php echo $this->basepath()?>/application/auth/login" target="_top" autocomplete="off" novalidate="novalidate">
@@ -29,7 +29,7 @@
 						<div id="clrPw" class="clrField">&nbsp;</div>
 						<div id="pswd">
 							<div>
-								<label for="password" class="zen-assistiveText">密码</label><input type="password" placeholder="密码" class="input" id="password" name="pw" onkeypress="checkCaps(event)" autocomplete="off" >
+								<label for="password" class="zen-assistiveText">密码</label><input type="password" placeholder="密码" class="input" id="password" name="pw" autocomplete="off" >
 							</div>
 						</div>
 					</div>
