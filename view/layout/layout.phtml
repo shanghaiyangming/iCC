@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <?php
-echo $this->headTitle($this->translate('ICC品牌云'))
+echo $this->headTitle($this->translate('ICC品牌云 -- iCatholic Brand Cloud Platform'))
     ->setSeparator(' - ')
     ->setAutoEscape(false);
 echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
@@ -12,15 +12,10 @@ echo $this->headLink(array(
     'type' => 'image/vnd.microsoft.icon',
     'href' => $this->basePath() . '/img/favicon.ico'
 ))
-    ->appendStylesheet($this->basePath() . '/app/build/production/icc/resources/icc-all.css');
-echo $this->headScript()->appendFile($this->basePath() . '/app/build/production/icc/app.js');
+    ->appendStylesheet($this->basePath() . '/js/build/production/icc/resources/icc-all.css');
+echo $this->headScript()->appendFile($this->basePath() . '/js/build/production/icc/app.js');
 ?>
 </head>
 <body>
-	<div class="header"></div>
-	<div class="container"><?php echo $this->content; ?></div>
-	<footer>
-		<p>&copy; 2011 - <?php echo date('Y') ?> by iCatholic Cloud BP Ltd. <?php echo $this->translate('All rights reserved.') ?></p>
-	</footer>
 </body>
 </html>

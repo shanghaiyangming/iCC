@@ -24,7 +24,9 @@ class AuthController extends AbstractActionController
      */
     public function indexAction()
     {
-        return $this->response;
+        $view = new ViewModel();
+        $view->setTerminal(true);
+        return $view;
     }
 
     /**
