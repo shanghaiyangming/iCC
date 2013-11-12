@@ -16,20 +16,20 @@
 					<a href="#"><img id="logo" class="logo_salesforce" src="login_source/logo180.png" alt="Salesforce" border="0"></a>
 				</div>
 				<div id="loginwidget">
-					<form name="login" method="post" onsubmit="handleLogin();" action="" target="_top" autocomplete="off" novalidate="novalidate">
+					<form name="login" method="post" action="<?php echo $this->basepath()?>/application/auth/login" target="_top" autocomplete="off" novalidate="novalidate">
 					<div class="loginbox_container" onclick="document.login.username.focus();">
-						<div onclick="document.getElementById(&#39;username&#39;).value = &#39;&#39;;this.style.display=&#39;none&#39;;document.login.un.focus();" id="clrUsr" class="clrField">&nbsp;</div>
+						<div id="clrUsr" class="clrField">&nbsp;</div>
 						<div id="usrn">
 							<div>
-								<label for="username" class="zen-assistiveText">用户名</label><input type="email" placeholder="用户名" value="" class="input" name="username" id="username" onkeyup="if(this.value != &#39;&#39;){document.getElementById(&#39;clrUsr&#39;).style.display=&#39;block&#39;;}else{document.getElementById(&#39;clrUsr&#39;).style.display=&#39;none&#39;;}">
+								<label for="username" class="zen-assistiveText">用户名</label><input type="text" placeholder="用户名" value="" class="input" name="username" id="username" >
 							</div>
 						</div>
 					</div>
 					<div class="loginbox_container" onclick="document.login.password.focus();">
-						<div onclick="document.getElementById(&#39;password&#39;).value = &#39;&#39;;this.style.display=&#39;none&#39;;document.login.pw.focus();" id="clrPw" class="clrField">&nbsp;</div>
+						<div id="clrPw" class="clrField">&nbsp;</div>
 						<div id="pswd">
 							<div>
-								<label for="password" class="zen-assistiveText">密码</label><input type="password" placeholder="密码" class="input" id="password" name="pw" onkeypress="checkCaps(event)" autocomplete="off" onkeyup="if(this.value != &#39;&#39;){document.getElementById(&#39;clrPw&#39;).style.display=&#39;block&#39;;}else{document.getElementById(&#39;clrPw&#39;).style.display=&#39;none&#39;;} ">
+								<label for="password" class="zen-assistiveText">密码</label><input type="password" placeholder="密码" class="input" id="password" name="pw" onkeypress="checkCaps(event)" autocomplete="off" >
 							</div>
 						</div>
 					</div>
