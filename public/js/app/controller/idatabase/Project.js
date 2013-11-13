@@ -9,8 +9,22 @@ Ext.define('icc.controller.idatabase.Project', {
     	edit : '/idatabase/project/edit',
     	remove : '/idatabase/project/remove',
     	save : '/idatabase/project/save'
-    }
+    },
     init : function() {
-    	
-    }
+
+    },
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'top',
+        items: [
+            { xtype: 'button', text: 'Button 1' }
+        ]
+    },
+    {
+        xtype: 'toolbar',
+        dock: 'top',
+        items: [
+            { xtype: 'button', text: 'Button 1' }
+        ]
+    }]
 });

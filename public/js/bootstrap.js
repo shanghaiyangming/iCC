@@ -9,7 +9,9 @@ Ext.Loader.addClassPathMappings({
   "Ext.Msg": "ext/src/window/MessageBox.js",
   "Ext.rtl.EventObjectImpl": "ext/src/rtl/EventObject.js",
   "ExtThemeNeptune": "ext/packages/ext-theme-neptune/overrides",
-  "icc": "app"
+  "icc": "app",
+  "icc.controller.common.GridController": "app/controller/common/Controller.js",
+  "icc.controller.idatabase.Collection": "app/view/idatabase/Collection.js"
 });
 Ext.ClassManager.addNameAlternateMappings({
   "Ext.AbstractComponent": [],
@@ -845,9 +847,22 @@ Ext.ClassManager.addNameAlternateMappings({
   "ExtThemeNeptune.toolbar.Paging": [],
   "ExtThemeNeptune.toolbar.Toolbar": [],
   "icc.Application": [],
+  "icc.common.Form": [],
+  "icc.common.Paging": [],
+  "icc.common.Window": [],
   "icc.controller.Main": [],
+  "icc.controller.common.GridController": [],
+  "icc.controller.idatabase.Collection": [],
+  "icc.controller.idatabase.Project": [],
+  "icc.model.Project": [],
+  "icc.model.common.Model": [],
+  "icc.store.Project": [],
+  "icc.store.common.Store": [],
   "icc.view.Main": [],
-  "icc.view.Viewport": []
+  "icc.view.Viewport": [],
+  "icc.view.idatabase.Project": [],
+  "icc.view.idatabase.Project.Add": [],
+  "icc.view.idatabase.Project.Edit": []
 });
 Ext.ClassManager.addNameAliasMappings({
   "Ext.AbstractComponent": [],
@@ -1851,11 +1866,34 @@ Ext.ClassManager.addNameAliasMappings({
   "ExtThemeNeptune.toolbar.Paging": [],
   "ExtThemeNeptune.toolbar.Toolbar": [],
   "icc.Application": [],
+  "icc.common.Form": [
+    "widget.form"
+  ],
+  "icc.common.Paging": [
+    "widget.paging"
+  ],
+  "icc.common.Window": [],
   "icc.controller.Main": [],
+  "icc.controller.common.GridController": [],
+  "icc.controller.idatabase.Collection": [],
+  "icc.controller.idatabase.Project": [],
+  "icc.model.Project": [],
+  "icc.model.common.Model": [],
+  "icc.store.Project": [],
+  "icc.store.common.Store": [],
   "icc.view.Main": [
     "widget.app-main"
   ],
-  "icc.view.Viewport": []
+  "icc.view.Viewport": [],
+  "icc.view.idatabase.Project": [
+    "widget.idatabaseProject"
+  ],
+  "icc.view.idatabase.Project.Add": [
+    "widget.idatabaseProjectAdd"
+  ],
+  "icc.view.idatabase.Project.Edit": [
+    "widget.idatabaseProjectEdit"
+  ]
 });
 Ext.setVersion("ext-theme-base", "4.2.1");
 Ext.setVersion("ext-theme-neptune", "4.2.1");
