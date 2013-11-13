@@ -2,28 +2,12 @@
 
 namespace React\Promise;
 
+/**
+ * @group Promise
+ * @group LazyPromise
+ */
 class LazyPromiseTest extends TestCase
 {
-    use PromiseTest\FullTestTrait;
-
-    public function getPromiseTestAdapter()
-    {
-        $d = new Deferred();
-
-        $factory = function () use ($d) {
-            return $d->promise();
-        };
-
-        return [
-            'promise'  => function () use ($factory) {
-                return new LazyPromise($factory);
-            },
-            'resolve'  => [$d, 'resolve'],
-            'reject'   => [$d, 'reject'],
-            'progress' => [$d, 'progress'],
-        ];
-    }
-
     /** @test */
     public function shouldNotCallFactoryIfThenIsNotInvoked()
     {
@@ -56,15 +40,15 @@ class LazyPromiseTest extends TestCase
             ->method('__invoke')
             ->will($this->returnValue(new FulfilledPromise(1)));
 
-        $onFulfilled = $this->createCallableMock();
-        $onFulfilled
+        $fulfilledHandler = $this->createCallableMock();
+        $fulfilledHandler
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo(1));
 
         $p = new LazyPromise($factory);
 
-        $p->then($onFulfilled);
+        $p->then($fulfilledHandler);
     }
 
     /** @test */
@@ -79,26 +63,26 @@ class LazyPromiseTest extends TestCase
         $p = new LazyPromise($factory);
         $this->assertInstanceOf('React\\Promise\\PromiseInterface', $p->then());
     }
-
+    
     /** @test */
     public function shouldReturnRejectedPromiseIfFactoryThrowsException()
     {
         $exception = new \Exception();
-
+        
         $factory = $this->createCallableMock();
         $factory
             ->expects($this->once())
             ->method('__invoke')
             ->will($this->throwException($exception));
 
-        $onRejected = $this->createCallableMock();
-        $onRejected
+        $errorHandler = $this->createCallableMock();
+        $errorHandler
             ->expects($this->once())
             ->method('__invoke')
             ->with($this->identicalTo($exception));
 
         $p = new LazyPromise($factory);
 
-        $p->then($this->expectCallableNever(), $onRejected);
+        $p->then($this->expectCallableNever(), $errorHandler);
     }
 }

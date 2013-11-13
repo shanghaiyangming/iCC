@@ -1139,53 +1139,6 @@
         ]
     },
     {
-        "name": "react/stream",
-        "version": "v0.3.3",
-        "version_normalized": "0.3.3.0",
-        "target-dir": "React/Stream",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/stream.git",
-            "reference": "b72900ab00513b591fb101faecad38f9c8eab8da"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/stream/zipball/b72900ab00513b591fb101faecad38f9c8eab8da",
-            "reference": "b72900ab00513b591fb101faecad38f9c8eab8da",
-            "shasum": ""
-        },
-        "require": {
-            "evenement/evenement": "1.0.*",
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "react/event-loop": "0.3.*",
-            "react/promise": "~1.0"
-        },
-        "time": "2013-07-09 00:44:12",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Stream": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Basic readable and writable stream interfaces that support piping.",
-        "keywords": [
-            "pipe",
-            "stream"
-        ]
-    },
-    {
         "name": "guzzle/parser",
         "version": "v3.7.4",
         "version_normalized": "3.7.4.0",
@@ -1229,95 +1182,6 @@
             "http",
             "message",
             "url"
-        ]
-    },
-    {
-        "name": "react/event-loop",
-        "version": "v0.3.3",
-        "version_normalized": "0.3.3.0",
-        "target-dir": "React/EventLoop",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/event-loop.git",
-            "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/event-loop/zipball/49208fa3a15c9eae4adf8351ee9caa4064fe550d",
-            "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "ext-libev": "*",
-            "ext-libevent": ">=0.0.5"
-        },
-        "time": "2013-07-08 22:38:22",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\EventLoop": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Event loop abstraction layer that libraries can use for evented I/O.",
-        "keywords": [
-            "event-loop"
-        ]
-    },
-    {
-        "name": "react/socket",
-        "version": "v0.3.2",
-        "version_normalized": "0.3.2.0",
-        "target-dir": "React/Socket",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/socket.git",
-            "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/socket/zipball/9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
-            "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
-            "shasum": ""
-        },
-        "require": {
-            "evenement/evenement": "1.0.*",
-            "php": ">=5.3.3",
-            "react/event-loop": "0.3.*",
-            "react/stream": "0.3.*"
-        },
-        "time": "2013-04-26 20:23:10",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Socket": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Library for building an evented socket server.",
-        "keywords": [
-            "Socket"
         ]
     },
     {
@@ -1481,54 +1345,6 @@
         ]
     },
     {
-        "name": "react/promise",
-        "version": "2.0.x-dev",
-        "version_normalized": "2.0.9999999.9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/promise.git",
-            "reference": "4807d4373a99bd4ca2055495291b41e0de267342"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/promise/zipball/4807d4373a99bd4ca2055495291b41e0de267342",
-            "reference": "4807d4373a99bd4ca2055495291b41e0de267342",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "time": "2013-10-24 17:45:41",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "React\\Promise": "src/"
-            },
-            "files": [
-                "src/React/Promise/functions.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jan Sorgalla",
-                "email": "jsorgalla@googlemail.com",
-                "homepage": "http://sorgalla.com",
-                "role": "maintainer"
-            }
-        ],
-        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
-    },
-    {
         "name": "zendframework/zendframework",
         "version": "2.2.5",
         "version_normalized": "2.2.5.0",
@@ -1643,60 +1459,6 @@
         "keywords": [
             "framework",
             "zf2"
-        ]
-    },
-    {
-        "name": "mobiledetect/mobiledetectlib",
-        "version": "2.7.2",
-        "version_normalized": "2.7.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/serbanghita/Mobile-Detect.git",
-            "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/1d709b8f24c1ab8d991e7bb8730cafb0de020641",
-            "reference": "1d709b8f24c1ab8d991e7bb8730cafb0de020641",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "time": "2013-11-01 19:39:17",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "classmap": [
-                "Mobile_Detect.php"
-            ],
-            "psr-0": {
-                "Detection": "namespaced/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Serban Ghita",
-                "email": "serbanghita@gmail.com",
-                "homepage": "http://mobiledetect.net",
-                "role": "Developer"
-            }
-        ],
-        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
-        "homepage": "https://github.com/serbanghita/Mobile-Detect",
-        "keywords": [
-            "detect mobile devices",
-            "mobile",
-            "mobile detect",
-            "mobile detector",
-            "php mobile detect"
         ]
     },
     {
@@ -1878,18 +1640,117 @@
         ]
     },
     {
-        "name": "lusitanian/oauth",
-        "version": "v0.2.3",
-        "version_normalized": "0.2.3.0",
+        "name": "mobiledetect/mobiledetectlib",
+        "version": "2.7.3",
+        "version_normalized": "2.7.3.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/Lusitanian/PHPoAuthLib.git",
-            "reference": "75074f198e8c7697ff72c1d2a7d8fc8a5ef80fec"
+            "url": "https://github.com/serbanghita/Mobile-Detect.git",
+            "reference": "80ca6d4fb09dc039022cfd666099d6a29601d385"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/75074f198e8c7697ff72c1d2a7d8fc8a5ef80fec",
-            "reference": "75074f198e8c7697ff72c1d2a7d8fc8a5ef80fec",
+            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/80ca6d4fb09dc039022cfd666099d6a29601d385",
+            "reference": "80ca6d4fb09dc039022cfd666099d6a29601d385",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2013-11-09 12:58:33",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "Mobile_Detect.php"
+            ],
+            "psr-0": {
+                "Detection": "namespaced/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Serban Ghita",
+                "email": "serbanghita@gmail.com",
+                "homepage": "http://mobiledetect.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
+        "homepage": "https://github.com/serbanghita/Mobile-Detect",
+        "keywords": [
+            "detect mobile devices",
+            "mobile",
+            "mobile detect",
+            "mobile detector",
+            "php mobile detect"
+        ]
+    },
+    {
+        "name": "react/promise",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/promise.git",
+            "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/promise/zipball/d6de8cae1dbb4878d909c41cb89aff764504472c",
+            "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "time": "2013-04-03 14:05:55",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "React\\Promise": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jan Sorgalla",
+                "email": "jsorgalla@googlemail.com",
+                "homepage": "http://sorgalla.com",
+                "role": "maintainer"
+            }
+        ],
+        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
+    },
+    {
+        "name": "lusitanian/oauth",
+        "version": "v0.2.4",
+        "version_normalized": "0.2.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Lusitanian/PHPoAuthLib.git",
+            "reference": "b83cf1079f40c52de1fe62c8fd49741ca7c7aa1f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/b83cf1079f40c52de1fe62c8fd49741ca7c7aa1f",
+            "reference": "b83cf1079f40c52de1fe62c8fd49741ca7c7aa1f",
             "shasum": ""
         },
         "require": {
@@ -1904,7 +1765,7 @@
             "predis/predis": "Allows using the Redis storage backend.",
             "symfony/http-foundation": "Allows using the Symfony Session storage backend."
         },
-        "time": "2013-09-23 17:22:53",
+        "time": "2013-11-09 14:55:37",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1940,6 +1801,155 @@
             "authorization",
             "oauth",
             "security"
+        ]
+    },
+    {
+        "name": "react/react",
+        "version": "v0.3.3",
+        "version_normalized": "0.3.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/react.git",
+            "reference": "210c11a6041cfa2ce1701a4870b69475d9081265"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/react/zipball/210c11a6041cfa2ce1701a4870b69475d9081265",
+            "reference": "210c11a6041cfa2ce1701a4870b69475d9081265",
+            "shasum": ""
+        },
+        "require": {
+            "evenement/evenement": "1.0.*",
+            "guzzle/parser": "~3.0",
+            "php": ">=5.3.3",
+            "react/promise": "~1.0"
+        },
+        "replace": {
+            "react/cache": "self.version",
+            "react/dns": "self.version",
+            "react/event-loop": "self.version",
+            "react/http": "self.version",
+            "react/http-client": "self.version",
+            "react/socket": "self.version",
+            "react/socket-client": "self.version",
+            "react/stream": "self.version"
+        },
+        "suggest": {
+            "ext-libev": "*",
+            "ext-libevent": "*"
+        },
+        "time": "2013-07-09 01:55:25",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "React": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Nuclear Reactor written in PHP.",
+        "keywords": [
+            "event-loop",
+            "reactor"
+        ]
+    },
+    {
+        "name": "ftdebugger/react-zf2",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ftdebugger/react-zf2.git",
+            "reference": "8e93a71a0dde0cfa0eb68467d50d9af9f60fe352"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ftdebugger/react-zf2/zipball/8e93a71a0dde0cfa0eb68467d50d9af9f60fe352",
+            "reference": "8e93a71a0dde0cfa0eb68467d50d9af9f60fe352",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4",
+            "react/react": "0.3.*",
+            "zendframework/zendframework": ">=2.1.5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2013-05-17 12:06:21",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "ReactZF": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Evgeny Shpilevsky",
+                "email": "evgeny@shpilevsky.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Module for integration Zend Framework 2 and React PHP",
+        "keywords": [
+            "react",
+            "zend"
+        ]
+    },
+    {
+        "name": "react/async",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/async.git",
+            "reference": "568a29207cfc00b3270c9d0158b0ec0a65a2194f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/async/zipball/568a29207cfc00b3270c9d0158b0ec0a65a2194f",
+            "reference": "568a29207cfc00b3270c9d0158b0ec0a65a2194f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "require-dev": {
+            "react/event-loop": "0.2.*"
+        },
+        "time": "2013-02-06 23:27:19",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "React\\Async": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Async utilities for React.",
+        "keywords": [
+            "async"
         ]
     }
 ]

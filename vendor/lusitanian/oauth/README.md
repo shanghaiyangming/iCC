@@ -48,6 +48,7 @@ Included service implementations
     - Tumblr
     - FitBit
     - Etsy
+    - Flickr
 - OAuth2
     - Google
     - Microsoft
@@ -64,6 +65,8 @@ Included service implementations
     - Amazon
     - PayPal
     - Dropbox
+    - Dailymotion
+    - Heroku
 - more to come!
 
 Examples

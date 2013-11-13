@@ -1,22 +1,48 @@
-Ext.define('icc.controller.common.Controller', {
+Ext.define('icc.controller.common.GridController', {
     extend : 'Ext.app.Controller',
     models : [],
     stores : [],
     views : [],
-    refs : [],
-    controllerName : 'default',
+    controllerName : '',
+    actions:{
+    	add : '',
+    	edit : '',
+    	remove : '',
+    	save : ''
+    }
     init : function() {
     	var self = this;
+    	var controllerName = this.controllerName;
+    	
+    	if(controllerName=='') {
+    		Ext.Msg.alert('成功提示', '请设定controllerName');
+    		return false;
+    	}
+    	
+    	this.refs = [{
+            ref: 'list',
+            selector: controllerName
+        },{
+            ref: 'add',
+            selector: controllerName+'Add'
+        },{
+            ref: 'edit',
+            selector: controllerName+'Edit'
+        }];
+    	
+    	
+    	var gridStore = '';
+    	
         this.control({
-            ' button[action=reset]' : {
+        	controllerName+'Add button[action=reset]' : {
                 click : function(button) {
                     var form = button.up('form').getForm();
                     form.reset();
                 }
             },
-            'chinapayProjectAdd button[action=submit]' : {
+            controllerName+'Add button[action=submit]' : {
                 click : function(button) {
-                    var store	= this.getChinapayProjectStore();
+                    var store	= this.getList().store;
                     var form = button.up('form').getForm();
                     if (form.isValid()) {
                         form.submit({
@@ -30,17 +56,20 @@ Ext.define('icc.controller.common.Controller', {
                             }
                         });
                     }
+                    else {
+                    	Ext.Msg.alert('失败提示', '表单验证失败，请确认你填写的表单符合要求');
+                    }
                 }
             },
-            'chinapayProjectEdit button[action=reset]' : {
+            controllerName+'Edit button[action=reset]' : {
                 click : function(button) {
                     var form = button.up('form').getForm();
                     form.reset();
                 }
             },
-            'chinapayProjectEdit button[action=submit]' : {
+            controllerName+'Edit button[action=submit]' : {
                 click : function(button) {
-                    var store	= this.getChinapayProjectStore();
+                    var store	= this.getList().store;
                     var form = button.up('form').getForm();
                     if (form.isValid()) {
                         form.submit({
@@ -55,38 +84,33 @@ Ext.define('icc.controller.common.Controller', {
                     }
                 }
             },
-            'chinapayProject button[action=add]' : {
+            controllerName+' button[action=add]' : {
                 click : function() {
-                    var window = Ext.widget('chinapayProjectAdd');
+                    var window = Ext.widget(controllerName+'Add');
                     window.show();
                 }
             },
-            'chinapayProject button[action=edit]' : {
+            controllerName+' button[action=edit]' : {
                 click : function(button) {
                     var grid	= button.up('gridpanel');
                     var selections = grid.getSelectionModel().getSelection();
                     if (selections.length > 0) {
-                        var row	= selections[0];
-
-                        var window = Ext.widget('chinapayProjectEdit');
+                        var window = Ext.widget(controllerName+'Edit');
                         var form = window.down('form').getForm();
-                        form.setValues({
-                            _id          : row.get('_id'),
-                            project_name : row.get('project_name'),
-                            account_id   : row.get('account_id'),
-                            callback     : row.get('callback'),
-                            password     : row.get('password')
-                        });
+                        form.loadRecord(selections[0]);
                         window.show();
+                    }
+                    else {
+                    	Ext.Msg.alert('提示信息', '请选择你要编辑的项');
                     }
                 }
             },
-            'chinapayProject button[action=save]' : {
+            controllerName+' button[action=save]' : {
                 click : function(button) {
-                    var records = this.getChinapayProjectStore().getUpdatedRecords();
+                    var records = this.getList().store.getUpdatedRecords();
                     var recordsNumber = records.length;
                     if(recordsNumber==0) {
-                        Ext.Msg.alert('提示信息', '未发现信息修改');
+                        Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
                     }
                     var updateList = [];
                     for(var i=0;i<recordsNumber;i++) {
@@ -95,9 +119,9 @@ Ext.define('icc.controller.common.Controller', {
                     }
 
                     Ext.Ajax.request({
-                        url: '/admin/chinapay-project/update',
+                        url: self.actions.save,
                         params: {
-                            jsonInfos: Ext.encode(updateList)
+                            updateInfos: Ext.encode(updateList)
                         },
                         scope:this,
                         success: function(response){
@@ -105,31 +129,31 @@ Ext.define('icc.controller.common.Controller', {
                             var json = Ext.decode(text);
                             Ext.Msg.alert('提示信息', json.msg);
                             if (json.success) {
-                                this.getChinapayProjectStore().load();
+                                self.getList().store.load();
                             }
                         }
                     });
 
                 }
             },
-            'chinapayProject button[action=remove]' : {
+            controllerName+' button[action=remove]' : {
                 click : function(button) {
                     var grid	= button.up('gridpanel');
                     var selections = grid.getSelectionModel().getSelection();
                     if (selections.length > 0) {
                         Ext.Msg.confirm('提示信息','请确认是否要删除您选择的信息?',function(btn){
                             if (btn == 'yes') {
-                                var id = [];
+                                var remove_id = [];
                                 for(var i=0;i<selections.length;i++) {
                                     selection = selections[i];
                                     grid.store.remove(selection);
-                                    id.push(selection.get('_id'));
+                                    remove_id.push(selection.get('_id'));
                                 }
 
                                 Ext.Ajax.request({
-                                    url : '/admin/chinapay-project/remove',
+                                    url : self.actions.remove,
                                     params : {
-                                        _id : Ext.encode(id)
+                                    	remove_id : Ext.encode(remove_id)
                                     },
                                     scope:this,
                                     success : function(response) {
@@ -145,29 +169,7 @@ Ext.define('icc.controller.common.Controller', {
                         },this);
                     }
                     else {
-                        Ext.Msg.alert('提示信息', '请选择您要删除的项目');
-                    }
-                }
-            },
-            'chinapayProject' : {
-                selectionchange : function(selectionModel, records) {
-                    if (records[0]) {
-                        var record = records[0];
-                        var id     = record.get('_id');
-                        var panelId = 'ChinapayProjectDataGrid'+id;
-                        var panel = this.getChinapayProjectTabPanel().getComponent(panelId);
-                        if (panel == null) {
-                            var title = '付款记录';
-                            panel = Ext.widget('chinapayProjectDataGrid', {
-                                id         : panelId,
-                                project_id : id,
-                                account_id : record.get('account_id'),
-                                name       : record.get('project_name')+title,
-                                title      : record.get('project_name')+title
-                            });
-                            this.getChinapayProjectTabPanel().add(panel);
-                        }
-                        this.getChinapayProjectTabPanel().setActiveTab(panelId);
+                        Ext.Msg.alert('提示信息', '请选择您要删除的项');
                     }
                 }
             }
