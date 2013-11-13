@@ -2,7 +2,8 @@ Ext.define('icc.view.Main', {
     extend: 'Ext.container.Container',
     requires:[
         'Ext.tab.Panel',
-        'Ext.layout.container.Border'
+        'Ext.layout.container.Border',
+        'icc.view.idatabase.Project'
     ],
     
     xtype: 'app-main',
@@ -12,15 +13,10 @@ Ext.define('icc.view.Main', {
     },
 
     items: [{
-        region: 'west',
-        xtype: 'panel',
-        title: 'west',
-        width: 150
+    	xtype : 'idatabaseProject'
     },{
         region: 'center',
         xtype: 'tabpanel',
-        items:[{
-            title: 'Center Tab 1'
-        }]
+        items:[]
     }]
 });

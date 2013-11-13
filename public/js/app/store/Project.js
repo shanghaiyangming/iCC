@@ -1,6 +1,7 @@
-Ext.define('icc.store.common.Store', {
+Ext.define('icc.store.Project', {
 	extend: 'Ext.data.Store',
-	autoLoad: false,
+	autoLoad: true,
+	model : 'icc.model.Project',
 	proxy : {
 		type : 'ajax',
 		url : '/admin/menu/allrootmenu',

@@ -9,7 +9,7 @@ Ext.define('icc.controller.common.GridController', {
     	edit : '',
     	remove : '',
     	save : ''
-    }
+    },
     init : function() {
     	var self = this;
     	var controllerName = this.controllerName;
@@ -29,17 +29,8 @@ Ext.define('icc.controller.common.GridController', {
             ref: 'edit',
             selector: controllerName+'Edit'
         }];
-    	
-    	
-    	var gridStore = '';
-    	
+
         this.control({
-        	controllerName+'Add button[action=reset]' : {
-                click : function(button) {
-                    var form = button.up('form').getForm();
-                    form.reset();
-                }
-            },
             controllerName+'Add button[action=submit]' : {
                 click : function(button) {
                     var store	= this.getList().store;
@@ -59,12 +50,6 @@ Ext.define('icc.controller.common.GridController', {
                     else {
                     	Ext.Msg.alert('失败提示', '表单验证失败，请确认你填写的表单符合要求');
                     }
-                }
-            },
-            controllerName+'Edit button[action=reset]' : {
-                click : function(button) {
-                    var form = button.up('form').getForm();
-                    form.reset();
                 }
             },
             controllerName+'Edit button[action=submit]' : {
