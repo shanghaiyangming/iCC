@@ -9,6 +9,7 @@ Ext.define('icc.view.idatabase.Project.Add', {
 		var project_id = this.project_id;
 		this.items = [ {
 			xtype : 'form',
+			url : '/idatabase/project/add',
 			items : [{
 				xtype : 'hiddenfield',
 				name : 'projectId',

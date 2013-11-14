@@ -169,6 +169,14 @@ class MongoCollection extends \MongoCollection
         else
             $options = array_merge($default, $options);
         
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__MODIFY_TIME__'])) {
+            $a['__MODIFY_TIME__'] = new \MongoDate();
+        }
+        
         return parent::insert($a, $options);
     }
 
@@ -204,6 +212,14 @@ class MongoCollection extends \MongoCollection
             $options = $default;
         else
             $options = array_merge($default, $options);
+        
+        if (! isset($a['__MODIFY_TIME__'])) {
+            parent::update($criteria, array(
+                '$set' => array(
+                    '__MODIFY_TIME__' => new \MongoDate()
+                )
+            ), $options);
+        }
         
         return parent::update($criteria, $object, $options);
     }

@@ -19,18 +19,19 @@ Ext.define('icc.controller.common.GridController', {
     		return false;
     	}
     	
-    	this.refs = [{
+    	this.addRef([{
             ref: 'list',
-            selector: controllerName
+            selector: this.controllerName
         },{
             ref: 'add',
-            selector: controllerName+'Add'
+            selector: this.controllerName+'Add'
         },{
             ref: 'edit',
-            selector: controllerName+'Edit'
-        }];
+            selector: this.controllerName+'Edit'
+        }]);
 
     	var listeners = {};
+    	
     	listeners[controllerName+'Add button[action=submit]'] = {
 			click : function(button) {
                 var store	= this.getList().store;

@@ -9,6 +9,7 @@ Ext.define('icc.Application', {
 
     controllers: [
         // TODO: add controllers here
+        'idatabase.Project'
     ],
 
     stores: [

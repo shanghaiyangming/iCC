@@ -10,7 +10,6 @@ Ext.Loader.addClassPathMappings({
   "Ext.rtl.EventObjectImpl": "ext/src/rtl/EventObject.js",
   "ExtThemeNeptune": "ext/packages/ext-theme-neptune/overrides",
   "icc": "app",
-  "icc.controller.common.GridController": "app/controller/common/Controller.js",
   "icc.controller.idatabase.Collection": "app/view/idatabase/Collection.js"
 });
 Ext.ClassManager.addNameAlternateMappings({
@@ -849,6 +848,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.Application": [],
   "icc.common.Form": [],
   "icc.common.Paging": [],
+  "icc.common.SearchBar": [],
+  "icc.common.Tbar": [],
   "icc.common.Window": [],
   "icc.controller.Main": [],
   "icc.controller.common.GridController": [],
@@ -862,7 +863,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.Viewport": [],
   "icc.view.idatabase.Project": [],
   "icc.view.idatabase.Project.Add": [],
-  "icc.view.idatabase.Project.Edit": []
+  "icc.view.idatabase.Project.Edit": [],
+  "icc.view.idatabase.Project.TabPanel": []
 });
 Ext.ClassManager.addNameAliasMappings({
   "Ext.AbstractComponent": [],
@@ -1872,6 +1874,12 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.common.Paging": [
     "widget.paging"
   ],
+  "icc.common.SearchBar": [
+    "widget.tbar"
+  ],
+  "icc.common.Tbar": [
+    "widget.tbar"
+  ],
   "icc.common.Window": [],
   "icc.controller.Main": [],
   "icc.controller.common.GridController": [],
@@ -1893,6 +1901,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Project.Edit": [
     "widget.idatabaseProjectEdit"
+  ],
+  "icc.view.idatabase.Project.TabPanel": [
+    "widget.idatabaseProjectTabPanel"
   ]
 });
 Ext.setVersion("ext-theme-base", "4.2.1");

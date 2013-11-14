@@ -2,6 +2,8 @@ Ext.define('icc.common.Form', {
 	extend : 'Ext.form.Panel',
 	alias : 'widget.form',
 	frame : false,
+	bodyPadding : 5,
+	region : 'center',
 	url : '',
 	defaultType: 'textfield',
 	fieldDefaults : {

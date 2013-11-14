@@ -1,0 +1,111 @@
+.refresh {
+	background-image: url(./images/refresh.gif) !important;
+}
+
+.search {
+	background-image: url(./images/search.gif) !important;
+}
+
+.save {
+	background-image: url(./images/save.gif) !important;
+}
+
+.reset {
+	background-image: url(./images/reset.gif) !important;
+}
+
+.add {
+	background-image: url(./images/add.gif) !important;
+}
+
+.delete {
+	background-image: url(./images/delete.gif) !important;
+}
+
+.remove {
+	background-image: url(./images/delete.gif) !important;
+}
+
+.cancel {
+	background-image: url(./images/cancel.png) !important;
+}
+
+.edit {
+	background-image: url(./images/edit.gif) !important;
+}
+
+.active {
+	background-image: url(./images/key_go.png) !important;
+}
+
+.review {
+	background-image: url(./images/page_white_camera.png) !important;
+}
+
+.clear {
+	background-image: url(./images/cart_remove.png) !important;
+}
+
+.application_go {
+	background-image: url(./images/application_go.gif) !important;
+}
+
+.excle {
+	background-image: url(./images/page_white_excel.png) !important;
+}
+
+.excel {
+	background-image: url(./images/page_white_excel.png) !important;
+}
+
+.comment {
+	background-image: url(./images/page_white_edit.png) !important;
+}
+
+.manager {
+	background-image: url(./images/wrench.png) !important;
+}
+
+.table {
+	background-image: url(./images/table.png) !important;
+}
+
+.chart {
+	background-image: url(./images/chart_bar.png) !important;
+}
+
+.download {
+	background-image: url(./images/attach.png) !important;
+}
+
+.check {
+	background-image: url(./images/tick.png) !important;
+}
+
+.static {
+	background-image: url(./images/stat.gif) !important;
+}
+
+.search {
+	background-image: url(./images/search.gif) !important;
+}
+
+.copy {
+	background-image: url(./images/page_white_copy.png) !important;
+}
+
+.export {
+	background-image: url(./images/application_get.png) !important;
+}
+
+.import {
+	background-image: url(./images/application_put.png) !important;
+}
+
+.priv {
+	background-image: url(./images/group_edit.png) !important;
+}
+
+.login {
+	background-image: url(./images/user_go.png) !important;
+}
