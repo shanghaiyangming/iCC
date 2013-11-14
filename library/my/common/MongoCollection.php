@@ -213,13 +213,12 @@ class MongoCollection extends \MongoCollection
         else
             $options = array_merge($default, $options);
         
-        if (! isset($a['__MODIFY_TIME__'])) {
-            parent::update($criteria, array(
-                '$set' => array(
-                    '__MODIFY_TIME__' => new \MongoDate()
-                )
-            ), $options);
-        }
+
+        parent::update($criteria, array(
+            '$set' => array(
+                '__MODIFY_TIME__' => new \MongoDate()
+            )
+        ), $options);
         
         return parent::update($criteria, $object, $options);
     }

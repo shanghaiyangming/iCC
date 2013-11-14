@@ -109,3 +109,20 @@
 .login {
 	background-image: url(./images/user_go.png) !important;
 }
+
+.user {
+	background-image: url(./images/user_orange.png) !important;
+}
+
+.key {
+	background-image: url(./images/key.png) !important;
+}
+
+.plugin {
+	background-image: url(./images/plugin.png) !important;
+}
+
+.menu {
+	background-image: url(./images/text_list_bullets.png) !important;
+}
+

@@ -4,17 +4,11 @@ Ext.define('icc.view.idatabase.Project.Add', {
 	title : '添加项目',
 	requires : [],
 	layout:'border',
-	project_id : '',
 	initComponent: function() {
-		var project_id = this.project_id;
 		this.items = [ {
 			xtype : 'form',
 			url : '/idatabase/project/add',
 			items : [{
-				xtype : 'hiddenfield',
-				name : 'projectId',
-				value: project_id
-			},{
 				name : 'name',
 				fieldLabel : '项目名称',
 				allowBlank : false

@@ -3,5 +3,11 @@ Ext.define('icc.model.Project', {
 	fields : [{
 		name : 'name',
 		type : 'string'
+	},{
+		name : 'sn',
+		type : 'string'
+	},{
+		name : 'desc',
+		type : 'string'
 	}]
 });

@@ -4,6 +4,7 @@ Ext.define('icc.controller.common.GridController', {
     stores : [],
     views : [],
     controllerName : '',
+    listeners : {},
     actions:{
     	add : '',
     	edit : '',
@@ -165,6 +166,13 @@ Ext.define('icc.controller.common.GridController', {
             }
     	};
 	
+    	//在基础监听之外，添加自定义监听
+    	if(typeof(this.listeners)==='object') {
+	    	for (attrName in this.listeners) {
+	    		listeners[attrName] = this.listeners;
+	    	}
+    	}
+    	
         this.control(listeners);
     }
 });

@@ -858,7 +858,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.Project": [],
   "icc.model.common.Model": [],
   "icc.store.Project": [],
-  "icc.store.common.Store": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
   "icc.view.idatabase.Project": [],
@@ -1888,7 +1887,6 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.Project": [],
   "icc.model.common.Model": [],
   "icc.store.Project": [],
-  "icc.store.common.Store": [],
   "icc.view.Main": [
     "widget.app-main"
   ],
