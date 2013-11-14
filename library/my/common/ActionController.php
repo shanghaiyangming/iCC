@@ -49,16 +49,16 @@ abstract class ActionController extends AbstractActionController
             throw new \Exception('$query error:' . json_encode($query));
         
         $cursor->sort($sort);
-        $skip = (int) $this->params()->fromQuery('skip', 0);
+        $skip = (int) $this->params()->fromQuery('start', 0);
         if ($skip > 0) {
             $cursor->skip($skip);
         }
         $limit = (int) $this->params()->fromQuery('limit', 0);
         if ($limit > 0) {
-            $cursor->skip($limit);
+            $cursor->limit($limit);
         }
         
-        $datas = convertToPureArray(iterator_to_array($cursor, false));
+        $datas = iterator_to_array($cursor, false);
         if ($jsonModel)
             return new JsonModel($this->rst($datas));
         else

@@ -8,8 +8,7 @@ Ext.define('icc.view.idatabase.Project', {
 	collapsible : true,
 	closable : false,
 	multiSelect : false,
-	disableSelection : true,
-	store : Ext.data.StoreManager.lookup('Project'),
+	disableSelection : false,
 	columns : [{
 		text: '项目名称',  
 		dataIndex: 'name',
@@ -23,10 +22,13 @@ Ext.define('icc.view.idatabase.Project', {
 	}],
 	initComponent: function() {
 		var self = this;
-		console.info(Ext.data.StoreManager.lookup('Project'));
+		var store =  Ext.data.StoreManager.lookup('Project');
+		
+		this.store = store;
+		
 		this.bbar = {
 			xtype : 'paging',
-			store : this.store
+			store : store
 		};
 		
 		this.dockedItems =[{
