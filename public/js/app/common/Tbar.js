@@ -30,5 +30,5 @@ Ext.define('icc.common.Tbar', {
 				action : 'remove'
 			} ]
 		}
-	}
+	}]
 });

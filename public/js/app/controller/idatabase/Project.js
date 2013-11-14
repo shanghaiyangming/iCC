@@ -1,9 +1,8 @@
 Ext.define('icc.controller.idatabase.Project', {
 	extend : 'icc.controller.common.GridController',
-	models : [],
-	stores : [],
-	views : [ 'idatabase.Project.Add', 'idatabase.Project.Edit',
-			'idatabase.Project.TabPanel' ],
+    models : ['Project'],
+    stores : ['Project'],
+    views : ['idatabase.Project','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel'],
 	controllerName : 'idatabaseProject',
 	actions : {
 		add : '/idatabase/project/add',

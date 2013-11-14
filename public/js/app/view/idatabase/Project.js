@@ -1,9 +1,6 @@
 Ext.define('icc.view.idatabase.Project', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.idatabaseProject',
-    models : ['icc.model.Project'],
-    stores : ['icc.store.Project'],
-    views : ['idatabase.Project','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel'],
 	requires : [ 'icc.common.Paging'],
 	title : '项目列表',
 	region: 'west',
@@ -12,7 +9,7 @@ Ext.define('icc.view.idatabase.Project', {
 	closable : false,
 	multiSelect : false,
 	disableSelection : true,
-	store : Ext.data.StoreManager.lookup('icc.store.Project'),
+	store : Ext.data.StoreManager.lookup('Project'),
 	columns : [{
 		text: '项目名称',  
 		dataIndex: 'name',
@@ -26,7 +23,7 @@ Ext.define('icc.view.idatabase.Project', {
 	}],
 	initComponent: function() {
 		var self = this;
-		console.info(this.store);
+		console.info(Ext.data.StoreManager.lookup('Project'));
 		this.bbar = {
 			xtype : 'paging',
 			store : this.store
