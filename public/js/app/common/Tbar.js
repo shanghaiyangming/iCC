@@ -30,29 +30,5 @@ Ext.define('icc.common.Tbar', {
 				action : 'remove'
 			} ]
 		}
-	},'-',{
-		text : '管理',
-		width : 106,
-		iconCls : 'menu',
-		menu : {
-			xtype : 'menu',
-			plain: true,
-			items : [ {
-				xtype : 'button',
-				text : '用户管理',
-				iconCls : 'user',
-				action : 'user'
-			}, {
-				xtype : 'button',
-				text : '密钥管理',
-				iconCls : 'key',
-				action : 'key'
-			}, {
-				xtype : 'button',
-				text : '插件管理',
-				iconCls : 'plugin',
-				action : 'plugin'
-			}]
-		}
-	}]
+	}
 });
