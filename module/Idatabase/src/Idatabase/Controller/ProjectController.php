@@ -82,12 +82,12 @@ class ProjectController extends BaseActionController
      */
     public function editAction()
     {
-        $project_id = $this->params()->fromPost('project_id', null);
+        $_id = $this->params()->fromPost('_id', null);
         $name = $this->params()->fromPost('name', null);
         $sn = $this->params()->fromPost('sn', null);
         $desc = $this->params()->fromPost('desc', null);
         
-        if($project_id==null) {
+        if($_id==null) {
             return $this->msg(false, '无效的项目编号');
         }
         
@@ -107,7 +107,7 @@ class ProjectController extends BaseActionController
         $project['name'] = $name;
         $project['sn'] = $sn;
         $project['desc'] = $desc;
-        $this->_project->update(array('_id'=>myMongoId($project_id)), array(
+        $this->_project->update(array('_id'=>myMongoId($_id)), array(
             '$set' => $project
         ));
         

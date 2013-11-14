@@ -4,7 +4,6 @@ Ext.define('icc.view.idatabase.Project.Edit', {
 	title : '编辑项目',
 	requires : [],
 	layout:'border',
-	project_id : '',
 	initComponent: function() {
 		var project_id = this.project_id;
 		this.items = [ {
@@ -12,8 +11,7 @@ Ext.define('icc.view.idatabase.Project.Edit', {
 			url : '/idatabase/project/edit',
 			items : [{
 				xtype : 'hiddenfield',
-				name : 'projectId',
-				value: project_id,
+				name : '_id',
 				allowBlank : false
 			},{
 				name : 'name',
