@@ -10,5 +10,7 @@ Ext.define('icc.controller.idatabase.Project', {
 		remove : '/idatabase/project/remove',
 		save : '/idatabase/project/save'
 	},
-	listeners : {}
+	listeners : {
+		''
+	}
 });

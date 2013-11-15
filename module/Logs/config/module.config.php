@@ -23,9 +23,6 @@ return array(
     'service_manager' => array(
         'abstract_factories' => array(
             'Logs\Service\MonologServiceAbstractFactory'
-        ),
-        'initializers' => array(
-            'Logs\Service\MonologServiceInitializer'
         )
     )
 );

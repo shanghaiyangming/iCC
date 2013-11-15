@@ -37,7 +37,7 @@ Ext.define('icc.view.idatabase.Project', {
 			items : [ {
 				text : '操作',
 				iconCls : 'menu',
-				width : 106,
+				width : 100,
 				menu : {
 					xtype : 'menu',
 					plain: true,
@@ -65,7 +65,7 @@ Ext.define('icc.view.idatabase.Project', {
 				}
 			},'-',{
 				text : '管理',
-				width : 106,
+				width : 100,
 				iconCls : 'menu',
 				menu : {
 					xtype : 'menu',

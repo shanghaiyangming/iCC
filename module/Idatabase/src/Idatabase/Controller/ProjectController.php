@@ -124,11 +124,11 @@ class ProjectController extends BaseActionController
      */
     public function removeAction()
     {
-        $project_id = $this->params()->fromPost('project_id', null);
-        if($project_id==null) {
+        $_id = $this->params()->fromPost('_id', null);
+        if($_id==null) {
             return $this->msg(false, '无效的项目编号');
         }
-        $this->_project->remove(array('_id'=>myMongoId($project_id)));
+        $this->_project->remove(array('_id'=>myMongoId($_id)));
         return $this->msg(true, '删除信息成功');
     }
 
@@ -136,5 +136,7 @@ class ProjectController extends BaseActionController
      * 权限分享，账户所属人员如果具备分享权限，可以将项目分享给别的用户
      */
     public function shareAction()
-    {}
+    {
+        
+    }
 }
