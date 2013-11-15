@@ -142,17 +142,16 @@ class ProjectController extends BaseActionController
      */
     public function removeAction()
     {
-        $_id = $this->params()->fromPost('_id', null);
-        if ($_id == null) {
+        $_id = $this->params()->fromPost('_id', array());
+        if (empty($_id)) {
             return $this->msg(false, '无效的项目编号');
         }
-        $this->_project->update(array(
-            '_id' => myMongoId($_id)
-        ), array(
-            '$set' => array(
-                '__REMOVED__' => true
-            )
-        ));
+        
+        foreach ($_id as $row) {
+            $this->_project->remove(array(
+                '_id' => myMongoId($row)
+            ));
+        }
         return $this->msg(true, '删除信息成功');
     }
 

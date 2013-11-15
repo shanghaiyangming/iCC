@@ -1,8 +1,22 @@
 <?php
 /**
- * 用于扩展基础类库
+ * 扩展和限定基础类库操作
  * @author yangming
- *
+ * 
+ * 使用说明：
+ * 
+ * 对于mongocollection的操作进行了规范，危险方法的drop remove均采用了伪删除的实现。
+ * 删除操作时，remove实际上是添加了保留属性__REMOVED__设置为true
+ * 添加操作时，额外添加了保留属性__CREATE_TIME__(创建时间) 和 __MODIFY_TIME__(修改时间) __REMOVED__：false
+ * 更新操作时，将自动更新__MODIFY_TIME__
+ * 查询操作时,count/find/findOne/findAndModify操作 ，查询条件将自动添加__REMOVED__:false参数，编码时，无需手动添加
+ * 
+ * 注意事项：
+ * 
+ * 1. findAndModify内部的操作update时，请手动添加__MODIFY_TIME__ __CREATE_TIME__ 原因详见mongodb的upsert操作说明，我想看完你就理解了
+ * 2. group、aggregate操作因为涉及到里面诸多pipe细节，考虑到代码的可读性、简洁以及易用性，所以请手动处理__MODIFY_TIME__ __CREATE_TIME__ __REMOVED__ 三个保留参数
+ * 3. 同理，对于db->command操作内部，诸如mapreduce等操作时，如涉及到数据修改，请注意以上三个参数的变更与保留，以免引起不必要的问题。
+ * 
  */
 namespace My\Common;
 
@@ -90,13 +104,57 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('Config error:admin database init');
         
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
-        if (! $this->_admin instanceof \MongoDB)
+        if (! $this->_admin instanceof \MongoDB) {
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
-            
-            // 默认执行几个操作
-            // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
-            // $this->shardingCollection();
+        }
+        
+        // 默认执行几个操作
+        // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
+        // $this->shardingCollection();
         parent::__construct($this->_db, $this->_collection);
+    }
+
+    /**
+     * 检测是简单查询还是复杂查询，涉及复杂查询
+     *
+     * @param array $query            
+     * @throws \Exception
+     */
+    private function appendQuery(array $query)
+    {
+        if (! is_array($query)) {
+            $query = array();
+        }
+        $keys = array_keys($query);
+        $intersect = array_intersect($keys, $this->_queryHaystack);
+        if (! empty($intersect)) {
+            $query = array(
+                '$and' => array(
+                    array(
+                        '__REMOVED__' => false
+                    ),
+                    $query
+                )
+            );
+        } else {
+            $query['__REMOVED__'] = false;
+        }
+        return $query;
+    }
+
+    /**
+     * 打印最后一个错误信息
+     */
+    private function debug()
+    {
+        $err = $this->_db->lastError();
+        if (self::debug) {
+            var_dump($err);
+        }
+        // 记录下每一条产生的mongodb错误日志
+        if ($err['err'] != null) {
+            logError(json_encode($err));
+        }
     }
 
     /**
@@ -141,108 +199,6 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 检测是简单查询还是复杂查询，涉及复杂查询
-     *
-     * @param array $query            
-     * @throws \Exception
-     */
-    private function appendQuery(array $query)
-    {
-        if (!is_array($query)) {
-            $query = array();
-        }
-        $keys = array_keys($query);
-        $intersect = array_intersect($keys, $this->_queryHaystack);
-        if (! empty($intersect)) {
-            $query = array(
-                '$and' => array(
-                    array(
-                        '__REMOVED__' => false
-                    ),
-                    $query
-                )
-            );
-        } else {
-            $query['__REMOVED__'] = false;
-        }
-        return $query;
-    }
-
-    /**
-     * 查询符合条件的项目，自动排除__REMOVED__:true的结果集
-     *
-     * @see MongoCollection::find()
-     */
-    public function find($query = NULL, $fields = NULL)
-    {
-        return parent::find($this->appendQuery($query), $fileds);
-    }
-
-    /**
-     *
-     * @param string $key            
-     * @param array $query            
-     */
-    public function distinct($key, $query = null)
-    {
-        $query = $this->appendQuery($query);
-        return parent::distinct($key, $query);
-    }
-
-    /**
-     * 获取符合条件的全部数据
-     *
-     * @param array $query            
-     * @param int $skip            
-     * @param int $limit            
-     * @param array $sort            
-     * @return array
-     */
-    public function findAll($query, $skip = 0, $limit = 20, $sort = array('_id'=>-1))
-    {
-        $cursor = $this->find($this->appendQuery($query));
-        if (! $cursor instanceof \MongoCursor)
-            throw new \Exception('$query error:' . json_encode($query));
-        
-        $cursor->sort($sort)
-            ->skip($skip)
-            ->limit($limit);
-        return iterator_to_array($cursor);
-    }
-
-    /**
-     * 插入特定的数据
-     *
-     * @param array $object            
-     * @param array $options            
-     */
-    public function insert($a, array $options = NULL)
-    {
-        if (empty($a))
-            throw new \Exception('$object is NULL');
-        
-        $default = array(
-            'fsync' => self::fsync,
-            'timeout' => self::timeout
-        );
-        $options = ($options === NULL) ? $default : array_merge($default, $options);
-        
-        if (! isset($a['__CREATE_TIME__'])) {
-            $a['__CREATE_TIME__'] = new \MongoDate();
-        }
-        
-        if (! isset($a['__MODIFY_TIME__'])) {
-            $a['__MODIFY_TIME__'] = new \MongoDate();
-        }
-        
-        if (! isset($a['__REMOVED__'])) {
-            $a['__REMOVED__'] = false;
-        }
-        
-        return parent::insert($a, $options);
-    }
-
-    /**
      * 批量插入数据
      *
      * @see MongoCollection::batchInsert()
@@ -269,78 +225,101 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 更新指定范围的数据
-     *
-     * @param array $criteria            
-     * @param array $object            
-     * @param array $options            
+     * 根据指定字段
+     * 
+     * @param string $key            
+     * @param array $query            
      */
-    public function update($criteria, $object, array $options = NULL)
+    public function distinct($key, $query = null)
     {
-        if (empty($criteria))
-            throw new \Exception('$criteria is empty');
-        
-        if (empty($object))
-            throw new \Exception('$object is empty');
-        
-        $keys = array_keys($object);
-        foreach ($keys as $key) {
-            $key = strtolower($key);
-            if (! in_array($key, $this->_updateHaystack)) {
-                throw new \Exception('$key must contain ' . join(',', $this->_updateHaystack));
-            }
-        }
-        $default = array(
-            'upsert' => self::upsert,
-            'multiple' => self::multiple,
-            'fsync' => self::fsync,
-            'timeout' => self::timeout
-        );
-        
-        $options = ($options === NULL) ? $default : array_merge($default, $options);
-        
-        parent::update($criteria, array(
-            '$set' => array(
-                '__MODIFY_TIME__' => new \MongoDate()
-            )
-        ), $options);
-        
-        return parent::update($criteria, $object, $options);
+        $query = $this->appendQuery($query);
+        return parent::distinct($key, $query);
     }
 
     /**
-     * 删除指定范围的数据
+     * 直接禁止drop操作
      *
-     * @param array $criteria            
-     * @param array $options            
+     * @see MongoCollection::drop()
      */
-    public function remove($criteria = NULL, array $options = NULL)
+    function drop()
     {
-        if ($criteria === NULL)
-            throw new \Exception('$criteria is NULL');
-        
-        $default = array(
-            'justOne' => self::justOne,
-            'fsync' => self::fsync,
-            'timeout' => self::timeout
-        );
-        
+        // 做法1：抛出异常禁止Drop操作
+        // throw new \Exception('ICC deny execute "drop()" collection operation');
+        // 做法2：复制整个集合的数据到新的集合中，用于备份，备份数据不做片键，不做索引以便节约空间，仅出于安全考虑，原有_id使用保留字__OLD_ID__进行保留
+        $targetCollection = 'bak_' . date('YmdHis') . '_' . $this->_collection;
+        $target = new \MongoCollection($this->db, $targetCollection);
+        // 变更为重命名某个集合或者复制某个集合的操作作为替代。
+        $cursor = $this->find(array());
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['__OLD_ID__'] = $row['_id'];
+            unset($row['_id']);
+            $target->insert($row);
+        }
+        return parent::drop();
+    }
+
+    /**
+     * ICC系统默认采用后台创建的方式，建立索引
+     *
+     * @see MongoCollection::ensureIndex()
+     */
+    public function ensureIndex($key_keys, array $options = NULL)
+    {
+        $default = array();
+        $default['background'] = true;
+        //$default['expireAfterSeconds'] = 3600; // 请充分了解后开启此参数，慎用
         $options = ($options === NULL) ? $default : array_merge($default, $options);
+        return parent::ensureIndex($key_keys, $options);
+    }
+
+    /**
+     * 查询符合条件的项目，自动排除__REMOVED__:true的结果集
+     *
+     * @see MongoCollection::find()
+     */
+    public function find($query = NULL, $fields = NULL)
+    {
+        $fields = $fields == null ? array() : $fields;
+        return parent::find($this->appendQuery($query), $fields);
+    }
+
+    /**
+     * 查询符合条件的一条数据
+     * 
+     * @see MongoCollection::findOne()
+     */
+    public function findOne($query = NULL, $fields = NULL)
+    {
+        $fields = $fields == null ? array() : $fields;
+        return parent::findOne($this->appendQuery($query), $fields);
+    }
+
+    /**
+     * 获取符合条件的全部数据
+     *
+     * @param array $query            
+     * @param int $skip            
+     * @param int $limit            
+     * @param array $sort            
+     * @return array
+     */
+    public function findAll($query, $skip = 0, $limit = 20, $sort = array('_id'=>-1), $fields = array())
+    {
+        $cursor = $this->find($this->appendQuery($query), $fields);
+        if (! $cursor instanceof \MongoCursor)
+            throw new \Exception('$query error:' . json_encode($query));
         
-        // 方案一 真实删除
-        // return parent::remove($criteria, $options);
-        // 方案二 伪删除
-        return parent::update($criteria, array(
-            '$set' => array(
-                '__REMOVED__' => true
-            )
-        ), $options);
+        $cursor->sort($sort)
+            ->skip($skip)
+            ->limit($limit);
+        return iterator_to_array($cursor);
     }
 
     /**
      * findAndModify操作
      * 特别注意：__REMOVED__ __MODIFY_TIME__ __CREATE_TIME__ 3个系统保留变量在update参数中的使用
-     * 
+     *
      * @param array $query            
      * @param array $update            
      * @param array $fields            
@@ -384,55 +363,104 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 直接禁止drop操作
+     * 插入特定的数据
      *
-     * @see MongoCollection::drop()
+     * @param array $object            
+     * @param array $options            
      */
-    function drop()
+    public function insert($a, array $options = NULL)
     {
-        // 做法1：抛出异常禁止Drop操作
-        // throw new \Exception('ICC deny execute "drop()" collection operation');
-        // 做法2：复制整个集合的数据到新的集合中，用于备份，备份数据不做片键，不做索引以便节约空间，仅出于安全考虑，原有_id使用保留字__OLD_ID__进行保留
-        $targetCollection = 'bak_' . date('YmdHis') . '_' . $this->_collection;
-        $target = new \MongoCollection($this->db, $targetCollection);
-        // 变更为重命名某个集合或者复制某个集合的操作作为替代。
-        $cursor = $this->find(array());
-        while ($cursor->hasNext()) {
-            $row = $cursor->getNext();
-            $row['__OLD_ID__'] = $row['_id'];
-            unset($row['_id']);
-            $target->insert($row);
-        }
-        return parent::drop();
-    }
-
-    /**
-     * ICC系统默认采用后台创建的方式，建立索引
-     *
-     * @see MongoCollection::ensureIndex()
-     */
-    public function ensureIndex($key_keys, array $options = NULL)
-    {
-        $default = array();
-        $default['background'] = true;
-        $default['expireAfterSeconds'] = 3600; // 请充分了解后开启此参数，慎用
+        if (empty($a))
+            throw new \Exception('$object is NULL');
+        
+        $default = array(
+            'fsync' => self::fsync,
+            'timeout' => self::timeout
+        );
         $options = ($options === NULL) ? $default : array_merge($default, $options);
-        return parent::ensureIndex($key_keys, $options);
+        
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__MODIFY_TIME__'])) {
+            $a['__MODIFY_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__REMOVED__'])) {
+            $a['__REMOVED__'] = false;
+        }
+        
+        return parent::insert($a, $options);
     }
 
     /**
-     * 打印最后一个错误信息
+     * 删除指定范围的数据
+     *
+     * @param array $criteria            
+     * @param array $options            
      */
-    private function debug()
+    public function remove($criteria = NULL, array $options = NULL)
     {
-        $err = $this->_db->lastError();
-        if (self::debug) {
-            var_dump($err);
+        if ($criteria === NULL)
+            throw new \Exception('$criteria is NULL');
+        
+        $default = array(
+            'justOne' => self::justOne,
+            'fsync' => self::fsync,
+            'timeout' => self::timeout
+        );
+        
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        
+        // 方案一 真实删除
+        // return parent::remove($criteria, $options);
+        // 方案二 伪删除
+        return parent::update($criteria, array(
+            '$set' => array(
+                '__REMOVED__' => true
+            )
+        ), $options);
+    }
+
+    /**
+     * 更新指定范围的数据
+     *
+     * @param array $criteria            
+     * @param array $object            
+     * @param array $options            
+     */
+    public function update($criteria, $object, array $options = NULL)
+    {
+        if (empty($criteria))
+            throw new \Exception('$criteria is empty');
+        
+        if (empty($object))
+            throw new \Exception('$object is empty');
+        
+        $keys = array_keys($object);
+        foreach ($keys as $key) {
+            $key = strtolower($key);
+            if (! in_array($key, $this->_updateHaystack)) {
+                throw new \Exception('$key must contain ' . join(',', $this->_updateHaystack));
+            }
         }
-        // 记录下每一条产生的mongodb错误日志
-        if ($err['err'] != null) {
-            logError(json_encode($err));
-        }
+        $default = array(
+            'upsert' => self::upsert,
+            'multiple' => self::multiple,
+            'fsync' => self::fsync,
+            'timeout' => self::timeout
+        );
+        
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        
+        parent::update($criteria, array(
+            '$set' => array(
+                '__MODIFY_TIME__' => new \MongoDate()
+            )
+        ), $options);
+        
+        return parent::update($criteria, $object, $options);
     }
 
     /**

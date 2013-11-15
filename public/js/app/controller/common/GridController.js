@@ -135,17 +135,17 @@ Ext.define('icc.controller.common.GridController', {
                 if (selections.length > 0) {
                     Ext.Msg.confirm('提示信息','请确认是否要删除您选择的信息?',function(btn){
                         if (btn == 'yes') {
-                            var remove_id = [];
+                            var _id = [];
                             for(var i=0;i<selections.length;i++) {
                                 selection = selections[i];
                                 grid.store.remove(selection);
-                                remove_id.push(selection.get('_id'));
+                                _id.push(selection.get('_id'));
                             }
 
                             Ext.Ajax.request({
                                 url : self.actions.remove,
                                 params : {
-                                	remove_id : Ext.encode(remove_id)
+                                	_id : Ext.encode(_id)
                                 },
                                 scope:this,
                                 success : function(response) {
