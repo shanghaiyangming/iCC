@@ -63,6 +63,14 @@ class ProjectController extends BaseActionController
             return $this->msg(false, '请填写项目描述');
         }
         
+        if ($this->checkProjectExist($name)) {
+            return $this->msg(false, '项目名称已经存在');
+        }
+        
+        if ($this->checkProjectExist($sn)) {
+            return $this->msg(false, '项目编号已经存在');
+        }
+        
         $project = array();
         $project['name'] = $name;
         $project['sn'] = $sn;
@@ -87,7 +95,7 @@ class ProjectController extends BaseActionController
         $sn = $this->params()->fromPost('sn', null);
         $desc = $this->params()->fromPost('desc', null);
         
-        if($_id==null) {
+        if ($_id == null) {
             return $this->msg(false, '无效的项目编号');
         }
         
@@ -103,11 +111,21 @@ class ProjectController extends BaseActionController
             return $this->msg(false, '请填写项目描述');
         }
         
+        if ($this->checkProjectExist($name)) {
+            return $this->msg(false, '项目名称已经存在');
+        }
+        
+        if ($this->checkProjectExist($sn)) {
+            return $this->msg(false, '项目编号已经存在');
+        }
+        
         $project = array();
         $project['name'] = $name;
         $project['sn'] = $sn;
         $project['desc'] = $desc;
-        $this->_project->update(array('_id'=>myMongoId($_id)), array(
+        $this->_project->update(array(
+            '_id' => myMongoId($_id)
+        ), array(
             '$set' => $project
         ));
         
@@ -125,10 +143,16 @@ class ProjectController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        if($_id==null) {
+        if ($_id == null) {
             return $this->msg(false, '无效的项目编号');
         }
-        $this->_project->remove(array('_id'=>myMongoId($_id)));
+        $this->_project->update(array(
+            '_id' => myMongoId($_id)
+        ), array(
+            '$set' => array(
+                '__REMOVED__' => true
+            )
+        ));
         return $this->msg(true, '删除信息成功');
     }
 
@@ -136,7 +160,30 @@ class ProjectController extends BaseActionController
      * 权限分享，账户所属人员如果具备分享权限，可以将项目分享给别的用户
      */
     public function shareAction()
+    {}
+
+    /**
+     * 检测一个项目是否存在，根据名称和编号
+     *
+     * @param string $info            
+     * @return boolean
+     */
+    private function checkProjectExist($info)
     {
+        $info = $this->_project->findOne(array(
+            '$or' => array(
+                array(
+                    'name' => $info
+                ),
+                array(
+                    'sn' => $info
+                )
+            )
+        ));
         
+        if ($info == null) {
+            return false;
+        }
+        return true;
     }
 }

@@ -166,10 +166,17 @@ Ext.define('icc.controller.common.GridController', {
             }
     	};
 	
-    	//在基础监听之外，添加自定义监听
+    	//在基础监听之外，添加自定义监听,如果同名的selector存在，那么追加事件
     	if(typeof(this.listeners)==='object') {
 	    	for (attrName in this.listeners) {
-	    		listeners[attrName] = this.listeners;
+	    		if(listeners[attrName]==undefined || listeners[attrName]==null) {
+	    			listeners[attrName] = this.listeners;
+	    		}
+	    		else {
+	    			for(event in listeners[attrName]) {
+	    				listeners[attrName][event] = listeners[attrName][event];
+	    			}
+	    		}
 	    	}
     	}
     	

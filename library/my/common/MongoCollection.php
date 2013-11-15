@@ -7,7 +7,6 @@
 namespace My\Common;
 
 use Zend\Config\Config;
-use Doctrine\Tests\Common\Annotations\True;
 
 class MongoCollection extends \MongoCollection
 {
@@ -25,6 +24,14 @@ class MongoCollection extends \MongoCollection
     private $_admin;
 
     private $_config;
+
+    private $_queryHaystack = array(
+        '$and',
+        '$or',
+        '$nor',
+        '$not',
+        '$where'
+    );
 
     private $_updateHaystack = array(
         '$set',
@@ -123,9 +130,63 @@ class MongoCollection extends \MongoCollection
         return false;
     }
 
-    public function search($text)
+    /**
+     * 处理检索条件
+     *
+     * @param string $text            
+     */
+    private function search($text)
     {
-        $search = new MongoRegex('/' . preg_replace("/\s/", '.*', $text) . '/i');
+        return new MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $text) . '/i');
+    }
+
+    /**
+     * 检测是简单查询还是复杂查询，涉及复杂查询
+     *
+     * @param array $query            
+     * @throws \Exception
+     */
+    private function appendQuery(array $query)
+    {
+        if (!is_array($query)) {
+            $query = array();
+        }
+        $keys = array_keys($query);
+        $intersect = array_intersect($keys, $this->_queryHaystack);
+        if (! empty($intersect)) {
+            $query = array(
+                '$and' => array(
+                    array(
+                        '__REMOVED__' => false
+                    ),
+                    $query
+                )
+            );
+        } else {
+            $query['__REMOVED__'] = false;
+        }
+        return $query;
+    }
+
+    /**
+     * 查询符合条件的项目，自动排除__REMOVED__:true的结果集
+     *
+     * @see MongoCollection::find()
+     */
+    public function find($query = NULL, $fields = NULL)
+    {
+        return parent::find($this->appendQuery($query), $fileds);
+    }
+
+    /**
+     *
+     * @param string $key            
+     * @param array $query            
+     */
+    public function distinct($key, $query = null)
+    {
+        $query = $this->appendQuery($query);
+        return parent::distinct($key, $query);
     }
 
     /**
@@ -139,14 +200,14 @@ class MongoCollection extends \MongoCollection
      */
     public function findAll($query, $skip = 0, $limit = 20, $sort = array('_id'=>-1))
     {
-        $cursor = $this->find($query);
+        $cursor = $this->find($this->appendQuery($query));
         if (! $cursor instanceof \MongoCursor)
             throw new \Exception('$query error:' . json_encode($query));
         
         $cursor->sort($sort)
             ->skip($skip)
             ->limit($limit);
-        return convertToPureArray(iterator_to_array($cursor));
+        return iterator_to_array($cursor);
     }
 
     /**
@@ -164,10 +225,7 @@ class MongoCollection extends \MongoCollection
             'fsync' => self::fsync,
             'timeout' => self::timeout
         );
-        if ($options === NULL)
-            $options = $default;
-        else
-            $options = array_merge($default, $options);
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
         
         if (! isset($a['__CREATE_TIME__'])) {
             $a['__CREATE_TIME__'] = new \MongoDate();
@@ -177,7 +235,37 @@ class MongoCollection extends \MongoCollection
             $a['__MODIFY_TIME__'] = new \MongoDate();
         }
         
+        if (! isset($a['__REMOVED__'])) {
+            $a['__REMOVED__'] = false;
+        }
+        
         return parent::insert($a, $options);
+    }
+
+    /**
+     * 批量插入数据
+     *
+     * @see MongoCollection::batchInsert()
+     */
+    public function batchInsert(array $documents, array $options = NULL)
+    {
+        array_walk($documents, function (&$row, $key)
+        {
+            $row['__CREATE_TIME__'] = $row['__MODIFY_TIME__'] = new \MongoDate();
+            $row['__REMOVED__'] = false;
+        });
+        return parent::batchInsert($documents, $options);
+    }
+
+    /**
+     * 统计符合条件的数量
+     *
+     * @see MongoCollection::count()
+     */
+    public function count($query = NULL, $limit = NULL, $skip = NULL)
+    {
+        $query = $this->appendQuery($query);
+        return parent::count($query, $limit, $skip);
     }
 
     /**
@@ -208,12 +296,9 @@ class MongoCollection extends \MongoCollection
             'fsync' => self::fsync,
             'timeout' => self::timeout
         );
-        if ($options === NULL)
-            $options = $default;
-        else
-            $options = array_merge($default, $options);
         
-
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        
         parent::update($criteria, array(
             '$set' => array(
                 '__MODIFY_TIME__' => new \MongoDate()
@@ -239,15 +324,38 @@ class MongoCollection extends \MongoCollection
             'fsync' => self::fsync,
             'timeout' => self::timeout
         );
-        if ($options === NULL)
-            $options = $default;
-        else
-            $options = array_merge($default, $options);
-        return parent::remove($criteria, $options);
+        
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        
+        // 方案一 真实删除
+        // return parent::remove($criteria, $options);
+        // 方案二 伪删除
+        return parent::update($criteria, array(
+            '$set' => array(
+                '__REMOVED__' => true
+            )
+        ), $options);
+    }
+
+    /**
+     * findAndModify操作
+     * 特别注意：__REMOVED__ __MODIFY_TIME__ __CREATE_TIME__ 3个系统保留变量在update参数中的使用
+     * 
+     * @param array $query            
+     * @param array $update            
+     * @param array $fields            
+     * @param array $options            
+     * @return array
+     */
+    public function findAndModify(array $query, array $update = NULL, array $fields = NULL, array $options = NULL)
+    {
+        $query = $this->appendQuery($query);
+        return parent::findAndModify($query, $update, $fields, $options);
     }
 
     /**
      * 增加findAndModify方法
+     * 特别注意：__REMOVED__ __MODIFY_TIME__ __CREATE_TIME__ 3个系统保留变量在update参数中的使用
      *
      * @param array $option            
      * @param string $collection            
@@ -259,7 +367,7 @@ class MongoCollection extends \MongoCollection
         $targetCollection = $collection === NULL ? $this->_collection : $collection;
         $cmd['findandmodify'] = $targetCollection;
         if (isset($option['query']))
-            $cmd['query'] = $option['query'];
+            $cmd['query'] = $this->appendQuery($option['query']);
         if (isset($option['sort']))
             $cmd['sort'] = $option['sort'];
         if (isset($option['remove']))
@@ -280,7 +388,7 @@ class MongoCollection extends \MongoCollection
      *
      * @see MongoCollection::drop()
      */
-    public function drop()
+    function drop()
     {
         // 做法1：抛出异常禁止Drop操作
         // throw new \Exception('ICC deny execute "drop()" collection operation');
@@ -305,15 +413,10 @@ class MongoCollection extends \MongoCollection
      */
     public function ensureIndex($key_keys, array $options = NULL)
     {
-        $default = array(
-            'background' => True
-        // 'expireAfterSeconds'=>3600, //请充分了解后开启此参数，慎用
-                );
-        if ($options === NULL)
-            $options = $default;
-        else
-            $options = array_merge($default, $options);
-        
+        $default = array();
+        $default['background'] = true;
+        $default['expireAfterSeconds'] = 3600; // 请充分了解后开启此参数，慎用
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
         return parent::ensureIndex($key_keys, $options);
     }
 
@@ -323,9 +426,10 @@ class MongoCollection extends \MongoCollection
     private function debug()
     {
         $err = $this->_db->lastError();
-        if (self::debug)
+        if (self::debug) {
             var_dump($err);
-            // 记录下每一条产生的mongodb错误日志
+        }
+        // 记录下每一条产生的mongodb错误日志
         if ($err['err'] != null) {
             logError(json_encode($err));
         }

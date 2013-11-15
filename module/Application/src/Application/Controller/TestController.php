@@ -67,8 +67,13 @@ class TestController extends AbstractActionController
 
     public function mongoAction()
     {
+        try {
         $db = $this->getServiceLocator()->get('mongos');
         return $this->response;
+        }
+        catch(\Exception $e) {
+            var_dump($e->getMessage().$e->getTraceAsString());
+        }
     }
 
     public function triggerAction()
