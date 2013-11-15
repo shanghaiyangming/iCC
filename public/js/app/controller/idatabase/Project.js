@@ -12,8 +12,8 @@ Ext.define('icc.controller.idatabase.Project', {
 	},
 	listeners : {
 		'idatabaseProject' : {
-			selectionchange : function( this, selected, eOpts) {
-				this.addRef([{
+			selectionchange : function(self,selected,eOpts) {
+				self.addRef([{
 		            ref: 'tabPanel',
 		            selector: 'idatabaseProjectTabPanel'
 		        }]);
@@ -26,16 +26,16 @@ Ext.define('icc.controller.idatabase.Project', {
 				var record = selected[0];
 				if(record) {
 					var id = record.get('_id');
-					var name = record.get('name')
-					var panel = this.getTabPanel().getComponent(id);
+					var name = record.get('name');
+					var panel = self.getTabPanel().getComponent(id);
 					if (panel == null) {
 						panel = Ext.widget('idatabaseCollection', {
 							id : id,
 							title : name
 						});
-						this.getTabPanel().add(panel);
+						self.getTabPanel().add(panel);
 					}
-					this.getTabPanel().setActiveTab(id);
+					self.getTabPanel().setActiveTab(id);
 				}
 			}
 		}
