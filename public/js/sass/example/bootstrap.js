@@ -863,14 +863,15 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.Main": [],
   "icc.view.Viewport": [],
   "icc.view.common.Combobox": [],
-  "icc.view.idatabase.Collection": [],
   "icc.view.idatabase.Collection.Add": [],
   "icc.view.idatabase.Collection.Edit": [],
+  "icc.view.idatabase.Collection.Grid": [],
+  "icc.view.idatabase.Collection.Main": [],
   "icc.view.idatabase.Collection.TabPanel": [],
   "icc.view.idatabase.Collection.TypeCombobox": [],
-  "icc.view.idatabase.Project": [],
   "icc.view.idatabase.Project.Add": [],
   "icc.view.idatabase.Project.Edit": [],
+  "icc.view.idatabase.Project.Grid": [],
   "icc.view.idatabase.Project.TabPanel": []
 });
 Ext.ClassManager.addNameAliasMappings({
@@ -1905,14 +1906,17 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.view.common.Combobox": [
     "widget.iccViewCommonCombobox"
   ],
-  "icc.view.idatabase.Collection": [
-    "widget.idatabaseCollection"
-  ],
   "icc.view.idatabase.Collection.Add": [
     "widget.idatabaseCollectionAdd"
   ],
   "icc.view.idatabase.Collection.Edit": [
     "widget.idatabaseCollectionEdit"
+  ],
+  "icc.view.idatabase.Collection.Grid": [
+    "widget.idatabaseCollectionGrid"
+  ],
+  "icc.view.idatabase.Collection.Main": [
+    "widget.idatabaseCollectionMain"
   ],
   "icc.view.idatabase.Collection.TabPanel": [
     "widget.idatabaseCollectionTabPanel"
@@ -1920,14 +1924,14 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.view.idatabase.Collection.TypeCombobox": [
     "widget.idatabaseProjectCombobox"
   ],
-  "icc.view.idatabase.Project": [
-    "widget.idatabaseProject"
-  ],
   "icc.view.idatabase.Project.Add": [
     "widget.idatabaseProjectAdd"
   ],
   "icc.view.idatabase.Project.Edit": [
     "widget.idatabaseProjectEdit"
+  ],
+  "icc.view.idatabase.Project.Grid": [
+    "widget.idatabaseProjectGrid"
   ],
   "icc.view.idatabase.Project.TabPanel": [
     "widget.idatabaseProjectTabPanel"

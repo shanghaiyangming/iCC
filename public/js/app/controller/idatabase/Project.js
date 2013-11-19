@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Project', {
 	extend : 'icc.controller.common.GridController',
     models : ['Project','Collection'],
     stores : ['Project','Collection','Collection.Type'],
-    views : ['idatabase.Project','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection'],
+    views : ['idatabase.Project.Grid','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection.Main'],
 	controllerName : 'idatabaseProject',
 	actions : {
 		add : '/idatabase/project/add',
@@ -15,7 +15,7 @@ Ext.define('icc.controller.idatabase.Project', {
         selector: 'idatabaseProjectTabPanel'
     }],
 	initListeners : {
-		'idatabaseProject' : {
+		'idatabaseProjectGrid' : {
 			selectionchange : function(selectionModel,selected,eOpts) {
 
 				if(selected.length > 1) {
@@ -29,6 +29,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var name = record.get('name');
 					var panel = this.getTabPanel().getComponent(id);
 					if (panel == null) {
+						console.info(id);
 						panel = Ext.widget('idatabaseCollectionMain', {
 							id : id,
 							title : name,

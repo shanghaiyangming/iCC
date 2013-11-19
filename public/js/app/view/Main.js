@@ -3,7 +3,7 @@ Ext.define('icc.view.Main', {
     requires:[
         'Ext.tab.Panel',
         'Ext.layout.container.Border',
-        'icc.view.idatabase.Project'
+        'icc.view.idatabase.Project.Grid'
     ],
     
     xtype: 'app-main',
@@ -13,7 +13,7 @@ Ext.define('icc.view.Main', {
     },
 
     items: [{
-    	xtype : 'idatabaseProject'
+    	xtype : 'idatabaseProjectGrid'
     },{
         xtype : 'idatabaseProjectTabPanel'
     }]

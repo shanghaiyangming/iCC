@@ -73,14 +73,14 @@ Ext.define('icc.controller.common.GridController', {
             }
     	};
     	
-    	listeners[controllerName+' button[action=add]'] = {
+    	listeners[controllerName+'Grid button[action=add]'] = {
 			click : function() {
                 var window = Ext.widget(controllerName+'Add');
                 window.show();
             }
     	};
     	
-    	listeners[controllerName+' button[action=edit]'] = {
+    	listeners[controllerName+'Grid button[action=edit]'] = {
 			click : function(button) {
                 var grid	= button.up('gridpanel');
                 var selections = grid.getSelectionModel().getSelection();
@@ -96,7 +96,7 @@ Ext.define('icc.controller.common.GridController', {
             }
     	};
     	
-    	listeners[controllerName+' button[action=save]'] = {
+    	listeners[controllerName+'Grid button[action=save]'] = {
 			click : function(button) {
                 var records = this.getList().store.getUpdatedRecords();
                 var recordsNumber = records.length;
@@ -128,7 +128,7 @@ Ext.define('icc.controller.common.GridController', {
             }
     	};
     	
-    	listeners[controllerName+' button[action=remove]'] = {
+    	listeners[controllerName+'Grid button[action=remove]'] = {
 			click : function(button) {
                 var grid	= button.up('gridpanel');
                 var selections = grid.getSelectionModel().getSelection();

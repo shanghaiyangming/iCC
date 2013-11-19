@@ -1,7 +1,7 @@
 Ext.define('icc.store.Collection', {
 	extend: 'Ext.data.Store',
 	storeId:'Collection',
-	autoLoad: true,
+	autoLoad: false,
 	model : 'icc.model.Collection',
 	proxy : {
 		type : 'ajax',

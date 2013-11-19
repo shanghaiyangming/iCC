@@ -1,6 +1,6 @@
-Ext.define('icc.view.idatabase.Project', {
+Ext.define('icc.view.idatabase.Project.Grid', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.idatabaseProject',
+	alias : 'widget.idatabaseProjectGrid',
 	requires : [ 'icc.common.Paging'],
 	title : '项目列表',
 	region: 'west',
