@@ -9,8 +9,7 @@ Ext.Loader.addClassPathMappings({
   "Ext.Msg": "ext/src/window/MessageBox.js",
   "Ext.rtl.EventObjectImpl": "ext/src/rtl/EventObject.js",
   "ExtThemeNeptune": "ext/packages/ext-theme-neptune/overrides",
-  "icc": "app",
-  "icc.controller.idatabase.Collection": "app/view/idatabase/Collection.js"
+  "icc": "app"
 });
 Ext.ClassManager.addNameAlternateMappings({
   "Ext.AbstractComponent": [],
@@ -855,11 +854,20 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.common.GridController": [],
   "icc.controller.idatabase.Collection": [],
   "icc.controller.idatabase.Project": [],
+  "icc.model.Collection": [],
   "icc.model.Project": [],
   "icc.model.common.Model": [],
+  "icc.store.Collection": [],
+  "icc.store.Collection.Type": [],
   "icc.store.Project": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
+  "icc.view.common.Combobox": [],
+  "icc.view.idatabase.Collection": [],
+  "icc.view.idatabase.Collection.Add": [],
+  "icc.view.idatabase.Collection.Edit": [],
+  "icc.view.idatabase.Collection.TabPanel": [],
+  "icc.view.idatabase.Collection.TypeCombobox": [],
   "icc.view.idatabase.Project": [],
   "icc.view.idatabase.Project.Add": [],
   "icc.view.idatabase.Project.Edit": [],
@@ -1884,13 +1892,34 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.common.GridController": [],
   "icc.controller.idatabase.Collection": [],
   "icc.controller.idatabase.Project": [],
+  "icc.model.Collection": [],
   "icc.model.Project": [],
   "icc.model.common.Model": [],
+  "icc.store.Collection": [],
+  "icc.store.Collection.Type": [],
   "icc.store.Project": [],
   "icc.view.Main": [
     "widget.app-main"
   ],
   "icc.view.Viewport": [],
+  "icc.view.common.Combobox": [
+    "widget.iccViewCommonCombobox"
+  ],
+  "icc.view.idatabase.Collection": [
+    "widget.idatabaseCollection"
+  ],
+  "icc.view.idatabase.Collection.Add": [
+    "widget.idatabaseCollectionAdd"
+  ],
+  "icc.view.idatabase.Collection.Edit": [
+    "widget.idatabaseCollectionEdit"
+  ],
+  "icc.view.idatabase.Collection.TabPanel": [
+    "widget.idatabaseCollectionTabPanel"
+  ],
+  "icc.view.idatabase.Collection.TypeCombobox": [
+    "widget.idatabaseProjectCombobox"
+  ],
   "icc.view.idatabase.Project": [
     "widget.idatabaseProject"
   ],

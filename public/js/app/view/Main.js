@@ -15,8 +15,6 @@ Ext.define('icc.view.Main', {
     items: [{
     	xtype : 'idatabaseProject'
     },{
-        region: 'center',
-        xtype: 'tabpanel',
-        items:[]
+        xtype : 'idatabaseProjectTabPanel'
     }]
 });

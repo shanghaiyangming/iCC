@@ -1,8 +1,8 @@
 Ext.define('icc.controller.idatabase.Project', {
 	extend : 'icc.controller.common.GridController',
-    models : ['Project'],
-    stores : ['Project'],
-    views : ['idatabase.Project','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel'],
+    models : ['Project','Collection'],
+    stores : ['Project','Collection','Collection.Type'],
+    views : ['idatabase.Project','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection'],
 	controllerName : 'idatabaseProject',
 	actions : {
 		add : '/idatabase/project/add',
@@ -10,14 +10,14 @@ Ext.define('icc.controller.idatabase.Project', {
 		remove : '/idatabase/project/remove',
 		save : '/idatabase/project/save'
 	},
-	listeners : {
+	refs : [{
+        ref: 'tabPanel',
+        selector: 'idatabaseProjectTabPanel'
+    }],
+	initListeners : {
 		'idatabaseProject' : {
-			selectionchange : function(self,selected,eOpts) {
-				self.addRef([{
-		            ref: 'tabPanel',
-		            selector: 'idatabaseProjectTabPanel'
-		        }]);
-				
+			selectionchange : function(selectionModel,selected,eOpts) {
+
 				if(selected.length > 1) {
 					Ext.Msg.alert('提示信息', '请勿选择多项');
 					return false;
@@ -27,15 +27,16 @@ Ext.define('icc.controller.idatabase.Project', {
 				if(record) {
 					var id = record.get('_id');
 					var name = record.get('name');
-					var panel = self.getTabPanel().getComponent(id);
+					var panel = this.getTabPanel().getComponent(id);
 					if (panel == null) {
-						panel = Ext.widget('idatabaseCollection', {
+						panel = Ext.widget('idatabaseCollectionMain', {
 							id : id,
-							title : name
+							title : name,
+							project_id : id
 						});
-						self.getTabPanel().add(panel);
+						this.getTabPanel().add(panel);
 					}
-					self.getTabPanel().setActiveTab(id);
+					this.getTabPanel().setActiveTab(id);
 				}
 			}
 		}

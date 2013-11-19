@@ -4,13 +4,13 @@ Ext.define('icc.controller.common.GridController', {
     stores : [],
     views : [],
     controllerName : '',
-    listeners : {},
     actions:{
     	add : '',
     	edit : '',
     	remove : '',
     	save : ''
     },
+    initListeners : {},
     init : function() {
     	var self = this;
     	var controllerName = this.controllerName;
@@ -167,19 +167,20 @@ Ext.define('icc.controller.common.GridController', {
     	};
 	
     	//在基础监听之外，添加自定义监听,如果同名的selector存在，那么追加事件
-    	if(typeof(this.listeners)==='object') {
-	    	for (attrName in this.listeners) {
+    	console.info(typeof(this.initListeners),this.initListeners);
+    	if(typeof(this.initListeners)==='object') {
+	    	for (attrName in this.initListeners) {
 	    		if(listeners[attrName]==undefined || listeners[attrName]==null) {
-	    			listeners[attrName] = this.listeners;
+	    			listeners[attrName] = this.initListeners[attrName];
 	    		}
 	    		else {
-	    			for(event in listeners[attrName]) {
-	    				listeners[attrName][event] = listeners[attrName][event];
+	    			for(event in this.initListeners[attrName]) {
+	    				listeners[attrName][event] = this.initListeners[attrName][event];
 	    			}
 	    		}
 	    	}
     	}
-    	
+    	console.info(listeners);
         this.control(listeners);
     }
 });
