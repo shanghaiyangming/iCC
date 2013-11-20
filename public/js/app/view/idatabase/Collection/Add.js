@@ -3,6 +3,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 	alias : 'widget.idatabaseCollectionAdd',
 	title : '添加数据集合',
 	initComponent : function() {
+		console.info(this);
 		this.items = [ {
 			xtype : 'iform',
 			url : '/idatabase/collection/add',

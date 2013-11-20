@@ -93,7 +93,7 @@ class CollectionController extends BaseActionController
         $datas['name'] = $name;
         $datas['alias'] = $alias;
         $datas['desc'] = $desc;
-        $this->_project->insert($datas);
+        $this->_collection->insert($datas);
         
         return $this->msg(true, '添加信息成功');
     }
@@ -192,20 +192,20 @@ class CollectionController extends BaseActionController
     }
 
     /**
-     * 检测一个项目是否存在，根据名称和编号
+     * 检测一个集合是否存在，根据名称和编号
      *
      * @param string $info            
      * @return boolean
      */
-    private function checkProjectExist($info)
+    private function checkCollecionExist($info)
     {
-        $info = $this->_project->findOne(array(
+        $info = $this->_collection->findOne(array(
             '$or' => array(
                 array(
                     'name' => $info
                 ),
                 array(
-                    'sn' => $info
+                    'alias' => $info
                 )
             )
         ));

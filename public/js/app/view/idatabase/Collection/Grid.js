@@ -27,7 +27,8 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 		store.proxy.extraParams = {
 			'project_id' : me.project_id
 		};
-
+		store.load();
+		
 		Ext.apply(me, {
 			project_id : me.project_id,
 			store : store,

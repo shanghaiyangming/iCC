@@ -21,6 +21,9 @@ Ext.define('icc.controller.idatabase.Collection', {
     	}
     	
     	me.addRef([{
+            ref: 'main',
+            selector: me.controllerName+'Main'
+        },{
             ref: 'list',
             selector: me.controllerName+'Grid'
         },{
@@ -75,7 +78,9 @@ Ext.define('icc.controller.idatabase.Collection', {
     	
     	listeners[controllerName+'Grid button[action=add]'] = {
 			click : function() {
-                var win = Ext.widget(controllerName+'Add');
+                var win = Ext.widget(controllerName+'Add',{
+                	project_id : me.getMain().project_id
+                });
                 win.show();
             }
     	};
@@ -85,7 +90,9 @@ Ext.define('icc.controller.idatabase.Collection', {
                 var grid	= button.up('gridpanel');
                 var selections = grid.getSelectionModel().getSelection();
                 if (selections.length > 0) {
-                    var win = Ext.widget(controllerName+'Edit');
+                    var win = Ext.widget(controllerName+'Edit',{
+                    	project_id : me.getMain().project_id
+                    });
                     var form = win.down('form').getForm();
                     form.loadRecord(selections[0]);
                     win.show();
