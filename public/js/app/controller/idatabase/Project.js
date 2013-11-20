@@ -1,7 +1,7 @@
 Ext.define('icc.controller.idatabase.Project', {
 	extend : 'icc.controller.common.GridController',
-    models : ['Project','Collection'],
-    stores : ['Project','Collection','Collection.Type'],
+    models : ['idatabase.Project','idatabase.Collection'],
+    stores : ['idatabase.Project','idatabase.Collection','idatabase.Collection.Type'],
     views : ['idatabase.Project.Grid','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection.Main'],
 	controllerName : 'idatabaseProject',
 	actions : {
@@ -29,7 +29,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var name = record.get('name');
 					var panel = this.getTabPanel().getComponent(id);
 					if (panel == null) {
-						console.info(id);
+
 						panel = Ext.widget('idatabaseCollectionMain', {
 							id : id,
 							title : name,

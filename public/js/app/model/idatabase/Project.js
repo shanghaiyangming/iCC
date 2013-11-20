@@ -1,4 +1,4 @@
-Ext.define('icc.model.Project', {
+Ext.define('icc.model.idatabase.Project', {
 	extend : 'icc.model.common.Model',
 	fields : [{
 		name : 'name',

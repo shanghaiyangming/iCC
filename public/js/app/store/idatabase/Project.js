@@ -1,8 +1,8 @@
-Ext.define('icc.store.Project', {
+Ext.define('icc.store.idatabase.Project', {
 	extend: 'Ext.data.Store',
-	storeId:'Project',
+	storeId:'idatabaseProject',
 	autoLoad: true,
-	model : 'icc.model.Project',
+	model : 'icc.model.idatabase.Project',
 	proxy : {
 		type : 'ajax',
 		url : '/idatabase/project/index',

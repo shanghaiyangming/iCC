@@ -1,8 +1,8 @@
-Ext.define('icc.store.Collection', {
+Ext.define('icc.store.idatabase.Collection', {
 	extend: 'Ext.data.Store',
-	storeId:'Collection',
+	storeId:'idatabaseCollection',
 	autoLoad: false,
-	model : 'icc.model.Collection',
+	model : 'icc.model.idatabase.Collection',
 	proxy : {
 		type : 'ajax',
 		url : '/idatabase/collection/index',
