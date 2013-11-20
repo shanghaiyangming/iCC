@@ -2,12 +2,10 @@ Ext.define('icc.view.idatabase.Project.Edit', {
 	extend : 'icc.common.Window',
 	alias : 'widget.idatabaseProjectEdit',
 	title : '编辑项目',
-	requires : [],
-	layout:'border',
 	initComponent: function() {
 		var project_id = this.project_id;
 		this.items = [ {
-			xtype : 'form',
+			xtype : 'iform',
 			url : '/idatabase/project/edit',
 			items : [{
 				xtype : 'hiddenfield',

@@ -2,13 +2,16 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 	extend : 'icc.common.Window',
 	alias : 'widget.idatabaseCollectionAdd',
 	title : '添加数据集合',
-	requires : [],
-	layout : 'border',
 	initComponent : function() {
 		this.items = [ {
-			xtype : 'form',
+			xtype : 'iform',
 			url : '/idatabase/collection/add',
 			items : [ {
+				xtype : 'hiddenfield',
+				name : 'project_id',
+				value : this.project_id,
+				vtype : 'alphanum'
+			}, {
 				name : 'alias',
 				fieldLabel : '集合别名(英文)',
 				allowBlank : false,
@@ -20,6 +23,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 			}, {
 				xtype : 'idatabaseCollectionTypeCombobox'
 			}, {
+				xtype: 'textareafield',
 				name : 'desc',
 				fieldLabel : '功能描述',
 				allowBlank : false

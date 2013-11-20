@@ -2,11 +2,9 @@ Ext.define('icc.view.idatabase.Project.Add', {
 	extend : 'icc.common.Window',
 	alias : 'widget.idatabaseProjectAdd',
 	title : '添加项目',
-	requires : [],
-	layout:'border',
 	initComponent: function() {
 		this.items = [ {
-			xtype : 'form',
+			xtype : 'iform',
 			url : '/idatabase/project/add',
 			items : [{
 				name : 'name',

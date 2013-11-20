@@ -1,15 +1,13 @@
 Ext.define('icc.common.Form', {
 	extend : 'Ext.form.Panel',
-	alias : 'widget.form',
+	alias : 'widget.iform',
 	frame : false,
 	bodyPadding : 5,
-	region : 'center',
 	url : '',
 	defaultType: 'textfield',
 	fieldDefaults : {
 		labelAlign: 'left',
 		labelWidth : 100,
-		fieldLabel: 'fieldLabel',
 		anchor : '100%'
 	},
 	items:[],

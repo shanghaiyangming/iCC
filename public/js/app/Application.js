@@ -4,7 +4,7 @@ Ext.define('icc.Application', {
     extend: 'Ext.app.Application',
 
     views: [
-        // TODO: add views here
+            
     ],
 
     controllers: [

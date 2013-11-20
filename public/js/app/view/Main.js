@@ -3,7 +3,12 @@ Ext.define('icc.view.Main', {
     requires:[
         'Ext.tab.Panel',
         'Ext.layout.container.Border',
-        'icc.view.idatabase.Project.Grid'
+        'icc.view.idatabase.Project.Grid',
+        'icc.common.Form',
+        'icc.common.Paging',
+        'icc.common.Tbar',
+        'icc.common.Window',
+        'icc.common.SearchBar'
     ],
     
     xtype: 'app-main',

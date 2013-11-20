@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
+use Zend\Json\Json;
 
 class ProjectController extends BaseActionController
 {
@@ -142,11 +143,17 @@ class ProjectController extends BaseActionController
      */
     public function removeAction()
     {
-        $_id = $this->params()->fromPost('_id', array());
-        if (empty($_id)) {
-            return $this->msg(false, '无效的项目编号');
+        $_id = $this->params()->fromPost('_id', null);
+        try {
+            $_id = Json::decode($_id,Json::TYPE_ARRAY);
+        }
+        catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
         }
         
+        if(!is_array($_id)) {
+            return $this->msg(false, '请选择你要删除的项');
+        }
         foreach ($_id as $row) {
             $this->_project->remove(array(
                 '_id' => myMongoId($row)
@@ -154,12 +161,6 @@ class ProjectController extends BaseActionController
         }
         return $this->msg(true, '删除信息成功');
     }
-
-    /**
-     * 权限分享，账户所属人员如果具备分享权限，可以将项目分享给别的用户
-     */
-    public function shareAction()
-    {}
 
     /**
      * 检测一个项目是否存在，根据名称和编号

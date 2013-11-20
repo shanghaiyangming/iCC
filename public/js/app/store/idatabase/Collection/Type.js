@@ -3,10 +3,10 @@ Ext.define('icc.store.idatabase.Collection.Type', {
 	fields : [ "name", "type" ],
 	storeId : 'idatabaseCollectionType',
 	data : [ {
-		"name" : '专家模式',
-		"type" : 'professional'
-	}, {
-		"name" : '专家模式',
+		"name" : '普通模式：针对系统日常使用人员显示的集合',
 		"type" : 'common'
+	}, {
+		"name" : '专家模式：针对研发或专业类人员使用的集合',
+		"type" : 'professional'
 	} ]
 });

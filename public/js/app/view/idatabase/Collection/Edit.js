@@ -2,32 +2,38 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 	extend : 'icc.common.Window',
 	alias : 'widget.idatabaseCollectionEdit',
 	title : '编辑项目',
-	requires : [],
-	layout:'border',
-	initComponent: function() {
-		var project_id = this.project_id;
+	initComponent : function() {
 		this.items = [ {
-			xtype : 'form',
+			xtype : 'iform',
 			url : '/idatabase/collection/edit',
-			items : [{
+			items : [ {
+				xtype : 'hiddenfield',
+				name : 'project_id',
+				value : this.project_id,
+				vtype : 'alphanum'
+			}, {
 				xtype : 'hiddenfield',
 				name : '_id',
 				allowBlank : false
-			},{
+			}, {
+				name : 'alias',
+				fieldLabel : '集合别名(英文)',
+				allowBlank : false,
+				vtype : 'alphanum'
+			}, {
 				name : 'name',
-				fieldLabel : '项目名称',
-				allowBlank : false
-			},{
-				name : 'sn',
-				fieldLabel : '项目编号',
+				fieldLabel : '集合名称(中文)',
 				allowBlank : false
 			}, {
+				xtype : 'idatabaseCollectionTypeCombobox'
+			}, {
+				xtype : 'textareafield',
 				name : 'desc',
-				fieldLabel : '项目介绍',
+				fieldLabel : '功能描述',
 				allowBlank : false
-			}]
-		}];
-        this.callParent();
-    }
-	
+			} ]
+		} ];
+		this.callParent();
+	}
+
 });

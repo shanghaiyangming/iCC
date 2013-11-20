@@ -21,8 +21,8 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 		format:'Y-m-d'
 	}],
 	initComponent: function() {
-		var self = this;
-		var store =  Ext.data.StoreManager.lookup('idatabaseProject');
+		var me = this;
+		var store =  Ext.data.StoreManager.lookup('idatabase.Project');
 		this.store = store;
 		
 		this.bbar = {
