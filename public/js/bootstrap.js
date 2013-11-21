@@ -845,6 +845,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "ExtThemeNeptune.toolbar.Paging": [],
   "ExtThemeNeptune.toolbar.Toolbar": [],
   "icc.Application": [],
+  "icc.common.Combobox": [],
   "icc.common.Form": [],
   "icc.common.Paging": [],
   "icc.common.SearchBar": [],
@@ -861,7 +862,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Project": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
-  "icc.view.common.Combobox": [],
   "icc.view.idatabase.Collection.Add": [],
   "icc.view.idatabase.Collection.Edit": [],
   "icc.view.idatabase.Collection.Grid": [],
@@ -1875,6 +1875,7 @@ Ext.ClassManager.addNameAliasMappings({
   "ExtThemeNeptune.toolbar.Paging": [],
   "ExtThemeNeptune.toolbar.Toolbar": [],
   "icc.Application": [],
+  "icc.common.Combobox": [],
   "icc.common.Form": [
     "widget.iform"
   ],
@@ -1901,7 +1902,6 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.app-main"
   ],
   "icc.view.Viewport": [],
-  "icc.view.common.Combobox": [],
   "icc.view.idatabase.Collection.Add": [
     "widget.idatabaseCollectionAdd"
   ],
