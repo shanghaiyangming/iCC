@@ -77,7 +77,7 @@ Ext.define('icc.controller.idatabase.Project', {
     	};
     	
     	listeners[controllerName+'Grid button[action=add]'] = {
-			click : function() {
+			click : function(button) {
                 var win = Ext.widget(controllerName+'Add');
                 win.show();
             }

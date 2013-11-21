@@ -23,7 +23,11 @@ class CollectionController extends BaseActionController
 
     public function init()
     {
-        $this->_project_id = $this->params()->fromQuery('project_id', null);
+        $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
+        
+        if(empty($this->_project_id))
+            throw new \Exception('$this->_project_id值未设定');
+        
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         // 注意这里应该增加检查，该项目id是否符合用户操作的权限范围
     }
@@ -54,7 +58,8 @@ class CollectionController extends BaseActionController
      */
     public function addAction()
     {
-        $project_id = $this->params()->fromPost('project_id', null);
+        try {
+        $project_id = $this->_project_id;
         $name = $this->params()->fromPost('name', null);
         $alias = $this->params()->fromPost('alias', null);
         $type = $this->params()->fromPost('type', null);
@@ -72,7 +77,10 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '请填写集合别名，只接受英文与字母');
         }
         
-        if(!in_array($type,array('common','professional'))) {
+        if (! in_array($type, array(
+            'common',
+            'professional'
+        ))) {
             return $this->msg(false, '无效的结合类型');
         }
         
@@ -96,6 +104,10 @@ class CollectionController extends BaseActionController
         $this->_collection->insert($datas);
         
         return $this->msg(true, '添加信息成功');
+        }
+        catch(\Exception $e) {
+            var_dump($e->getTraceAsString());
+        }
     }
 
     /**
@@ -109,13 +121,13 @@ class CollectionController extends BaseActionController
     public function editAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        $project_id = $this->params()->fromPost('project_id', null);
+        $project_id = $this->_project_id;
         $name = $this->params()->fromPost('name', null);
         $alias = $this->params()->fromPost('alias', null);
         $type = $this->params()->fromPost('type', null);
         $desc = $this->params()->fromPost('desc', null);
         
-        if($_id==null) {
+        if ($_id == null) {
             return $this->msg(false, '无效的集合编号');
         }
         
@@ -131,7 +143,10 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '请填写集合别名，只接受英文与字母');
         }
         
-        if(!in_array($type,array('common','professional'))) {
+        if (! in_array($type, array(
+            'common',
+            'professional'
+        ))) {
             return $this->msg(false, '无效的结合类型');
         }
         
@@ -152,7 +167,7 @@ class CollectionController extends BaseActionController
         $datas['name'] = $name;
         $datas['alias'] = $alias;
         $datas['desc'] = $desc;
-
+        
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
         ), array(
@@ -174,18 +189,18 @@ class CollectionController extends BaseActionController
     {
         $_id = $this->params()->fromPost('_id', null);
         try {
-            $_id = Json::decode($_id,Json::TYPE_ARRAY);
-        }
-        catch (\Exception $e) {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
             return $this->msg(false, '无效的json字符串');
         }
         
-        if(!is_array($_id)) {
+        if (! is_array($_id)) {
             return $this->msg(false, '请选择你要删除的项');
         }
         foreach ($_id as $row) {
             $this->_collection->remove(array(
-                '_id' => myMongoId($row)
+                '_id' => myMongoId($row),
+                'project_id'=>$this->_project_id
             ));
         }
         return $this->msg(true, '删除信息成功');
@@ -200,13 +215,18 @@ class CollectionController extends BaseActionController
     private function checkCollecionExist($info)
     {
         $info = $this->_collection->findOne(array(
-            '$or' => array(
+            '$and' => array(
                 array(
-                    'name' => $info
+                    '$or' => array(
+                        array(
+                            'name' => $info
+                        ),
+                        array(
+                            'alias' => $info
+                        )
+                    )
                 ),
-                array(
-                    'alias' => $info
-                )
+                array('project_id'=>$this->_project_id)
             )
         ));
         

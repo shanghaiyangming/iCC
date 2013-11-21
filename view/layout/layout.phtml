@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <?php
-echo $this->headTitle($this->translate('ICC品牌云 -- iCatholic Brand Cloud Platform'))
+echo $this->headTitle($this->translate('ICC品牌云平台'))
     ->setSeparator(' - ')
     ->setAutoEscape(false);
 echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
@@ -14,7 +14,10 @@ echo $this->headLink(array(
 ))
     ->appendStylesheet($this->basePath() . '/js/build/production/icc/resources/icc-all.css')
     ->appendStylesheet($this->basePath() . '/js/build/production/icc/resources/icon.css');
-echo $this->headScript()->appendFile($this->basePath() . '/js/build/production/icc/app.js');
+echo $this->headScript()
+    ->appendFile($this->basePath() . '/js/build/production/icc/app.js')
+    ->appendFile($this->basePath() . '/js/build/production/icc/resources/common.js');
+
 ?>
 </head>
 <body>
