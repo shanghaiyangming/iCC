@@ -69,7 +69,7 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 						} ]
 					}
 				}, '-', {
-					text : '管理',
+					text : '插件管理',
 					width : 100,
 					iconCls : 'menu',
 					menu : {
@@ -77,17 +77,27 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 						plain : true,
 						items : [ {
 							xtype : 'button',
-							text : '用户管理',
+							text : '云存储',
 							iconCls : 'user',
 							action : 'user'
 						}, {
 							xtype : 'button',
-							text : '密钥管理',
+							text : '微信插件',
 							iconCls : 'key',
 							action : 'key'
 						}, {
 							xtype : 'button',
-							text : '插件管理',
+							text : '微博插件',
+							iconCls : 'plugin',
+							action : 'plugin'
+						}, {
+							xtype : 'button',
+							text : '支付插件',
+							iconCls : 'plugin',
+							action : 'plugin'
+						} , {
+							xtype : 'button',
+							text : '日志插件',
 							iconCls : 'plugin',
 							action : 'plugin'
 						} ]
