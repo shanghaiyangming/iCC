@@ -6,7 +6,7 @@ Ext.define('icc.view.idatabase.Collection.TypeCombobox', {
 	store : 'idatabase.Collection.Type',
 	valueField : 'type',
 	displayField : 'name',
-	queryMode : 'remote',
+	queryMode : 'local',
 	pageSize : 0,
 	editable : false,
 	typeAhead : false

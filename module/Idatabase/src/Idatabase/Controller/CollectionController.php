@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
+use Zend\Json\Json;
 
 class CollectionController extends BaseActionController
 {
@@ -100,6 +101,7 @@ class CollectionController extends BaseActionController
         $datas['project_id'] = $project_id;
         $datas['name'] = $name;
         $datas['alias'] = $alias;
+        $datas['type'] = $type;
         $datas['desc'] = $desc;
         $this->_collection->insert($datas);
         
@@ -166,6 +168,7 @@ class CollectionController extends BaseActionController
         $datas['project_id'] = $project_id;
         $datas['name'] = $name;
         $datas['alias'] = $alias;
+        $datas['type'] = $type;
         $datas['desc'] = $desc;
         
         $this->_collection->update(array(

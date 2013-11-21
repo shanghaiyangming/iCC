@@ -20,6 +20,7 @@ Ext.define('icc.view.idatabase.Project.Edit', {
 				fieldLabel : '项目编号',
 				allowBlank : false
 			}, {
+				xtype: 'textareafield',
 				name : 'desc',
 				fieldLabel : '项目介绍',
 				allowBlank : false
