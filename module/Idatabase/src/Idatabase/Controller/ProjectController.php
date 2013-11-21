@@ -35,6 +35,17 @@ class ProjectController extends BaseActionController
     public function indexAction()
     {
         $query = array();
+        $search = $this->params()->fromQuery('search', null);
+        if ($search != null) {
+            $search = new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $search) . '/i');
+            $query = array(
+                '$or' => array(
+                    array('name'=>$search),
+                    array('sn'=>$search),
+                    array('desc'=>$search),
+                )
+            );
+        }
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 
@@ -145,13 +156,12 @@ class ProjectController extends BaseActionController
     {
         $_id = $this->params()->fromPost('_id', null);
         try {
-            $_id = Json::decode($_id,Json::TYPE_ARRAY);
-        }
-        catch (\Exception $e) {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
             return $this->msg(false, '无效的json字符串');
         }
         
-        if(!is_array($_id)) {
+        if (! is_array($_id)) {
             return $this->msg(false, '请选择你要删除的项');
         }
         foreach ($_id as $row) {

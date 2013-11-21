@@ -87,6 +87,12 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 					}]
 				}
 			}]
+		},{
+			xtype : 'toolbar',
+			dock: 'top',
+			items : [ {
+				xtype : 'searchBar'
+			}]
 		}];
 		
 		this.callParent();

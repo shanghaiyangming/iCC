@@ -19,9 +19,10 @@ Ext.define('icc.common.SearchBar', {
 				text : '搜索',
 				iconCls : 'search',
 				hideLabel : true,
-				handler : function() {
-					me.store.proxy['extraParams']['search'] = Ext.getCmp(searchUnique).value;
-					me.store.load();
+				handler : function(button) {
+					var store = button.up('gridpanel').store;
+					store.proxy['extraParams']['search'] = Ext.getCmp(searchUnique).value;
+					store.load();
 				}
 			} ]
 		});

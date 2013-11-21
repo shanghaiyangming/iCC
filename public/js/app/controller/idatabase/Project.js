@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Project', {
 	extend : 'Ext.app.Controller',
     models : ['idatabase.Project','idatabase.Collection'],
     stores : ['idatabase.Project','idatabase.Collection','idatabase.Collection.Type'],
-    views : ['idatabase.Project.Grid','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection.Main'],
+    views : ['idatabase.Project.Grid','idatabase.Project.Add','idatabase.Project.Edit','idatabase.Project.TabPanel','idatabase.Collection.Main','icc.common.SearchBar'],
 	controllerName : 'idatabaseProject',
 	actions : {
 		add : '/idatabase/project/add',
