@@ -16,8 +16,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 		ref : 'projectTabPanel',
 		selector : 'idatabaseProjectTabPanel'
 	} ],
-	activeTabGrid : function() {
-		return this.getProjectTabPanel().getActiveTab().down("grid");
+	activeTabGrid : function(gridName) {
+		if (gridName == undefined || gridName == '') {
+			gridName = 'idatabaseCollectionGrid';
+		}
+		return this.getProjectTabPanel().getActiveTab().down(gridName);
 	},
 	init : function() {
 		var me = this;

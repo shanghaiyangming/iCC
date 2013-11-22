@@ -26,7 +26,7 @@ class CollectionController extends BaseActionController
     {
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
-        if(empty($this->_project_id))
+        if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
@@ -60,54 +60,53 @@ class CollectionController extends BaseActionController
     public function addAction()
     {
         try {
-        $project_id = $this->_project_id;
-        $name = $this->params()->fromPost('name', null);
-        $alias = $this->params()->fromPost('alias', null);
-        $type = $this->params()->fromPost('type', null);
-        $desc = $this->params()->fromPost('desc', null);
-        
-        if ($project_id == null) {
-            return $this->msg(false, '无效的项目编号');
-        }
-        
-        if ($name == null) {
-            return $this->msg(false, '请填写集合名称');
-        }
-        
-        if ($alias == null || ! preg_match("/[a-z0-9]/i", $alias)) {
-            return $this->msg(false, '请填写集合别名，只接受英文与字母');
-        }
-        
-        if (! in_array($type, array(
-            'common',
-            'professional'
-        ))) {
-            return $this->msg(false, '无效的结合类型');
-        }
-        
-        if ($desc == null) {
-            return $this->msg(false, '请填写集合描述');
-        }
-        
-        if ($this->checkCollecionExist($name)) {
-            return $this->msg(false, '集合名称已经存在');
-        }
-        
-        if ($this->checkCollecionExist($alias)) {
-            return $this->msg(false, '集合别名已经存在');
-        }
-        
-        $datas = array();
-        $datas['project_id'] = $project_id;
-        $datas['name'] = $name;
-        $datas['alias'] = $alias;
-        $datas['type'] = $type;
-        $datas['desc'] = $desc;
-        $this->_collection->insert($datas);
-        
-        return $this->msg(true, '添加信息成功');
-        }
-        catch(\Exception $e) {
+            $project_id = $this->_project_id;
+            $name = $this->params()->fromPost('name', null);
+            $alias = $this->params()->fromPost('alias', null);
+            $type = $this->params()->fromPost('type', null);
+            $desc = $this->params()->fromPost('desc', null);
+            
+            if ($project_id == null) {
+                return $this->msg(false, '无效的项目编号');
+            }
+            
+            if ($name == null) {
+                return $this->msg(false, '请填写集合名称');
+            }
+            
+            if ($alias == null || ! preg_match("/[a-z0-9]/i", $alias)) {
+                return $this->msg(false, '请填写集合别名，只接受英文与字母');
+            }
+            
+            if (! in_array($type, array(
+                'common',
+                'professional'
+            ))) {
+                return $this->msg(false, '无效的结合类型');
+            }
+            
+            if ($desc == null) {
+                return $this->msg(false, '请填写集合描述');
+            }
+            
+            if ($this->checkCollecionExist($name)) {
+                return $this->msg(false, '集合名称已经存在');
+            }
+            
+            if ($this->checkCollecionExist($alias)) {
+                return $this->msg(false, '集合别名已经存在');
+            }
+            
+            $datas = array();
+            $datas['project_id'] = $project_id;
+            $datas['name'] = $name;
+            $datas['alias'] = $alias;
+            $datas['type'] = $type;
+            $datas['desc'] = $desc;
+            $this->_collection->insert($datas);
+            
+            return $this->msg(true, '添加信息成功');
+        } catch (\Exception $e) {
             var_dump($e->getTraceAsString());
         }
     }
@@ -156,11 +155,15 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '请填写集合描述');
         }
         
-        if ($this->checkCollecionExist($name)) {
+        $oldCollectionInfo = $this->_collection->findOne(array(
+            '_id' => myMongoId($_id)
+        ));
+        
+        if ($this->checkCollecionExist($name) && $oldCollectionInfo['name'] != $name) {
             return $this->msg(false, '集合名称已经存在');
         }
         
-        if ($this->checkCollecionExist($alias)) {
+        if ($this->checkCollecionExist($alias) && $oldCollectionInfo['alias'] != $alias) {
             return $this->msg(false, '集合别名已经存在');
         }
         
@@ -203,7 +206,7 @@ class CollectionController extends BaseActionController
         foreach ($_id as $row) {
             $this->_collection->remove(array(
                 '_id' => myMongoId($row),
-                'project_id'=>$this->_project_id
+                'project_id' => $this->_project_id
             ));
         }
         return $this->msg(true, '删除信息成功');
@@ -229,7 +232,9 @@ class CollectionController extends BaseActionController
                         )
                     )
                 ),
-                array('project_id'=>$this->_project_id)
+                array(
+                    'project_id' => $this->_project_id
+                )
             )
         ));
         

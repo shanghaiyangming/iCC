@@ -40,9 +40,15 @@ class ProjectController extends BaseActionController
             $search = new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $search) . '/i');
             $query = array(
                 '$or' => array(
-                    array('name'=>$search),
-                    array('sn'=>$search),
-                    array('desc'=>$search),
+                    array(
+                        'name' => $search
+                    ),
+                    array(
+                        'sn' => $search
+                    ),
+                    array(
+                        'desc' => $search
+                    )
                 )
             );
         }
@@ -123,11 +129,15 @@ class ProjectController extends BaseActionController
             return $this->msg(false, '请填写项目描述');
         }
         
-        if ($this->checkProjectExist($name)) {
+        $oldProjectInfo = $this->_project->findOne(array(
+            '_id' => myMongoId($_id)
+        ));
+        
+        if ($this->checkProjectExist($name) && $oldProjectInfo['name'] != $name) {
             return $this->msg(false, '项目名称已经存在');
         }
         
-        if ($this->checkProjectExist($sn)) {
+        if ($this->checkProjectExist($sn) && $oldProjectInfo['sn'] != $sn) {
             return $this->msg(false, '项目编号已经存在');
         }
         

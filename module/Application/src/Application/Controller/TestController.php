@@ -19,7 +19,10 @@ class TestController extends AbstractActionController
     {
         echo __CLASS__;
         echo get_class($this);
-        echo str_replace(array(__NAMESPACE__,'\\'), '', __CLASS__);
+        echo str_replace(array(
+            __NAMESPACE__,
+            '\\'
+        ), '', __CLASS__);
         return $this->response;
     }
 
@@ -68,17 +71,15 @@ class TestController extends AbstractActionController
     public function mongoAction()
     {
         try {
-        $db = $this->getServiceLocator()->get('mongos');
-        return $this->response;
-        }
-        catch(\Exception $e) {
-            var_dump($e->getMessage().$e->getTraceAsString());
+            $db = $this->getServiceLocator()->get('mongos');
+            return $this->response;
+        } catch (\Exception $e) {
+            var_dump($e->getMessage() . $e->getTraceAsString());
         }
     }
 
     public function triggerAction()
     {
-        
         $evt = $this->getEventManager()->getSharedManager();
         $evt->getEvents();
         // $view = new ViewModel();
@@ -104,7 +105,7 @@ class TestController extends AbstractActionController
         $eventManager = new \Zend\EventManager\StaticEventManager();
         $eventManager::getInstance();
     }
-    
+
     public function insertMongoAction()
     {
         try {
@@ -113,17 +114,17 @@ class TestController extends AbstractActionController
                 echo '$this->_model instanceof \MongoCollection';
             else
                 echo 'error';
-            var_dump($this->_model->insert(array(
-            'a' => time()
+            var_dump($this->_model->insertByFindAndModify(array(
+                'a.b' => time()
             )));
-            var_dump($this->_model->findOne());
+            //var_dump($this->_model->findOne());
             echo 'OK';
         } catch (\Exception $e) {
             var_dump($e->getMessage());
         }
         return $this->response;
     }
-    
+
     /**
      * 登录验证码生成
      *
@@ -141,22 +142,24 @@ class TestController extends AbstractActionController
         $this->response->setContent($builder->output(80));
         return $this->response;
     }
-    
-    public function cachePluginAction() {
-        if(($datas = $this->cache('123'))===null) {
+
+    public function cachePluginAction()
+    {
+        if (($datas = $this->cache('123')) === null) {
             echo $datas = time();
             $this->cache()->save($datas);
         }
         echo $datas;
         return $this->response;
     }
-    
-    public function logAction() {
-        //var_dump($this->getServiceLocator()->get('EnliteMonologService'));
-        //var_dump($this->getServiceLocator()->get('LogMongodbService')->addDebug('hello world'));
-        //var_dump($this->log()->logger('OK plugin'));
+
+    public function logAction()
+    {
+        // var_dump($this->getServiceLocator()->get('EnliteMonologService'));
+        // var_dump($this->getServiceLocator()->get('LogMongodbService')->addDebug('hello world'));
+        // var_dump($this->log()->logger('OK plugin'));
         var_dump($this->log('123'));
-    
+        
         return $this->response;
     }
 }

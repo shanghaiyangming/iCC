@@ -3,7 +3,7 @@ Ext.define('icc.common.SearchBar', {
 	alias : 'widget.searchBar',
 	initComponent : function() {
 		var me = this;
-		var searchRandom = Ext.Number.randomInt(10000000, 99999999);
+		var searchRandom = Ext.Date.now();
 		var searchUnique = 'Search' + searchRandom;
 		Ext.apply(me,{
 			items : [ {

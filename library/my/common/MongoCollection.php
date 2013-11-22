@@ -21,6 +21,7 @@
 namespace My\Common;
 
 use Zend\Config\Config;
+use Zend\EventManager\GlobalEventManager;
 
 class MongoCollection extends \MongoCollection
 {
@@ -110,7 +111,9 @@ class MongoCollection extends \MongoCollection
         
         // 默认执行几个操作
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
-        // $this->shardingCollection();
+        if (APPLICATION_ENV === 'production') {
+            $this->shardingCollection();
+        }
         parent::__construct($this->_db, $this->_collection);
     }
 
@@ -120,7 +123,7 @@ class MongoCollection extends \MongoCollection
      * @param array $query            
      * @throws \Exception
      */
-    private function appendQuery(array $query)
+    private function appendQuery(array $query = null)
     {
         if (! is_array($query)) {
             $query = array();
@@ -153,7 +156,9 @@ class MongoCollection extends \MongoCollection
         }
         // 记录下每一条产生的mongodb错误日志
         if ($err['err'] != null) {
-            logError(json_encode($err));
+            GlobalEventManager::trigger('logError', null, array(
+                json_encode($err)
+            ));
         }
     }
 
@@ -226,7 +231,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 根据指定字段
-     * 
+     *
      * @param string $key            
      * @param array $query            
      */
@@ -268,7 +273,7 @@ class MongoCollection extends \MongoCollection
     {
         $default = array();
         $default['background'] = true;
-        //$default['expireAfterSeconds'] = 3600; // 请充分了解后开启此参数，慎用
+        // $default['expireAfterSeconds'] = 3600; // 请充分了解后开启此参数，慎用
         $options = ($options === NULL) ? $default : array_merge($default, $options);
         return parent::ensureIndex($key_keys, $options);
     }
@@ -286,7 +291,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 查询符合条件的一条数据
-     * 
+     *
      * @see MongoCollection::findOne()
      */
     public function findOne($query = NULL, $fields = NULL)
@@ -359,6 +364,7 @@ class MongoCollection extends \MongoCollection
             $cmd['fields'] = $option['fields'];
         if (isset($option['upsert']))
             $cmd['upsert'] = is_bool($option['upsert']) ? $option['upsert'] : false;
+        
         return $this->_db->command($cmd);
     }
 
@@ -392,6 +398,46 @@ class MongoCollection extends \MongoCollection
         }
         
         return parent::insert($a, $options);
+    }
+
+    /**
+     * 通过findAndModify的方式，插入数据。
+     * 这样可以使用$a['a.b']的方式插入结构为{a:{b:xxx}}的数据,这是insert所不能办到的
+     * 采用update也可以实现类似的效果，区别在于findAndModify可以返回插入之后的新数据，更接近insert的原始行为
+     *
+     * @param array $a            
+     * @return array
+     */
+    public function insertByFindAndModify($a)
+    {
+        if (empty($a))
+            throw new \Exception('$a is NULL');
+        
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__MODIFY_TIME__'])) {
+            $a['__MODIFY_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__REMOVED__'])) {
+            $a['__REMOVED__'] = false;
+        }
+        
+        $query = array(
+            '_id' => new \MongoId()
+        );
+        $update = array(
+            '$set' => $a
+        );
+        $fields = null;
+        $options = array(
+            'new' => true,
+            'upsert' => true
+        );
+        
+        return parent::findAndModify($query, $update, $fields, $options);
     }
 
     /**

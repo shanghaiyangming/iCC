@@ -16,7 +16,6 @@ use Zend\EventManager\GlobalEventManager;
 use Monolog\Logger;
 use Monolog\Handler\MongoDBHandler;
 
-
 class Module
 {
 

@@ -4,6 +4,7 @@
  */
 defined('ROOT_PATH') || define('ROOT_PATH', dirname(__DIR__));
 defined('CACHE_ADAPTER') || define('CACHE_ADAPTER', 'fileCache');//[fileCache|memcachedCache|redisCache]
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development');//[development|production]
 
 /**
  * iDatabase常量定义,防止集合命名错误的发生
