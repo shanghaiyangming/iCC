@@ -9,7 +9,8 @@ Ext.Loader.addClassPathMappings({
   "Ext.Msg": "ext/src/window/MessageBox.js",
   "Ext.rtl.EventObjectImpl": "ext/src/rtl/EventObject.js",
   "ExtThemeNeptune": "ext/packages/ext-theme-neptune/overrides",
-  "icc": "app"
+  "icc": "app",
+  "icc.view.idatabase.Project.Grid": "app/view/idatabase/Account/Grid.js"
 });
 Ext.ClassManager.addNameAlternateMappings({
   "Ext.AbstractComponent": [],
@@ -862,12 +863,14 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Project": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
+  "icc.view.idatabase.Collection.Accordion": [],
   "icc.view.idatabase.Collection.Add": [],
   "icc.view.idatabase.Collection.Edit": [],
   "icc.view.idatabase.Collection.Grid": [],
   "icc.view.idatabase.Collection.Main": [],
   "icc.view.idatabase.Collection.TabPanel": [],
   "icc.view.idatabase.Collection.TypeCombobox": [],
+  "icc.view.idatabase.Project.Accordion": [],
   "icc.view.idatabase.Project.Add": [],
   "icc.view.idatabase.Project.Edit": [],
   "icc.view.idatabase.Project.Grid": [],
@@ -1902,6 +1905,9 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.app-main"
   ],
   "icc.view.Viewport": [],
+  "icc.view.idatabase.Collection.Accordion": [
+    "widget.idatabaseCollectionAccordion"
+  ],
   "icc.view.idatabase.Collection.Add": [
     "widget.idatabaseCollectionAdd"
   ],
@@ -1919,6 +1925,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Collection.TypeCombobox": [
     "widget.idatabaseCollectionTypeCombobox"
+  ],
+  "icc.view.idatabase.Project.Accordion": [
+    "widget.idatabaseProjectAccordion"
   ],
   "icc.view.idatabase.Project.Add": [
     "widget.idatabaseProjectAdd"

@@ -183,10 +183,11 @@ class StructureController extends BaseActionController
         }
         foreach ($_id as $row) {
             $this->_structure->remove(array(
-                '_id' => myMongoId($row)
+                '_id' => myMongoId($row),
+                'collection_id' => $this->_collection_id
             ));
         }
-        return $this->msg(true, '删除信息成功');
+        return $this->msg(true, '删除字段属性成功');
     }
 
     /**
@@ -198,12 +199,19 @@ class StructureController extends BaseActionController
     private function checkExist($info)
     {
         $info = $this->_structure->findOne(array(
-            '$or' => array(
+            '$and' => array(
                 array(
-                    'field' => $info
+                    '$or' => array(
+                        array(
+                            'field' => $info
+                        ),
+                        array(
+                            'label' => $info
+                        )
+                    )
                 ),
                 array(
-                    'label' => $info
+                    'collection_id' => $this->_collection_id
                 )
             )
         ));
