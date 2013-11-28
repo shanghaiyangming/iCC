@@ -1970,7 +1970,7 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.idatabasePluginCombobox"
   ],
   "icc.view.idatabase.Plugin.Edit": [
-    "widget.idatabasePluginAdd"
+    "widget.idatabasePluginEdit"
   ],
   "icc.view.idatabase.Plugin.Grid": [
     "widget.idatabasePluginGrid"
