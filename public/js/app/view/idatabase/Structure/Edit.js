@@ -8,16 +8,26 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 			items : [ {
 				xtype : 'iform',
 				url : '/idatabase/structure/edit',
+				fieldDefaults : {
+					labelAlign : 'left',
+					labelWidth : 150,
+					anchor : '100%'
+				},
 				items : [ {
 					xtype : 'hiddenfield',
-					xtype : '属性_id',
 					name : '_id',
-					fieldLabel : '集合编号',
+					fieldLabel : '属性_id',
 					allowBlank : false
 				}, {
 					xtype : 'hiddenfield',
+					name : 'project_id',
+					fieldLabel : '项目编号',
+					allowBlank : false,
+					value : this.project_id
+				}, {
+					xtype : 'hiddenfield',
 					name : 'collection_id',
-					fieldLabel : '集合_id',
+					fieldLabel : '集合编号',
 					allowBlank : false,
 					value : this.collection_id
 				}, {
@@ -83,58 +93,6 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 						checked : true
 					} ]
 				}, {
-					xtype : 'idatabaseFormCombobox',
-					formId : self.formId
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联显示方法',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '下拉菜单',
-						name : 'rshType',
-						inputValue : 'combobox',
-						checked : true
-					}, {
-						boxLabel : '单选框',
-						name : 'rshType',
-						inputValue : 'radio'
-					}, {
-						boxLabel : '复选框',
-						name : 'rshType',
-						inputValue : 'checkbox'
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联表显示字段',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'rshKey',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'rshKey',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联表提交字段',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'rshValue',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'rshValue',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否在表格中显示图片',
 					defaultType : 'radiofield',
@@ -153,8 +111,67 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					xtype : 'numberfield',
 					name : 'orderBy',
 					fieldLabel : '排序',
-					allowBlank : false
-				} ]
+					allowBlank : false,
+					value : 0
+				}, {
+					xtype : 'fieldset',
+					title : '关联设定（选填）',
+					items : [ {
+						xtype : 'idatabaseCollectionCombobox',
+						project_id : this.project_id,
+						fieldLabel : '关联集合列表',
+						name : 'rshCollection'
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联显示方法',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '下拉菜单',
+							name : 'rshType',
+							inputValue : 'combobox',
+							checked : true
+						}, {
+							boxLabel : '单选框',
+							name : 'rshType',
+							inputValue : 'radio'
+						}, {
+							boxLabel : '复选框',
+							name : 'rshType',
+							inputValue : 'checkbox'
+						} ]
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联表显示字段',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'rshKey',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'rshKey',
+							inputValue : false,
+							checked : true
+						} ]
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联表提交字段',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'rshValue',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'rshValue',
+							inputValue : false,
+							checked : true
+						} ]
+					} ]
+				}]
 			} ]
 		});
 

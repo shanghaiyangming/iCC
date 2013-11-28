@@ -3,5 +3,6 @@ Ext.define('icc.common.Window', {
 	layout : 'fit',
 	title : 'Window窗体',
 	width : 800,
-	height : 600
+	height : 600,
+	maximizable : true
 });

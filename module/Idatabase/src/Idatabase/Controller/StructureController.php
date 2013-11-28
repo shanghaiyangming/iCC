@@ -12,6 +12,7 @@ use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
+use Zend\Json\Json;
 
 class StructureController extends BaseActionController
 {
@@ -71,10 +72,10 @@ class StructureController extends BaseActionController
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['rshForm'] = $this->params()->fromPost('rshForm', '');
+        $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
         $datas['rshType'] = $this->params()->fromPost('rshType', '');
-        $datas['rshKey'] = $this->params()->fromPost('rshKey', '');
-        $datas['rshValue'] = $this->params()->fromPost('rshValue', '');
+        $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         
@@ -113,6 +114,7 @@ class StructureController extends BaseActionController
      */
     public function editAction()
     {
+        $_id = $this->params()->fromPost('_id', null);
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
         $datas['field'] = $this->params()->fromPost('field', null);
@@ -121,10 +123,10 @@ class StructureController extends BaseActionController
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['rshForm'] = $this->params()->fromPost('rshForm', '');
+        $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
         $datas['rshType'] = $this->params()->fromPost('rshType', '');
-        $datas['rshKey'] = $this->params()->fromPost('rshKey', '');
-        $datas['rshValue'] = $this->params()->fromPost('rshValue', '');
+        $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         

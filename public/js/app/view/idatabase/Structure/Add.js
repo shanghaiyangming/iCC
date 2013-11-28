@@ -8,6 +8,11 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 			items : [ {
 				xtype : 'iform',
 				url : '/idatabase/structure/add',
+				fieldDefaults : {
+					labelAlign : 'left',
+					labelWidth : 150,
+					anchor : '100%'
+				},
 				items : [ {
 					xtype : 'hiddenfield',
 					name : 'project_id',
@@ -83,58 +88,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 						checked : true
 					} ]
 				}, {
-					xtype : 'idatabaseCollectionCombobox',
-					project_id : this.project_id
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联显示方法',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '下拉菜单',
-						name : 'rshType',
-						inputValue : 'combobox',
-						checked : true
-					}, {
-						boxLabel : '单选框',
-						name : 'rshType',
-						inputValue : 'radio'
-					}, {
-						boxLabel : '复选框',
-						name : 'rshType',
-						inputValue : 'checkbox'
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联表显示字段',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'rshKey',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'rshKey',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '关联表提交字段',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'rshValue',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'rshValue',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否在表格中显示图片',
 					defaultType : 'radiofield',
@@ -153,12 +106,67 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					xtype : 'numberfield',
 					name : 'orderBy',
 					fieldLabel : '排序',
-					allowBlank : false
-				} , {
-					name : 'source',
-					fieldLabel : '结构来源',
-					allowBlank : false
-				} ]
+					allowBlank : false,
+					value : 0
+				}, {
+					xtype : 'fieldset',
+					title : '关联设定（选填）',
+					items : [ {
+						xtype : 'idatabaseCollectionCombobox',
+						project_id : this.project_id,
+						fieldLabel : '关联集合列表',
+						name : 'rshType'
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联显示方法',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '下拉菜单',
+							name : 'rshType',
+							inputValue : 'combobox',
+							checked : true
+						}, {
+							boxLabel : '单选框',
+							name : 'rshType',
+							inputValue : 'radio'
+						}, {
+							boxLabel : '复选框',
+							name : 'rshType',
+							inputValue : 'checkbox'
+						} ]
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联表显示字段',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'rshKey',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'rshKey',
+							inputValue : false,
+							checked : true
+						} ]
+					}, {
+						xtype : 'radiogroup',
+						fieldLabel : '关联表提交字段',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'rshValue',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'rshValue',
+							inputValue : false,
+							checked : true
+						} ]
+					} ]
+				}]
 			} ]
 		});
 

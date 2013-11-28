@@ -48,9 +48,9 @@ class PluginController extends BaseActionController
         $query = array(
             'project_id' => $this->_project_id
         );
-
+        
         $cursor = $this->_project_plugin->find($query);
-
+        
         $result = array();
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
@@ -137,15 +137,17 @@ class PluginController extends BaseActionController
         }
         return $this->msg(true, '删除信息成功');
     }
-    
+
     /**
      * 列出全部系统插件
+     *
      * @author young
-     * @name  列出全部系统插件
+     * @name 列出全部系统插件
      * @version 2013.11.27 young
      * @return JsonModel
      */
-    public function readPluginAction() {
+    public function readPluginAction()
+    {
         return $this->findAll(IDATABASE_PLUGINS);
     }
 
@@ -153,7 +155,7 @@ class PluginController extends BaseActionController
      * 添加系统插件
      *
      * @author young
-     * @name  添加系统插件
+     * @name 添加系统插件
      * @version 2013.11.27 young
      * @return JsonModel
      */
@@ -172,6 +174,14 @@ class PluginController extends BaseActionController
         
         if ($xtype == null) {
             return $this->msg(false, '请填写插件ExtJS的xtype');
+        }
+        
+        if ($this->checkPluginExist($name)) {
+            return $this->msg(false, '插件名称已经存在');
+        }
+        
+        if ($this->checkPluginExist($xtype)) {
+            return $this->msg(false, '插件xtype已经存在');
         }
         
         $datas = array();
@@ -211,6 +221,18 @@ class PluginController extends BaseActionController
         
         if ($xtype == null) {
             return $this->msg(false, '请填写插件ExtJS的xtype');
+        }
+        
+        $oldPluginInfo = $this->findOne(array(
+            '_id' => myMongoId($_id)
+        ));
+        
+        if ($this->checkPluginExist($name) && $oldPluginInfo['name'] != $name) {
+            return $this->msg(false, '插件名称已经存在');
+        }
+        
+        if ($this->checkPluginExist($xtype) && $oldPluginInfo['xtype'] != $xtype) {
+            return $this->msg(false, '插件xtype已经存在');
         }
         
         $datas = array();
@@ -253,5 +275,29 @@ class PluginController extends BaseActionController
             ));
         }
         return $this->msg(true, '删除插件成功');
+    }
+
+    /**
+     * 检查系统插件是否存在
+     *
+     * @param string $info            
+     * @return bool True/False
+     */
+    private function checkPluginExist($info)
+    {
+        $check = $this->_plugin->count(array(
+            '$or' => array(
+                array(
+                    'name' => $info
+                ),
+                array(
+                    'xtype' => $info
+                )
+            )
+        ));
+        if ($check > 0) {
+            return true;
+        }
+        return false;
     }
 }

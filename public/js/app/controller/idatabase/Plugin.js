@@ -152,7 +152,8 @@ Ext.define('icc.controller.idatabase.Plugin', {
 							Ext.Ajax.request({
 								url : me.actions.remove,
 								params : {
-									_id : Ext.encode(_id)
+									_id : Ext.encode(_id),
+									project_id : grid.project_id
 								},
 								scope : me,
 								success : function(response) {
