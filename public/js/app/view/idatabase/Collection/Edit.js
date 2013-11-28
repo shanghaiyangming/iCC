@@ -16,6 +16,17 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 				name : '_id',
 				allowBlank : false
 			}, {
+				xtype : 'hiddenfield',
+				name : 'plugin',
+				value : this.plugin,
+				allowBlank : false
+			}, {
+				xtype : 'hiddenfield',
+				name : 'plugin_id',
+				value : this.plugin_id,
+				vtype : 'alphanum',
+				allowBlank : false
+			}, {
 				name : 'alias',
 				fieldLabel : '集合别名(英文)',
 				allowBlank : false,

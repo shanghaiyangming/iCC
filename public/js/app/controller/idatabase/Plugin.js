@@ -1,17 +1,15 @@
-Ext.define('icc.controller.idatabase.Project', {
+Ext.define('icc.controller.idatabase.Plugin', {
 	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Project', 'idatabase.Collection' ],
-	stores : [ 'idatabase.Project', 'idatabase.Collection',
-			'idatabase.Collection.Type' ],
-	views : [ 'idatabase.Project.Grid', 'idatabase.Project.Add',
-			'idatabase.Project.Edit', 'idatabase.Project.TabPanel',
-			'idatabase.Collection.Main', 'icc.common.SearchBar' ],
-	controllerName : 'idatabaseProject',
+	models : [ 'idatabase.Plugin' ],
+	stores : [ 'idatabase.Plugin' ],
+	views : [ 'idatabase.Plugin.Grid', 'idatabase.Plugin.Add',
+			'idatabase.Plugin.Edit', 'idatabase.Plugin.Window' ],
+	controllerName : 'idatabasePlugin',
 	actions : {
-		add : '/idatabase/project/add',
-		edit : '/idatabase/project/edit',
-		remove : '/idatabase/project/remove',
-		save : '/idatabase/project/save'
+		add : '/idatabase/plugin/add',
+		edit : '/idatabase/plugin/edit',
+		remove : '/idatabase/plugin/remove',
+		save : '/idatabase/plugin/save'
 	},
 	refs : [ {
 		ref : 'tabPanel',
@@ -80,7 +78,10 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
-				var win = Ext.widget(controllerName + 'Add');
+				var grid = button.up('gridpanel');
+				var win = Ext.widget(controllerName + 'Add', {
+					project_id : grid.project_id
+				});
 				win.show();
 			}
 		};
@@ -90,7 +91,9 @@ Ext.define('icc.controller.idatabase.Project', {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
-					var win = Ext.widget(controllerName + 'Edit');
+					var win = Ext.widget(controllerName + 'Edit', {
+						project_id : grid.project_id
+					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
 					win.show();
@@ -169,96 +172,10 @@ Ext.define('icc.controller.idatabase.Project', {
 			}
 		};
 
-		listeners[controllerName + 'Grid'] = {
-			selectionchange : function(selectionModel, selected, eOpts) {
-
-				if (selected.length > 1) {
-					Ext.Msg.alert('提示信息', '请勿选择多项');
-					return false;
-				}
-
-				var record = selected[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var panel = this.getTabPanel().getComponent(id);
-					if (panel == null) {
-
-						panel = Ext.widget('idatabaseCollectionMain', {
-							id : id,
-							title : name,
-							project_id : id
-						});
-						this.getTabPanel().add(panel);
-					}
-					this.getTabPanel().setActiveTab(id);
-				}
-			}
-		};
-
 		listeners[controllerName + 'Grid button[action=plugin]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabasePluginWindow', {
-						project_id : id
-					});
-					win.show();
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=user]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabaseUserWindow', {
-						project_id : id
-					});
-					win.show();
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=key]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabaseKeyWindow', {
-						project_id : id
-					});
-					win.show();
-				}
+				var win = Ext.widget(controllerName + 'SystemWindow');
+				win.show();
 			}
 		};
 

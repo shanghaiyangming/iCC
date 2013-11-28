@@ -68,15 +68,15 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
-        $datas['searchable'] = $this->params()->fromPost('searchable', false);
-        $datas['main'] = $this->params()->fromPost('main', false);
-        $datas['required'] = $this->params()->fromPost('required', false);
-        $datas['rshForm'] = $this->params()->fromPost('rshForm', false);
-        $datas['rshType'] = $this->params()->fromPost('rshType', false);
-        $datas['rshKey'] = $this->params()->fromPost('rshKey', false);
-        $datas['rshValue'] = $this->params()->fromPost('rshValue', false);
-        $datas['showImage'] = $this->params()->fromPost('showImage', false);
-        $datas['orderBy'] = $this->params()->fromPost('orderBy', 0);
+        $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshForm'] = $this->params()->fromPost('rshForm', '');
+        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshKey'] = $this->params()->fromPost('rshKey', '');
+        $datas['rshValue'] = $this->params()->fromPost('rshValue', '');
+        $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -118,15 +118,15 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
-        $datas['searchable'] = $this->params()->fromPost('searchable', false);
-        $datas['main'] = $this->params()->fromPost('main', false);
-        $datas['required'] = $this->params()->fromPost('required', false);
-        $datas['rshForm'] = $this->params()->fromPost('rshForm', false);
-        $datas['rshType'] = $this->params()->fromPost('rshType', false);
-        $datas['rshKey'] = $this->params()->fromPost('rshKey', false);
-        $datas['rshValue'] = $this->params()->fromPost('rshValue', false);
-        $datas['showImage'] = $this->params()->fromPost('showImage', false);
-        $datas['orderBy'] = $this->params()->fromPost('orderBy', 0);
+        $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshForm'] = $this->params()->fromPost('rshForm', '');
+        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshKey'] = $this->params()->fromPost('rshKey', '');
+        $datas['rshValue'] = $this->params()->fromPost('rshValue', '');
+        $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');

@@ -1,1 +1,257 @@
 <?php
+/**
+ * iDatabase项目插件管理
+ *
+ * @author young 
+ * @version 2013.11.26
+ * 
+ */
+namespace Idatabase\Controller;
+
+use My\Common\ActionController;
+use Zend\View\Model\ViewModel;
+use Zend\EventManager\EventInterface;
+use Zend\EventManager\GlobalEventManager;
+use Zend\View\Model\JsonModel;
+use Zend\Json\Json;
+
+class PluginController extends BaseActionController
+{
+
+    private $_plugin;
+
+    private $_project_plugin;
+
+    private $_project_id;
+
+    public function init()
+    {
+        $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
+        $this->_plugin = $this->model(IDATABASE_PLUGINS);
+        $this->_project_plugin = $this->model(IDATABASE_PROJECT_PLUGINS);
+        
+        // 注意这里应该增加检查，该项目id是否符合用户操作的权限范围
+    }
+
+    /**
+     * 读取某个项目使用的全部插件列表
+     *
+     * @author young
+     * @name 读取某个项目使用的全部插件列表
+     * @version 2013.11.27 young
+     */
+    public function indexAction()
+    {
+        if (empty($this->_project_id))
+            throw new \Exception('$this->_project_id值未设定');
+        
+        $query = array(
+            'project_id' => $this->_project_id
+        );
+
+        $cursor = $this->_project_plugin->find($query);
+
+        $result = array();
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $plugin_id = $row['plugin_id'];
+            $pluginInfo = $this->_plugin->findOne(array(
+                '_id' => myMongoId($plugin_id)
+            ));
+            $result[] = array(
+                '_id' => $row['_id'],
+                'plugin_id' => $row['plugin_id'],
+                '__CREATE_TIME__' => $row['__CREATE_TIME__'],
+                'name' => $pluginInfo['name'],
+                'desc' => $pluginInfo['desc'],
+                'xtype' => $pluginInfo['xtype']
+            );
+        }
+        return $this->rst($result, $cursor->count(), true);
+    }
+
+    /**
+     * 为指定项目添加插件
+     *
+     * @author young
+     * @name 为指定项目添加插件
+     * @version 2013.11.26 young
+     * @return JsonModel
+     */
+    public function addAction()
+    {
+        if (empty($this->_project_id))
+            throw new \Exception('$this->_project_id值未设定');
+        
+        $project_id = $this->_project_id;
+        $plugin_id = $this->params()->fromPost('plugin_id', null);
+        
+        if ($project_id == null) {
+            return $this->msg(false, '无效的项目编号');
+        }
+        
+        if ($plugin_id == null) {
+            return $this->msg(false, '无效的插件编号');
+        }
+        
+        $datas = array();
+        $datas['project_id'] = $project_id;
+        $datas['plugin_id'] = $plugin_id;
+        $this->_project_plugin->update($datas, array(
+            '$set' => $datas
+        ), array(
+            'upsert' => true
+        ));
+        
+        return $this->msg(true, '添加信息成功');
+    }
+
+    /**
+     * 删除指定项目中的插件
+     *
+     * @author young
+     * @name 删除指定项目中的插件
+     * @version 2013.11.27 young
+     * @return JsonModel
+     */
+    public function removeAction()
+    {
+        if (empty($this->_project_id))
+            throw new \Exception('$this->_project_id值未设定');
+        
+        $_id = $this->params()->fromPost('_id', null);
+        try {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($_id)) {
+            return $this->msg(false, '请选择你要删除的项');
+        }
+        foreach ($_id as $row) {
+            $this->_project_plugin->remove(array(
+                '_id' => myMongoId($row),
+                'project_id' => $this->_project_id
+            ));
+        }
+        return $this->msg(true, '删除信息成功');
+    }
+    
+    /**
+     * 列出全部系统插件
+     * @author young
+     * @name  列出全部系统插件
+     * @version 2013.11.27 young
+     * @return JsonModel
+     */
+    public function readPluginAction() {
+        return $this->findAll(IDATABASE_PLUGINS);
+    }
+
+    /**
+     * 添加系统插件
+     *
+     * @author young
+     * @name  添加系统插件
+     * @version 2013.11.27 young
+     * @return JsonModel
+     */
+    public function addPluginAction()
+    {
+        $name = $this->params()->fromPost('name', null);
+        $desc = $this->params()->fromPost('desc', null);
+        $xtype = $this->params()->fromPost('xtype', null);
+        if ($name == null) {
+            return $this->msg(false, '请填写插件名称');
+        }
+        
+        if ($desc == null) {
+            return $this->msg(false, '请填写插件描述');
+        }
+        
+        if ($xtype == null) {
+            return $this->msg(false, '请填写插件ExtJS的xtype');
+        }
+        
+        $datas = array();
+        $datas['name'] = $name;
+        $datas['desc'] = $desc;
+        $datas['xtype'] = $xtype;
+        
+        $this->_plugin->insert($datas);
+        return $this->msg(true, '添加插件成功');
+    }
+
+    /**
+     * 编辑系统插件
+     *
+     * @author young
+     * @name 编辑系统插件
+     * @version 2013.11.27 young
+     * @return JsonModel
+     */
+    public function editPluginAction()
+    {
+        $_id = $this->params()->fromPost('_id', null);
+        $name = $this->params()->fromPost('name', null);
+        $desc = $this->params()->fromPost('desc', null);
+        $xtype = $this->params()->fromPost('xtype', null);
+        if ($_id == null) {
+            return $this->msg(false, '无效的插件_id');
+        }
+        
+        if ($name == null) {
+            return $this->msg(false, '请填写插件名称');
+        }
+        
+        if ($desc == null) {
+            return $this->msg(false, '请填写插件描述');
+        }
+        
+        if ($xtype == null) {
+            return $this->msg(false, '请填写插件ExtJS的xtype');
+        }
+        
+        $datas = array();
+        $datas['name'] = $name;
+        $datas['desc'] = $desc;
+        $datas['xtype'] = $xtype;
+        
+        $this->_plugin->update(array(
+            '_id' => $_id
+        ), array(
+            '$set' => $datas
+        ));
+        
+        return $this->msg(true, '添加插件成功');
+    }
+
+    /**
+     * 删除系统插件
+     *
+     * @author young
+     * @name 删除系统插件
+     * @version 2013.11.27 young
+     * @return JsonModel
+     */
+    public function removePluginAction()
+    {
+        $_id = $this->params()->fromPost('_id', null);
+        try {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($_id)) {
+            return $this->msg(false, '请选择你要删除的项');
+        }
+        foreach ($_id as $row) {
+            $this->_plugin->remove(array(
+                '_id' => myMongoId($row)
+            ));
+        }
+        return $this->msg(true, '删除插件成功');
+    }
+}

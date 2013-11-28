@@ -1,16 +1,27 @@
-Ext.define('icc.view.idatabase.Collection.Grid', {
+Ext.define('icc.view.idatabase.Plugin.System.Grid', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.idatabaseCollectionGrid',
+	alias : 'widget.idatabasePluginSystemGrid',
 	requires : [ 'icc.common.Paging' ],
-	title : '数据管理',
-	collapsible : true,
+	collapsible : false,
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
 	columns : [ {
-		text : '集合名称',
+		text : '插件编号',
+		dataIndex : '_id',
+		hidden : true
+	}, {
+		text : '插件名称',
 		dataIndex : 'name',
+		flex : 1,
+	}, {
+		text : '插件描述',
+		dataIndex : 'desc',
 		flex : 2
+	}, {
+		text : 'xtype',
+		dataIndex : 'xtype',
+		flex : 1
 	}, {
 		xtype : 'datecolumn',
 		text : '创建时间',
@@ -20,15 +31,10 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 	} ],
 	initComponent : function() {
 		var me = this;
-
-		var store = Ext.create('icc.store.idatabase.Collection');
-		store.proxy.extraParams = {
-			'project_id' : me.project_id
-		};
+		var store = Ext.create('icc.store.idatabase.Plugin.System');
 		store.load();
 
 		Ext.apply(me, {
-			project_id : me.project_id,
 			store : store,
 			bbar : {
 				xtype : 'paging',
@@ -64,35 +70,6 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							text : '删除',
 							iconCls : 'remove',
 							action : 'remove'
-						} ]
-					}
-				}, '-', {
-					text : '管理',
-					width : 100,
-					iconCls : 'menu',
-					menu : {
-						xtype : 'menu',
-						plain : true,
-						items : [ {
-							xtype : 'button',
-							text : '属性管理',
-							iconCls : 'structure',
-							action : 'structure'
-						}, {
-							xtype : 'button',
-							text : '索引管理',
-							iconCls : 'index',
-							action : 'index'
-						}, {
-							xtype : 'button',
-							text : '统计管理',
-							iconCls : 'static',
-							action : 'static'
-						}, {
-							xtype : 'button',
-							text : '快捷输入',
-							iconCls : 'shortcut',
-							action : 'shortcut'
 						} ]
 					}
 				} ]

@@ -12,6 +12,17 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 				value : this.project_id,
 				vtype : 'alphanum'
 			}, {
+				xtype : 'hiddenfield',
+				name : 'plugin',
+				value : this.plugin,
+				allowBlank : false
+			}, {
+				xtype : 'hiddenfield',
+				name : 'plugin_id',
+				value : this.plugin_id,
+				vtype : 'alphanum',
+				allowBlank : false
+			}, {
 				name : 'alias',
 				fieldLabel : '集合别名(英文)',
 				allowBlank : false,
@@ -23,7 +34,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 			}, {
 				xtype : 'idatabaseCollectionTypeCombobox'
 			}, {
-				xtype: 'textareafield',
+				xtype : 'textareafield',
 				name : 'desc',
 				fieldLabel : '功能描述',
 				allowBlank : false

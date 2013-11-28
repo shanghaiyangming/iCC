@@ -6,6 +6,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 			'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel',
 			'idatabase.Collection.TypeCombobox' ],
 	controllerName : 'idatabaseCollection',
+	plugin : false,
+	plugin_id : '',
 	actions : {
 		add : '/idatabase/collection/add',
 		edit : '/idatabase/collection/edit',
@@ -92,7 +94,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 			click : function(button) {
 				var grid = button.up('gridpanel');
 				var win = Ext.widget(controllerName + 'Add', {
-					project_id : grid.project_id
+					project_id : grid.project_id,
+					plugin : me.plugin,
+					plugin_id : me.plugin_id
 				});
 				win.show();
 			}
@@ -104,7 +108,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
-						project_id : grid.project_id
+						project_id : grid.project_id,
+						plugin : me.plugin,
+						plugin_id : me.plugin_id
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -184,6 +190,50 @@ Ext.define('icc.controller.idatabase.Collection', {
 				} else {
 					Ext.Msg.alert('提示信息', '请选择您要删除的项');
 				}
+			}
+		};
+
+		listeners[controllerName + 'Grid button[action=structure]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseStructureWindow', {
+						project_id : grid.project_id,
+						collection_id : record.get('_id'),
+						plugin : me.plugin,
+						plugin_id : me.plugin_id
+					});
+					win.show();
+				}
+				else {
+					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+				}
+			}
+		};
+
+		listeners[controllerName + 'Grid button[action=index]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var win = Ext.widget('idatabaseIndexWindow', {
+					project_id : grid.project_id,
+					plugin : me.plugin,
+					plugin_id : me.plugin_id
+				});
+				win.show();
+			}
+		};
+
+		listeners[controllerName + 'Grid button[action=static]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var win = Ext.widget('idatabaseStaticWindow', {
+					project_id : grid.project_id,
+					plugin : me.plugin,
+					plugin_id : me.plugin_id
+				});
+				win.show();
 			}
 		};
 

@@ -43,9 +43,19 @@ class CollectionController extends BaseActionController
      */
     public function indexAction()
     {
-        $query = array(
-            'project_id' => $this->_project_id
-        );
+        $plugin = $this->params()->fromPost('plugin', false);
+        $plugin_id = $this->params()->fromPost('plugin_id', '');
+        
+        if ($plugin == false && empty($plugin_id)) {
+            $query = array(
+                'project_id' => $this->_project_id
+            );
+        } else {
+            $query = array(
+                'plugin' => true,
+                'plugin_id' => $plugin_id
+            );
+        }
         return $this->findAll(IDATABASE_COLLECTIONS, $query);
     }
 
@@ -65,6 +75,8 @@ class CollectionController extends BaseActionController
             $alias = $this->params()->fromPost('alias', null);
             $type = $this->params()->fromPost('type', null);
             $desc = $this->params()->fromPost('desc', null);
+            $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
+            $plugin_id = $this->params()->fromPost('plugin_id', '');
             
             if ($project_id == null) {
                 return $this->msg(false, '无效的项目编号');
@@ -89,12 +101,12 @@ class CollectionController extends BaseActionController
                 return $this->msg(false, '请填写集合描述');
             }
             
-            if ($this->checkCollecionExist($name)) {
-                return $this->msg(false, '集合名称已经存在');
+            if ($this->checkPluginExist($name) || $this->checkPluginExist($alias)) {
+                return $this->msg(false, '集合名称或者别名在插件命名中已经存在，请勿重复使用');
             }
             
-            if ($this->checkCollecionExist($alias)) {
-                return $this->msg(false, '集合别名已经存在');
+            if ($this->checkCollecionExist($name) || $this->checkCollecionExist($alias)) {
+                return $this->msg(false, '集合名称或者别名已经被使用，请勿重复使用');
             }
             
             $datas = array();
@@ -103,6 +115,8 @@ class CollectionController extends BaseActionController
             $datas['alias'] = $alias;
             $datas['type'] = $type;
             $datas['desc'] = $desc;
+            $datas['plugin'] = $plugin;
+            $datas['plugin_id'] = $plugin_id;
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加信息成功');
@@ -127,6 +141,8 @@ class CollectionController extends BaseActionController
         $alias = $this->params()->fromPost('alias', null);
         $type = $this->params()->fromPost('type', null);
         $desc = $this->params()->fromPost('desc', null);
+        $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
+        $plugin_id = $this->params()->fromPost('plugin_id', '');
         
         if ($_id == null) {
             return $this->msg(false, '无效的集合编号');
@@ -167,12 +183,18 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '集合别名已经存在');
         }
         
+        if (($this->checkPluginExist($name) && $oldCollectionInfo['name'] != $name) || ($this->checkPluginExist($alias) && $oldCollectionInfo['alias'] != $alias)) {
+            return $this->msg(false, '集合名称或者别名在插件命名中已经存在，请勿重复使用');
+        }
+        
         $datas = array();
         $datas['project_id'] = $project_id;
         $datas['name'] = $name;
         $datas['alias'] = $alias;
         $datas['type'] = $type;
         $datas['desc'] = $desc;
+        $datas['plugin'] = $plugin;
+        $datas['plugin_id'] = $plugin_id;
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
@@ -220,6 +242,7 @@ class CollectionController extends BaseActionController
      */
     private function checkCollecionExist($info)
     {
+        // 检查当前项目集合中是否包含这些命名
         $info = $this->_collection->findOne(array(
             '$and' => array(
                 array(
@@ -234,6 +257,33 @@ class CollectionController extends BaseActionController
                 ),
                 array(
                     'project_id' => $this->_project_id
+                )
+            )
+        ));
+        
+        if ($info == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private function checkPluginExist($info)
+    {
+        // 检查插件集合中是否包含这些名称信息
+        $info = $this->_collection->findOne(array(
+            '$and' => array(
+                array(
+                    '$or' => array(
+                        array(
+                            'name' => $info
+                        ),
+                        array(
+                            'alias' => $info
+                        )
+                    )
+                ),
+                array(
+                    'plugin' => true
                 )
             )
         ));

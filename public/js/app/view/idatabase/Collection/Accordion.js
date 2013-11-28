@@ -8,18 +8,22 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 		bodyPadding : 0
 	},
 	initComponent : function() {
-		var items = [{
+		var items = [ {
 			xtype : 'idatabaseCollectionGrid',
-			project_id : this.project_id
-		},{
+			project_id : this.project_id,
+			plugin : false,
+			plugin_id : ''
+		}, {
 			xtype : 'idatabaseCollectionGrid',
-			project_id : this.project_id
-		}];
+			project_id : this.project_id,
+			plugin : true,
+			plugin_id : ''
+		} ];
 
 		Ext.apply(this, {
 			items : items
 		});
-		
+
 		this.callParent();
 	}
 });

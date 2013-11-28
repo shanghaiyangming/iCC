@@ -1,22 +1,23 @@
-Ext.define('icc.controller.idatabase.Project', {
+Ext.define('icc.controller.idatabase.Structure', {
 	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Project', 'idatabase.Collection' ],
-	stores : [ 'idatabase.Project', 'idatabase.Collection',
-			'idatabase.Collection.Type' ],
-	views : [ 'idatabase.Project.Grid', 'idatabase.Project.Add',
-			'idatabase.Project.Edit', 'idatabase.Project.TabPanel',
-			'idatabase.Collection.Main', 'icc.common.SearchBar' ],
-	controllerName : 'idatabaseProject',
+	models : [ 'idatabase.Structure' ],
+	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type' ],
+	views : [ 'idatabase.Structure.Grid', 'idatabase.Structure.Add',
+			'idatabase.Structure.Edit', 'idatabase.Structure.Window'],
+	controllerName : 'idatabaseStructure',
 	actions : {
-		add : '/idatabase/project/add',
-		edit : '/idatabase/project/edit',
-		remove : '/idatabase/project/remove',
-		save : '/idatabase/project/save'
+		add : '/idatabase/structure/add',
+		edit : '/idatabase/structure/edit',
+		remove : '/idatabase/structure/remove',
+		save : '/idatabase/structure/save'
 	},
 	refs : [ {
-		ref : 'tabPanel',
+		ref : 'projectTabPanel',
 		selector : 'idatabaseProjectTabPanel'
 	} ],
+	activeTabGrid : function(gridName) {
+		return this.getProjectTabPanel().getActiveTab().down(gridName);
+	},
 	init : function() {
 		var me = this;
 		var controllerName = me.controllerName;
@@ -41,7 +42,8 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var store = me.getList().store;
+				var grid = me.getList();
+				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -62,7 +64,8 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var store = me.getList().store;
+				var grid = me.getList();
+				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -80,7 +83,10 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
-				var win = Ext.widget(controllerName + 'Add');
+				var grid = button.up('gridpanel');
+				var win = Ext.widget(controllerName + 'Add', {
+					project_id : grid.project_id
+				});
 				win.show();
 			}
 		};
@@ -90,7 +96,9 @@ Ext.define('icc.controller.idatabase.Project', {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
-					var win = Ext.widget(controllerName + 'Edit');
+					var win = Ext.widget(controllerName + 'Edit', {
+						project_id : grid.project_id
+					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
 					win.show();
@@ -102,7 +110,9 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Grid button[action=save]'] = {
 			click : function(button) {
-				var records = me.getList().store.getUpdatedRecords();
+				var grid = button.up('gridpanel');
+				var store = grid.store;
+				var records = grid.store.getUpdatedRecords();
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
@@ -124,7 +134,7 @@ Ext.define('icc.controller.idatabase.Project', {
 						var json = Ext.decode(text);
 						Ext.Msg.alert('提示信息', json.msg);
 						if (json.success) {
-							me.getList().store.load();
+							store.load();
 						}
 					}
 				});
@@ -149,7 +159,8 @@ Ext.define('icc.controller.idatabase.Project', {
 							Ext.Ajax.request({
 								url : me.actions.remove,
 								params : {
-									_id : Ext.encode(_id)
+									_id : Ext.encode(_id),
+									project_id : grid.project_id
 								},
 								scope : me,
 								success : function(response) {
@@ -165,99 +176,6 @@ Ext.define('icc.controller.idatabase.Project', {
 					}, me);
 				} else {
 					Ext.Msg.alert('提示信息', '请选择您要删除的项');
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid'] = {
-			selectionchange : function(selectionModel, selected, eOpts) {
-
-				if (selected.length > 1) {
-					Ext.Msg.alert('提示信息', '请勿选择多项');
-					return false;
-				}
-
-				var record = selected[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var panel = this.getTabPanel().getComponent(id);
-					if (panel == null) {
-
-						panel = Ext.widget('idatabaseCollectionMain', {
-							id : id,
-							title : name,
-							project_id : id
-						});
-						this.getTabPanel().add(panel);
-					}
-					this.getTabPanel().setActiveTab(id);
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=plugin]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabasePluginWindow', {
-						project_id : id
-					});
-					win.show();
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=user]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabaseUserWindow', {
-						project_id : id
-					});
-					win.show();
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=key]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-
-				if (selections.length != 1) {
-					Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-					return false;
-				}
-
-				var record = selections[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var win = Ext.widget('idatabaseKeyWindow', {
-						project_id : id
-					});
-					win.show();
 				}
 			}
 		};

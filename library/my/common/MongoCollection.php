@@ -500,12 +500,21 @@ class MongoCollection extends \MongoCollection
         
         $options = ($options === NULL) ? $default : array_merge($default, $options);
         
-        parent::update($criteria, array(
-            '$set' => array(
-                '__MODIFY_TIME__' => new \MongoDate()
-            )
-        ), $options);
-        
+        if (parent::count($criteria) == 0) {
+            parent::update($criteria, array(
+                '$set' => array(
+                    '__CREATE_TIME__' => new \MongoDate(),
+                    '__MODIFY_TIME__' => new \MongoDate(),
+                    '__REMOVED__' => false
+                )
+            ), $options);
+        } else {
+            parent::update($criteria, array(
+                '$set' => array(
+                    '__MODIFY_TIME__' => new \MongoDate()
+                )
+            ), $options);
+        }
         return parent::update($criteria, $object, $options);
     }
 
