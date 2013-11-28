@@ -462,6 +462,7 @@ class MongoCollection extends \MongoCollection
         // 方案一 真实删除
         // return parent::remove($criteria, $options);
         // 方案二 伪删除
+        $criteria = $this->appendQuery($criteria);
         return parent::update($criteria, array(
             '$set' => array(
                 '__REMOVED__' => true
@@ -500,6 +501,7 @@ class MongoCollection extends \MongoCollection
         
         $options = ($options === NULL) ? $default : array_merge($default, $options);
         
+        $criteria = $this->appendQuery($criteria);
         if (parent::count($criteria) == 0) {
             parent::update($criteria, array(
                 '$set' => array(
@@ -511,7 +513,8 @@ class MongoCollection extends \MongoCollection
         } else {
             parent::update($criteria, array(
                 '$set' => array(
-                    '__MODIFY_TIME__' => new \MongoDate()
+                    '__MODIFY_TIME__' => new \MongoDate(),
+                    '__REMOVED__' => false
                 )
             ), $options);
         }

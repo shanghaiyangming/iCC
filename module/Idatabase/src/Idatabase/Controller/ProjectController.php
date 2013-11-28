@@ -81,11 +81,11 @@ class ProjectController extends BaseActionController
             return $this->msg(false, '请填写项目描述');
         }
         
-        if ($this->checkProjectExist($name)) {
+        if ($this->checkProjectNameExist($name)) {
             return $this->msg(false, '项目名称已经存在');
         }
         
-        if ($this->checkProjectExist($sn)) {
+        if ($this->checkProjectSnExist($sn)) {
             return $this->msg(false, '项目编号已经存在');
         }
         
@@ -133,11 +133,11 @@ class ProjectController extends BaseActionController
             '_id' => myMongoId($_id)
         ));
         
-        if ($this->checkProjectExist($name) && $oldProjectInfo['name'] != $name) {
+        if ($this->checkProjectNameExist($name) && $oldProjectInfo['name'] != $name) {
             return $this->msg(false, '项目名称已经存在');
         }
         
-        if ($this->checkProjectExist($sn) && $oldProjectInfo['sn'] != $sn) {
+        if ($this->checkProjectSnExist($sn) && $oldProjectInfo['sn'] != $sn) {
             return $this->msg(false, '项目编号已经存在');
         }
         
@@ -188,17 +188,22 @@ class ProjectController extends BaseActionController
      * @param string $info            
      * @return boolean
      */
-    private function checkProjectExist($info)
+    private function checkProjectNameExist($info)
     {
         $info = $this->_project->findOne(array(
-            '$or' => array(
-                array(
-                    'name' => $info
-                ),
-                array(
-                    'sn' => $info
-                )
-            )
+            'name' => $info
+        ));
+        
+        if ($info == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private function checkProjectSnExist($info)
+    {
+        $info = $this->_project->findOne(array(
+            'sn' => $info
         ));
         
         if ($info == null) {

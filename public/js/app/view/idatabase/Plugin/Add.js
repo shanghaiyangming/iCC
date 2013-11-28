@@ -10,11 +10,6 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 				url : '/idatabase/plugin/add',
 				items : [ {
 					xtype : 'hiddenfield',
-					name : '_id',
-					fieldLabel : '插件编号',
-					allowBlank : false
-				}, {
-					xtype : 'hiddenfield',
 					name : 'project_id',
 					fieldLabel : '插件编号',
 					allowBlank : false,

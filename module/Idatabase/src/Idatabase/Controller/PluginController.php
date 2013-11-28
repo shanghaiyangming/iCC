@@ -176,11 +176,11 @@ class PluginController extends BaseActionController
             return $this->msg(false, '请填写插件ExtJS的xtype');
         }
         
-        if ($this->checkPluginExist($name)) {
+        if ($this->checkPluginNameExist($name)) {
             return $this->msg(false, '插件名称已经存在');
         }
         
-        if ($this->checkPluginExist($xtype)) {
+        if ($this->checkPluginXtypeExist($xtype)) {
             return $this->msg(false, '插件xtype已经存在');
         }
         
@@ -223,15 +223,15 @@ class PluginController extends BaseActionController
             return $this->msg(false, '请填写插件ExtJS的xtype');
         }
         
-        $oldPluginInfo = $this->findOne(array(
+        $oldPluginInfo = $this->_plugin->findOne(array(
             '_id' => myMongoId($_id)
         ));
         
-        if ($this->checkPluginExist($name) && $oldPluginInfo['name'] != $name) {
+        if ($this->checkPluginNameExist($name) && $oldPluginInfo['name'] != $name) {
             return $this->msg(false, '插件名称已经存在');
         }
         
-        if ($this->checkPluginExist($xtype) && $oldPluginInfo['xtype'] != $xtype) {
+        if ($this->checkPluginXtypeExist($xtype) && $oldPluginInfo['xtype'] != $xtype) {
             return $this->msg(false, '插件xtype已经存在');
         }
         
@@ -241,7 +241,7 @@ class PluginController extends BaseActionController
         $datas['xtype'] = $xtype;
         
         $this->_plugin->update(array(
-            '_id' => $_id
+            '_id' => myMongoId($_id)
         ), array(
             '$set' => $datas
         ));
@@ -283,17 +283,27 @@ class PluginController extends BaseActionController
      * @param string $info            
      * @return bool True/False
      */
-    private function checkPluginExist($info)
+    private function checkPluginNameExist($info)
     {
         $check = $this->_plugin->count(array(
-            '$or' => array(
-                array(
-                    'name' => $info
-                ),
-                array(
-                    'xtype' => $info
-                )
-            )
+            'name' => $info
+        ));
+        if ($check > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检查系统插件是否存在
+     *
+     * @param string $info            
+     * @return bool True/False
+     */
+    private function checkPluginXtypeExist($info)
+    {
+        $check = $this->_plugin->count(array(
+            'xtype' => $info
         ));
         if ($check > 0) {
             return true;

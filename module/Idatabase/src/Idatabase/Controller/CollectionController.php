@@ -101,11 +101,11 @@ class CollectionController extends BaseActionController
                 return $this->msg(false, '请填写集合描述');
             }
             
-            if ($this->checkPluginExist($name) || $this->checkPluginExist($alias)) {
+            if ($this->checkPluginNameExist($name) || $this->checkPluginAliasExist($alias)) {
                 return $this->msg(false, '集合名称或者别名在插件命名中已经存在，请勿重复使用');
             }
             
-            if ($this->checkCollecionExist($name) || $this->checkCollecionExist($alias)) {
+            if ($this->checkCollecionNameExist($name) || $this->checkCollecionAliasExist($alias)) {
                 return $this->msg(false, '集合名称或者别名已经被使用，请勿重复使用');
             }
             
@@ -175,15 +175,15 @@ class CollectionController extends BaseActionController
             '_id' => myMongoId($_id)
         ));
         
-        if ($this->checkCollecionExist($name) && $oldCollectionInfo['name'] != $name) {
+        if ($this->checkCollecionNameExist($name) && $oldCollectionInfo['name'] != $name) {
             return $this->msg(false, '集合名称已经存在');
         }
         
-        if ($this->checkCollecionExist($alias) && $oldCollectionInfo['alias'] != $alias) {
+        if ($this->checkCollecionAliasExist($alias) && $oldCollectionInfo['alias'] != $alias) {
             return $this->msg(false, '集合别名已经存在');
         }
         
-        if (($this->checkPluginExist($name) && $oldCollectionInfo['name'] != $name) || ($this->checkPluginExist($alias) && $oldCollectionInfo['alias'] != $alias)) {
+        if (($this->checkPluginNameExist($name) && $oldCollectionInfo['name'] != $name) || ($this->checkPluginAliasExist($alias) && $oldCollectionInfo['alias'] != $alias)) {
             return $this->msg(false, '集合名称或者别名在插件命名中已经存在，请勿重复使用');
         }
         
@@ -240,54 +240,52 @@ class CollectionController extends BaseActionController
      * @param string $info            
      * @return boolean
      */
-    private function checkCollecionExist($info)
+    private function checkCollecionNameExist($info)
     {
         // 检查当前项目集合中是否包含这些命名
         $info = $this->_collection->findOne(array(
-            '$and' => array(
-                array(
-                    '$or' => array(
-                        array(
-                            'name' => $info
-                        ),
-                        array(
-                            'alias' => $info
-                        )
-                    )
-                ),
-                array(
-                    'project_id' => $this->_project_id
-                )
-            )
+            'name' => $info,
+            'project_id' => $this->_project_id
         ));
-        
         if ($info == null) {
             return false;
         }
         return true;
     }
 
-    private function checkPluginExist($info)
+    private function checkCollecionAliasExist($info)
+    {
+        // 检查当前项目集合中是否包含这些命名
+        $info = $this->_collection->findOne(array(
+            'alias' => $info,
+            'project_id' => $this->_project_id
+        ));
+        if ($info == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private function checkPluginNameExist($info)
     {
         // 检查插件集合中是否包含这些名称信息
         $info = $this->_collection->findOne(array(
-            '$and' => array(
-                array(
-                    '$or' => array(
-                        array(
-                            'name' => $info
-                        ),
-                        array(
-                            'alias' => $info
-                        )
-                    )
-                ),
-                array(
-                    'plugin' => true
-                )
-            )
+            'name' => $info,
+            'plugin' => true
         ));
-        
+        if ($info == null) {
+            return false;
+        }
+        return true;
+    }
+    
+    private function checkPluginAliasExist($info)
+    {
+        // 检查插件集合中是否包含这些名称信息
+        $info = $this->_collection->findOne(array(
+                'alias' => $info,
+                'plugin' => true
+        ));
         if ($info == null) {
             return false;
         }
