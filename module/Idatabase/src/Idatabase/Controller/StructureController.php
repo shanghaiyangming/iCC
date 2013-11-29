@@ -23,6 +23,8 @@ class StructureController extends BaseActionController
 
     private $_structure;
 
+    private $_model;
+
     public function init()
     {
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
@@ -37,6 +39,8 @@ class StructureController extends BaseActionController
         }
         
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
+        
+        $this->_model = $this->_structure;
     }
 
     /**
@@ -91,11 +95,15 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请选择字段类型');
         }
         
-        if ($this->checkExist($datas['field'])) {
+        if ($this->checkExist('field', $datas['field'], array(
+            'collection_id' => $this->_collection_id
+        ))) {
             return $this->msg(false, '字段名称已经存在');
         }
         
-        if ($this->checkExist($datas['label'])) {
+        if ($this->checkExist('label', $datas['label'], array(
+            'collection_id' => $this->_collection_id
+        ))) {
             return $this->msg(false, '字段描述已经存在');
         }
         
@@ -146,11 +154,15 @@ class StructureController extends BaseActionController
             '_id' => myMongoId($_id)
         ));
         
-        if ($this->checkExist($datas['field']) && $oldStructureInfo['field'] != $datas['field']) {
+        if ($this->checkExist('field', $datas['field'], array(
+            'collection_id' => $this->_collection_id
+        )) && $oldStructureInfo['field'] != $datas['field']) {
             return $this->msg(false, '字段名称已经存在');
         }
         
-        if ($this->checkExist($datas['label']) && $oldStructureInfo['label'] != $datas['label']) {
+        if ($this->checkExist('label', $datas['label'], array(
+            'collection_id' => $this->_collection_id
+        )) && $oldStructureInfo['label'] != $datas['label']) {
             return $this->msg(false, '字段描述已经存在');
         }
         
@@ -193,30 +205,40 @@ class StructureController extends BaseActionController
     }
 
     /**
-     * 检测一个项目是否存在，根据名称和编号
+     * 检测字段是否已经存在
      *
+     * @param string $field            
      * @param string $info            
+     * @param array $extra            
+     * @param resource $model            
      * @return boolean
      */
-    private function checkExist($info)
+    private function checkExist($field, $info, $extra = null, $model = null)
     {
-        $info = $this->_structure->findOne(array(
-            '$and' => array(
-                array(
-                    '$or' => array(
-                        array(
-                            'field' => $info
-                        ),
-                        array(
-                            'label' => $info
-                        )
-                    )
-                ),
-                array(
-                    'collection_id' => $this->_collection_id
+        if ($model == null) {
+            if ($this->_model instanceof \MongoCollection) {
+                $model = $this->_model;
+            } else {
+                throw new \Exception('$this->_model未设定');
+            }
+        }
+        
+        $query = array();
+        if (empty($extra) || ! is_array($extra)) {
+            $query = array(
+                $field => $info
+            );
+        } else {
+            $query = array(
+                '$and' => array(
+                    array(
+                        $field => $info
+                    ),
+                    $extra
                 )
-            )
-        ));
+            );
+        }
+        $info = $model->findOne($query);
         
         if ($info == null) {
             return false;

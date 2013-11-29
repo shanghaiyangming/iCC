@@ -84,9 +84,11 @@ Ext.define('icc.controller.idatabase.Structure', {
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel');
+				var orderBy = grid.store.getTotalCount();
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
-					collection_id : grid.collection_id
+					collection_id : grid.collection_id,
+					orderBy : orderBy
 				});
 				win.show();
 			}

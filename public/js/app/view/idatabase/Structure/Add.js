@@ -3,7 +3,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 	alias : 'widget.idatabaseStructureAdd',
 	title : '添加属性',
 	initComponent : function() {
-
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
@@ -107,7 +106,7 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					name : 'orderBy',
 					fieldLabel : '排序',
 					allowBlank : false,
-					value : 0
+					value : this.orderBy
 				}, {
 					xtype : 'fieldset',
 					title : '关联设定（选填）',
