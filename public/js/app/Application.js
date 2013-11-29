@@ -4,7 +4,7 @@ Ext.define('icc.Application', {
     extend: 'Ext.app.Application',
 
     views: [
-            
+        'common.Combobox.Boolean'
     ],
 
     controllers: [
@@ -18,5 +18,6 @@ Ext.define('icc.Application', {
 
     stores: [
         // TODO: add stores here
+        'common.Boolean'
     ]
 });

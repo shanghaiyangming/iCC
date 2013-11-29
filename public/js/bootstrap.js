@@ -864,6 +864,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
   "icc.model.idatabase.Structure": [],
+  "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Plugin": [],
@@ -873,6 +874,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Structure.Type": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
+  "icc.view.common.Combobox.Boolean": [],
   "icc.view.idatabase.Collection.Accordion": [],
   "icc.view.idatabase.Collection.Add": [],
   "icc.view.idatabase.Collection.Combobox": [],
@@ -1928,6 +1930,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
   "icc.model.idatabase.Structure": [],
+  "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Plugin": [],
@@ -1939,6 +1942,9 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.app-main"
   ],
   "icc.view.Viewport": [],
+  "icc.view.common.Combobox.Boolean": [
+    "widget.commonComboboxBoolean"
+  ],
   "icc.view.idatabase.Collection.Accordion": [
     "widget.idatabaseCollectionAccordion"
   ],

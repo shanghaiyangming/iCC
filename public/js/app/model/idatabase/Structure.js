@@ -14,28 +14,28 @@ Ext.define('icc.model.idatabase.Structure', {
 		type : 'string'
 	},{
 		name : 'searchable',
-		type : 'bool'
+		type : 'boolean'
 	},{
 		name : 'main',
-		type : 'bool'
+		type : 'boolean'
 	},{
 		name : 'required',
-		type : 'bool'
+		type : 'boolean'
 	},{
-		name : 'rshForm',
+		name : 'rshCollection',
 		type : 'string'
 	},{
 		name : 'rshType',
 		type : 'string'
 	},{
 		name : 'rshKey',
-		type : 'string'
+		type : 'boolean'
 	},{
 		name : 'rshValue',
-		type : 'string'
+		type : 'boolean'
 	},{
 		name : 'showImage',
-		type : 'bool'
+		type : 'boolean'
 	},{
 		name : 'orderBy',
 		type : 'int'

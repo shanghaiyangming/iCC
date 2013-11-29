@@ -55,7 +55,10 @@ class StructureController extends BaseActionController
         $query = array(
             'collection_id' => $this->_collection_id
         );
-        return $this->findAll(IDATABASE_STRUCTURES, $query);
+        return $this->findAll(IDATABASE_STRUCTURES, $query, array(
+            'orderBy' => 1,
+            '_id' => 1
+        ));
     }
 
     /**

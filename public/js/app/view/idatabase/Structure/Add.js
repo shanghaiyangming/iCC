@@ -38,7 +38,7 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					fieldLabel : '输入类型',
 					allowBlank : false,
 					store : 'idatabase.Structure.Type',
-					valueField : 'type',
+					valueField : 'value',
 					displayField : 'name',
 					editable : false
 				}, {
@@ -114,7 +114,7 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 						xtype : 'idatabaseCollectionCombobox',
 						project_id : this.project_id,
 						fieldLabel : '关联集合列表',
-						name : 'rshType'
+						name : 'rshCollection'
 					}, {
 						xtype : 'radiogroup',
 						fieldLabel : '关联显示方法',
