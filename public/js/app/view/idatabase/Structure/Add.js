@@ -38,7 +38,7 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					fieldLabel : '输入类型',
 					allowBlank : false,
 					store : 'idatabase.Structure.Type',
-					valueField : 'value',
+					valueField : 'val',
 					displayField : 'name',
 					editable : false
 				}, {

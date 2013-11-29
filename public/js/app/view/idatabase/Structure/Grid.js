@@ -75,22 +75,25 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 					{
 						text : '输入类型',
 						dataIndex : 'type',
-						flex : 1,
+						flex : 2,
 						field : {
 							xtype : 'combobox',
 							store : 'idatabase.Structure.Type',
 							displayField : 'name',
-							valueField : 'value',
+							valueField : 'val',
 							queryMode : 'local',
 							pageSize : 0,
 							editable : false,
 							typeAhead : false
 						},
-						renderer : function(value, metaData, record, rowIndex, colIndex, store, view, returnHtml) {
-							var record = store.findRecord('value',value);
+						renderer : function(value) {
+							var store = Ext.data.StoreManager
+									.lookup('idatabase.Structure.Type');
+							var record = store.findRecord('val', value);
 							if (record != null) {
 								return record.get('name');
 							}
+							return value;
 						}
 					},
 					{
@@ -150,7 +153,7 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 						field : {
 							xtype : 'idatabaseCollectionCombobox',
 							project_id : me.project_id,
-							store:collectionStore
+							store : collectionStore
 						},
 						renderer : function(value, metaData, record, rowIndex,
 								colIndex, store, view, returnHtml) {
@@ -184,7 +187,6 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 						hidden : true
 					} ]
 		});
-
 		me.callParent();
 	}
 

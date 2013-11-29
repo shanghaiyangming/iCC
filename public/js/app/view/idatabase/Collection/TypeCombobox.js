@@ -4,7 +4,7 @@ Ext.define('icc.view.idatabase.Collection.TypeCombobox', {
 	fieldLabel : '针对用户类型',
 	name : 'type',
 	store : 'idatabase.Collection.Type',
-	valueField : 'type',
+	valueField : 'val',
 	displayField : 'name',
 	queryMode : 'local',
 	pageSize : 0,
