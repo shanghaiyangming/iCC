@@ -1,18 +1,16 @@
-Ext.define('icc.controller.idatabase.Collection', {
+Ext.define('icc.controller.idatabase.Data', {
 	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Project' ],
-	stores : [ 'idatabase.Project', 'idatabase.Collection.Type' ],
-	views : [ 'idatabase.Collection.Grid', 'idatabase.Collection.Add',
-			'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel',
-			'idatabase.Collection.TypeCombobox' ],
-	controllerName : 'idatabaseCollection',
+	models : [],
+	stores : [],
+	views : [ 'idatabase.Data.Grid', 'idatabase.Data.Add','idatabase.Data.Edit'],
+	controllerName : 'idatabaseData',
 	plugin : false,
 	plugin_id : '',
 	actions : {
-		add : '/idatabase/collection/add',
-		edit : '/idatabase/collection/edit',
-		remove : '/idatabase/collection/remove',
-		save : '/idatabase/collection/save'
+		add : '/idatabase/data/add',
+		edit : '/idatabase/data/edit',
+		remove : '/idatabase/data/remove',
+		save : '/idatabase/data/save'
 	},
 	refs : [ {
 		ref : 'projectTabPanel',

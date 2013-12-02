@@ -35,7 +35,7 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 			},
 			selType : 'rowmodel',
 			plugins : [ Ext.create('Ext.grid.plugin.CellEditing',{
-				clicksToEdit : 1
+				clicksToEdit : 2
 			})],
 			dockedItems : [ {
 				xtype : 'toolbar',

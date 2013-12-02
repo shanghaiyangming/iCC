@@ -56,7 +56,12 @@ class CollectionController extends BaseActionController
                 'plugin_id' => $plugin_id
             );
         }
-        return $this->findAll(IDATABASE_COLLECTIONS, $query);
+        
+        $sort = array(
+            'orderBy' => 1,
+            '_id' => - 1
+        );
+        return $this->findAll(IDATABASE_COLLECTIONS, $query, $sort);
     }
 
     /**
@@ -75,6 +80,7 @@ class CollectionController extends BaseActionController
             $alias = $this->params()->fromPost('alias', null);
             $type = $this->params()->fromPost('type', null);
             $desc = $this->params()->fromPost('desc', null);
+            $orderBy = $this->params()->fromPost('orderBy', 0);
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
             $plugin_id = $this->params()->fromPost('plugin_id', '');
             
@@ -115,6 +121,7 @@ class CollectionController extends BaseActionController
             $datas['alias'] = $alias;
             $datas['type'] = $type;
             $datas['desc'] = $desc;
+            $datas['orderBy'] = $orderBy;
             $datas['plugin'] = $plugin;
             $datas['plugin_id'] = $plugin_id;
             $this->_collection->insert($datas);
@@ -123,6 +130,19 @@ class CollectionController extends BaseActionController
         } catch (\Exception $e) {
             var_dump($e->getTraceAsString());
         }
+    }
+
+    /**
+     * 批量编辑集合信息
+     *
+     * @author young
+     * @name 批量编辑集合信息
+     * @version 2013.12.02 young
+     * @return JsonModel
+     */
+    public function saveAction()
+    {
+        $project_id = $this->_project_id;
     }
 
     /**
@@ -141,6 +161,7 @@ class CollectionController extends BaseActionController
         $alias = $this->params()->fromPost('alias', null);
         $type = $this->params()->fromPost('type', null);
         $desc = $this->params()->fromPost('desc', null);
+        $orderBy = $this->params()->fromPost('orderBy', 0);
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
         $plugin_id = $this->params()->fromPost('plugin_id', '');
         
@@ -193,6 +214,7 @@ class CollectionController extends BaseActionController
         $datas['alias'] = $alias;
         $datas['type'] = $type;
         $datas['desc'] = $desc;
+        $datas['orderBy'] = $orderBy;
         $datas['plugin'] = $plugin;
         $datas['plugin_id'] = $plugin_id;
         
@@ -278,13 +300,13 @@ class CollectionController extends BaseActionController
         }
         return true;
     }
-    
+
     private function checkPluginAliasExist($info)
     {
         // 检查插件集合中是否包含这些名称信息
         $info = $this->_collection->findOne(array(
-                'alias' => $info,
-                'plugin' => true
+            'alias' => $info,
+            'plugin' => true
         ));
         if ($info == null) {
             return false;

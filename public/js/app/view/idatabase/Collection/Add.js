@@ -38,6 +38,12 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 				name : 'desc',
 				fieldLabel : '功能描述',
 				allowBlank : false
+			},{
+				xtype : 'numberfield',
+				name : 'orderBy',
+				fieldLabel : '排列顺序',
+				allowBlank : false,
+				value : this.orderBy
 			} ]
 		} ];
 

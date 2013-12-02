@@ -11,6 +11,16 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 		text : '集合名称',
 		dataIndex : 'name',
 		flex : 2
+	},{
+		text : '集合别名',
+		dataIndex : 'alias',
+		flex : 1,
+		hidden : true
+	},{
+		text : '排序',
+		dataIndex : 'orderBy',
+		flex : 1,
+		hidden : true
 	}, {
 		xtype : 'datecolumn',
 		text : '创建时间',
