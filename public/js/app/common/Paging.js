@@ -2,7 +2,7 @@ Ext.define('icc.common.Paging', {
 	extend : 'Ext.toolbar.Paging',
 	alias : 'widget.paging',
 	displayInfo : true,
-	displayMsg : '当前显示{0}至{1}项,共 {2}项',
+	displayMsg : '当前{0}-{1}项,共 {2}',
 	emptyMsg: '暂无数据',
 	refreshText : '刷新',
 	firstText: '首页',

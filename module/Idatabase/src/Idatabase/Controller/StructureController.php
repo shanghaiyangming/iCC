@@ -179,6 +179,70 @@ class StructureController extends BaseActionController
     }
 
     /**
+     * 批量保存字段修改
+     *
+     * @author young
+     * @name 批量保存字段修改
+     * @version 2013.12.02 young
+     * @return JsonModel
+     */
+    public function saveAction()
+    {
+        $updateInfos = $this->params()->fromPost('updateInfos', null);
+        try {
+            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($updateInfos)) {
+            return $this->msg(false, '更新数据无效');
+        }
+        
+        foreach ($updateInfos as $row) {
+            $_id = $row['_id'];
+            unset($row['_id']);
+            
+            if ($row['field'] == null) {
+                return $this->msg(false, '请填写字段名称');
+            }
+            
+            if ($row['label'] == null) {
+                return $this->msg(false, '请填写字段描述');
+            }
+            
+            if ($row['type'] == null) {
+                return $this->msg(false, '请选择字段类型');
+            }
+            
+            $oldStructureInfo = $this->_structure->findOne(array(
+                    '_id' => myMongoId($_id)
+            ));
+            
+            if ($this->checkExist('field', $row['field'], array(
+                    'collection_id' => $this->_collection_id
+            )) && $oldStructureInfo['field'] != $row['field']) {
+                return $this->msg(false, '字段名称已经存在');
+            }
+            
+            if ($this->checkExist('label', $row['label'], array(
+                    'collection_id' => $this->_collection_id
+            )) && $oldStructureInfo['label'] != $row['label']) {
+                return $this->msg(false, '字段描述已经存在');
+            }
+            
+            $this->_structure->update(array(
+                '_id' => myMongoId($_id),
+                'collection_id' => $this->_collection_id
+            ), array(
+                '$set' => $row
+            ));
+        }
+        
+        return $this->msg(true, '更新字段属性成功');
+    }
+
+    /**
      * 删除某些字段
      *
      * @author young

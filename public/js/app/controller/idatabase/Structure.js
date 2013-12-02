@@ -1,7 +1,7 @@
 Ext.define('icc.controller.idatabase.Structure', {
 	extend : 'Ext.app.Controller',
 	models : [ 'idatabase.Structure' ],
-	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type' ],
+	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type','idatabase.Structure.RshType' ],
 	views : [ 'idatabase.Structure.Grid', 'idatabase.Structure.Add',
 			'idatabase.Structure.Edit', 'idatabase.Structure.Window'],
 	controllerName : 'idatabaseStructure',
@@ -130,6 +130,8 @@ Ext.define('icc.controller.idatabase.Structure', {
 				Ext.Ajax.request({
 					url : me.actions.save,
 					params : {
+						project_id : grid.project_id,
+						collection_id : grid.collection_id,
 						updateInfos : Ext.encode(updateList)
 					},
 					scope : me,
