@@ -8,7 +8,9 @@ use Zend\Mvc\MvcEvent;
 
 abstract class ActionController extends AbstractActionController
 {
-
+    protected $controller;
+    protected $action;
+    
     public function __construct()
     {
         // 增加权限控制方法在这里
@@ -18,10 +20,17 @@ abstract class ActionController extends AbstractActionController
         $serviceLocator = $this->getServiceLocator();
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, function () use($serviceLocator)
         {
+            $this->preDispatch();
             if (method_exists($this, 'init')) {
                 $this->init();
             }
         }, 200);
+    }
+    
+    public function preDispatch() {
+        $routerMatch = $this->getEvent()->getRouteMatch();
+        $this->action = $routerMatch->getParam('action', null);
+        $this->controller = $routerMatch->getParam('controller', null);
     }
 
     /**

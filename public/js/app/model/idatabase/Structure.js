@@ -13,6 +13,9 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'type',
 		type : 'string'
 	},{
+		name : 'filter',
+		type : 'int'
+	},{
 		name : 'searchable',
 		type : 'boolean'
 	},{

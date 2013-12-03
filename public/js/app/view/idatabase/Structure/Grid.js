@@ -119,6 +119,28 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 					return value;
 				}
 			},{
+				text : '过滤器',
+				dataIndex : 'filter',
+				flex : 2,
+				field : {
+					xtype : 'combobox',
+					store : 'idatabase.Structure.FilterType',
+					displayField : 'name',
+					valueField : 'val',
+					queryMode : 'remote',
+					pageSize : 0,
+					editable : false,
+					typeAhead : false
+				},
+				renderer : function(value) {
+					var store = Ext.data.StoreManager.lookup('idatabase.Structure.FilterType');
+					var record = store.findRecord('val',value);
+					if (record != null) {
+						return record.get('name');
+					}
+					return value;
+				}
+			},{
 				xtype : 'booleancolumn',
 				trueText : '√',
 				falseText : '×',

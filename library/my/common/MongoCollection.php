@@ -40,6 +40,8 @@ class MongoCollection extends \MongoCollection
 
     private $_config;
 
+    private $_fs;
+
     private $_queryHaystack = array(
         '$and',
         '$or',
@@ -108,6 +110,8 @@ class MongoCollection extends \MongoCollection
         if (! $this->_admin instanceof \MongoDB) {
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
         }
+        
+        $this->_fs = new MongoGridFS($this->_db, "icc");
         
         // 默认执行几个操作
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
@@ -385,6 +389,12 @@ class MongoCollection extends \MongoCollection
         );
         $options = ($options === NULL) ? $default : array_merge($default, $options);
         
+        array_unset_recursive($a, array(
+            '__CREATE_TIME__',
+            '__MODIFY_TIME__',
+            '__REMOVED__'
+        ));
+        
         if (! isset($a['__CREATE_TIME__'])) {
             $a['__CREATE_TIME__'] = new \MongoDate();
         }
@@ -412,6 +422,12 @@ class MongoCollection extends \MongoCollection
     {
         if (empty($a))
             throw new \Exception('$a is NULL');
+        
+        array_unset_recursive($a, array(
+            '__CREATE_TIME__',
+            '__MODIFY_TIME__',
+            '__REMOVED__'
+        ));
         
         if (! isset($a['__CREATE_TIME__'])) {
             $a['__CREATE_TIME__'] = new \MongoDate();
@@ -502,6 +518,12 @@ class MongoCollection extends \MongoCollection
         $options = ($options === NULL) ? $default : array_merge($default, $options);
         
         $criteria = $this->appendQuery($criteria);
+        array_unset_recursive($object, array(
+            '__CREATE_TIME__',
+            '__MODIFY_TIME__',
+            '__REMOVED__'
+        ));
+        
         if (parent::count($criteria) == 0) {
             parent::update($criteria, array(
                 '$set' => array(
@@ -519,6 +541,49 @@ class MongoCollection extends \MongoCollection
             ), $options);
         }
         return parent::update($criteria, $object, $options);
+    }
+
+    /**
+     * 云存储文件
+     * @param array $file $_FILES['name']
+     */
+    public function storeToGridFS($fieldName, $metadata = array())
+    {
+        if (! isset($_FILES[$fieldName]))
+            throw new \Exception('$_FILES[$fieldName]无效');
+        
+        $metadata = array_merge($metadata, $_FILES[$fieldName]);
+        $id = $this->_fs->storeUpload($fieldName, $metadata);
+        $gridfsFile = $this->_fs->get($id);
+        return $gridfsFile->file;
+    }
+
+    /**
+     * 根据ID获取文件的信息
+     * @param string $id
+     * @return array 文件信息数组
+     */
+    public function getInfoFromGridFS($id)
+    {
+        if (! $id instanceof \MongoId) {
+            $id = new \MongoId($id);
+        }
+        $gridfsFile = $this->_fs->get($id);
+        return $gridfsFile->file;
+    }
+
+    /**
+     * 根据ID获取文件内容，二进制
+     * @param string $id   
+     * @return bytes         
+     */
+    public function getFileFromGridFS($id)
+    {
+        if (! $id instanceof \MongoId) {
+            $id = new \MongoId($id);
+        }
+        $gridfsFile = $this->_fs->get($id);
+        return $gridfsFile->getBytes();
     }
 
     /**

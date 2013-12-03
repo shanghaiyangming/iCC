@@ -904,6 +904,19 @@ function getScriptExecuteInfo()
     return $rst;
 }
 
-
+/**
+ * 用递归的方式过滤数组中的指定key
+ * @param array $array 需要被過濾的數組的引用
+ * @param mixed $remove key的数组或者key的字符串
+ */
+function array_unset_recursive(&$array, $remove) {
+    if (!is_array($remove)) $remove = array($remove);
+    foreach ($array as $key => &$value) {
+        if (in_array($key, $remove)) unset($array[$key]);
+        else if (is_array($value)) {
+            array_unset_recursive($value, $remove);
+        }
+    }
+}
 
 

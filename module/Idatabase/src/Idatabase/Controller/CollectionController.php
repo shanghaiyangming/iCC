@@ -255,6 +255,10 @@ class CollectionController extends BaseActionController
         }
         return $this->msg(true, '删除信息成功');
     }
+    
+    public function dropAction() {
+        
+    }
 
     /**
      * 检测一个集合是否存在，根据名称和编号

@@ -1,9 +1,11 @@
 Ext.define('icc.controller.idatabase.Structure', {
 	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Structure' ],
-	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type','idatabase.Structure.RshType' ],
+	models : [ 'idatabase.Structure', 'idatabase.Structure.FilterType' ],
+	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type',
+			'idatabase.Structure.RshType', 'idatabase.Structure.FilterType' ],
 	views : [ 'idatabase.Structure.Grid', 'idatabase.Structure.Add',
-			'idatabase.Structure.Edit', 'idatabase.Structure.Window'],
+			'idatabase.Structure.Edit', 'idatabase.Structure.Window',
+			'idatabase.Structure.FilterCombobox' ],
 	controllerName : 'idatabaseStructure',
 	actions : {
 		add : '/idatabase/structure/add',

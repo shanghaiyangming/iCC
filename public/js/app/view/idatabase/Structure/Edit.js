@@ -48,6 +48,8 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					displayField : 'name',
 					editable : false
 				}, {
+					xtype : 'idatabaseStructureFilterCombobox'
+				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否为检索条件',
 					defaultType : 'radiofield',
