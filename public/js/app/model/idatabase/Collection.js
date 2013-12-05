@@ -12,5 +12,8 @@ Ext.define('icc.model.idatabase.Collection', {
 	},{
 		name : 'desc',
 		type : 'string'
+	},{
+		name : 'orderBy',
+		type : 'int'
 	}]
 });

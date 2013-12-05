@@ -7,10 +7,21 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
+	sortableColumns : false,
 	columns : [ {
 		text : '集合名称',
 		dataIndex : 'name',
 		flex : 2
+	},{
+		text : '集合别名',
+		dataIndex : 'alias',
+		flex : 1,
+		hidden : true
+	},{
+		text : '排序',
+		dataIndex : 'orderBy',
+		flex : 1,
+		hidden : true
 	}, {
 		xtype : 'datecolumn',
 		text : '创建时间',
@@ -80,6 +91,11 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							action : 'structure'
 						}, {
 							xtype : 'button',
+							text : '排序管理',
+							iconCls : 'orderBy',
+							action : 'orderBy'
+						}, {
+							xtype : 'button',
 							text : '索引管理',
 							iconCls : 'index',
 							action : 'index'
@@ -93,6 +109,16 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							text : '快捷输入',
 							iconCls : 'shortcut',
 							action : 'shortcut'
+						} , {
+							xtype : 'button',
+							text : '整合输出',
+							iconCls : 'dbout',
+							action : 'dbout'
+						} , {
+							xtype : 'button',
+							text : '数据导入',
+							iconCls : 'dbimport',
+							action : 'dbimport'
 						} ]
 					}
 				} ]

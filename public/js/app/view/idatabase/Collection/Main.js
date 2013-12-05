@@ -3,23 +3,25 @@ Ext.define('icc.view.idatabase.Collection.Main', {
 	requires : [ 'Ext.layout.container.Border',
 			'icc.view.idatabase.Collection.Grid',
 			'icc.view.idatabase.Collection.TabPanel',
-			'icc.view.idatabase.Collection.Accordion'],
+			'icc.view.idatabase.Collection.Accordion' ],
 	alias : 'widget.idatabaseCollectionMain',
 	closable : true,
+	collapsible : true,
 	layout : {
 		type : 'border'
 	},
 	initComponent : function() {
-		var me = this;
-		Ext.apply(me, {
+		Ext.apply(this, {
 			items : [ {
 				xtype : 'idatabaseCollectionAccordion',
-				project_id : me.project_id
+				project_id : this.project_id,
+				name : this.name,
+				title : this.title
 			}, {
 				xtype : 'idatabaseCollectionTabPanel',
-				project_id : me.project_id
+				project_id : this.project_id
 			} ]
 		});
-		me.callParent(arguments);
+		this.callParent(arguments);
 	}
 });

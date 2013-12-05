@@ -13,6 +13,9 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'type',
 		type : 'string'
 	},{
+		name : 'filter',
+		type : 'int'
+	},{
 		name : 'searchable',
 		type : 'boolean'
 	},{
@@ -23,9 +26,6 @@ Ext.define('icc.model.idatabase.Structure', {
 		type : 'boolean'
 	},{
 		name : 'rshCollection',
-		type : 'string'
-	},{
-		name : 'rshType',
 		type : 'string'
 	},{
 		name : 'rshKey',

@@ -13,7 +13,8 @@ Ext.define('icc.Application', {
         'idatabase.Collection',
         'idatabase.Structure',
         'idatabase.Plugin',
-        'idatabase.Plugin.System'
+        'idatabase.Plugin.System',
+        'idatabase.Data'
     ],
 
     stores: [

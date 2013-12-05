@@ -1,24 +1,23 @@
-Ext.define('icc.controller.idatabase.Structure', {
+Ext.define('icc.controller.idatabase.Data', {
 	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Structure', 'idatabase.Structure.FilterType' ],
-	stores : [ 'idatabase.Structure', 'idatabase.Structure.Type',
-			'idatabase.Structure.RshType', 'idatabase.Structure.FilterType' ],
-	views : [ 'idatabase.Structure.Grid', 'idatabase.Structure.Add',
-			'idatabase.Structure.Edit', 'idatabase.Structure.Window',
-			'idatabase.Structure.FilterCombobox' ],
-	controllerName : 'idatabaseStructure',
+	models : [],
+	stores : [],
+	views : [ 'idatabase.Data.Main','idatabase.Data.Grid','idatabase.Data.Search', 'idatabase.Data.Add','idatabase.Data.Edit'],
+	controllerName : 'idatabaseData',
+	plugin : false,
+	plugin_id : '',
 	actions : {
-		add : '/idatabase/structure/add',
-		edit : '/idatabase/structure/edit',
-		remove : '/idatabase/structure/remove',
-		save : '/idatabase/structure/save'
+		add : '/idatabase/data/add',
+		edit : '/idatabase/data/edit',
+		remove : '/idatabase/data/remove',
+		save : '/idatabase/data/save'
 	},
 	refs : [ {
 		ref : 'projectTabPanel',
 		selector : 'idatabaseProjectTabPanel'
 	} ],
-	activeTabGrid : function(gridName) {
-		return this.getProjectTabPanel().getActiveTab().down(gridName);
+	collectionTabPanel : function() {
+		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionTabPanel');
 	},
 	init : function() {
 		var me = this;
@@ -30,6 +29,9 @@ Ext.define('icc.controller.idatabase.Structure', {
 		}
 
 		me.addRef([ {
+			ref : 'main',
+			selector : me.controllerName + 'Main'
+		}, {
 			ref : 'list',
 			selector : me.controllerName + 'Grid'
 		}, {
@@ -44,7 +46,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.getList();
+				var grid = me.activeTabGrid();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -66,7 +68,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.getList();
+				var grid = me.activeTabGrid();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -86,11 +88,11 @@ Ext.define('icc.controller.idatabase.Structure', {
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel');
-				var orderBy = grid.store.getTotalCount();
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
-					collection_id : grid.collection_id,
-					orderBy : orderBy
+					plugin : me.plugin,
+					plugin_id : me.plugin_id,
+					orderBy : grid.store.getTotalCount()
 				});
 				win.show();
 			}
@@ -103,7 +105,8 @@ Ext.define('icc.controller.idatabase.Structure', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						project_id : grid.project_id,
-						collection_id : grid.collection_id
+						plugin : me.plugin,
+						plugin_id : me.plugin_id
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -132,9 +135,8 @@ Ext.define('icc.controller.idatabase.Structure', {
 				Ext.Ajax.request({
 					url : me.actions.save,
 					params : {
-						project_id : grid.project_id,
-						collection_id : grid.collection_id,
-						updateInfos : Ext.encode(updateList)
+						updateInfos : Ext.encode(updateList),
+						project_id : grid.project_id
 					},
 					scope : me,
 					success : function(response) {
@@ -168,8 +170,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 								url : me.actions.remove,
 								params : {
 									_id : Ext.encode(_id),
-									project_id : grid.project_id,
-									collection_id : grid.collection_id
+									project_id : grid.project_id
 								},
 								scope : me,
 								success : function(response) {
@@ -186,6 +187,76 @@ Ext.define('icc.controller.idatabase.Structure', {
 				} else {
 					Ext.Msg.alert('提示信息', '请选择您要删除的项');
 				}
+			}
+		};
+		
+		listeners[controllerName + 'Grid'] = {
+				selectionchange : function(selectionModel, selected, eOpts) {
+
+					if (selected.length > 1) {
+						Ext.Msg.alert('提示信息', '请勿选择多项');
+						return false;
+					}
+
+					var record = selected[0];
+					if (record) {
+						var id = record.get('_id');
+						var name = record.get('name');
+						var panel = this.collectionTabPanel().getComponent(id);
+						if (panel == null) {
+							panel = Ext.widget('idatabaseDataGrid', {
+								id : id,
+								title : name,
+								project_id : id
+							});
+							this.collectionTabPanel().add(panel);
+						}
+						this.collectionTabPanel().setActiveTab(id);
+					}
+				}
+			};
+
+		listeners[controllerName + 'Grid button[action=structure]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseStructureWindow', {
+						project_id : grid.project_id,
+						collection_id : record.get('_id'),
+						plugin : me.plugin,
+						plugin_id : me.plugin_id
+					});
+					win.show();
+				}
+				else {
+					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+				}
+			}
+		};
+
+		listeners[controllerName + 'Grid button[action=index]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var win = Ext.widget('idatabaseIndexWindow', {
+					project_id : grid.project_id,
+					plugin : me.plugin,
+					plugin_id : me.plugin_id
+				});
+				win.show();
+			}
+		};
+
+		listeners[controllerName + 'Grid button[action=static]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var win = Ext.widget('idatabaseStaticWindow', {
+					project_id : grid.project_id,
+					plugin : me.plugin,
+					plugin_id : me.plugin_id
+				});
+				win.show();
 			}
 		};
 

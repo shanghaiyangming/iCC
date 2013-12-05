@@ -24,6 +24,12 @@ abstract class BaseActionController extends ActionController
 
     protected $user_id;
 
+    protected $action;
+
+    protected $controller;
+
+    protected $module;
+
     public function __construct()
     {
         // 增加iDatabase模块的公共方法
@@ -42,7 +48,7 @@ abstract class BaseActionController extends ActionController
                 ->fromPost('collection_id', null) : $this->params()
                 ->fromQuery('collection_id', null);
             
-            //身份验证不通过的情况下，执行以下操作
+            // 身份验证不通过的情况下，执行以下操作
             if (false) {
                 $event->stopPropagation(true);
                 $event->setViewModel($this->msg(false, 'exit'));

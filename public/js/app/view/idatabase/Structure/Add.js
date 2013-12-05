@@ -42,6 +42,9 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					displayField : 'name',
 					editable : false
 				}, {
+					xtype : 'idatabaseStructureFilterCombobox',
+					value : 516,
+				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否为检索条件',
 					defaultType : 'radiofield',
@@ -115,25 +118,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 						project_id : this.project_id,
 						fieldLabel : '关联集合列表',
 						name : 'rshCollection'
-					}, {
-						xtype : 'radiogroup',
-						fieldLabel : '关联显示方法',
-						defaultType : 'radiofield',
-						layout : 'hbox',
-						items : [ {
-							boxLabel : '下拉菜单',
-							name : 'rshType',
-							inputValue : 'combobox',
-							checked : true
-						}, {
-							boxLabel : '单选框',
-							name : 'rshType',
-							inputValue : 'radio'
-						}, {
-							boxLabel : '复选框',
-							name : 'rshType',
-							inputValue : 'checkbox'
-						} ]
 					}, {
 						xtype : 'radiogroup',
 						fieldLabel : '关联表显示字段',

@@ -27,15 +27,17 @@ class StructureController extends BaseActionController
 
     public function init()
     {
-        $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
-        
-        if (empty($this->_project_id)) {
-            throw new \Exception('$this->_project_id值未设定');
-        }
-        
-        $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
-        if (empty($this->_collection_id)) {
-            throw new \Exception('$this->_collection_id值未设定');
+        if($this->action!='filter') {
+            $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
+            
+            if (empty($this->_project_id)) {
+                throw new \Exception('$this->_project_id值未设定');
+            }
+            
+            $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
+            if (empty($this->_collection_id)) {
+                throw new \Exception('$this->_collection_id值未设定');
+            }
         }
         
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
@@ -76,15 +78,16 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
+        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516),FILTER_SANITIZE_NUMBER_INT);
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
-        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
+        $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -96,6 +99,10 @@ class StructureController extends BaseActionController
         
         if ($datas['type'] == null) {
             return $this->msg(false, '请选择字段类型');
+        }
+        
+        if ($datas['filter'] == null) {
+            return $this->msg(false, '请选择字段过滤类型');
         }
         
         if ($this->checkExist('field', $datas['field'], array(
@@ -131,15 +138,16 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
+        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516),FILTER_SANITIZE_NUMBER_INT);
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
-        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['orderBy'] = filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
+        $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -151,6 +159,10 @@ class StructureController extends BaseActionController
         
         if ($datas['type'] == null) {
             return $this->msg(false, '请选择字段类型');
+        }
+        
+        if ($datas['filter'] == null) {
+            return $this->msg(false, '请选择字段过滤类型');
         }
         
         $oldStructureInfo = $this->_structure->findOne(array(
@@ -176,6 +188,72 @@ class StructureController extends BaseActionController
         ));
         
         return $this->msg(true, '编辑信息成功');
+    }
+
+    /**
+     * 批量保存字段修改
+     *
+     * @author young
+     * @name 批量保存字段修改
+     * @version 2013.12.02 young
+     * @return JsonModel
+     */
+    public function saveAction()
+    {
+        $updateInfos = $this->params()->fromPost('updateInfos', null);
+        try {
+            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($updateInfos)) {
+            return $this->msg(false, '更新数据无效');
+        }
+        
+        foreach ($updateInfos as $row) {
+            $_id = $row['_id'];
+            unset($row['_id']);
+            
+            if ($row['field'] == null) {
+                return $this->msg(false, '请填写字段名称');
+            }
+            
+            if ($row['label'] == null) {
+                return $this->msg(false, '请填写字段描述');
+            }
+            
+            if ($row['type'] == null) {
+                return $this->msg(false, '请选择字段类型');
+            }
+            
+            $row['filter'] = (int) $row['filter'];
+            
+            $oldStructureInfo = $this->_structure->findOne(array(
+                '_id' => myMongoId($_id)
+            ));
+            
+            if ($this->checkExist('field', $row['field'], array(
+                'collection_id' => $this->_collection_id
+            )) && $oldStructureInfo['field'] != $row['field']) {
+                return $this->msg(false, '字段名称已经存在');
+            }
+            
+            if ($this->checkExist('label', $row['label'], array(
+                'collection_id' => $this->_collection_id
+            )) && $oldStructureInfo['label'] != $row['label']) {
+                return $this->msg(false, '字段描述已经存在');
+            }
+            
+            $this->_structure->update(array(
+                '_id' => myMongoId($_id),
+                'collection_id' => $this->_collection_id
+            ), array(
+                '$set' => $row
+            ));
+        }
+        
+        return $this->msg(true, '更新字段属性成功');
     }
 
     /**
@@ -205,6 +283,41 @@ class StructureController extends BaseActionController
             ));
         }
         return $this->msg(true, '删除字段属性成功');
+    }
+
+    /**
+     * 获取全部过滤器方法
+     *
+     * @return multitype:number
+     */
+    public function filterAction()
+    {
+        $map = array();
+        $map['int'] = '整数验证';
+        $map['boolean'] = '是非验证';
+        $map['float'] = '浮点验证';
+        $map['validate_url'] = '是否URL';
+        $map['validate_email'] = '是否Email';
+        $map['validate_ip'] = '是否IP地址';
+        $map['string'] = '过滤字符串';
+        $map['encoded'] = '去除或编码特殊字符';
+        $map['special_chars'] = 'HTML转义';
+        $map['unsafe_raw'] = '无过滤';
+        $map['email'] = '过滤非Email字符';
+        $map['url'] = '过滤非URL字符';
+        $map['number_int'] = '数字过滤非整型';
+        $map['number_float'] = '数字过滤非浮点';
+        $map['magic_quotes'] = '转义字符';
+        
+        $filters = array();
+        foreach (filter_list() as $key => $value) {
+            if (isset($map[$value]))
+                $filters[] = array(
+                    'name' => $map[$value],
+                    'val' => filter_id($value)
+                );
+        }
+        return $this->rst($filters, null, true);
     }
 
     /**
