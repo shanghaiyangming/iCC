@@ -1,7 +1,7 @@
 Ext.define('icc.view.idatabase.Data.Search', {
 	extend : 'Ext.panel.Panel',
 	alias : 'widget.idatabaseDataSearch',
-	title : '检索与统计',
+	title : '数据检索 - 数据统计 - 数据导出',
 	region : 'east',
 	collapsible : true,
 	collapsed : true,
@@ -63,7 +63,21 @@ Ext.define('icc.view.idatabase.Data.Search', {
 			items : [ {
 				xtype : 'iform',
 				url : '/idatabase/data/index?action=search',
-				items : this.searchFields
+				items : this.searchFields,
+				buttons : [ {
+					text : '搜索',
+					action : 'submit',
+					formBind : true, //only enabled once the form is valid
+					disabled: true
+				},{
+					text : '统计',
+					action : 'static',
+				}, {
+					text : '导出',
+					action : 'submit',
+					formBind : true, //only enabled once the form is valid
+					disabled: true
+				}]
 			} ]
 		});
 

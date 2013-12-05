@@ -146,3 +146,11 @@
     background-image: url(./images/arrow_down.png) !important;
 }
 
+.dashboard {
+    background-image: url(./images/application_view_tile.png) !important;
+}
+
+.dbimport {
+    background-image: url(./images/database_add.png) !important;
+}
+

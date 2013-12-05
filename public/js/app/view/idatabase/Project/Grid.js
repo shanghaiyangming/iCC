@@ -80,12 +80,17 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 						text : '密钥管理',
 						iconCls : 'key',
 						action : 'key'
+					},{
+						xtype : 'button',
+						text : '仪表盘管理',
+						iconCls : 'dashboard',
+						action : 'dashboard'
 					}, {
 						xtype : 'button',
 						text : '插件管理',
 						iconCls : 'plugin',
 						action : 'plugin'
-					}]
+					}] 
 				}
 			}]
 		},{
@@ -97,6 +102,5 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 		}];
 		
 		this.callParent();
-	}
-	
+	}	
 });

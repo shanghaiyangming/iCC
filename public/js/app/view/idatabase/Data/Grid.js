@@ -9,6 +9,7 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
+	sortableColumns : false,
 	selType : 'rowmodel',
 	plugins : [ Ext.create('Ext.grid.plugin.CellEditing', {
 		clicksToEdit : 2
