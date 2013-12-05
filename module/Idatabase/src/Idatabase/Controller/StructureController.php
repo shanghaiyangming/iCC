@@ -83,7 +83,7 @@ class StructureController extends BaseActionController
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
-        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
@@ -143,7 +143,7 @@ class StructureController extends BaseActionController
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
-        $datas['rshType'] = $this->params()->fromPost('rshType', '');
+        $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);

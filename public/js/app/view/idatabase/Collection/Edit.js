@@ -3,52 +3,54 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 	alias : 'widget.idatabaseCollectionEdit',
 	title : '编辑项目',
 	initComponent : function() {
-		this.items = [ {
-			xtype : 'iform',
-			url : '/idatabase/collection/edit',
+		Ext.apply(this, {
 			items : [ {
-				xtype : 'hiddenfield',
-				name : 'project_id',
-				value : this.project_id,
-				vtype : 'alphanum'
-			}, {
-				xtype : 'hiddenfield',
-				name : '_id',
-				allowBlank : false
-			}, {
-				xtype : 'hiddenfield',
-				name : 'plugin',
-				value : this.plugin,
-				allowBlank : false
-			}, {
-				xtype : 'hiddenfield',
-				name : 'plugin_id',
-				value : this.plugin_id,
-				vtype : 'alphanum',
-				allowBlank : false
-			}, {
-				name : 'alias',
-				fieldLabel : '集合别名(英文)',
-				allowBlank : false,
-				vtype : 'alphanum'
-			}, {
-				name : 'name',
-				fieldLabel : '集合名称(中文)',
-				allowBlank : false
-			}, {
-				xtype : 'idatabaseCollectionTypeCombobox'
-			}, {
-				xtype : 'textareafield',
-				name : 'desc',
-				fieldLabel : '功能描述',
-				allowBlank : false
-			},{
-				xtype : 'numberfield',
-				name : 'orderBy',
-				fieldLabel : '排列顺序',
-				allowBlank : false
+				xtype : 'iform',
+				url : '/idatabase/collection/edit',
+				items : [ {
+					xtype : 'hiddenfield',
+					name : 'project_id',
+					value : this.project_id,
+					vtype : 'alphanum'
+				}, {
+					xtype : 'hiddenfield',
+					name : '_id',
+					allowBlank : false
+				}, {
+					xtype : 'hiddenfield',
+					name : 'plugin',
+					value : this.plugin,
+					allowBlank : false
+				}, {
+					xtype : 'hiddenfield',
+					name : 'plugin_id',
+					value : this.plugin_id,
+					vtype : 'alphanum',
+					allowBlank : false
+				}, {
+					name : 'alias',
+					fieldLabel : '集合别名(英文)',
+					allowBlank : false,
+					vtype : 'alphanum'
+				}, {
+					name : 'name',
+					fieldLabel : '集合名称(中文)',
+					allowBlank : false
+				}, {
+					xtype : 'idatabaseCollectionTypeCombobox'
+				}, {
+					xtype : 'textareafield',
+					name : 'desc',
+					fieldLabel : '功能描述',
+					allowBlank : false
+				}, {
+					xtype : 'numberfield',
+					name : 'orderBy',
+					fieldLabel : '排列顺序',
+					allowBlank : false
+				} ]
 			} ]
-		} ];
+		});
 		this.callParent();
 	}
 

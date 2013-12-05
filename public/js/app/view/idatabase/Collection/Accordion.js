@@ -4,6 +4,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	region : 'west',
 	layout : 'accordion',
 	width : 400,
+	collapsible : true,
 	defaults : {
 		bodyPadding : 0
 	},

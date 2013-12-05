@@ -120,25 +120,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 						name : 'rshCollection'
 					}, {
 						xtype : 'radiogroup',
-						fieldLabel : '关联显示方法',
-						defaultType : 'radiofield',
-						layout : 'hbox',
-						items : [ {
-							boxLabel : '下拉菜单',
-							name : 'rshType',
-							inputValue : 'combobox',
-							checked : true
-						}, {
-							boxLabel : '单选框',
-							name : 'rshType',
-							inputValue : 'radio'
-						}, {
-							boxLabel : '复选框',
-							name : 'rshType',
-							inputValue : 'checkbox'
-						} ]
-					}, {
-						xtype : 'radiogroup',
 						fieldLabel : '关联表显示字段',
 						defaultType : 'radiofield',
 						layout : 'hbox',

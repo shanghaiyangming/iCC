@@ -1,0 +1,73 @@
+Ext.define('icc.view.idatabase.Data.Search', {
+	extend : 'Ext.panel.Panel',
+	alias : 'widget.idatabaseDataSearch',
+	title : '检索与统计',
+	region : 'east',
+	collapsible : true,
+	collapsed : true,
+	border : true,
+	frame : false,
+	autoScroll : true,
+	initComponent : function() {
+		this.searchFields.push({
+			xtype : 'hiddenfield',
+			name : 'project_id',
+			value : this.project_id
+		});
+
+		this.searchFields.push({
+			xtype : 'fieldset',
+			layout : 'hbox',
+			title : '创建时间范围',
+			defaultType : 'datefield',
+			fieldDefaults : {
+				labelAlign : 'top',
+				labelSeparator : '',
+				format : 'Y-m-d H:i:s'
+			},
+			items : [ {
+				fieldLabel : '开始时间',
+				name : '__CREATE_TIME__[start]'
+			}, {
+				fieldLabel : '截止时间',
+				name : '__CREATE_TIME__[end]'
+			}, {
+				fieldLabel : '非',
+				name : 'exclusive__' + '__MODIFY_TIME__',
+				xtype : 'checkboxfield'
+			} ]
+		}, {
+			xtype : 'fieldset',
+			layout : 'hbox',
+			title : '修改时间范围',
+			defaultType : 'datefield',
+			fieldDefaults : {
+				labelAlign : 'top',
+				labelSeparator : '',
+				format : 'Y-m-d H:i:s'
+			},
+			items : [ {
+				fieldLabel : '开始时间',
+				name : '__MODIFY_TIME__[start]'
+			}, {
+				fieldLabel : '截止时间',
+				name : '__MODIFY_TIME__[end]'
+			}, {
+				fieldLabel : '非',
+				name : 'exclusive__' + '__MODIFY_TIME__',
+				xtype : 'checkboxfield'
+			} ]
+		});
+
+		Ext.apply(this, {
+			items : [ {
+				xtype : 'iform',
+				url : '/idatabase/data/index?action=search',
+				items : this.searchFields
+			} ]
+		});
+
+		this.callParent();
+	}
+
+});

@@ -61,6 +61,12 @@ class DataController extends BaseActionController
     public function indexAction()
     {
         $query = array();
+        
+        $action = $this->params()->fromQuery('action', null);
+        if ($action == 'search') {
+            
+        }
+        
         return $this->findAll($this->_collection_name, $query);
     }
 
@@ -170,8 +176,8 @@ class DataController extends BaseActionController
     {
         $schema = array();
         $schema['post']['_id'] = array(
-            'name' => '_id',
-            'alias' => '_id',
+            'field' => '_id',
+            'label' => '_id',
             'type' => '_id'
         );
         
@@ -186,7 +192,7 @@ class DataController extends BaseActionController
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
-            $schema[$type][$row['name']] = $row;
+            $schema[$type][$row['field']] = $row;
         }
         return $schema;
     }

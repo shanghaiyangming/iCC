@@ -9,6 +9,7 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
+	sortableColumns : false,
 	columns : [{
 		text: '项目名称',  
 		dataIndex: 'name',

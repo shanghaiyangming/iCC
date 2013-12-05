@@ -1,6 +1,5 @@
 Ext.define('icc.store.idatabase.Structure', {
 	extend: 'Ext.data.Store',
-	storeId:'idatabaseStructure',
 	autoLoad: false,
 	model : 'icc.model.idatabase.Structure',
 	proxy : {

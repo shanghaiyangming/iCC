@@ -28,9 +28,6 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'rshCollection',
 		type : 'string'
 	},{
-		name : 'rshType',
-		type : 'string'
-	},{
 		name : 'rshKey',
 		type : 'boolean'
 	},{

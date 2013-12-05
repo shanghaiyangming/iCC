@@ -137,3 +137,12 @@
 .shortcut {
 	background-image: url(./images/table_lightning.png) !important;
 }
+
+.dbout {
+    background-image: url(./images/database_go.png) !important;
+}
+
+.orderBy {
+    background-image: url(./images/arrow_down.png) !important;
+}
+

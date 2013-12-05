@@ -40,6 +40,10 @@ class MongoCollection extends \MongoCollection
 
     private $_config;
 
+    /**
+     * GridFS
+     * @var MongoGridFS
+     */
     private $_fs;
 
     private $_queryHaystack = array(
@@ -111,7 +115,7 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
         }
         
-        $this->_fs = new MongoGridFS($this->_db, "icc");
+        $this->_fs = new \MongoGridFS($this->_db, "icc");
         
         // 默认执行几个操作
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
@@ -554,6 +558,17 @@ class MongoCollection extends \MongoCollection
         
         $metadata = array_merge($metadata, $_FILES[$fieldName]);
         $id = $this->_fs->storeUpload($fieldName, $metadata);
+        $gridfsFile = $this->_fs->get($id);
+        return $gridfsFile->file;
+    }
+    
+    /**
+     * 存储二进制内容
+     * @param bytes $bytes
+     * @param array $metadata
+     */
+    public function storeBytesToGridFS($bytes,$metadata = array()) {
+        $id = $this->_fs->storeBytes($bytes, $metadata);
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
     }

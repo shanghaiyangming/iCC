@@ -6,6 +6,7 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
+	sortableColumns : false,
 	initComponent : function() {
 		var me = this;
 		var store = Ext.create('icc.store.idatabase.Structure');
@@ -195,27 +196,6 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 					if (record != null) {
 						return record.get('name');
 					}
-				}
-			},{
-				text : '关联方式',
-				dataIndex : 'rshType',
-				flex : 2,
-				field : {
-					xtype : 'combobox',
-					store : 'idatabase.Structure.RshType',
-					displayField : 'name',
-					valueField : 'val',
-					queryMode : 'local',
-					pageSize : 0,
-					editable : false,
-					typeAhead : false
-				},
-				renderer : function(value) {
-					var record = Ext.data.StoreManager.lookup('idatabase.Structure.RshType').findRecord('val',value);
-					if (record != null) {
-						return record.get('name');
-					}
-					return value;
 				}
 			},{
 				xtype : 'booleancolumn',
