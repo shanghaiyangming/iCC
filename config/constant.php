@@ -19,3 +19,4 @@ defined('IDATABASE_VIEWS') || define('IDATABASE_VIEWS', 'idatabase_views');
 defined('IDATABASE_STATISTIC') || define('IDATABASE_STATISTIC', 'idatabase_statistic');
 defined('IDATABASE_PROMISSION') || define('IDATABASE_PROMISSION', 'idatabase_promission');
 defined('IDATABASE_KEYS') || define('IDATABASE_KEYS', 'idatabase_keys');
+defined('IDATABASE_COLLECTION_ORDERBY') || define('IDATABASE_COLLECTION_ORDERBY', 'idatabase_collection_orderby');
