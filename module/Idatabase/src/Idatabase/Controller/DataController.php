@@ -255,7 +255,7 @@ class DataController extends BaseActionController
             $order[$row['field']] = $row['order'];
         }
         
-        if (isset($order['_id'])) {
+        if (!isset($order['_id'])) {
             $order['_id'] = - 1;
         }
         return $order;
