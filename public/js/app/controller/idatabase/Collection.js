@@ -281,7 +281,7 @@ Ext.define('icc.controller.idatabase.Collection', {
    	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel) {
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
-			//model的fields动态创建
+			// model的fields动态创建
 			var modelFields = [];
 			var searchFields = [ {
 				xtype : 'hiddenfield',
@@ -324,11 +324,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
 			
 			structureStore.load(function(records, operation, success) {
-				//存储下拉菜单模式的列
+				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
 				
 				Ext.Array.forEach(records,function(record) {
-					//创建model的fields
+					// 创建model的fields
 					var field = {
 						name : record.get('field'),
 						type : 'string'
@@ -343,7 +343,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					}
 					modelFields.push(field);
 					
-					//绘制grid的column信息
+					// 绘制grid的column信息
 					if (record.get('main')) {
 						var column = {
 							text : record.get('label'),
@@ -388,7 +388,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								break;
 						}
 						
-						//存在关联集合数据，则直接采用combobox的方式进行显示
+						// 存在关联集合数据，则直接采用combobox的方式进行显示
 						var rshCollection = record.get('rshCollection');
 						if(rshCollection!='') {
 							var rshCollectionModel = 'rshCollectionModel'+rshCollection;
@@ -446,15 +446,18 @@ Ext.define('icc.controller.idatabase.Collection', {
 						gridColumns.push(column);
 					}
 					
-					//创建条件检索form
-					if (record.get('searchable')) {
-						var searchField = {
-							xtype : record.get('type'),
-							name : record.get('field'),
-							fieldLabel : record.get('label')
-						}
+					// 创建条件检索form
+					if (record.get('searchable')) {						
 						
 						var rshCollection = record.get('rshCollection');
+						
+						var exclusive = {
+							fieldLabel : '非',
+							name : 'exclusive__' + record.get('field'),
+							xtype : 'checkboxfield',
+							width : 30
+						};
+						
 						if(rshCollection!='') {
 							var rshCollectionModel = 'rshCollectionModel'+rshCollection;
 							Ext.define(rshCollectionModel,{
@@ -489,7 +492,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								}
 							});
 							
-							searchField = {
+							searchFieldItem = {
 								xtype : 'combobox',
 								name : record.get('field'),
 								fieldLabel : record.get('label'),
@@ -498,20 +501,87 @@ Ext.define('icc.controller.idatabase.Collection', {
 								displayField : record.get('rshCollectionDisplayField'),
 								valueField : record.get('rshCollectionValueField')
 							};
+							
+							searchField = {
+								xtype : 'fieldset',
+								layout : 'hbox',
+								title : record.get('label'),
+								fieldDefaults : {
+									labelAlign : 'top',
+									labelSeparator : ''
+								},
+								items : [exclusive, searchFieldItem]
+							};
+						}
+						else if(record.get('type')=='datefield') {
+							searchField = {
+								xtype : 'fieldset',
+								layout : 'hbox',
+								title : record.get('label'),
+								defaultType : 'datefield',
+								fieldDefaults : {
+									labelAlign : 'top',
+									labelSeparator : '',
+									format : 'Y-m-d H:i:s'
+								},
+								items : [ exclusive, {
+									fieldLabel : '开始时间',
+									name : record.get('field')+'[start]'
+								}, {
+									fieldLabel : '截止时间',
+									name : record.get('field')+'[end]'
+								}]
+							};
+						}
+						else if(record.get('type')=='numberfield') {
+							searchField = {
+								xtype : 'fieldset',
+								layout : 'hbox',
+								title : record.get('label'),
+								defaultType : 'numberfield',
+								fieldDefaults : {
+									labelAlign : 'top',
+									labelSeparator : ''
+								},
+								items : [exclusive, {
+									fieldLabel : '最小值(>=)',
+									name : record.get('field')+'[start]'
+								}, {
+									fieldLabel : '最大值(<=)',
+									name : record.get('field')+'[end]'
+								} ]
+							};
+						}
+						else {
+							searchField = {
+								xtype : 'fieldset',
+								layout : 'hbox',
+								title : record.get('label'),
+								defaultType : 'numberfield',
+								fieldDefaults : {
+									labelAlign : 'top',
+									labelSeparator : ''
+								},
+								items : [ exclusive, {
+									xtype : 'textfield',
+									name : record.get('field'),
+									fieldLabel : record.get('label')
+								}]
+							};
 						}
 						
 						searchFields.push(searchField);
 					}
 				});
 				
-				//创建数据的model
+				// 创建数据的model
 				var dataModelName = 'dataModel'+collection_id;
 				var dataModel = Ext.define(dataModelName,{
 					extend:'icc.model.common.Model',
 					fields : modelFields
 				});
 				
-				//加载数据store
+				// 加载数据store
 				var dataStore = Ext.create('Ext.data.Store',{
 					model : dataModelName,
 					autoLoad: false,

@@ -108,6 +108,39 @@ class OrderController extends BaseActionController
         ));
         return $this->msg(true, '编辑信息成功');
     }
+    
+    /**
+     * 批量编辑集合排序
+     *
+     * @author young
+     * @name 编辑集合排序
+     * @version 2013.12.06 young
+     * @return JsonModel
+     */
+    public function saveAction() {
+        $updateInfos = $this->params()->fromPost('updateInfos', null);
+        try {
+            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($updateInfos)) {
+            return $this->msg(false, '更新数据无效');
+        }
+        
+        foreach ($updateInfos as $row) {
+            $_id = $row['_id'];
+            unset($row['_id']);
+            $this->_order->update(array(
+                '_id' => myMongoId($_id),
+                'collection_id' => $this->_collection_id
+            ), array(
+                '$set' => $row
+            ));
+        }
+        return $this->msg(true, '更新字段属性成功');
+    }
 
     /**
      * 删除某项排序
