@@ -41,8 +41,7 @@ class OrderController extends BaseActionController
         }
         
         $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
-        
-        $this->_model = $this->_structure;
+
     }
 
     /**
@@ -53,19 +52,30 @@ class OrderController extends BaseActionController
      * @version 2013.12.05 young
      */
     public function indexAction()
-    {}
+    {
+        $query = array(
+            'collection_id' => $this->_collection_id
+        );
+        
+        $sort = array(
+            'priority' => - 1,
+            '_id' => 1
+        );
+        return $this->findAll(IDATABASE_COLLECTION_ORDERBY, $query, $sort);
+    }
 
     public function addAction()
     {
         $field = filter_var($this->params()->fromPost('field', null), FILTER_SANITIZE_STRING);
-        $order = (int) filter_var($this->params()->fromPost('order', null), FILTER_SANITIZE_NUMBER_INT);
-        $priority = (int) filter_var($this->params()->fromPost('priority', null), FILTER_SANITIZE_NUMBER_INT);
+        $order = (int) filter_var($this->params()->fromPost('order', 0), FILTER_SANITIZE_NUMBER_INT);
+        $priority = (int) filter_var($this->params()->fromPost('priority', 0), FILTER_SANITIZE_NUMBER_INT);
         
-        $order = array();
-        $order['field'] = $field;
-        $order['order'] = $order;
-        $order['priority'] = $priority;
-        $this->_order->insert($order);
+        $datas = array();
+        $datas['collection_id'] = $this->_collection_id;
+        $datas['field'] = $field;
+        $datas['order'] = $order;
+        $datas['priority'] = $priority;
+        $this->_order->insert($datas);
         
         return $this->msg(true, '添加信息成功');
     }
@@ -82,18 +92,19 @@ class OrderController extends BaseActionController
     {
         $_id = $this->params()->fromPost('_id', null);
         $field = filter_var($this->params()->fromPost('field', null), FILTER_SANITIZE_STRING);
-        $order = (int) filter_var($this->params()->fromPost('order', null), FILTER_SANITIZE_NUMBER_INT);
-        $priority = (int) filter_var($this->params()->fromPost('priority', null), FILTER_SANITIZE_NUMBER_INT);
+        $order = (int) filter_var($this->params()->fromPost('order', 0), FILTER_SANITIZE_NUMBER_INT);
+        $priority = (int) filter_var($this->params()->fromPost('priority', 0), FILTER_SANITIZE_NUMBER_INT);
         
-        $order = array();
-        $order['field'] = $field;
-        $order['order'] = $order;
-        $order['priority'] = $priority;
+        $datas = array();
+        $datas['collection_id'] = $this->_collection_id;
+        $datas['field'] = $field;
+        $datas['order'] = $order;
+        $datas['priority'] = $priority;
         
         $this->_order->update(array(
             '_id' => myMongoId($_id)
         ), array(
-            '$set' => $order
+            '$set' => $datas
         ));
         return $this->msg(true, '编辑信息成功');
     }
@@ -120,7 +131,8 @@ class OrderController extends BaseActionController
         }
         foreach ($_id as $row) {
             $this->_order->remove(array(
-                '_id' => myMongoId($row)
+                '_id' => myMongoId($row),
+                'collection_id' => $this->_collection_id
             ));
         }
         return $this->msg(true, '删除信息成功');

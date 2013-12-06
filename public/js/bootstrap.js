@@ -854,6 +854,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.common.Window": [],
   "icc.controller.Main": [],
   "icc.controller.idatabase.Collection": [],
+  "icc.controller.idatabase.Collection.Order": [],
   "icc.controller.idatabase.Data": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
@@ -861,6 +862,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.idatabase.Structure": [],
   "icc.model.common.Model": [],
   "icc.model.idatabase.Collection": [],
+  "icc.model.idatabase.Collection.Order": [],
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
@@ -868,6 +870,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
+  "icc.store.idatabase.Collection.Order": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
@@ -885,6 +888,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Collection.Edit": [],
   "icc.view.idatabase.Collection.Grid": [],
   "icc.view.idatabase.Collection.Main": [],
+  "icc.view.idatabase.Collection.Order.Add": [],
+  "icc.view.idatabase.Collection.Order.Edit": [],
+  "icc.view.idatabase.Collection.Order.Grid": [],
+  "icc.view.idatabase.Collection.Order.Window": [],
   "icc.view.idatabase.Collection.TabPanel": [],
   "icc.view.idatabase.Collection.TypeCombobox": [],
   "icc.view.idatabase.Data.Add": [],
@@ -908,6 +915,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Project.TabPanel": [],
   "icc.view.idatabase.Structure.Add": [],
   "icc.view.idatabase.Structure.Edit": [],
+  "icc.view.idatabase.Structure.FieldCombobox": [],
   "icc.view.idatabase.Structure.FilterCombobox": [],
   "icc.view.idatabase.Structure.Grid": [],
   "icc.view.idatabase.Structure.Window": []
@@ -1930,6 +1938,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.common.Window": [],
   "icc.controller.Main": [],
   "icc.controller.idatabase.Collection": [],
+  "icc.controller.idatabase.Collection.Order": [],
   "icc.controller.idatabase.Data": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
@@ -1937,6 +1946,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.idatabase.Structure": [],
   "icc.model.common.Model": [],
   "icc.model.idatabase.Collection": [],
+  "icc.model.idatabase.Collection.Order": [],
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
@@ -1944,6 +1954,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
+  "icc.store.idatabase.Collection.Order": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
@@ -1976,6 +1987,18 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Collection.Main": [
     "widget.idatabaseCollectionMain"
+  ],
+  "icc.view.idatabase.Collection.Order.Add": [
+    "widget.idatabaseCollectionOrderAdd"
+  ],
+  "icc.view.idatabase.Collection.Order.Edit": [
+    "widget.idatabaseCollectionOrderEdit"
+  ],
+  "icc.view.idatabase.Collection.Order.Grid": [
+    "widget.idatabaseCollectionOrderGrid"
+  ],
+  "icc.view.idatabase.Collection.Order.Window": [
+    "widget.idatabaseCollectionOrderWindow"
   ],
   "icc.view.idatabase.Collection.TabPanel": [
     "widget.idatabaseCollectionTabPanel"
@@ -2045,6 +2068,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Structure.Edit": [
     "widget.idatabaseStructureEdit"
+  ],
+  "icc.view.idatabase.Structure.FieldCombobox": [
+    "widget.idatabaseStructureFieldCombobox"
   ],
   "icc.view.idatabase.Structure.FilterCombobox": [
     "widget.idatabaseStructureFilterCombobox"

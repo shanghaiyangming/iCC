@@ -11,6 +11,7 @@ Ext.define('icc.Application', {
         // TODO: add controllers here
         'idatabase.Project',
         'idatabase.Collection',
+        'idatabase.Collection.Order',
         'idatabase.Structure',
         'idatabase.Plugin',
         'idatabase.Plugin.System',

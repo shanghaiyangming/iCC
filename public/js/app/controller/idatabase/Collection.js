@@ -226,6 +226,24 @@ Ext.define('icc.controller.idatabase.Collection', {
 				}
 			}
 		};
+		
+		listeners[controllerName + 'Grid button[action=orderBy]'] = {
+			click : function(button) {
+				var grid = button.up('gridpanel');
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseCollectionOrderWindow', {
+						project_id : grid.project_id,
+						collection_id : record.get('_id')
+					});
+					win.show();
+				}
+				else {
+					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+				}
+			}
+		};
 
 		listeners[controllerName + 'Grid button[action=index]'] = {
 			click : function(button) {
