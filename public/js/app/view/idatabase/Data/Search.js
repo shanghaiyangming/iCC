@@ -66,17 +66,13 @@ Ext.define('icc.view.idatabase.Data.Search', {
 				items : this.searchFields,
 				buttons : [ {
 					text : '搜索',
-					action : 'submit',
-					formBind : true, //only enabled once the form is valid
-					disabled: true
+					action : 'submit'
 				},{
 					text : '统计',
-					action : 'static',
+					action : 'static'
 				}, {
 					text : '导出',
-					action : 'submit',
-					formBind : true, //only enabled once the form is valid
-					disabled: true
+					action : 'submit'
 				}]
 			} ]
 		});

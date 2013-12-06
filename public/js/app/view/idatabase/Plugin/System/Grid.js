@@ -13,7 +13,7 @@ Ext.define('icc.view.idatabase.Plugin.System.Grid', {
 	}, {
 		text : '插件名称',
 		dataIndex : 'name',
-		flex : 1,
+		flex : 1
 	}, {
 		text : '插件描述',
 		dataIndex : 'desc',
