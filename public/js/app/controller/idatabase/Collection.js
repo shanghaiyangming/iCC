@@ -451,11 +451,20 @@ Ext.define('icc.controller.idatabase.Collection', {
 						
 						var rshCollection = record.get('rshCollection');
 						
+						//$not操作
 						var exclusive = {
 							fieldLabel : '非',
 							name : 'exclusive__' + record.get('field'),
 							xtype : 'checkboxfield',
 							width : 30
+						};
+						
+						//开启精确匹配
+						var exactMatch = {
+							fieldLabel : '等于',
+							name : 'exactMatch__' + record.get('field'),
+							xtype : 'checkboxfield',
+							width : 30	
 						};
 						
 						if(rshCollection!='') {
@@ -552,7 +561,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								} ]
 							};
 						}
-						else {
+						else if(record.get('type')=='2dfield') {
 							searchField = {
 								xtype : 'fieldset',
 								layout : 'hbox',
@@ -562,8 +571,29 @@ Ext.define('icc.controller.idatabase.Collection', {
 									labelAlign : 'top',
 									labelSeparator : ''
 								},
-								items : [ exclusive, {
-									xtype : 'textfield',
+								items : [{
+									name : record.get('field')+'[lng]',
+									fieldLabel : '经度'
+								},{
+									name : record.get('field')+'[lat]',
+									fieldLabel : '维度'
+								},{
+									name : 'near__'+record.get('field'),
+									fieldLabel : '附近范围(km)'
+								}]
+							};
+						}
+						else {
+							searchField = {
+								xtype : 'fieldset',
+								layout : 'hbox',
+								title : record.get('label'),
+								defaultType : 'textfield',
+								fieldDefaults : {
+									labelAlign : 'top',
+									labelSeparator : ''
+								},
+								items : [ exclusive,exactMatch, {
 									name : record.get('field'),
 									fieldLabel : record.get('label')
 								}]
