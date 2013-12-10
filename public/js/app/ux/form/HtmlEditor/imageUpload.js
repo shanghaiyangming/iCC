@@ -43,7 +43,7 @@ Ext.define('icc.ux.form.HtmlEditor.imageUpload', {
      * Path to the upload script.
      * Default 'htmlEditorImageUpload.php'
      */
-    submitUrl: '/admin/ext-html-editor-upload/index',
+    submitUrl: '/idatabase/ext-html-editor-upload/index',
 	
 	/**
      * @cfg {String} serverSideEdit
