@@ -111,10 +111,7 @@ class DataController extends BaseActionController
             }
             
             $datas = $this->dealData($datas);
-            var_dump($datas);
-            exit();
-            
-            $this->_data->insertByFindAndModify($datas);
+            $datas = $this->_data->insertByFindAndModify($datas);
             return $this->msg(true, '提交数据成功');
         } catch (\Exception $e) {
             var_dump($e->getTraceAsString());
@@ -158,6 +155,18 @@ class DataController extends BaseActionController
         ));
         
         return $this->msg(true, '编辑信息成功');
+    }
+    
+    /**
+     * 批量更新数据
+     *
+     * @author young
+     * @name 批量更新数据
+     * @version 2013.12.10 young
+     * @return JsonModel
+     */
+    public function saveAction() {
+        
     }
 
     /**
@@ -238,6 +247,9 @@ class DataController extends BaseActionController
                     break;
                 case 'datefield':
                     $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
+                    break;
+                case '2dfield':
+                    $value = is_array($value) ? array(floatval($value['lng']),floatval($value['lat'])) : array(0,0);
                     break;
                 default:
                     $value = trim($value);

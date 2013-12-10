@@ -803,17 +803,19 @@ function getScriptExecuteInfo()
  */
 function array_unset_recursive(&$array, $remove)
 {
-    if (! is_array($remove))
+    if (! is_array($remove)) {
         $remove = array(
             $remove
         );
+    }
     foreach ($array as $key => &$value) {
-        if (in_array($key, $remove))
+        if (in_array($key, $remove, true)) {
             unset($array[$key]);
-        else 
+        } else {
             if (is_array($value)) {
                 array_unset_recursive($value, $remove);
             }
+        }
     }
 }
 

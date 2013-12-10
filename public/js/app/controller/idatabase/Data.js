@@ -173,7 +173,8 @@ Ext.define('icc.controller.idatabase.Data', {
 								url : me.actions.remove,
 								params : {
 									_id : Ext.encode(_id),
-									project_id : grid.project_id
+									project_id : grid.project_id,
+									collection_id : grid.collection_id
 								},
 								scope : me,
 								success : function(response) {
@@ -190,75 +191,6 @@ Ext.define('icc.controller.idatabase.Data', {
 				} else {
 					Ext.Msg.alert('提示信息', '请选择您要删除的项');
 				}
-			}
-		};
-
-		listeners[controllerName + 'Grid'] = {
-			selectionchange : function(selectionModel, selected, eOpts) {
-
-				if (selected.length > 1) {
-					Ext.Msg.alert('提示信息', '请勿选择多项');
-					return false;
-				}
-
-				var record = selected[0];
-				if (record) {
-					var id = record.get('_id');
-					var name = record.get('name');
-					var panel = this.collectionTabPanel().getComponent(id);
-					if (panel == null) {
-						panel = Ext.widget('idatabaseDataGrid', {
-							id : id,
-							title : name,
-							project_id : id
-						});
-						this.collectionTabPanel().add(panel);
-					}
-					this.collectionTabPanel().setActiveTab(id);
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=structure]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-				if (selections.length == 1) {
-					var record = selections[0];
-					var win = Ext.widget('idatabaseStructureWindow', {
-						project_id : grid.project_id,
-						collection_id : record.get('_id'),
-						plugin : me.plugin,
-						plugin_id : me.plugin_id
-					});
-					win.show();
-				} else {
-					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
-				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=index]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var win = Ext.widget('idatabaseIndexWindow', {
-					project_id : grid.project_id,
-					plugin : me.plugin,
-					plugin_id : me.plugin_id
-				});
-				win.show();
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=static]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var win = Ext.widget('idatabaseStaticWindow', {
-					project_id : grid.project_id,
-					plugin : me.plugin,
-					plugin_id : me.plugin_id
-				});
-				win.show();
 			}
 		};
 

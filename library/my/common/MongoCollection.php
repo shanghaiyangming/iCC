@@ -448,7 +448,7 @@ class MongoCollection extends \MongoCollection
         $query = array(
             '_id' => new \MongoId()
         );
-        $update = array(
+        $a = array(
             '$set' => $a
         );
         $fields = null;
@@ -457,7 +457,7 @@ class MongoCollection extends \MongoCollection
             'upsert' => true
         );
         
-        return parent::findAndModify($query, $update, $fields, $options);
+        return parent::findAndModify($query, $a, $fields, $options);
     }
 
     /**

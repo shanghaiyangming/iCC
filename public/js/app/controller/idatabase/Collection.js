@@ -416,8 +416,27 @@ Ext.define('icc.controller.idatabase.Collection', {
 						type : 'string'
 					};
 					switch (record.get('type')) {
+						case '2dfield':
+							field.type = 'string';
+							field.convert = function(value, record) {
+								if(Ext.isArray(value)) {
+									return value.join(',');
+								}
+								return value;
+							};
+							break;
 						case 'datefield':
 							field.type = 'string';
+							field.convert = function(value, record) {
+								if(Ext.isObject(value)) {
+									var date = new Date();
+									date.setTime(value.sec * 1000);
+									return date;
+								}
+								else {
+									return value;
+								}
+							};
 							break;
 						case 'numberfield':
 							field.type = 'float';
@@ -433,13 +452,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 							flex : 1
 						};
 						switch (record.get('type')) {
+							case '2dfield':
+								column.align = 'center';
+								break;
 							case 'datefield':
 								column.xtype = 'datecolumn';
 								column.format = 'Y-m-d H:i:s';
 								column.align = 'center';
 								column.field = {
 									xtype : 'datefield', 
-									allowBlank : record.get('required')
+									allowBlank : !record.get('required'),
+									format : 'Y-m-d H:i:s'
 								};
 								break;
 							case 'numberfield':
@@ -447,7 +470,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								column.align = 'right';
 								column.field = {
 									xtype : 'numberfield', 
-									allowBlank : record.get('required')
+									allowBlank : !record.get('required')
 								};
 								break;
 							case 'filefield':
@@ -455,17 +478,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 									column.xtype = 'templatecolumn';
 									column.tpl = '<a href="{'+record.get('field')+'}" target="_blank"><img src="{'+record.get('field')+'}?size=100x100" border="0" height="100" /></a>';
 								}
-								else {
-									column.field = {
-										xtype : 'textfield', 
-										allowBlank : record.get('required')
-									};
-								}
 								break;
 							default:
 								column.field = {
 									xtype : 'textfield', 
-									allowBlank : record.get('required')
+									allowBlank : !record.get('required')
 								};
 								break;
 						}
@@ -476,7 +493,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								xtype : 'combobox',
 								typeAhead : true,
 								store : comboboxStore,
-								allowBlank : record.get('required'),
+								allowBlank : !record.get('required'),
 								displayField : record.get('rshCollectionDisplayField'),
 								valueField : record.get('rshCollectionValueField')
 							};
@@ -497,7 +514,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					// 创建model的fields结束
 					
 					// 创建条件检索form
-					if (record.get('searchable')) {						
+					if (record.get('searchable') && record.get('type')!='filefield') {						
 						
 						var rshCollection = record.get('rshCollection');
 						

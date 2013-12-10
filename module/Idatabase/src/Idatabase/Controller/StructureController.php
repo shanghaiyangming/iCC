@@ -311,11 +311,12 @@ class StructureController extends BaseActionController
         
         $filters = array();
         foreach (filter_list() as $key => $value) {
-            if (isset($map[$value]))
+            if (isset($map[$value])) {
                 $filters[] = array(
                     'name' => $map[$value],
                     'val' => filter_id($value)
                 );
+            }
         }
         
         $filters[] = array(

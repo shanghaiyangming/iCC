@@ -14,8 +14,6 @@ Ext.define('icc.view.idatabase.Data.Add', {
 			value : this.collection_id,
 			allowBlank : false
 		} ]);
-
-		console.info(items);
 		
 		Ext.apply(this, {
 			items : [ {
