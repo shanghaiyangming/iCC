@@ -27,7 +27,7 @@ class StructureController extends BaseActionController
 
     public function init()
     {
-        if($this->action!='filter') {
+        if ($this->action != 'filter') {
             $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
             
             if (empty($this->_project_id)) {
@@ -78,7 +78,7 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
-        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516),FILTER_SANITIZE_NUMBER_INT);
+        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516), FILTER_SANITIZE_NUMBER_INT);
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
@@ -138,7 +138,7 @@ class StructureController extends BaseActionController
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
-        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516),FILTER_SANITIZE_NUMBER_INT);
+        $datas['filter'] = (int) filter_var($this->params()->fromPost('filter', 516), FILTER_SANITIZE_NUMBER_INT);
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
@@ -302,7 +302,7 @@ class StructureController extends BaseActionController
         $map['string'] = '过滤字符串';
         $map['encoded'] = '去除或编码特殊字符';
         $map['special_chars'] = 'HTML转义';
-        $map['unsafe_raw'] = '无过滤';
+        $map['unsafe_raw'] = '无过滤字符串';
         $map['email'] = '过滤非Email字符';
         $map['url'] = '过滤非URL字符';
         $map['number_int'] = '数字过滤非整型';
@@ -317,6 +317,11 @@ class StructureController extends BaseActionController
                     'val' => filter_id($value)
                 );
         }
+        
+        $filters[] = array(
+            'name' => '关闭过滤器',
+            'val' => 0
+        );
         return $this->rst($filters, null, true);
     }
 

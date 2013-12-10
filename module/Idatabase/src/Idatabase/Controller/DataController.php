@@ -35,7 +35,7 @@ class DataController extends BaseActionController
 
     /**
      * 初始化函数
-     * 
+     *
      * @see \My\Common\ActionController::init()
      */
     public function init()
@@ -72,9 +72,7 @@ class DataController extends BaseActionController
         $query = array();
         
         $action = $this->params()->fromQuery('action', null);
-        if ($action == 'search') {
-            
-        }
+        if ($action == 'search') {}
         
         if (empty($sort)) {
             $sort = $this->defaultOrder();
@@ -92,26 +90,35 @@ class DataController extends BaseActionController
      */
     public function addAction()
     {
-        $datas = array();
-        $datas = array_intersect_key($_POST, $this->_schema['post']);
-        $files = array_intersect_key($_FILES, $this->_schema['file']);
-        
-        if (empty($datas))
-            return $this->msg(false, '提交数据中未包含有效字段');
-        
-        if (! empty($files)) {
-            foreach ($_FILES as $fieldName => $file) {
-                $fileInfo = $this->_data->storeToGridFS($fieldName);
-                if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
-                    $datas[$fieldName] = $fileInfo['_id']->__toString();
-                else
-                    throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+        try {
+            $datas = array();
+            $datas = array_intersect_key($_POST, $this->_schema['post']);
+            $files = array_intersect_key($_FILES, $this->_schema['file']);
+            
+            if (empty($datas))
+                return $this->msg(false, '提交数据中未包含有效字段');
+            
+            if (! empty($files)) {
+                foreach ($_FILES as $fieldName => $file) {
+                    if ($file['name'] != '' && $file['error'] == UPLOAD_ERR_OK) {
+                        $fileInfo = $this->_data->storeToGridFS($fieldName);
+                        if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
+                            $datas[$fieldName] = $fileInfo['_id']->__toString();
+                        else
+                            throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+                    }
+                }
             }
+            
+            $datas = $this->dealData($datas);
+            var_dump($datas);
+            exit();
+            
+            $this->_data->insertByFindAndModify($datas);
+            return $this->msg(true, '提交数据成功');
+        } catch (\Exception $e) {
+            var_dump($e->getTraceAsString());
         }
-        
-        $datas = $this->dealData($datas);
-        $this->_data->insertByFindAndModify($datas);
-        return $this->msg(true, '提交数据成功');
     }
 
     /**
@@ -133,11 +140,13 @@ class DataController extends BaseActionController
         
         if (! empty($files)) {
             foreach ($_FILES as $fieldName => $file) {
-                $fileInfo = $this->_data->storeToGridFS($fieldName);
-                if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
-                    $datas[$fieldName] = $fileInfo['_id']->__toString();
-                else
-                    throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+                if ($file['name'] != '' && $file['error'] == UPLOAD_ERR_OK) {
+                    $fileInfo = $this->_data->storeToGridFS($fieldName);
+                    if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
+                        $datas[$fieldName] = $fileInfo['_id']->__toString();
+                    else
+                        throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+                }
             }
         }
         
@@ -220,13 +229,15 @@ class DataController extends BaseActionController
         $validData = array_intersect_key($datas, $this->_schema['post']);
         array_walk($validData, function (&$value, $key)
         {
-            $value = filter_var($value, $this->_schema['post'][$key]['filter']);
-            switch ($this->_schema[$key]['type']) {
+            if (!empty($this->_schema['post'][$key]['filter'])) {
+                $value = filter_var($value, $this->_schema['post'][$key]['filter']);
+            }
+            switch ($this->_schema['post'][$key]['type']) {
                 case 'numberfield':
                     $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
                     break;
                 case 'datefield':
-                    $value = preg_match("/^[0-9]+$/", $value) ? new MongoDate(intval($value)) : new MongoDate(strtotime($value));
+                    $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
                     break;
                 default:
                     $value = trim($value);
@@ -257,7 +268,7 @@ class DataController extends BaseActionController
             $order[$row['field']] = $row['order'];
         }
         
-        if (!isset($order['_id'])) {
+        if (! isset($order['_id'])) {
             $order['_id'] = - 1;
         }
         return $order;

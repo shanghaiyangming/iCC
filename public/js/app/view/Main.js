@@ -9,6 +9,7 @@ Ext.define('icc.view.Main', {
         'icc.common.Tbar',
         'icc.common.Window',
         'icc.common.SearchBar',
+        'icc.common.Combobox',
         'icc.ux.form.HtmlEditor.imageUpload',
         'icc.ux.form.HtmlEditor.ImageCropDialog',
         'icc.ux.form.HtmlEditor.ImageDialog'

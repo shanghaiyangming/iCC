@@ -329,7 +329,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var addOrEditFields = [];
 				
 				Ext.Array.forEach(records,function(record) {
-					//创建添加和编辑的field表单
+					//创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype      : record.get('type'),
 						fieldLabel : record.get('label'),
@@ -408,8 +408,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 						addOrEditField.displayField   = record.get('rshCollectionDisplayField');
 					}
 					addOrEditFields.push(addOrEditField);
+					//创建添加和编辑的field表单结束
 					
-					// 创建model的fields
+					// 创建model的fields开始
 					var field = {
 						name : record.get('field'),
 						type : 'string'
@@ -493,6 +494,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						
 						gridColumns.push(column);
 					}
+					// 创建model的fields结束
 					
 					// 创建条件检索form
 					if (record.get('searchable')) {						
@@ -650,6 +652,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						
 						searchFields.push(searchField);
 					}
+					// 创建条件检索form结束
 				});
 				
 				// 创建数据的model
