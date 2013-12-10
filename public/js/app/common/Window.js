@@ -4,5 +4,7 @@ Ext.define('icc.common.Window', {
 	title : 'Window窗体',
 	width : 800,
 	height : 600,
-	maximizable : true
+	maximizable : true,
+	modal : true,
+	autoScroll : true
 });

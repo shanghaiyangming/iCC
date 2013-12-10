@@ -21,7 +21,6 @@ Ext.onReady(function(){
 	        			if(this.store.proxy.type=='ajax') {
 	        				this.store.proxy.extraParams.idbComboboxSelectedValue = v;
 	        			}
-	        			
 		        		try {
 			                this.store.addListener('load', function() {
 			                	try {

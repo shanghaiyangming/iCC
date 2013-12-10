@@ -2,7 +2,9 @@ Ext.define('icc.controller.idatabase.Data', {
 	extend : 'Ext.app.Controller',
 	models : [],
 	stores : [],
-	views : [ 'idatabase.Data.Main','idatabase.Data.Grid','idatabase.Data.Search', 'idatabase.Data.Add','idatabase.Data.Edit'],
+	views : [ 'idatabase.Data.Main', 'idatabase.Data.Grid',
+			'idatabase.Data.Search', 'idatabase.Data.Add',
+			'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield' ],
 	controllerName : 'idatabaseData',
 	plugin : false,
 	plugin_id : '',
@@ -16,8 +18,10 @@ Ext.define('icc.controller.idatabase.Data', {
 		ref : 'projectTabPanel',
 		selector : 'idatabaseProjectTabPanel'
 	} ],
-	collectionTabPanel : function() {
-		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionTabPanel');
+	activeDataGrid : function() {
+		return this.getProjectTabPanel().getActiveTab().down(
+				'idatabaseCollectionTabPanel').getActiveTab().down(
+				'idatabaseDataGrid');
 	},
 	init : function() {
 		var me = this;
@@ -46,7 +50,7 @@ Ext.define('icc.controller.idatabase.Data', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.activeTabGrid();
+				var grid = me.activeDataGrid();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -68,7 +72,7 @@ Ext.define('icc.controller.idatabase.Data', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.activeTabGrid();
+				var grid = me.activeDataGrid();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -90,9 +94,8 @@ Ext.define('icc.controller.idatabase.Data', {
 				var grid = button.up('gridpanel');
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
-					plugin : me.plugin,
-					plugin_id : me.plugin_id,
-					orderBy : grid.store.getTotalCount()
+					collection_id : grid.collection_id,
+					addOrEditFields : grid.addOrEditFields
 				});
 				win.show();
 			}
@@ -105,8 +108,8 @@ Ext.define('icc.controller.idatabase.Data', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						project_id : grid.project_id,
-						plugin : me.plugin,
-						plugin_id : me.plugin_id
+						collection_id : grid.collection_id,
+						addOrEditFields : grid.addOrEditFields
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -189,32 +192,32 @@ Ext.define('icc.controller.idatabase.Data', {
 				}
 			}
 		};
-		
+
 		listeners[controllerName + 'Grid'] = {
-				selectionchange : function(selectionModel, selected, eOpts) {
+			selectionchange : function(selectionModel, selected, eOpts) {
 
-					if (selected.length > 1) {
-						Ext.Msg.alert('提示信息', '请勿选择多项');
-						return false;
-					}
-
-					var record = selected[0];
-					if (record) {
-						var id = record.get('_id');
-						var name = record.get('name');
-						var panel = this.collectionTabPanel().getComponent(id);
-						if (panel == null) {
-							panel = Ext.widget('idatabaseDataGrid', {
-								id : id,
-								title : name,
-								project_id : id
-							});
-							this.collectionTabPanel().add(panel);
-						}
-						this.collectionTabPanel().setActiveTab(id);
-					}
+				if (selected.length > 1) {
+					Ext.Msg.alert('提示信息', '请勿选择多项');
+					return false;
 				}
-			};
+
+				var record = selected[0];
+				if (record) {
+					var id = record.get('_id');
+					var name = record.get('name');
+					var panel = this.collectionTabPanel().getComponent(id);
+					if (panel == null) {
+						panel = Ext.widget('idatabaseDataGrid', {
+							id : id,
+							title : name,
+							project_id : id
+						});
+						this.collectionTabPanel().add(panel);
+					}
+					this.collectionTabPanel().setActiveTab(id);
+				}
+			}
+		};
 
 		listeners[controllerName + 'Grid button[action=structure]'] = {
 			click : function(button) {
@@ -229,8 +232,7 @@ Ext.define('icc.controller.idatabase.Data', {
 						plugin_id : me.plugin_id
 					});
 					win.show();
-				}
-				else {
+				} else {
 					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
 				}
 			}

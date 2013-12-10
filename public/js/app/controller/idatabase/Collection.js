@@ -326,8 +326,89 @@ Ext.define('icc.controller.idatabase.Collection', {
 			structureStore.load(function(records, operation, success) {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
+				var addOrEditFields = [];
 				
 				Ext.Array.forEach(records,function(record) {
+					//创建添加和编辑的field表单
+					var addOrEditField = {
+						xtype      : record.get('type'),
+						fieldLabel : record.get('label'),
+						name       : record.get('field'),
+						allowBlank : !record.get('required')
+					};
+					
+					switch (record.get('type')) {
+						case 'filefield':
+							addOrEditField.buttonText = '浏览本地文件';
+							break;
+						case '2dfield':
+							addOrEditField.title = record.get('label');
+							addOrEditField.fieldName = record.get('field');
+							break;
+						case 'datefield':
+							addOrEditField.format = 'Y-m-d H:i:s';
+							break;
+						case 'numberfield':
+							addOrEditField.decimalPrecision = 8;
+							break;
+						case 'htmleditor':
+							addOrEditField.height = 500;
+							addOrEditField.resizable = true;
+							//addOrEditField.plugins = [new Ext.create('icc.ux.form.HtmlEditor.imageUpload', {dragResize:false,dragWheel:false,collection_id:collection_id})];
+							break; 
+					};
+					
+					var rshCollection = record.get('rshCollection');
+					if(rshCollection != '' && rshCollection.length == 24) {
+						var rshCollectionModel = 'rshCollectionModel'+rshCollection;
+						Ext.define(rshCollectionModel,{
+							extend:'icc.model.common.Model',
+				            fields: [
+				                {
+				                	name : record.get('rshCollectionDisplayField'),
+									type : 'auto'
+								}, {
+									name : record.get('rshCollectionValueField'),
+									type : 'auto'
+								}
+				            ]
+				        });
+						
+						var comboboxStore = Ext.create('Ext.data.Store',{
+							model: rshCollectionModel,
+							autoLoad: false,
+							pageSize: 20,
+							proxy : {
+								type : 'ajax',
+								url : '/idatabase/data/index',
+								extraParams : {
+									project_id : project_id,
+									collection_id : record.get('rshCollection')
+								},
+								reader : {
+									type : 'json',
+									root : 'result',
+									totalProperty : 'total'
+								}
+							}
+						});
+						
+						addOrEditField.xtype          = 'combobox';
+						addOrEditField.name           = record.get('field');
+						addOrEditField.fieldLabel     = record.get('label');
+						addOrEditField.store          = comboboxStore;
+						addOrEditField.queryMode      = 'remote';
+						addOrEditField.forceSelection = true;
+						addOrEditField.editable       = true;
+						addOrEditField.minChars       = 1;
+						addOrEditField.pageSize       = 20;
+						addOrEditField.queryParam     = 'search';
+						addOrEditField.typeAhead      = true;
+						addOrEditField.valueField     = record.get('rshCollectionValueField');
+						addOrEditField.displayField   = record.get('rshCollectionDisplayField');
+					}
+					addOrEditFields.push(addOrEditField);
+					
 					// 创建model的fields
 					var field = {
 						name : record.get('field'),
@@ -389,41 +470,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 						
 						// 存在关联集合数据，则直接采用combobox的方式进行显示
-						var rshCollection = record.get('rshCollection');
-						if(rshCollection!='') {
-							var rshCollectionModel = 'rshCollectionModel'+rshCollection;
-							Ext.define(rshCollectionModel,{
-								extend:'icc.model.common.Model',
-					            fields: [
-					                {
-					                	name : record.get('rshCollectionDisplayField'),
-										type : 'auto'
-									}, {
-										name : record.get('rshCollectionValueField'),
-										type : 'auto'
-									}
-					            ]
-					        });
-							
-							var comboboxStore = Ext.create('Ext.data.Store',{
-								model: rshCollectionModel,
-								autoLoad: false,
-								pageSize: 20,
-								proxy : {
-									type : 'ajax',
-									url : '/idatabase/data/index',
-									extraParams : {
-										project_id : project_id,
-										collection_id : record.get('rshCollection')
-									},
-									reader : {
-										type : 'json',
-										root : 'result',
-										totalProperty : 'total'
-									}
-								}
-							});
-							
+						if(rshCollection != '' && rshCollection.length == 24) {
 							column.field = {
 								xtype : 'combobox',
 								typeAhead : true,
@@ -443,6 +490,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							
 							gridComboboxColumns.push(column);
 						}
+						
 						gridColumns.push(column);
 					}
 					
@@ -640,7 +688,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					project_id:project_id,
 					gridColumns : gridColumns,
 					gridStore : dataStore,
-					searchFields : searchFields
+					searchFields : searchFields,
+					addOrEditFields : addOrEditFields
 				});
 				
 				panel.on({

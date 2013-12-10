@@ -879,6 +879,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
   "icc.store.idatabase.Structure.Type": [],
+  "icc.ux.form.HtmlEditor.ImageCropDialog": [],
+  "icc.ux.form.HtmlEditor.ImageDialog": [],
+  "icc.ux.form.HtmlEditor.imageUpload": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
   "icc.view.common.Combobox.Boolean": [],
@@ -896,6 +899,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Collection.TypeCombobox": [],
   "icc.view.idatabase.Data.Add": [],
   "icc.view.idatabase.Data.Edit": [],
+  "icc.view.idatabase.Data.Field.2dfield": [],
   "icc.view.idatabase.Data.Grid": [],
   "icc.view.idatabase.Data.Main": [],
   "icc.view.idatabase.Data.Search": [],
@@ -1963,6 +1967,9 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
   "icc.store.idatabase.Structure.Type": [],
+  "icc.ux.form.HtmlEditor.ImageCropDialog": [],
+  "icc.ux.form.HtmlEditor.ImageDialog": [],
+  "icc.ux.form.HtmlEditor.imageUpload": [],
   "icc.view.Main": [
     "widget.app-main"
   ],
@@ -2011,6 +2018,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Data.Edit": [
     "widget.idatabaseDataEdit"
+  ],
+  "icc.view.idatabase.Data.Field.2dfield": [
+    "widget.2dfield"
   ],
   "icc.view.idatabase.Data.Grid": [
     "widget.idatabaseDataGrid"

@@ -13,7 +13,8 @@ Ext.define('icc.view.idatabase.Data.Main', {
 				project_id : this.project_id,
 				collection_id : this.collection_id,
 				columns : this.gridColumns,
-				store : this.gridStore
+				store : this.gridStore,
+				addOrEditFields : this.addOrEditFields
 			}, {
 				xtype : 'idatabaseDataSearch',
 				project_id : this.project_id,
