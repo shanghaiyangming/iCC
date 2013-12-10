@@ -166,7 +166,33 @@ class DataController extends BaseActionController
      * @return JsonModel
      */
     public function saveAction() {
+        $updateInfos = $this->params()->fromPost('updateInfos', null);
+        try {
+        	$updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+        	return $this->msg(false, '无效的json字符串');
+        }
         
+        if (! is_array($updateInfos)) {
+        	return $this->msg(false, '更新数据无效');
+        }
+        
+        foreach ($updateInfos as $row) {
+        	$_id = $row['_id'];
+        	unset($row['_id']);
+        
+            $datas = array_intersect_key($row, $this->_schema['post']);
+            if (!empty($datas)) {
+                $datas = $this->dealData($datas);
+                $this->_data->update(array(
+                    '_id' => myMongoId($_id)
+                ), array(
+                    '$set' => $datas
+                ));
+            }
+        }
+        
+        return $this->msg(true, '更新字段属性成功');
     }
 
     /**
