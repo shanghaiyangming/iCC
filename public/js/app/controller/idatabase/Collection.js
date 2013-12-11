@@ -21,10 +21,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 	collectionTabPanel : function() {
 		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionTabPanel');
 	},
-	getGrid : function(plugin_id) {
-		if(plugin_id==undefined)
-			plugin_id = '';
-		
+	getExpandedAccordion: function() {
+		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionAccordion').child("[collapsed=false]");
 	},
 	init : function() {
 		var me = this;
@@ -198,19 +196,19 @@ Ext.define('icc.controller.idatabase.Collection', {
 		};
 		
 		listeners[controllerName + 'Grid'] = {
-				selectionchange : function(selectionModel, selected, eOpts) {
-					var grid = this.getProjectTabPanel().getActiveTab().down(controllerName + 'Grid');				
-					if (selected.length > 1) {
-						Ext.Msg.alert('提示信息', '请勿选择多项');
-						return false;
-					}
-
-					var record = selected[0];
-					if (record) {
-						this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
-					}
+			selectionchange : function(selectionModel, selected, eOpts) {
+				var grid = this.getExpandedAccordion().down(controllerName + 'Grid');				
+				if (selected.length > 1) {
+					Ext.Msg.alert('提示信息', '请勿选择多项');
+					return false;
 				}
-			};
+
+				var record = selected[0];
+				if (record) {
+					this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
+				}
+			}
+		};
 
 		listeners[controllerName + 'Grid button[action=structure]'] = {
 			click : function(button) {
@@ -450,7 +448,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						case 'datefield':
 							field.type = 'string';
 							field.convert = function(value, record) {
-								if(Ext.isObject(value)) {
+								if(Ext.isObject(value) && value['sec']!=undefined) {
 									var date = new Date();
 									date.setTime(value.sec * 1000);
 									return date;
@@ -557,7 +555,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						};
 						
 						if(rshCollection!='') {						
-							var comboboxStore = Ext.create('Ext.data.Store',{
+							var comboboxSearchStore = Ext.create('Ext.data.Store',{
 								model: rshCollectionModel,
 								autoLoad: false,
 								pageSize: 20,
@@ -581,7 +579,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								name : record.get('field'),
 								fieldLabel : record.get('label'),
 								typeAhead : true,
-								store : comboboxStore,
+								store : comboboxSearchStore,
 								displayField : record.get('rshCollectionDisplayField'),
 								valueField : record.get('rshCollectionValueField')
 							};
