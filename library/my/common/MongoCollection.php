@@ -600,6 +600,18 @@ class MongoCollection extends \MongoCollection
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->getBytes();
     }
+    
+    /**
+     * 删除陈旧的文件
+     * @param mixed $id \MongoID or String
+     * @return bool true or false
+     */
+    public function removeFileFromGridFS($id) {
+        if (! $id instanceof \MongoId) {
+            $id = new \MongoId($id);
+        }
+        return $this->_fs->remove($id);
+    }
 
     /**
      * 在析构函数中调用debug方法

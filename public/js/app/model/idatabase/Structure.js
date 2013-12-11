@@ -4,6 +4,9 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'collection_id',
 		type : 'string'
 	},{
+		name : 'plugin_id',
+		type : 'string'
+	},{
 		name : 'field',
 		type : 'string'
 	},{
@@ -33,6 +36,12 @@ Ext.define('icc.model.idatabase.Structure', {
 	},{
 		name : 'rshValue',
 		type : 'boolean'
+	},{
+		name : 'rshCollectionDisplayField',
+		type : 'string'
+	},{
+		name : 'rshCollectionValueField',
+		type : 'string'
 	},{
 		name : 'showImage',
 		type : 'boolean'

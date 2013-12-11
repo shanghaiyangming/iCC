@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Project', {
 	extend : 'Ext.app.Controller',
 	models : [ 'idatabase.Project', 'idatabase.Collection' ],
 	stores : [ 'idatabase.Project', 'idatabase.Collection',
-			'idatabase.Collection.Type' ],
+			'idatabase.Collection.Type','idatabase.Plugin' ],
 	views : [ 'idatabase.Project.Grid', 'idatabase.Project.Add',
 			'idatabase.Project.Edit', 'idatabase.Project.TabPanel',
 			'idatabase.Collection.Main', 'icc.common.SearchBar' ],
@@ -183,13 +183,36 @@ Ext.define('icc.controller.idatabase.Project', {
 					var name = record.get('name');
 					var panel = this.getTabPanel().getComponent(id);
 					if (panel == null) {
-
-						panel = Ext.widget('idatabaseCollectionMain', {
-							id : id,
-							title : name,
-							project_id : id
+						//读取插件列表，构建插件体系
+						var pluginStore = Ext.create('icc.store.idatabase.Plugin');
+						pluginStore['proxy']['extraParams']['project_id'] = id;
+						pluginStore.load(function(records, operation, success){
+							if(success) {
+								var pluginItems = [];
+								Ext.Array.forEach(records,function(item,index) {
+									pluginItems.push({
+										xtype : 'idatabaseCollectionGrid',
+										title : item.get('name'),
+										project_id : id,
+										plugin : true,
+										plugin_id : item.get('_id')
+									});
+								});
+								panel = Ext.widget('idatabaseCollectionMain', {
+									id : id,
+									title : name,
+									project_id : id,
+									pluginItems : pluginItems
+								});
+								me.getTabPanel().add(panel);
+								me.getTabPanel().setActiveTab(id);
+							}
+							else {
+								selectionModel.deselectAll();
+								Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');								
+							}
 						});
-						this.getTabPanel().add(panel);
+						return true;
 					}
 					this.getTabPanel().setActiveTab(id);
 				}
@@ -211,7 +234,8 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabasePluginWindow', {
-						project_id : id
+						project_id : id,
+						pluginItems : pluginItems
 					});
 					win.show();
 				}

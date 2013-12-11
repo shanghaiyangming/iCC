@@ -69,6 +69,7 @@ class DataController extends BaseActionController
      */
     public function indexAction()
     {
+        $rst = array();
         $query = array();
         
         $action = $this->params()->fromQuery('action', null);
@@ -77,7 +78,11 @@ class DataController extends BaseActionController
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
-        return $this->findAll($this->_collection_name, $query, $sort);
+        
+        $cursor = $this->_data->find($query);
+        $cursor->sort($sort);
+        $rst = iterator_to_array($cursor, false);
+        return $this->rst($rst, $cursor->count(), true);
     }
 
     /**
@@ -100,8 +105,9 @@ class DataController extends BaseActionController
             
             if (! empty($files)) {
                 foreach ($_FILES as $fieldName => $file) {
-                    if ($file['name'] != '' && $file['error'] == UPLOAD_ERR_OK) {
-                        $fileInfo = $this->_data->storeToGridFS($fieldName);
+                    if ($file['name'] != '') {
+                        if ($file['error'] == UPLOAD_ERR_OK)
+                            $fileInfo = $this->_data->storeToGridFS($fieldName);
                         if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
                             $datas[$fieldName] = $fileInfo['_id']->__toString();
                         else
@@ -135,14 +141,27 @@ class DataController extends BaseActionController
         if (empty($datas))
             return $this->msg(false, '提交数据中未包含有效字段');
         
+        $oldDataInfo = $this->_data->findOne(array(
+            '_id' => myMongoId($datas['_id'])
+        ));
+        
+        if ($oldFileDataInfo == null) {
+            return $this->msg(false, '提交编辑的数据不存在');
+        }
+        
         if (! empty($files)) {
             foreach ($_FILES as $fieldName => $file) {
-                if ($file['name'] != '' && $file['error'] == UPLOAD_ERR_OK) {
-                    $fileInfo = $this->_data->storeToGridFS($fieldName);
-                    if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
-                        $datas[$fieldName] = $fileInfo['_id']->__toString();
-                    else
-                        throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+                if ($file['name'] != '') {
+                    if ($file['error'] == UPLOAD_ERR_OK) {
+                        $this->_data->removeFileFromGridFS($oldDataInfo[$fieldName]);
+                        $fileInfo = $this->_data->storeToGridFS($fieldName);
+                        if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
+                            $datas[$fieldName] = $fileInfo['_id']->__toString();
+                        else
+                            $this->msg(false, '文件写入GridFS失败');
+                    } else {
+                        $this->msg(false, '文件上传失败,error code:' . $file['error']);
+                    }
                 }
             }
         }
@@ -156,7 +175,7 @@ class DataController extends BaseActionController
         
         return $this->msg(true, '编辑信息成功');
     }
-    
+
     /**
      * 批量更新数据
      *
@@ -165,34 +184,40 @@ class DataController extends BaseActionController
      * @version 2013.12.10 young
      * @return JsonModel
      */
-    public function saveAction() {
+    public function saveAction()
+    {
         $updateInfos = $this->params()->fromPost('updateInfos', null);
         try {
-        	$updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
         } catch (\Exception $e) {
-        	return $this->msg(false, '无效的json字符串');
+            return $this->msg(false, '无效的json字符串');
         }
         
         if (! is_array($updateInfos)) {
-        	return $this->msg(false, '更新数据无效');
+            return $this->msg(false, '更新数据无效');
         }
         
         foreach ($updateInfos as $row) {
-        	$_id = $row['_id'];
-        	unset($row['_id']);
-        
-            $datas = array_intersect_key($row, $this->_schema['post']);
-            if (!empty($datas)) {
-                $datas = $this->dealData($datas);
-                $this->_data->update(array(
-                    '_id' => myMongoId($_id)
-                ), array(
-                    '$set' => $datas
-                ));
+            $_id = $row['_id'];
+            unset($row['_id']);
+            
+            $oldDataInfo = $this->_data->findOne(array(
+                '_id' => myMongoId($_id)
+            ));
+            if ($oldDataInfo != null) {
+                $datas = array_intersect_key($row, $this->_schema['post']);
+                if (! empty($datas)) {
+                    $datas = $this->dealData($datas);
+                    $this->_data->update(array(
+                        '_id' => myMongoId($_id)
+                    ), array(
+                        '$set' => $datas
+                    ));
+                }
             }
         }
         
-        return $this->msg(true, '更新字段属性成功');
+        return $this->msg(true, '更新数据成功');
     }
 
     /**
@@ -220,7 +245,7 @@ class DataController extends BaseActionController
                 '_id' => myMongoId($row)
             ));
         }
-        return $this->msg(true, '删除信息成功');
+        return $this->msg(true, '删除数据成功');
     }
 
     /**
@@ -264,7 +289,7 @@ class DataController extends BaseActionController
         $validData = array_intersect_key($datas, $this->_schema['post']);
         array_walk($validData, function (&$value, $key)
         {
-            if (!empty($this->_schema['post'][$key]['filter'])) {
+            if (! empty($this->_schema['post'][$key]['filter'])) {
                 $value = filter_var($value, $this->_schema['post'][$key]['filter']);
             }
             switch ($this->_schema['post'][$key]['type']) {
@@ -275,7 +300,13 @@ class DataController extends BaseActionController
                     $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
                     break;
                 case '2dfield':
-                    $value = is_array($value) ? array(floatval($value['lng']),floatval($value['lat'])) : array(0,0);
+                    $value = is_array($value) ? array(
+                        floatval($value['lng']),
+                        floatval($value['lat'])
+                    ) : array(
+                        0,
+                        0
+                    );
                     break;
                 default:
                     $value = trim($value);

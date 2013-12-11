@@ -21,6 +21,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 	collectionTabPanel : function() {
 		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionTabPanel');
 	},
+	getGrid : function(plugin_id) {
+		if(plugin_id==undefined)
+			plugin_id = '';
+		
+	},
 	init : function() {
 		var me = this;
 		var controllerName = me.controllerName;
@@ -48,7 +53,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.activeTabGrid();
+				var grid = me.getGrid('idatabaseCollectionGrid');
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -70,7 +75,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.activeTabGrid();
+				var grid = me.getGrid('');
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
@@ -361,15 +366,32 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var rshCollection = record.get('rshCollection');
 					if(rshCollection != '' && rshCollection.length == 24) {
 						var rshCollectionModel = 'rshCollectionModel'+rshCollection;
+						var convert = function(value) {
+							if(Ext.isObject(value)) {
+								if(value['$id']!=undefined) {
+									return value['$id'];
+								}
+								else if(value['sec']!=undefined) {
+									var date = new Date();
+									date.setTime(value['sec'] * 1000);
+									return date;
+								}
+							}
+							else if(Ext.isArray(value)) {
+								return value.join(',');
+							}
+							return value;
+						};
+						
 						Ext.define(rshCollectionModel,{
 							extend:'icc.model.common.Model',
 				            fields: [
 				                {
 				                	name : record.get('rshCollectionDisplayField'),
-									type : 'auto'
+									convert : convert
 								}, {
 									name : record.get('rshCollectionValueField'),
-									type : 'auto'
+									convert : convert
 								}
 				            ]
 				        });
@@ -534,21 +556,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							width : 30	
 						};
 						
-						if(rshCollection!='') {
-							var rshCollectionModel = 'rshCollectionModel'+rshCollection;
-							Ext.define(rshCollectionModel,{
-								extend:'icc.model.common.Model',
-					            fields: [
-					                {
-					                	name : record.get('rshCollectionDisplayField'),
-										type : 'auto'
-									}, {
-										name : record.get('rshCollectionValueField'),
-										type : 'auto'
-									}
-					            ]
-					        });
-							
+						if(rshCollection!='') {						
 							var comboboxStore = Ext.create('Ext.data.Store',{
 								model: rshCollectionModel,
 								autoLoad: false,

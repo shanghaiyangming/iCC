@@ -57,10 +57,49 @@ class StructureController extends BaseActionController
         $query = array(
             'collection_id' => $this->_collection_id
         );
-        return $this->findAll(IDATABASE_STRUCTURES, $query, array(
+        
+        $sort = array(
             'orderBy' => 1,
             '_id' => 1
+        );
+        
+        $cursor = $this->_structure->find($query);
+        $cursor->sort($sort);
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            if (isset($row['rshCollection']) && $row['rshCollection'] != '' && strlen($row['rshCollection']) == 24) {
+                $row = array_merge($row, $this->getRshCollectionInfo($row['rshCollection']));
+            }
+            $rst[] = $row;
+        }
+        
+        return $this->rst($rst, $cursor->count(), true);
+    }
+
+    /**
+     * 获取关联集合的信息
+     *
+     * @param string $collection_id            
+     * @return array
+     */
+    private function getRshCollectionInfo($collection_id)
+    {
+        $rst = array();
+        $cursor = $this->_structure->find(array(
+            'collection_id' => $collection_id
         ));
+        
+        $rst = array(
+            'rshCollectionValueField' => '_id'
+        );
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            if ($row['rshKey'])
+                $rst['rshCollectionDisplayField'] = $row['field'];
+            if ($row['rshValue'])
+                $rst['rshCollectionValueField'] = $row['field'];
+        }
+        return $rst;
     }
 
     /**
@@ -75,6 +114,7 @@ class StructureController extends BaseActionController
     {
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
+        $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
@@ -135,6 +175,7 @@ class StructureController extends BaseActionController
         $_id = $this->params()->fromPost('_id', null);
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
+        $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);

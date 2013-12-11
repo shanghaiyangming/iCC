@@ -8,19 +8,17 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	defaults : {
 		bodyPadding : 0
 	},
+	pluginItems : [],
 	initComponent : function() {
 		var items = [ {
 			xtype : 'idatabaseCollectionGrid',
 			project_id : this.project_id,
 			plugin : false,
 			plugin_id : ''
-		}, {
-			xtype : 'idatabaseCollectionGrid',
-			project_id : this.project_id,
-			plugin : true,
-			plugin_id : ''
-		} ];
+		}];
 
+		items = Ext.Array.merge(items,this.pluginItems);
+		
 		Ext.apply(this, {
 			items : items
 		});
