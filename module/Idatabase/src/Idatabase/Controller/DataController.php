@@ -106,12 +106,15 @@ class DataController extends BaseActionController
             if (! empty($files)) {
                 foreach ($_FILES as $fieldName => $file) {
                     if ($file['name'] != '') {
-                        if ($file['error'] == UPLOAD_ERR_OK)
+                        if ($file['error'] == UPLOAD_ERR_OK) {
                             $fileInfo = $this->_data->storeToGridFS($fieldName);
-                        if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
-                            $datas[$fieldName] = $fileInfo['_id']->__toString();
-                        else
-                            throw new \Exception('文件存储未成功' . json_encode($fileInfo));
+                            if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
+                                $datas[$fieldName] = $fileInfo['_id']->__toString();
+                            else
+                                return $this->msg(false, '文件写入GridFS失败');
+                        } else {
+                            return $this->msg(false, '文件上传失败,error code:' . $file['error']);
+                        }
                     }
                 }
             }
@@ -158,9 +161,9 @@ class DataController extends BaseActionController
                         if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
                             $datas[$fieldName] = $fileInfo['_id']->__toString();
                         else
-                            $this->msg(false, '文件写入GridFS失败');
+                            return $this->msg(false, '文件写入GridFS失败');
                     } else {
-                        $this->msg(false, '文件上传失败,error code:' . $file['error']);
+                        return $this->msg(false, '文件上传失败,error code:' . $file['error']);
                     }
                 }
             }

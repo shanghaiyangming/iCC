@@ -51,11 +51,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.getGrid('idatabaseCollectionGrid');
+				var grid = me.getExpandedAccordion();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
+						waitTitle : '系统提示',
+						waitMsg : '系统处理中，请稍后……',
 						success : function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							form.reset();
@@ -73,11 +75,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var grid = me.getGrid('');
+				var grid = me.getExpandedAccordion();
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
+						waitTitle : '系统提示',
+						waitMsg : '系统处理中，请稍后……',
 						success : function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							store.load();
@@ -197,7 +201,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 		
 		listeners[controllerName + 'Grid'] = {
 			selectionchange : function(selectionModel, selected, eOpts) {
-				var grid = this.getExpandedAccordion().down(controllerName + 'Grid');				
+				var grid = this.getExpandedAccordion();				
 				if (selected.length > 1) {
 					Ext.Msg.alert('提示信息', '请勿选择多项');
 					return false;
