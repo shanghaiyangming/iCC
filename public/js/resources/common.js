@@ -12,7 +12,7 @@ if (typeof console == "undefined" || typeof console.log == "undefined") {
 Ext.onReady(function(){
 	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox','Ext.form.field.VTypes'],function(){
 		Ext.override('Ext.data.proxy.Ajax', { timeout:60000 });
-		Ext.override('Ext.form.action.Submit',{waitTitle :'系统提示',waitMsg:'数据处理中，请稍后……'});
+		/*Ext.override('Ext.form.action.Submit',{waitTitle :'系统提示',waitMsg:'数据处理中，请稍后……'});*/
 		Ext.form.field.ComboBox.override({
 		    setValue: function(v) {
 		        if(!this.store.isLoaded && this.queryMode == 'remote') {
