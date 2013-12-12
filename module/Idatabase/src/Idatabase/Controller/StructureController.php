@@ -134,6 +134,10 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请填写字段名称');
         }
         
+        if (!preg_match("/^[a-z]{1}[a-z0-9_]*$/i",$datas['field'])) {
+            return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
+        }
+        
         if ($datas['label'] == null) {
             return $this->msg(false, '请填写字段描述');
         }
@@ -189,6 +193,10 @@ class StructureController extends BaseActionController
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
+        }
+        
+        if (!preg_match("/^[a-z]{1}[a-z0-9_]*$/i",$datas['field'])) {
+            return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
         }
         
         if ($datas['label'] == null) {
@@ -251,6 +259,10 @@ class StructureController extends BaseActionController
             
             if ($row['field'] == null) {
                 return $this->msg(false, '请填写字段名称');
+            }
+            
+            if (!preg_match("/^[a-z]{1}[a-z0-9_]*$/i",$row['field'])) {
+                return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
             }
             
             if ($row['label'] == null) {

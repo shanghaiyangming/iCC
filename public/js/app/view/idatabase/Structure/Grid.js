@@ -88,7 +88,10 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 				dataIndex : 'field',
 				flex : 1,
 				field : {
-					xtype : 'textfield'
+					xtype : 'textfield',
+					vtype : 'mongoField',
+					allowBlank : false,
+					vtype : 'alphanum'
 				}
 			},{
 				text : '描述',

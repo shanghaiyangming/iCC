@@ -27,7 +27,8 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 				}, {
 					name : 'field',
 					fieldLabel : '属性名(英文数字)',
-					allowBlank : false
+					allowBlank : false,
+					vtype : 'alphanum'
 				}, {
 					name : 'label',
 					fieldLabel : '属性描述',

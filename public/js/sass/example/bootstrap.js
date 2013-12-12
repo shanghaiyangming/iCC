@@ -909,7 +909,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Plugin.System.Grid": [],
   "icc.view.idatabase.Plugin.System.Window": [],
   "icc.view.idatabase.Plugin.Window": [],
-  "icc.view.idatabase.Project.Accordion": [],
   "icc.view.idatabase.Project.Add": [],
   "icc.view.idatabase.Project.Edit": [],
   "icc.view.idatabase.Project.Grid": [],
@@ -2051,9 +2050,6 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Plugin.Window": [
     "widget.idatabasePluginWindow"
-  ],
-  "icc.view.idatabase.Project.Accordion": [
-    "widget.idatabaseProjectAccordion"
   ],
   "icc.view.idatabase.Project.Add": [
     "widget.idatabaseProjectAdd"

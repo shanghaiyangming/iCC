@@ -10,9 +10,9 @@ if (typeof console == "undefined" || typeof console.log == "undefined") {
 }
 
 Ext.onReady(function(){
-	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox'],function(){
-		Ext.override(Ext.data.proxy.Ajax, { timeout:600000 });
-
+	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox','Ext.form.field.VTypes'],function(){
+		Ext.override('Ext.data.proxy.Ajax', { timeout:60000 });
+		Ext.override('Ext.form.action.Submit',{waitTitle :'系统提示',waitMsg:'数据处理中，请稍后……'});
 		//解决form.loadRecord(rec)中combobox不能自动加载选择的问题,只能处理字符串型，无法处理_id等对象型的数据
 		Ext.form.field.ComboBox.override({
 		    setValue: function(v) {
