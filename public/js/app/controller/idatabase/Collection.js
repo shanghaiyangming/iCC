@@ -179,7 +179,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 								url : me.actions.remove,
 								params : {
 									_id : Ext.encode(_id),
-									project_id : grid.project_id
+									project_id : grid.project_id,
+									plugin : me.plugin,
+									plugin_id : me.plugin_id
 								},
 								scope : me,
 								success : function(response) {
@@ -286,6 +288,7 @@ Ext.define('icc.controller.idatabase.Collection', {
    		this.buildDataPanel(project_id,collection_id,collection_name,tabpanel);
    	},
    	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel) {
+   		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
 			// model的fields动态创建
@@ -293,12 +296,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 			var searchFields = [ {
 				xtype : 'hiddenfield',
 				name  : 'project_id',
-				value : this.project_id,
+				value : project_id,
 				allowBlank : false
 			}, {
 				xtype : 'hiddenfield',
 				name : 'collection_id',
-				value : this.collection_id,
+				value : collection_id,
 				allowBlank : false
 			} ];
 			
@@ -346,7 +349,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 					
 					switch (record.get('type')) {
 						case 'filefield':
-							addOrEditField.buttonText = '浏览本地文件';
 							break;
 						case '2dfield':
 							addOrEditField.title = record.get('label');
@@ -359,9 +361,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							addOrEditField.decimalPrecision = 8;
 							break;
 						case 'htmleditor':
-							addOrEditField.height = 500;
-							addOrEditField.resizable = true;
-							//addOrEditField.plugins = [new Ext.create('icc.ux.form.HtmlEditor.imageUpload', {dragResize:false,dragWheel:false,collection_id:collection_id})];
+							addOrEditField.height = 300;
 							break; 
 					};
 					

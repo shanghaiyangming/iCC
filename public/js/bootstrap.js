@@ -879,9 +879,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
   "icc.store.idatabase.Structure.Type": [],
-  "icc.ux.form.HtmlEditor.ImageCropDialog": [],
-  "icc.ux.form.HtmlEditor.ImageDialog": [],
-  "icc.ux.form.HtmlEditor.imageUpload": [],
   "icc.view.Main": [],
   "icc.view.Viewport": [],
   "icc.view.common.Combobox.Boolean": [],
@@ -1967,9 +1964,6 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
   "icc.store.idatabase.Structure.Type": [],
-  "icc.ux.form.HtmlEditor.ImageCropDialog": [],
-  "icc.ux.form.HtmlEditor.ImageDialog": [],
-  "icc.ux.form.HtmlEditor.imageUpload": [],
   "icc.view.Main": [
     "widget.app-main"
   ],

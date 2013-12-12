@@ -54,6 +54,14 @@ Ext.define('icc.controller.idatabase.Data', {
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
+
+					var htmleditors = button.up('form').query('htmleditor');
+					if(Ext.isArray(htmleditors) && htmleditors.length>0) {
+						Ext.Array.forEach(htmleditors,function(item,index,allitems){
+							item.toggleSourceEdit(false);
+						});
+					}
+					
 					form.submit({
 						waitTitle : '系统提示',
 						waitMsg : '系统处理中，请稍后……',
@@ -78,6 +86,14 @@ Ext.define('icc.controller.idatabase.Data', {
 				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
+
+					var htmleditors = button.up('form').query('htmleditor');
+					if(Ext.isArray(htmleditors) && htmleditors.length>0) {
+						Ext.Array.forEach(htmleditors,function(item,index,allitems){
+							item.toggleSourceEdit(false);
+						});
+					}					
+					
 					form.submit({
 						waitTitle : '系统提示',
 						waitMsg : '系统处理中，请稍后……',

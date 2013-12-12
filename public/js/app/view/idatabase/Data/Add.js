@@ -7,14 +7,14 @@ Ext.define('icc.view.idatabase.Data.Add', {
 			xtype : 'hiddenfield',
 			name : 'project_id',
 			value : this.project_id,
-			vtype : 'alphanum'
+			allowBlank : false
 		}, {
 			xtype : 'hiddenfield',
 			name : 'collection_id',
 			value : this.collection_id,
 			allowBlank : false
 		} ]);
-		
+
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
@@ -22,6 +22,7 @@ Ext.define('icc.view.idatabase.Data.Add', {
 				items : items
 			} ]
 		});
+
 		this.callParent();
 	}
 });

@@ -1,156 +1,156 @@
 .refresh {
-	background-image: url(./images/refresh.gif) !important;
+	background-image: url(./icons/refresh.gif) !important;
 }
 
 .search {
-	background-image: url(./images/search.gif) !important;
+	background-image: url(./icons/search.gif) !important;
 }
 
 .save {
-	background-image: url(./images/save.gif) !important;
+	background-image: url(./icons/save.gif) !important;
 }
 
 .reset {
-	background-image: url(./images/reset.gif) !important;
+	background-image: url(./icons/reset.gif) !important;
 }
 
 .add {
-	background-image: url(./images/add.gif) !important;
+	background-image: url(./icons/add.gif) !important;
 }
 
 .delete {
-	background-image: url(./images/delete.gif) !important;
+	background-image: url(./icons/delete.gif) !important;
 }
 
 .remove {
-	background-image: url(./images/delete.gif) !important;
+	background-image: url(./icons/delete.gif) !important;
 }
 
 .cancel {
-	background-image: url(./images/cancel.png) !important;
+	background-image: url(./icons/cancel.png) !important;
 }
 
 .edit {
-	background-image: url(./images/edit.gif) !important;
+	background-image: url(./icons/edit.gif) !important;
 }
 
 .active {
-	background-image: url(./images/key_go.png) !important;
+	background-image: url(./icons/key_go.png) !important;
 }
 
 .review {
-	background-image: url(./images/page_white_camera.png) !important;
+	background-image: url(./icons/page_white_camera.png) !important;
 }
 
 .clear {
-	background-image: url(./images/cart_remove.png) !important;
+	background-image: url(./icons/cart_remove.png) !important;
 }
 
 .application_go {
-	background-image: url(./images/application_go.gif) !important;
+	background-image: url(./icons/application_go.gif) !important;
 }
 
 .excle {
-	background-image: url(./images/page_white_excel.png) !important;
+	background-image: url(./icons/page_white_excel.png) !important;
 }
 
 .excel {
-	background-image: url(./images/page_white_excel.png) !important;
+	background-image: url(./icons/page_white_excel.png) !important;
 }
 
 .comment {
-	background-image: url(./images/page_white_edit.png) !important;
+	background-image: url(./icons/page_white_edit.png) !important;
 }
 
 .manager {
-	background-image: url(./images/wrench.png) !important;
+	background-image: url(./icons/wrench.png) !important;
 }
 
 .table {
-	background-image: url(./images/table.png) !important;
+	background-image: url(./icons/table.png) !important;
 }
 
 .chart {
-	background-image: url(./images/chart_bar.png) !important;
+	background-image: url(./icons/chart_bar.png) !important;
 }
 
 .download {
-	background-image: url(./images/attach.png) !important;
+	background-image: url(./icons/attach.png) !important;
 }
 
 .check {
-	background-image: url(./images/tick.png) !important;
+	background-image: url(./icons/tick.png) !important;
 }
 
 .static {
-	background-image: url(./images/stat.gif) !important;
+	background-image: url(./icons/stat.gif) !important;
 }
 
 .search {
-	background-image: url(./images/search.gif) !important;
+	background-image: url(./icons/search.gif) !important;
 }
 
 .copy {
-	background-image: url(./images/page_white_copy.png) !important;
+	background-image: url(./icons/page_white_copy.png) !important;
 }
 
 .export {
-	background-image: url(./images/application_get.png) !important;
+	background-image: url(./icons/application_get.png) !important;
 }
 
 .import {
-	background-image: url(./images/application_put.png) !important;
+	background-image: url(./icons/application_put.png) !important;
 }
 
 .priv {
-	background-image: url(./images/group_edit.png) !important;
+	background-image: url(./icons/group_edit.png) !important;
 }
 
 .login {
-	background-image: url(./images/user_go.png) !important;
+	background-image: url(./icons/user_go.png) !important;
 }
 
 .user {
-	background-image: url(./images/user_orange.png) !important;
+	background-image: url(./icons/user_orange.png) !important;
 }
 
 .key {
-	background-image: url(./images/key.png) !important;
+	background-image: url(./icons/key.png) !important;
 }
 
 .plugin {
-	background-image: url(./images/plugin.png) !important;
+	background-image: url(./icons/plugin.png) !important;
 }
 
 .menu {
-	background-image: url(./images/text_list_bullets.png) !important;
+	background-image: url(./icons/text_list_bullets.png) !important;
 }
 
 .structure {
-	background-image: url(./images/database_gear.png) !important;
+	background-image: url(./icons/database_gear.png) !important;
 }
 
 .index {
-	background-image: url(./images/database_lightning.png) !important;
+	background-image: url(./icons/database_lightning.png) !important;
 }
 
 .shortcut {
-	background-image: url(./images/table_lightning.png) !important;
+	background-image: url(./icons/table_lightning.png) !important;
 }
 
 .dbout {
-    background-image: url(./images/database_go.png) !important;
+    background-image: url(./icons/database_go.png) !important;
 }
 
 .orderBy {
-    background-image: url(./images/arrow_down.png) !important;
+    background-image: url(./icons/arrow_down.png) !important;
 }
 
 .dashboard {
-    background-image: url(./images/application_view_tile.png) !important;
+    background-image: url(./icons/application_view_tile.png) !important;
 }
 
 .dbimport {
-    background-image: url(./images/database_add.png) !important;
+    background-image: url(./icons/database_add.png) !important;
 }
 

@@ -13,13 +13,13 @@ Ext.define('icc.view.idatabase.Data.Edit', {
 			name : 'collection_id',
 			value : this.collection_id,
 			allowBlank : false
-		} , {
+		}, {
 			xtype : 'hiddenfield',
 			name : '_id',
 			value : '',
 			allowBlank : false
 		} ]);
-		
+
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
@@ -27,7 +27,7 @@ Ext.define('icc.view.idatabase.Data.Edit', {
 				items : items
 			} ]
 		});
-		
+
 		this.callParent();
 	}
 });
