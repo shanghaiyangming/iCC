@@ -100,7 +100,7 @@ class DataController extends BaseActionController
             $datas = array_intersect_key($_POST, $this->_schema['post']);
             $files = array_intersect_key($_FILES, $this->_schema['file']);
             
-            if (empty($datas))
+            if (empty($datas) && empty($files))
                 return $this->msg(false, '提交数据中未包含有效字段');
             
             if (! empty($files)) {
@@ -120,10 +120,13 @@ class DataController extends BaseActionController
             }
             
             $datas = $this->dealData($datas);
+            if (empty($datas)) {
+                return $this->msg(false, '未发现添加任何有效数据');
+            }
             $datas = $this->_data->insertByFindAndModify($datas);
             return $this->msg(true, '提交数据成功');
         } catch (\Exception $e) {
-            var_dump($e->getTraceAsString());
+            return $this->msg(false, $e->getTraceAsString());
         }
     }
 
@@ -137,18 +140,23 @@ class DataController extends BaseActionController
      */
     public function editAction()
     {
+        $_id = $this->params()->fromPost('_id', null);
+        if ($_id == null) {
+            return $this->msg(false, '无效的_id');
+        }
+        
         $datas = array();
         $datas = array_intersect_key($_POST, $this->_schema['post']);
         $files = array_intersect_key($_FILES, $this->_schema['file']);
         
-        if (empty($datas))
+        if (empty($datas) && empty($files))
             return $this->msg(false, '提交数据中未包含有效字段');
         
         $oldDataInfo = $this->_data->findOne(array(
-            '_id' => myMongoId($datas['_id'])
+            '_id' => myMongoId($_id)
         ));
         
-        if ($oldFileDataInfo == null) {
+        if ($oldDataInfo == null) {
             return $this->msg(false, '提交编辑的数据不存在');
         }
         
@@ -170,12 +178,19 @@ class DataController extends BaseActionController
         }
         
         $datas = $this->dealData($datas);
-        $this->_data->update(array(
-            '_id' => myMongoId($datas['_id'])
-        ), array(
-            '$set' => $datas
-        ));
+        if (empty($datas)) {
+            return $this->msg(false, '未发现任何信息变更');
+        }
         
+        try {
+            $this->_data->update(array(
+                '_id' => myMongoId($_id)
+            ), array(
+                '$set' => $datas
+            ));
+        } catch (\Exception $e) {
+            return $this->msg(false, $e->getTraceAsString());
+        }
         return $this->msg(true, '编辑信息成功');
     }
 
@@ -183,7 +198,7 @@ class DataController extends BaseActionController
      * 批量更新数据
      *
      * @author young
-     * @name 批量更新数据
+     * @name 批量更新数据,只更新特定数据，不包含2的坐标和文件字段
      * @version 2013.12.10 young
      * @return JsonModel
      */
@@ -258,11 +273,9 @@ class DataController extends BaseActionController
      */
     private function getSchema()
     {
-        $schema = array();
-        $schema['post']['_id'] = array(
-            'field' => '_id',
-            'label' => '_id',
-            'type' => '_id'
+        $schema = array(
+            'file' => array(),
+            'post' => array()
         );
         
         $cursor = $this->_structure->find(array(
@@ -289,8 +302,8 @@ class DataController extends BaseActionController
      */
     private function dealData($datas)
     {
-        $validData = array_intersect_key($datas, $this->_schema['post']);
-        array_walk($validData, function (&$value, $key)
+        $validPostData = array_intersect_key($datas, $this->_schema['post']);
+        array_walk($validPostData, function (&$value, $key)
         {
             if (! empty($this->_schema['post'][$key]['filter'])) {
                 $value = filter_var($value, $this->_schema['post'][$key]['filter']);
@@ -316,6 +329,9 @@ class DataController extends BaseActionController
                     break;
             }
         });
+        
+        $validFileData = array_intersect_key($datas, $this->_schema['file']);
+        $validData = array_merge($validPostData, $validFileData);
         return $validData;
     }
 

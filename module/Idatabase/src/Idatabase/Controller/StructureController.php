@@ -63,6 +63,7 @@ class StructureController extends BaseActionController
             '_id' => 1
         );
         
+        $rst = array();
         $cursor = $this->_structure->find($query);
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
@@ -141,10 +142,6 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请选择字段类型');
         }
         
-        if ($datas['filter'] == null) {
-            return $this->msg(false, '请选择字段过滤类型');
-        }
-        
         if ($this->checkExist('field', $datas['field'], array(
             'collection_id' => $this->_collection_id
         ))) {
@@ -200,10 +197,6 @@ class StructureController extends BaseActionController
         
         if ($datas['type'] == null) {
             return $this->msg(false, '请选择字段类型');
-        }
-        
-        if ($datas['filter'] == null) {
-            return $this->msg(false, '请选择字段过滤类型');
         }
         
         $oldStructureInfo = $this->_structure->findOne(array(

@@ -162,11 +162,12 @@ class MongoCollection extends \MongoCollection
         if (self::debug) {
             var_dump($err);
         }
-        // 记录下每一条产生的mongodb错误日志
-        if ($err['err'] != null) {
-            GlobalEventManager::trigger('logError', null, array(
-                json_encode($err)
-            ));
+        else {
+            if ($err['err'] != null) {
+                GlobalEventManager::trigger('logError', null, array(
+                    json_encode($err)
+                ));
+            }
         }
     }
 
