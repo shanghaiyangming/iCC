@@ -8,9 +8,11 @@ use Zend\Mvc\MvcEvent;
 
 abstract class Action extends AbstractActionController
 {
+
     protected $controller;
+
     protected $action;
-    
+
     public function __construct()
     {
         // 增加权限控制方法在这里
@@ -26,8 +28,9 @@ abstract class Action extends AbstractActionController
             }
         }, 200);
     }
-    
-    public function preDispatch() {
+
+    public function preDispatch()
+    {
         $routerMatch = $this->getEvent()->getRouteMatch();
         $this->action = $routerMatch->getParam('action', null);
         $this->controller = $routerMatch->getParam('controller', null);
@@ -76,7 +79,7 @@ abstract class Action extends AbstractActionController
 
     /**
      * 返回结果集
-     * 
+     *
      * @param array $datas            
      * @param number $total            
      * @param string $jsonModel            
@@ -96,7 +99,7 @@ abstract class Action extends AbstractActionController
 
     /**
      * 返回信息
-     * 
+     *
      * @param bool $status            
      * @param string $message            
      * @param string $jsonModel            
