@@ -84,6 +84,7 @@ class PluginController extends BaseActionController
             throw new \Exception('$this->_project_id值未设定');
         
         $project_id = $this->_project_id;
+        $source_project_id = $this->params()->fromPost('source_project_id', '');
         $plugin_id = $this->params()->fromPost('plugin_id', null);
         
         if ($project_id == null) {
@@ -96,6 +97,7 @@ class PluginController extends BaseActionController
         
         $datas = array();
         $datas['project_id'] = $project_id;
+        $datas['source_project_id'] = $source_project_id;
         $datas['plugin_id'] = $plugin_id;
         $this->_project_plugin->update($datas, array(
             '$set' => $datas

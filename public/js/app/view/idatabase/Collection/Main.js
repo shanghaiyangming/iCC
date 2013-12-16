@@ -16,7 +16,6 @@ Ext.define('icc.view.idatabase.Collection.Main', {
 				xtype : 'idatabaseCollectionAccordion',
 				project_id : this.project_id,
 				name : this.name,
-				title : this.title,
 				pluginItems : this.pluginItems
 			}, {
 				xtype : 'idatabaseCollectionTabPanel',

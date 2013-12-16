@@ -24,6 +24,12 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 					vtype : 'alphanum',
 					allowBlank : false
 				}, {
+					xtype : 'hiddenfield',
+					name : 'plugin_collection_id',
+					value : '',
+					vtype : 'alphanum',
+					allowBlank : false
+				}, {
 					name : 'alias',
 					fieldLabel : '集合别名(英文)',
 					allowBlank : false,

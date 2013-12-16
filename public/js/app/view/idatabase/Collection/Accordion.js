@@ -4,7 +4,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	region : 'west',
 	layout : 'accordion',
 	width : 400,
-	collapsible : true,
+	collapsible : false,
 	defaults : {
 		bodyPadding : 0
 	},
@@ -18,7 +18,6 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 		}];
 
 		items = Ext.Array.merge(items,this.pluginItems);
-		
 		Ext.apply(this, {
 			items : items
 		});

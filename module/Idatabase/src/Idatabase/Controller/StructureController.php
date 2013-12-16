@@ -24,6 +24,8 @@ class StructureController extends BaseActionController
     private $_structure;
 
     private $_model;
+    
+    private $_collection;
 
     public function init()
     {
@@ -115,6 +117,7 @@ class StructureController extends BaseActionController
     {
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
+        $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
         $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
@@ -176,6 +179,7 @@ class StructureController extends BaseActionController
         $_id = $this->params()->fromPost('_id', null);
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
+        $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
         $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
@@ -412,5 +416,21 @@ class StructureController extends BaseActionController
             return false;
         }
         return true;
+    }
+    
+    private function checkPluginProject(){
+        
+    }
+    
+    private function syncPluginProject() {
+        
+    }
+    
+    private function syncPluginCollection($project_id,$plugin_id) {
+    
+    }
+    
+    private function syncPluginStructure() {
+        
     }
 }

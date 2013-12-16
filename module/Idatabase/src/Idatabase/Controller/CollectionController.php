@@ -20,6 +20,8 @@ class CollectionController extends BaseActionController
 
     private $_collection;
 
+    private $_plugin_collection;
+
     private $_project_id;
 
     public function init()
@@ -30,7 +32,7 @@ class CollectionController extends BaseActionController
             throw new \Exception('$this->_project_id值未设定');
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        // 注意这里应该增加检查，该项目id是否符合用户操作的权限范围
+        $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
     }
 
     /**
@@ -43,24 +45,18 @@ class CollectionController extends BaseActionController
      */
     public function indexAction()
     {
-        $plugin = $this->params()->fromPost('plugin', false);
-        $plugin_id = $this->params()->fromPost('plugin_id', '');
-        
-        if ($plugin == false && empty($plugin_id)) {
-            $query = array(
-                'project_id' => $this->_project_id
-            );
-        } else {
-            $query = array(
-                'plugin' => true,
-                'plugin_id' => $plugin_id
-            );
-        }
+        $plugin_id = $this->params()->fromQuery('plugin_id', '');
         
         $sort = array(
             'orderBy' => 1,
             '_id' => - 1
         );
+        
+        $query = array(
+            'plugin_id' => $plugin_id,
+            'project_id' => $this->_project_id
+        );
+        
         return $this->findAll(IDATABASE_COLLECTIONS, $query, $sort);
     }
 
@@ -74,6 +70,8 @@ class CollectionController extends BaseActionController
      */
     public function addAction()
     {
+        $plugin = new \Idatabase\Model\Plugin();
+        
         try {
             $project_id = $this->_project_id;
             $name = $this->params()->fromPost('name', null);
@@ -92,7 +90,7 @@ class CollectionController extends BaseActionController
                 return $this->msg(false, '请填写集合名称');
             }
             
-            if ($alias == null || ! preg_match("/[a-z0-9]/i", $alias)) {
+            if ($alias == null || ! preg_match("/[a-z0-9_]/i", $alias)) {
                 return $this->msg(false, '请填写集合别名，只接受英文与字母');
             }
             
@@ -116,7 +114,9 @@ class CollectionController extends BaseActionController
             }
             
             $datas = array();
-            $datas['project_id'] = $project_id;
+            $datas['project_id'] = array(
+                $project_id
+            );
             $datas['name'] = $name;
             $datas['alias'] = $alias;
             $datas['type'] = $type;
@@ -124,9 +124,11 @@ class CollectionController extends BaseActionController
             $datas['orderBy'] = $orderBy;
             $datas['plugin'] = $plugin;
             $datas['plugin_id'] = $plugin_id;
+            $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
+            
             $this->_collection->insert($datas);
             
-            return $this->msg(true, '添加信息成功');
+            return $this->msg(true, '添加集合成功');
         } catch (\Exception $e) {
             var_dump($e->getTraceAsString());
         }
@@ -142,7 +144,7 @@ class CollectionController extends BaseActionController
      */
     public function saveAction()
     {
-        $project_id = $this->_project_id;
+        return $this->msg(true, '集合编辑不支持批量修改功能');
     }
 
     /**
@@ -209,7 +211,9 @@ class CollectionController extends BaseActionController
         }
         
         $datas = array();
-        $datas['project_id'] = $project_id;
+        $datas['project_id'] = array(
+            $project_id
+        );
         $datas['name'] = $name;
         $datas['alias'] = $alias;
         $datas['type'] = $type;
@@ -217,6 +221,7 @@ class CollectionController extends BaseActionController
         $datas['orderBy'] = $orderBy;
         $datas['plugin'] = $plugin;
         $datas['plugin_id'] = $plugin_id;
+        $datas['plugin_collection_id'] = $this->editPluginCollection();
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
@@ -248,17 +253,17 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '请选择你要删除的项');
         }
         foreach ($_id as $row) {
-            $this->_collection->remove(array(
-                '_id' => myMongoId($row),
+            $this->_collection->update(array(
+                '_id' => myMongoId($row)
+            ), array(
                 'project_id' => $this->_project_id
             ));
         }
         return $this->msg(true, '删除信息成功');
     }
-    
-    public function dropAction() {
-        
-    }
+
+    public function dropAction()
+    {}
 
     /**
      * 检测一个集合是否存在，根据名称和编号
@@ -316,5 +321,43 @@ class CollectionController extends BaseActionController
             return false;
         }
         return true;
+    }
+
+    /**
+     * 添加集合到插件集合管理
+     *
+     * @param array $datas            
+     * @return string
+     */
+    private function addPluginCollection($datas)
+    {
+        if (empty($datas['plugin_id']))
+            return '';
+        
+        unset($datas['project_id']);
+        $this->_plugin_collection->insertRef($datas);
+        if ($datas['_id'] instanceof \MongoId)
+            return $datas['_id']->__toString();
+        
+        return '';
+    }
+
+    /**
+     * 添加集合到插件集合管理
+     *
+     * @param array $datas            
+     * @return string
+     */
+    private function editPluginCollection($datas)
+    {
+        $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
+        if (empty($plugin_collection_id)) {
+            $this->_plugin_collection->update(array(
+                '_id' => myMongoId($plugin_collection_id)
+            ), array(
+                '$set' => $datas
+            ));
+        }
+        return $plugin_collection_id;
     }
 }
