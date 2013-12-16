@@ -1,5 +1,5 @@
 <?php
-namespace My\Common;
+namespace My\Common\Cache;
 
 use Zend\Cache\StorageFactory;
 use Zend\Cache\Storage\Adapter\AbstractAdapter;
@@ -7,7 +7,7 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 
-class CacheListenerAggregate implements ListenerAggregateInterface
+class ListenerAggregate implements ListenerAggregateInterface
 {
 
     protected $cache;

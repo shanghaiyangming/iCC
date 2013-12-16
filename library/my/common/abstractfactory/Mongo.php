@@ -1,10 +1,10 @@
 <?php
-namespace My\Common;
+namespace My\Common\AbstractFactory;
 
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class MongoAbstractFactory implements AbstractFactoryInterface
+class Mongo implements AbstractFactoryInterface
 {
     /**
      * @var array

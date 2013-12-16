@@ -1,12 +1,12 @@
 <?php
-namespace My\Common;
+namespace My\Common\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 
-abstract class ActionController extends AbstractActionController
+abstract class Action extends AbstractActionController
 {
     protected $controller;
     protected $action;

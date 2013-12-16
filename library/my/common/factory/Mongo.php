@@ -1,5 +1,5 @@
 <?php
-namespace My\Common;
+namespace My\Common\Factory;
 
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
@@ -22,7 +22,7 @@ use Zend\ServiceManager\FactoryInterface;
  * @author Young
  *        
  */
-abstract class MongoFactory
+abstract class Mongo
 {
 
     public static function factory($cfg)

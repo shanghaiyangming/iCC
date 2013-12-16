@@ -6,12 +6,12 @@
  * https://samsonasik.wordpress.com/tag/automatic-controller-invokables/
  *
  */
-namespace My\Common;
+namespace My\Common\AbstractFactory;
 
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ControllerAbstractFactory implements AbstractFactoryInterface
+class Controller implements AbstractFactoryInterface
 {
 
     /**
