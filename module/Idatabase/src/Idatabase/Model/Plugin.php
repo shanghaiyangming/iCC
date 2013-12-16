@@ -2,8 +2,9 @@
 namespace Idatabase\Model;
 
 use Zend\Config\Config;
+use My\Common\Model\Mongo;
 
-class Plugin extends ModelMongo
+class Plugin extends Mongo
 {
     protected $collection = IDATABASE_PLUGINS;
 
