@@ -1,4 +1,5 @@
 <?php
+use Idatabase\Model\Plugin;
 /**
  * Zend Framework (http://framework.zend.com/)
  *

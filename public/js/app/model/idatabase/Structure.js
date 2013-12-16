@@ -7,6 +7,9 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'plugin_id',
 		type : 'string'
 	},{
+		name : 'plugin_collection_id',
+		type : 'string'
+	},{
 		name : 'field',
 		type : 'string'
 	},{
