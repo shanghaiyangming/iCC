@@ -3,6 +3,7 @@ namespace My\Common\AbstractFactory;
 
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use My\Common\Factory\Mongo as MongoFactory;
 
 class Mongo implements AbstractFactoryInterface
 {

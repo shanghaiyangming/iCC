@@ -2,6 +2,7 @@
 namespace My\Common\Model;
 
 use Zend\Config\Config;
+use My\Common\MongoCollection;
 
 class Mongo
 {
