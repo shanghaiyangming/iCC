@@ -131,7 +131,7 @@ return array(
     'controller_plugins' => array(
         'invokables' => array(
             'log' => 'My\Common\Plugin\Log',
-            'model' => 'My\Common\Plugin\ModelMongoCollection',
+            'model' => 'My\Common\Plugin\Model',
             'cache' => 'My\Common\Plugin\Cache'
         ),
         'aliases' => array(

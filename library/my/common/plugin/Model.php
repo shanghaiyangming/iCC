@@ -4,7 +4,7 @@ namespace My\Common\Plugin;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use My\Common\MongoCollection;
 
-class ModelMongoCollection extends AbstractPlugin
+class Model extends AbstractPlugin
 {
 
     /**

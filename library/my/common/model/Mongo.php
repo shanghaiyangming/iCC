@@ -14,7 +14,7 @@ class Mongo
     
     protected $cluster = 'default';
     
-    public function __construct(Config $config)
+    public function __construct($config)
     {
         if($collection==null) {
             throw new \Exception('请设定你要操作的集合');

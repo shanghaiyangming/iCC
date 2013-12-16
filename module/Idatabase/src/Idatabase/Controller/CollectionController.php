@@ -70,7 +70,7 @@ class CollectionController extends BaseActionController
      */
     public function addAction()
     {
-        $plugin = new \Idatabase\Model\Plugin();
+        //$plugin = new \Idatabase\Model\Plugin();
         
         try {
             $project_id = $this->_project_id;
