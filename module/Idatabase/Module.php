@@ -42,7 +42,7 @@ class Module
     {
         return array(
             'abstract_factories' => array(
-                'My\Common\ControllerAbstractFactory'
+                'My\Common\AbstractFactory\Controller'
             )
         );
     }

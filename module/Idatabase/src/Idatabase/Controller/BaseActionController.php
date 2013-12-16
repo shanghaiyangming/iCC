@@ -8,14 +8,14 @@
  */
 namespace Idatabase\Controller;
 
-use My\Common\ActionController;
+use My\Common\Controller\Action;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\Mvc\MvcEvent;
 
-abstract class BaseActionController extends ActionController
+abstract class BaseActionController extends Action
 {
 
     protected $project_id;
