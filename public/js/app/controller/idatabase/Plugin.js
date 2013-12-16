@@ -3,7 +3,7 @@ Ext.define('icc.controller.idatabase.Plugin', {
 	models : [ 'idatabase.Plugin' ],
 	stores : [ 'idatabase.Plugin' ],
 	views : [ 'idatabase.Plugin.Grid', 'idatabase.Plugin.Add',
-			'idatabase.Plugin.Edit', 'idatabase.Plugin.Window' ],
+			'idatabase.Plugin.Edit', 'idatabase.Plugin.Window','idatabase.Project.Combobox' ],
 	controllerName : 'idatabasePlugin',
 	actions : {
 		add : '/idatabase/plugin/add',

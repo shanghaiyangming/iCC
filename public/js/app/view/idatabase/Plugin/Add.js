@@ -3,7 +3,6 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 	alias : 'widget.idatabasePluginAdd',
 	title : '添加插件',
 	initComponent : function() {
-		console.info(this);
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
@@ -15,7 +14,13 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 					allowBlank : false,
 					value : this.project_id
 				}, {
-					xtype : 'idatabasePluginCombobox'
+					xtype : 'idatabasePluginCombobox',
+					allowBlank : false
+				}, {
+					xtype : 'idatabaseProjectCombobox',
+					fieldLabel : '共享来源项目',
+					name : 'source_project_id',
+					allowBlank : true
 				} ]
 			} ]
 		});
@@ -23,4 +28,4 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 		this.callParent();
 	}
 
-});	
+});

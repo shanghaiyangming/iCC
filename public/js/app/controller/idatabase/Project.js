@@ -238,8 +238,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabasePluginWindow', {
-						project_id : id,
-						pluginItems : pluginItems
+						project_id : id
 					});
 					win.show();
 				}

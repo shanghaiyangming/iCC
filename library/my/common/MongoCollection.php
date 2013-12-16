@@ -42,6 +42,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * GridFS
+     *
      * @var MongoGridFS
      */
     private $_fs;
@@ -161,8 +162,7 @@ class MongoCollection extends \MongoCollection
         $err = $this->_db->lastError();
         if (self::debug) {
             var_dump($err);
-        }
-        else {
+        } else {
             if ($err['err'] != null) {
                 GlobalEventManager::trigger('logError', null, array(
                     json_encode($err)
@@ -313,20 +313,22 @@ class MongoCollection extends \MongoCollection
      * 获取符合条件的全部数据
      *
      * @param array $query            
+     * @param array $sort            
      * @param int $skip            
      * @param int $limit            
-     * @param array $sort            
+     * @param array $fields            
      * @return array
      */
-    public function findAll($query, $skip = 0, $limit = 20, $sort = array('_id'=>-1), $fields = array())
+    public function findAll($query, $sort = array('_id'=>-1), $skip = 0, $limit = 0, $fields = array())
     {
         $cursor = $this->find($this->appendQuery($query), $fields);
         if (! $cursor instanceof \MongoCursor)
             throw new \Exception('$query error:' . json_encode($query));
         
-        $cursor->sort($sort)
-            ->skip($skip)
-            ->limit($limit);
+        $cursor->sort($sort)->skip($skip);
+        if ($limit > 0) {
+            $cursor->limit($limit);
+        }
         return iterator_to_array($cursor);
     }
 
@@ -378,8 +380,51 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 插入特定的数据
+     * 插入特定的数据,并保持insert第一个参数$a在没有_id的时候添加_id属性
      *
+     * @param array $object            
+     * @param array $options            
+     */
+    public function insertRef(&$a, array $options = NULL)
+    {
+        if (empty($a))
+            throw new \Exception('$object is NULL');
+        
+        $default = array(
+            'fsync' => self::fsync,
+            'timeout' => self::timeout
+        );
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        
+        array_unset_recursive($a, array(
+            '__CREATE_TIME__',
+            '__MODIFY_TIME__',
+            '__REMOVED__'
+        ));
+        
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__MODIFY_TIME__'])) {
+            $a['__MODIFY_TIME__'] = new \MongoDate();
+        }
+        
+        if (! isset($a['__REMOVED__'])) {
+            $a['__REMOVED__'] = false;
+        }
+        
+        $b = $a;
+        $res = parent::insert($b, $options);
+        $a = $b;
+        return $res;
+    }
+
+    /**
+     * 插入特定的数据，注意此方法無法針對$a添加_id属性，详见参数丢失原因的文档说明
+     * 解决这个问题，请使用上面的方法insertRef
+     * 注意因为参数检查的原因，无法直接覆盖insert方法并采用引用，如下原因
+     * <b>Strict Standards</b>:  Declaration of My\Common\MongoCollection::insert() should be compatible with MongoCollection::insert($array_of_fields_OR_object, array $options = NULL) 
      * @param array $object            
      * @param array $options            
      */
@@ -550,7 +595,9 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 云存储文件
-     * @param array $file $_FILES['name']
+     *
+     * @param array $file
+     *            $_FILES['name']
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
@@ -562,13 +609,15 @@ class MongoCollection extends \MongoCollection
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
     }
-    
+
     /**
      * 存储二进制内容
-     * @param bytes $bytes
-     * @param array $metadata
+     *
+     * @param bytes $bytes            
+     * @param array $metadata            
      */
-    public function storeBytesToGridFS($bytes,$metadata = array()) {
+    public function storeBytesToGridFS($bytes, $metadata = array())
+    {
         $id = $this->_fs->storeBytes($bytes, $metadata);
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
@@ -576,7 +625,8 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 根据ID获取文件的信息
-     * @param string $id
+     *
+     * @param string $id            
      * @return array 文件信息数组
      */
     public function getInfoFromGridFS($id)
@@ -590,8 +640,9 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 根据ID获取文件内容，二进制
-     * @param string $id   
-     * @return bytes         
+     *
+     * @param string $id            
+     * @return bytes
      */
     public function getFileFromGridFS($id)
     {
@@ -601,13 +652,16 @@ class MongoCollection extends \MongoCollection
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->getBytes();
     }
-    
+
     /**
      * 删除陈旧的文件
-     * @param mixed $id \MongoID or String
+     *
+     * @param mixed $id
+     *            \MongoID or String
      * @return bool true or false
      */
-    public function removeFileFromGridFS($id) {
+    public function removeFileFromGridFS($id)
+    {
         if (! $id instanceof \MongoId) {
             $id = new \MongoId($id);
         }

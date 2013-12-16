@@ -1,7 +1,6 @@
 Ext.define('icc.view.idatabase.Data.Grid', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.idatabaseDataGrid',
-	title : '数据明细',
 	region : 'center', 
 	border : false,
 	collapsible : false,

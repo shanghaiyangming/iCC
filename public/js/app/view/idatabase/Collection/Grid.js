@@ -3,7 +3,7 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 	alias : 'widget.idatabaseCollectionGrid',
 	requires : [ 'icc.common.Paging' ],
 	title : '数据管理',
-	collapsible : true,
+	collapsible : false,
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,

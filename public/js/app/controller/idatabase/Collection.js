@@ -97,10 +97,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel');
+				console.info(grid.plugin,grid.plugin_id);
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
-					plugin : me.plugin,
-					plugin_id : me.plugin_id,
+					plugin : grid.plugin,
+					plugin_id : grid.plugin_id,
 					orderBy : grid.store.getTotalCount()
 				});
 				win.show();
@@ -114,8 +115,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						project_id : grid.project_id,
-						plugin : me.plugin,
-						plugin_id : me.plugin_id
+						plugin : grid.plugin,
+						plugin_id : grid.plugin_id
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -180,8 +181,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 								params : {
 									_id : Ext.encode(_id),
 									project_id : grid.project_id,
-									plugin : me.plugin,
-									plugin_id : me.plugin_id
+									plugin : grid.plugin,
+									plugin_id : grid.plugin_id
 								},
 								scope : me,
 								success : function(response) {
@@ -349,6 +350,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					
 					switch (record.get('type')) {
 						case 'filefield':
+							console.info(addOrEditField);
 							break;
 						case '2dfield':
 							addOrEditField.title = record.get('label');
@@ -576,6 +578,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 										totalProperty : 'total'
 									}
 								}
+							});
+							
+							comboboxSearchStore.addListener('load', function() {
+								var insertRecord = {};
+								insertRecord[record.get('rshCollectionDisplayField')] = '无';
+								insertRecord[record.get('rshCollectionValueField')]   = '';
+								comboboxSearchStore.insert(0, Ext.create(rshCollectionModel, insertRecord));
 							});
 							
 							searchFieldItem = {

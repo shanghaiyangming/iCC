@@ -49,22 +49,12 @@ Ext.define('icc.view.idatabase.Plugin.Grid', {
 						plain : true,
 						items : [ {
 							xtype : 'button',
-							text : '新增',
+							text : '安装',
 							iconCls : 'add',
 							action : 'add'
 						}, {
 							xtype : 'button',
-							text : '编辑',
-							iconCls : 'edit',
-							action : 'edit'
-						}, {
-							xtype : 'button',
-							text : '保存',
-							iconCls : 'save',
-							action : 'save'
-						}, {
-							xtype : 'button',
-							text : '删除',
+							text : '卸载',
 							iconCls : 'remove',
 							action : 'remove'
 						} ]

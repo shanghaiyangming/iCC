@@ -24,6 +24,8 @@ class StructureController extends BaseActionController
     private $_structure;
 
     private $_model;
+    
+    private $_collection;
 
     public function init()
     {
@@ -412,5 +414,21 @@ class StructureController extends BaseActionController
             return false;
         }
         return true;
+    }
+    
+    private function checkPluginProject(){
+        
+    }
+    
+    private function syncPluginProject() {
+        
+    }
+    
+    private function syncPluginCollection($project_id,$plugin_id) {
+    
+    }
+    
+    private function syncPluginStructure() {
+        
     }
 }
