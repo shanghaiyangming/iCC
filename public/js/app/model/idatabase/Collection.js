@@ -10,6 +10,9 @@ Ext.define('icc.model.idatabase.Collection', {
 		name : 'type',
 		type : 'string'
 	}, {
+		name : 'isTree',
+		type : 'int'
+	}, {
 		name : 'desc',
 		type : 'string'
 	}, {

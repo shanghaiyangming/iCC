@@ -137,6 +137,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				var grid = button.up('gridpanel');
 				var store = grid.store;
 				var records = grid.store.getUpdatedRecords();
+				console.info(records,records.length);
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
@@ -151,7 +152,8 @@ Ext.define('icc.controller.idatabase.Data', {
 					url : me.actions.save,
 					params : {
 						updateInfos : Ext.encode(updateList),
-						project_id : grid.project_id
+						project_id : grid.project_id,
+						collection_id : grid.collection_id
 					},
 					scope : me,
 					success : function(response) {

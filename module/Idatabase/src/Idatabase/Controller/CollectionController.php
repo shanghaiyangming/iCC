@@ -96,6 +96,7 @@ class CollectionController extends BaseActionController
             $name = $this->params()->fromPost('name', null);
             $alias = $this->params()->fromPost('alias', null);
             $type = $this->params()->fromPost('type', null);
+            $isTree = (int) $this->params()->fromPost('isTree', 0);
             $desc = $this->params()->fromPost('desc', null);
             $orderBy = $this->params()->fromPost('orderBy', 0);
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
@@ -181,6 +182,7 @@ class CollectionController extends BaseActionController
         $name = $this->params()->fromPost('name', null);
         $alias = $this->params()->fromPost('alias', null);
         $type = $this->params()->fromPost('type', null);
+        $isTree = (int) $this->params()->fromPost('isTree', 0);
         $desc = $this->params()->fromPost('desc', null);
         $orderBy = $this->params()->fromPost('orderBy', 0);
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
@@ -240,7 +242,7 @@ class CollectionController extends BaseActionController
         $datas['orderBy'] = $orderBy;
         $datas['plugin'] = $plugin;
         $datas['plugin_id'] = $plugin_id;
-        $datas['plugin_collection_id'] = $this->editPluginCollection();
+        $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)

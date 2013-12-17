@@ -212,7 +212,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				var record = selected[0];
 				if (record) {
-					this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
+					if(record.get('isTree')==undefined || record.get('isTree')==0) {
+						this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
+					}
+					else {
+						this.buildDataTreePanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
+					}
 				}
 			}
 		};
@@ -350,15 +355,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 					
 					switch (record.get('type')) {
 						case 'filefield':
-//							addOrEditField['xtype'] = 'filefield';
-//							addOrEditField['name'] = record.get('field');
-//							addOrEditField['fieldLabel'] = record.get('label');
-//							addOrEditField['labelWidth'] = 100;
-//							addOrEditField['msgTarget']  = 'side';
-//							addOrEditField['anchor'] = '100%';
-//							addOrEditField['allowBlank'] = true;
-//							addOrEditField['buttonText'] = '浏览本地文件';
-
 							addOrEditField = {
 								xtype: 'filefield',
 								name: record.get('field'),

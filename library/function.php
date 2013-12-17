@@ -1,13 +1,10 @@
 <?php
 
 /**
- * 
  * ICC函数定义集合文件
  * 
  * 请将所有项目的自定义函数，放于该函数内
  * 命名规则为驼峰式 例如abcDefGhi()
- * 
- * 
  */
 
 /**
@@ -806,7 +803,7 @@ function array_unset_recursive(&$array, $remove)
  * 进行mongoid和tostring之间的转换
  * 增加函数mongoid用于mongoid和字符串形式之间的自动转换
  *
- * @param mixed $var
+ * @param mixed $var            
  * @return string MongoId
  */
 function myMongoId($var = null)
@@ -821,10 +818,12 @@ function myMongoId($var = null)
 
 /**
  * 将文本转化为MongoRegex查询对象
- * @param string $text
+ * 
+ * @param string $text            
  * @return \MongoRegex
  */
-function myMongoRegex($text) {
+function myMongoRegex($text)
+{
     return new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $text) . '/i');
 }
 

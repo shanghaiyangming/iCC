@@ -32,6 +32,8 @@ class DataController extends BaseActionController
     private $_schema;
 
     private $_order;
+    
+    private $_mapping;
 
     /**
      * 初始化函数
@@ -73,6 +75,7 @@ class DataController extends BaseActionController
         $query = array();
         
         $action = $this->params()->fromQuery('action', null);
+        
         if ($action == 'search') {}
         
         if (empty($sort)) {
@@ -83,6 +86,48 @@ class DataController extends BaseActionController
         $cursor->sort($sort);
         $rst = iterator_to_array($cursor, false);
         return $this->rst($rst, $cursor->count(), true);
+    }
+
+    /**
+     * 获取树状数据
+     */
+    public function treeAction()
+    {
+        $fatherField = $this->params()->fromQuery('fatherValue','');
+        $fatherValue = $this->params()->fromPost('fatherValue','');
+        return new JsonModel($this->tree($fatherField, $fatherValue));
+    }
+
+    /**
+     * 递归的方式获取树状数据
+     * 
+     * @param string $fatherNode            
+     */
+    private function tree($fatherField, $fatherValue = '')
+    {
+        if ($fatherField == '')
+            throw new \Exception('$fatherField不存在');
+        
+        $cursor = $this->_data->find(array(
+            $fatherField => $fatherValue
+        ));
+        if ($cursor->count() == 0)
+            return false;
+        $datas = array();
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['expanded'] = true;
+            if ($row['_id'] instanceof \MongoId) {
+                $children = $this->tree($fatherField, $row['_id']->__toString());
+                if ($children != false) {
+                    $row['children'] = $children;
+                } else {
+                    $row['leaf'] = true;
+                }
+                $datas[] = $row;
+            }
+        }
+        return $datas;
     }
 
     /**

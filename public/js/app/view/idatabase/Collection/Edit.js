@@ -45,6 +45,22 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 				}, {
 					xtype : 'idatabaseCollectionTypeCombobox'
 				}, {
+					xtype : 'radiogroup',
+					fieldLabel : '是否树状集合',
+					defaultType : 'radiofield',
+					layout : 'hbox',
+					items : [ {
+						boxLabel : '是',
+						name : 'isTree',
+						inputValue : 1,
+						
+					}, {
+						boxLabel : '否',
+						name : 'isTree',
+						inputValue : 0,
+						checked : true
+					} ]
+				}, {
 					xtype : 'textareafield',
 					name : 'desc',
 					fieldLabel : '功能描述',
