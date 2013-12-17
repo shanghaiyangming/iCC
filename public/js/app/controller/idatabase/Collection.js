@@ -350,7 +350,25 @@ Ext.define('icc.controller.idatabase.Collection', {
 					
 					switch (record.get('type')) {
 						case 'filefield':
-							console.info(addOrEditField);
+//							addOrEditField['xtype'] = 'filefield';
+//							addOrEditField['name'] = record.get('field');
+//							addOrEditField['fieldLabel'] = record.get('label');
+//							addOrEditField['labelWidth'] = 100;
+//							addOrEditField['msgTarget']  = 'side';
+//							addOrEditField['anchor'] = '100%';
+//							addOrEditField['allowBlank'] = true;
+//							addOrEditField['buttonText'] = '浏览本地文件';
+
+							addOrEditField = {
+								xtype: 'filefield',
+								name: record.get('field'),
+								fieldLabel: record.get('label'),
+								labelWidth: 100,
+								msgTarget: 'side',
+								allowBlank: true,
+								anchor: '100%',
+								buttonText: '浏览本地文件'
+							};
 							break;
 						case '2dfield':
 							addOrEditField.title = record.get('label');
