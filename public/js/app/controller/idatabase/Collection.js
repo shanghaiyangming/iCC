@@ -212,12 +212,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				var record = selected[0];
 				if (record) {
-					if(record.get('isTree')==undefined || record.get('isTree')==0) {
-						this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
-					}
-					else {
-						this.buildDataTreePanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel());
-					}
+					this.buildDataPanel(grid.project_id,record.get('_id'),record.get('name'),this.collectionTabPanel(),record.get('isTree'));
 				}
 			}
 		};
@@ -293,7 +288,7 @@ Ext.define('icc.controller.idatabase.Collection', {
    		panel.close();
    		this.buildDataPanel(project_id,collection_id,collection_name,tabpanel);
    	},
-   	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel) {
+   	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel,isTree=false) {
    		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
@@ -713,24 +708,37 @@ Ext.define('icc.controller.idatabase.Collection', {
 				});
 				
 				// 加载数据store
-				var dataStore = Ext.create('Ext.data.Store',{
-					model : dataModelName,
-					autoLoad: false,
-					pageSize: 20,
-					proxy : {
-						type : 'ajax',
-						url : '/idatabase/data/index',
-						extraParams:{
-							project_id : project_id,
-							collection_id : collection_id
-						},
-						reader : {
-							type : 'json',
-							root : 'result',
-							totalProperty : 'total'
+				if(isTree) {
+					var dataStore = new Ext.data.TreeStore({
+		                model: dataModelName,
+		                proxy: {
+		                    type: 'ajax',
+		                    url: '/idatabase/data/tree'
+		                },
+		                folderSort: false
+		            });
+				}
+				else {
+					var dataStore = Ext.create('Ext.data.Store',{
+						model : dataModelName,
+						autoLoad: false,
+						pageSize: 20,
+						proxy : {
+							type : 'ajax',
+							url : '/idatabase/data/index',
+							extraParams:{
+								project_id : project_id,
+								collection_id : collection_id
+							},
+							reader : {
+								type : 'json',
+								root : 'result',
+								totalProperty : 'total'
+							}
 						}
-					}
-				});
+					});
+				}
+				
 
 				
 				panel = Ext.widget('idatabaseDataMain', {
@@ -741,6 +749,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					project_id:project_id,
 					gridColumns : gridColumns,
 					gridStore : dataStore,
+					isTree : isTree,
 					searchFields : searchFields,
 					addOrEditFields : addOrEditFields
 				});

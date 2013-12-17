@@ -89,11 +89,11 @@ class DataController extends BaseActionController
     }
 
     /**
-     * 获取树状数据
+     * 获取树状表格数据
      */
     public function treeAction()
     {
-        $fatherField = $this->params()->fromQuery('fatherValue','');
+        $fatherField = $this->params()->fromQuery('fatherField','');
         $fatherValue = $this->params()->fromPost('fatherValue','');
         return new JsonModel($this->tree($fatherField, $fatherValue));
     }

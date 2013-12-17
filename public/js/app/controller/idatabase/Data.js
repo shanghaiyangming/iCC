@@ -125,6 +125,9 @@ Ext.define('icc.controller.idatabase.Data', {
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
+					Ext.Array.forEach(grid.addOrEditFields,function(item,index){
+						
+					});
 					win.show();
 				} else {
 					Ext.Msg.alert('提示信息', '请选择你要编辑的项');
