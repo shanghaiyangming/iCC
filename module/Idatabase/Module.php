@@ -47,9 +47,6 @@ class Module
         );
     }
 
-    public function getConsoleUsage(AdapterInterface $console)
-    {}
-
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
