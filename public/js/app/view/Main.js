@@ -10,7 +10,8 @@ Ext.define('icc.view.Main', {
         'icc.common.Tbar',
         'icc.common.Window',
         'icc.common.SearchBar',
-        'icc.common.Combobox'
+        'icc.common.Combobox',
+        'Ext.ux.form.SearchField'
     ],
     
     xtype: 'app-main',

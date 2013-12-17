@@ -35,7 +35,7 @@ class ProjectController extends BaseActionController
     public function indexAction()
     {
         $query = array();
-        $search = $this->params()->fromQuery('search', null);
+        $search = $this->params()->fromQuery('query', null);
         if ($search != null) {
             $search = new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $search) . '/i');
             $query = array(

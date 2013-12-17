@@ -92,12 +92,9 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 							action : 'plugin'
 						} ]
 					}
-				} ]
-			}, {
-				xtype : 'toolbar',
-				dock : 'top',
-				items : [ {
-					xtype : 'searchBar'
+				}, '-', {
+					xtype : 'searchBar',
+					store : store
 				} ]
 			} ]
 		});

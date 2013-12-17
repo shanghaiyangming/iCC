@@ -2,30 +2,17 @@ Ext.define('icc.common.SearchBar', {
 	extend : 'Ext.toolbar.Toolbar',
 	alias : 'widget.searchBar',
 	initComponent : function() {
-		var me = this;
-		var searchRandom = Ext.Date.now();
-		var searchUnique = 'Search' + searchRandom;
-		Ext.apply(me,{
+		Ext.apply(this,{
 			items : [ {
-				xtype : 'textfield',
-				hideLabel : false,
-				fieldLabel : '检索内容',
-				labelWidth : 60,
-				id : searchUnique,
-				name : 'search',
-				width : 200
-			}, {
-				xtype : 'button',
-				text : '搜索',
-				iconCls : 'search',
+				xtype : 'searchfield',
 				hideLabel : true,
-				handler : function(button) {
-					var store = button.up('gridpanel').store;
-					store.proxy['extraParams']['search'] = Ext.getCmp(searchUnique).value;
-					store.load();
-				}
-			} ]
+				fieldLabel : '搜索',
+				labelWidth : 60,
+				name : 'search',
+				width : 100,
+				store : this.store
+			}]
 		});
-		me.callParent();
+		this.callParent();
 	}
 });
