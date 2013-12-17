@@ -9,6 +9,7 @@ if (typeof console == "undefined" || typeof console.log == "undefined") {
 	};
 }
 
+Ext.Loader.setConfig({enabled: true});
 Ext.onReady(function(){
 	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox','Ext.form.field.VTypes'],function(){
 		Ext.override('Ext.data.proxy.Ajax', { timeout:60000 });

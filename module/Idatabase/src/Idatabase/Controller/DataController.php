@@ -32,7 +32,7 @@ class DataController extends BaseActionController
     private $_schema;
 
     private $_order;
-    
+
     private $_mapping;
 
     /**
@@ -93,14 +93,14 @@ class DataController extends BaseActionController
      */
     public function treeAction()
     {
-        $fatherField = $this->params()->fromQuery('fatherField','');
-        $fatherValue = $this->params()->fromPost('fatherValue','');
+        $fatherField = $this->params()->fromQuery('fatherField', '_id');
+        $fatherValue = $this->params()->fromPost('fatherValue', '');
         return new JsonModel($this->tree($fatherField, $fatherValue));
     }
 
     /**
      * 递归的方式获取树状数据
-     * 
+     *
      * @param string $fatherNode            
      */
     private function tree($fatherField, $fatherValue = '')
@@ -108,11 +108,16 @@ class DataController extends BaseActionController
         if ($fatherField == '')
             throw new \Exception('$fatherField不存在');
         
+        if ($fatherField == '_id')
+            $fatherValue = myMongoId($fatherValue);
+        
         $cursor = $this->_data->find(array(
             $fatherField => $fatherValue
         ));
+        
         if ($cursor->count() == 0)
-            return false;
+            return array();
+        
         $datas = array();
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();

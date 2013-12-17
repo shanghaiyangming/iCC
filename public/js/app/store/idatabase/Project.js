@@ -1,5 +1,6 @@
 Ext.define('icc.store.idatabase.Project', {
 	extend: 'Ext.data.Store',
+	requires : ['icc.model.idatabase.Project'],
 	autoLoad: true,
 	model : 'icc.model.idatabase.Project',
 	proxy : {

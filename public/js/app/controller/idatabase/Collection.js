@@ -286,9 +286,9 @@ Ext.define('icc.controller.idatabase.Collection', {
    		var panel = tabpanel.getComponent(collection_id);
    		var collection_name = panel.collection_name;
    		panel.close();
-   		this.buildDataPanel(project_id,collection_id,collection_name,tabpanel);
+   		this.buildDataPanel(project_id,collection_id,collection_name,tabpanel,isTree);
    	},
-   	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel,isTree=false) {
+   	buildDataPanel:function(project_id,collection_id,collection_name,tabpanel,isTree) {
    		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
@@ -709,11 +709,24 @@ Ext.define('icc.controller.idatabase.Collection', {
 				
 				// 加载数据store
 				if(isTree) {
-					var dataStore = new Ext.data.TreeStore({
+					var fatherField = '';
+					Ext.Array.merge({
+		                xtype: 'treecolumn', //this is so we know which column will show the tree
+		                text: 'Tree',
+		                flex: 2,
+		                sortable: false,
+		                dataIndex: fatherField
+		            },gridColumns);
+					
+					var dataStore = Ext.create('Ext.data.TreeStore',{
 		                model: dataModelName,
 		                proxy: {
 		                    type: 'ajax',
-		                    url: '/idatabase/data/tree'
+		                    url: '/idatabase/data/tree',
+		                    extraParams:{
+								project_id : project_id,
+								collection_id : collection_id
+							}
 		                },
 		                folderSort: false
 		            });
@@ -728,7 +741,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							url : '/idatabase/data/index',
 							extraParams:{
 								project_id : project_id,
-								collection_id : collection_id
+								collection_id : collection_id,
+								fatherField : ''
 							},
 							reader : {
 								type : 'json',
@@ -738,9 +752,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 					});
 				}
-				
 
-				
 				panel = Ext.widget('idatabaseDataMain', {
 					id : collection_id,
 					name : collection_name,
@@ -756,7 +768,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				
 				panel.on({
 					beforerender : function(panel) {
-						var grid = panel.down('grid');
+						var grid = panel.down('grid') ? panel.down('grid') : panel.down('treepanel');
 						grid.store.on('load', function(store, records, success) {
 							if (success) {
 								var loop = gridComboboxColumns.length;

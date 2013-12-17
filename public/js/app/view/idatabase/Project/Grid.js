@@ -1,7 +1,7 @@
 Ext.define('icc.view.idatabase.Project.Grid', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.idatabaseProjectGrid',
-	requires : [ 'icc.common.Paging' ],
+	requires : [ 'icc.common.Paging','icc.store.idatabase.Project' ],
 	title : '项目管理',
 	region : 'west',
 	width : 400,
@@ -24,7 +24,6 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 	initComponent : function() {
 		var me = this;
 		var store = Ext.data.StoreManager.lookup('idatabase.Project');
-
 		Ext.apply(this, {
 			store : store,
 			bbar : {

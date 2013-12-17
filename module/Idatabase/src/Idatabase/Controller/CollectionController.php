@@ -140,6 +140,7 @@ class CollectionController extends BaseActionController
             $datas['name'] = $name;
             $datas['alias'] = $alias;
             $datas['type'] = $type;
+            $datas['isTree'] = $isTree;
             $datas['desc'] = $desc;
             $datas['orderBy'] = $orderBy;
             $datas['plugin'] = $plugin;
@@ -238,6 +239,7 @@ class CollectionController extends BaseActionController
         $datas['name'] = $name;
         $datas['alias'] = $alias;
         $datas['type'] = $type;
+        $datas['isTree'] = $isTree;
         $datas['desc'] = $desc;
         $datas['orderBy'] = $orderBy;
         $datas['plugin'] = $plugin;
