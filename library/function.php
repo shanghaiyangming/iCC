@@ -732,23 +732,6 @@ if (! function_exists("fastcgi_finish_request")) {
 }
 
 /**
- * 进行mongoid和tostring之间的转换
- * 增加函数mongoid用于mongoid和字符串形式之间的自动转换
- *
- * @param mixed $var            
- * @return string MongoId
- */
-function myMongoId($var = null)
-{
-    if ($var instanceof MongoId) {
-        return $var->__toString();
-    } else {
-        $var = ! empty($var) && strlen($var) == 24 ? $var : null;
-        return new MongoId($var);
-    }
-}
-
-/**
  * 获取手机归属地信息
  *
  * @param string $mobile
@@ -819,4 +802,29 @@ function array_unset_recursive(&$array, $remove)
     }
 }
 
+/**
+ * 进行mongoid和tostring之间的转换
+ * 增加函数mongoid用于mongoid和字符串形式之间的自动转换
+ *
+ * @param mixed $var
+ * @return string MongoId
+ */
+function myMongoId($var = null)
+{
+    if ($var instanceof MongoId) {
+        return $var->__toString();
+    } else {
+        $var = ! empty($var) && strlen($var) == 24 ? $var : null;
+        return new MongoId($var);
+    }
+}
+
+/**
+ * 将文本转化为MongoRegex查询对象
+ * @param string $text
+ * @return \MongoRegex
+ */
+function myMongoRegex($text) {
+    return new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $text) . '/i');
+}
 

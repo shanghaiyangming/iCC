@@ -37,7 +37,7 @@ class ProjectController extends BaseActionController
         $query = array();
         $search = $this->params()->fromQuery('query', null);
         if ($search != null) {
-            $search = new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $search) . '/i');
+            $search = myMongoRegex($search);
             $query = array(
                 '$or' => array(
                     array(

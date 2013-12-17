@@ -45,6 +45,7 @@ class CollectionController extends BaseActionController
      */
     public function indexAction()
     {
+        $search = trim($this->params()->fromQuery('query', ''));
         $plugin_id = $this->params()->fromQuery('plugin_id', '');
         
         $sort = array(
@@ -56,6 +57,25 @@ class CollectionController extends BaseActionController
             'plugin_id' => $plugin_id,
             'project_id' => $this->_project_id
         );
+        
+        if ($search != '') {
+            $search = myMongoRegex($search);
+            $query = array(
+                '$and' => array(
+                    $query,
+                    array(
+                        '$or' => array(
+                            array(
+                                'name' => $search
+                            ),
+                            array(
+                                'alias' => $search
+                            )
+                        )
+                    )
+                )
+            );
+        }
         
         return $this->findAll(IDATABASE_COLLECTIONS, $query, $sort);
     }
@@ -70,8 +90,7 @@ class CollectionController extends BaseActionController
      */
     public function addAction()
     {
-        //$plugin = new \Idatabase\Model\Plugin();
-        
+        // $plugin = new \Idatabase\Model\Plugin();
         try {
             $project_id = $this->_project_id;
             $name = $this->params()->fromPost('name', null);
