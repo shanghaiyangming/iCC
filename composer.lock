@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cboden/Ratchet.git",
-                "reference": "9ab9894a671896a3e36c36af3ebd2738e8222c72"
+                "reference": "5d437cd853e60ac478cdbba858fdb8aabf00edc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/9ab9894a671896a3e36c36af3ebd2738e8222c72",
-                "reference": "9ab9894a671896a3e36c36af3ebd2738e8222c72",
+                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/5d437cd853e60ac478cdbba858fdb8aabf00edc0",
+                "reference": "5d437cd853e60ac478cdbba858fdb8aabf00edc0",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "server",
                 "sockets"
             ],
-            "time": "2013-11-05 23:31:52"
+            "time": "2013-12-01 16:01:32"
         },
         {
             "name": "codeplex/phpexcel",
@@ -667,21 +667,21 @@
         },
         {
             "name": "doctrine/mongodb",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb.git",
-                "reference": "531dc0025315055047997aeca497099c183db7e0"
+                "reference": "401796e7a5ec3cea099d993fd0034235b917f1a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb/zipball/531dc0025315055047997aeca497099c183db7e0",
-                "reference": "531dc0025315055047997aeca497099c183db7e0",
+                "url": "https://api.github.com/repos/doctrine/mongodb/zipball/401796e7a5ec3cea099d993fd0034235b917f1a8",
+                "reference": "401796e7a5ec3cea099d993fd0034235b917f1a8",
                 "shasum": ""
             },
             "require": {
                 "doctrine/common": ">=2.1.0,<2.5-dev",
-                "ext-mongo": ">=1.2.12,<1.5-dev",
+                "ext-mongo": ">=1.2.12,<1.6-dev",
                 "php": ">=5.3.2"
             },
             "type": "library",
@@ -701,9 +701,10 @@
                     "homepage": "http://avalanche123.com"
                 },
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Kris Wallsmith",
@@ -723,7 +724,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2013-04-23 15:15:35"
+            "time": "2013-11-01 17:12:21"
         },
         {
             "name": "doctrine/mongodb-odm",
@@ -891,12 +892,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Gregwar/Captcha.git",
-                "reference": "eb1668366b60b99af727e9342f1551252ace8c15"
+                "reference": "0a4555768cf0a5f277e2419d4e3483625fbbfdae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/eb1668366b60b99af727e9342f1551252ace8c15",
-                "reference": "eb1668366b60b99af727e9342f1551252ace8c15",
+                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/0a4555768cf0a5f277e2419d4e3483625fbbfdae",
+                "reference": "0a4555768cf0a5f277e2419d4e3483625fbbfdae",
                 "shasum": ""
             },
             "require": {
@@ -931,7 +932,7 @@
                 "captcha",
                 "spam"
             ],
-            "time": "2013-10-20 09:43:25"
+            "time": "2013-11-27 09:12:31"
         },
         {
             "name": "guzzle/common",
@@ -1230,16 +1231,16 @@
         },
         {
             "name": "mobiledetect/mobiledetectlib",
-            "version": "2.7.3",
+            "version": "2.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/serbanghita/Mobile-Detect.git",
-                "reference": "80ca6d4fb09dc039022cfd666099d6a29601d385"
+                "reference": "b7631859df47ceca6609278b59ec61e86f60c483"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/80ca6d4fb09dc039022cfd666099d6a29601d385",
-                "reference": "80ca6d4fb09dc039022cfd666099d6a29601d385",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/b7631859df47ceca6609278b59ec61e86f60c483",
+                "reference": "b7631859df47ceca6609278b59ec61e86f60c483",
                 "shasum": ""
             },
             "require": {
@@ -1278,20 +1279,20 @@
                 "mobile detector",
                 "php mobile detect"
             ],
-            "time": "2013-11-09 12:58:33"
+            "time": "2013-12-05 22:00:17"
         },
         {
             "name": "monolog/monolog",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "f72392d0e6eb855118f5a84e89ac2d257c704abd"
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f72392d0e6eb855118f5a84e89ac2d257c704abd",
-                "reference": "f72392d0e6eb855118f5a84e89ac2d257c704abd",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57",
                 "shasum": ""
             },
             "require": {
@@ -1299,21 +1300,26 @@
                 "psr/log": "~1.0"
             },
             "require-dev": {
+                "aws/aws-sdk-php": "~2.4.8",
                 "doctrine/couchdb": "dev-master",
                 "mlehner/gelf-php": "1.0.*",
-                "raven/raven": "0.5.*"
+                "phpunit/phpunit": "~3.7.0",
+                "raven/raven": "0.5.*",
+                "ruflin/elastica": "0.90.*"
             },
             "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
                 "ext-mongo": "Allow sending log messages to a MongoDB server",
                 "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "raven/raven": "Allow sending log messages to a Sentry server"
+                "raven/raven": "Allow sending log messages to a Sentry server",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6.x-dev"
+                    "dev-master": "1.7.x-dev"
                 }
             },
             "autoload": {
@@ -1340,7 +1346,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2013-07-28 22:38:30"
+            "time": "2013-11-14 19:48:31"
         },
         {
             "name": "psr/log",
@@ -1427,27 +1433,30 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c"
+                "reference": "c9784de0e84e8360533c3c5e1b2981b59c1f8f80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/d6de8cae1dbb4878d909c41cb89aff764504472c",
-                "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/c9784de0e84e8360533c3c5e1b2981b59c1f8f80",
+                "reference": "c9784de0e84e8360533c3c5e1b2981b59c1f8f80",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
                     "React\\Promise": "src/"
-                }
+                },
+                "files": [
+                    "src/React/Promise/functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1462,7 +1471,7 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2013-04-03 14:05:55"
+            "time": "2013-12-17 19:19:23"
         },
         {
             "name": "react/react",
@@ -1522,17 +1531,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.3.6",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "f880062d56edefb25b36f2defa65aafe65959dc7"
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/f880062d56edefb25b36f2defa65aafe65959dc7",
-                "reference": "f880062d56edefb25b36f2defa65aafe65959dc7",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
                 "shasum": ""
             },
             "require": {
@@ -1547,7 +1556,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1571,21 +1580,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-25 06:04:15"
+            "time": "2013-11-27 09:10:40"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.3.6",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "7fc72a7a346a1887d3968cc1ce5642a15cd182e9"
+                "reference": "acd1707236f6eb96fbb8d58f63d289b72ebc2f6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/7fc72a7a346a1887d3968cc1ce5642a15cd182e9",
-                "reference": "7fc72a7a346a1887d3968cc1ce5642a15cd182e9",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/acd1707236f6eb96fbb8d58f63d289b72ebc2f6e",
+                "reference": "acd1707236f6eb96fbb8d58f63d289b72ebc2f6e",
                 "shasum": ""
             },
             "require": {
@@ -1601,7 +1610,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1625,21 +1634,21 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-19 09:45:20"
+            "time": "2013-12-03 14:52:22"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.3.6",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3"
+                "reference": "381245ba3e507a3e9c5b4c2cbf344a312fb6081d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/59e712338cd05463ebcb8da6422a01b1291871e3",
-                "reference": "59e712338cd05463ebcb8da6422a01b1291871e3",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/381245ba3e507a3e9c5b4c2cbf344a312fb6081d",
+                "reference": "381245ba3e507a3e9c5b4c2cbf344a312fb6081d",
                 "shasum": ""
             },
             "require": {
@@ -1648,7 +1657,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1675,41 +1684,43 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-29 19:41:41"
+            "time": "2013-11-28 10:27:26"
         },
         {
             "name": "symfony/routing",
-            "version": "v2.3.6",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Routing",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "7d41463094752e87a0fae60316d236abecb8a034"
+                "reference": "a7a665e2a0e3a203ca9a690c021066e76295bf6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/7d41463094752e87a0fae60316d236abecb8a034",
-                "reference": "7d41463094752e87a0fae60316d236abecb8a034",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/a7a665e2a0e3a203ca9a690c021066e76295bf6a",
+                "reference": "a7a665e2a0e3a203ca9a690c021066e76295bf6a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "doctrine/common": "~2.2",
+                "doctrine/annotations": "~1.0",
                 "psr/log": "~1.0",
                 "symfony/config": "~2.2",
+                "symfony/expression-language": "~2.4",
                 "symfony/yaml": "~2.0"
             },
             "suggest": {
-                "doctrine/common": "",
-                "symfony/config": "",
-                "symfony/yaml": ""
+                "doctrine/annotations": "For using the annotation loader",
+                "symfony/config": "For using the all-in-one router or any loader",
+                "symfony/expression-language": "For using expression matching",
+                "symfony/yaml": "For using the YAML loader"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1733,7 +1744,13 @@
             ],
             "description": "Symfony Routing Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-29 19:41:41"
+            "keywords": [
+                "router",
+                "routing",
+                "uri",
+                "url"
+            ],
+            "time": "2013-11-22 17:42:00"
         },
         {
             "name": "zendframework/zendframework",

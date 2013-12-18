@@ -126,6 +126,7 @@ class StructureController extends BaseActionController
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['isFatherField'] = filter_var($this->params()->fromPost('isFatherField', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
         $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
@@ -188,6 +189,7 @@ class StructureController extends BaseActionController
         $datas['searchable'] = filter_var($this->params()->fromPost('searchable', false), FILTER_VALIDATE_BOOLEAN);
         $datas['main'] = filter_var($this->params()->fromPost('main', false), FILTER_VALIDATE_BOOLEAN);
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['isFatherField'] = filter_var($this->params()->fromPost('isFatherField', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
         $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);

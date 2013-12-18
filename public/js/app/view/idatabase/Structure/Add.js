@@ -106,6 +106,21 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 						checked : true
 					} ]
 				}, {
+					xtype : 'radiogroup',
+					fieldLabel : '记录Tree的父节点',
+					defaultType : 'radiofield',
+					layout : 'hbox',
+					items : [ {
+						boxLabel : '是',
+						name : 'isFatherField',
+						inputValue : true
+					}, {
+						boxLabel : '否',
+						name : 'isFatherField',
+						inputValue : false,
+						checked : true
+					} ]
+				}, {
 					xtype : 'numberfield',
 					name : 'orderBy',
 					fieldLabel : '排序',

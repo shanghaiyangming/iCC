@@ -52,8 +52,7 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 					items : [ {
 						boxLabel : '是',
 						name : 'isTree',
-						inputValue : true,
-						
+						inputValue : true
 					}, {
 						boxLabel : '否',
 						name : 'isTree',

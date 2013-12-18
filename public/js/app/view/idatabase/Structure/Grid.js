@@ -185,6 +185,16 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 					xtype : 'commonComboboxBoolean'
 				}
 			},{
+				xtype : 'booleancolumn',
+				trueText : '√',
+				falseText : '×',
+				text : '父?',
+				dataIndex : 'isFatherField',
+				flex : 1,
+				field : {
+					xtype : 'commonComboboxBoolean'
+				}
+			},{
 				text : '关联集合',
 				dataIndex : 'rshCollection',
 				flex : 2,

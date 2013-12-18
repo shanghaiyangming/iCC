@@ -900,6 +900,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Data.Grid": [],
   "icc.view.idatabase.Data.Main": [],
   "icc.view.idatabase.Data.Search": [],
+  "icc.view.idatabase.Data.TreeGrid": [],
   "icc.view.idatabase.Plugin.Add": [],
   "icc.view.idatabase.Plugin.Combobox": [],
   "icc.view.idatabase.Plugin.Edit": [],
@@ -2024,6 +2025,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Data.Search": [
     "widget.idatabaseDataSearch"
+  ],
+  "icc.view.idatabase.Data.TreeGrid": [
+    "widget.idatabaseDataTreeGrid"
   ],
   "icc.view.idatabase.Plugin.Add": [
     "widget.idatabasePluginAdd"
