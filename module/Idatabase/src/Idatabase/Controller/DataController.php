@@ -36,6 +36,13 @@ class DataController extends BaseActionController
     private $_mapping;
 
     /**
+     * 存储当前collection的关系集合数据
+     *
+     * @var array
+     */
+    private $_rshCollection = array();
+
+    /**
      * 初始化函数
      *
      * @see \My\Common\ActionController::init()
@@ -93,6 +100,7 @@ class DataController extends BaseActionController
      */
     public function treeAction()
     {
+        if ($rshCollection) {}
         $fatherField = $this->params()->fromQuery('fatherField', '_id');
         $fatherValue = $this->params()->fromPost('fatherValue', '');
         return new JsonModel($this->tree($fatherField, $fatherValue));
@@ -105,6 +113,12 @@ class DataController extends BaseActionController
      */
     private function tree($fatherField, $fatherValue = '')
     {
+        $rshCollection = isset($this->_schema['post'][$fatherField]['rshCollection']) ? $this->_schema['post'][$fatherField]['rshCollection'] : '';
+        if(empty($rshCollection))
+            throw new \Exception('无效的关联集合');
+            
+        $this->_rshCollection[$rshCollection][''];
+        
         if ($fatherField == '')
             throw new \Exception('$fatherField不存在');
         
@@ -340,6 +354,36 @@ class DataController extends BaseActionController
             $row = $cursor->getNext();
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
             $schema[$type][$row['field']] = $row;
+            
+            if (! empty($row['rshCollection'])) {
+                $rshCollectionStructures = $this->_structure->findAll(array(
+                    'collection_id' => $row['rshCollection']
+                ));
+                if (! empty($rshCollectionStructures)) {
+                    $rshCollectionKeyField = '';
+                    $rshCollectionValueField = '_id';
+                    foreach ($rshCollectionStructures as $rshCollectionStructure) {
+                        if ($rshCollectionStructure['rshKey']) {
+                            $rshCollectionKeyField = $rshCollectionStructure['field'];
+                        }
+                        
+                        if ($rshCollectionStructure['rshValue']) {
+                            $rshCollectionValueField = $rshCollectionStructure['field'];
+                        }
+                    }
+                    
+                    if (empty($rshCollectionKeyField)) {
+                        throw new \Exception('关系集合未设定关系键值');
+                    }
+                    
+                    $this->_rshCollection[$row['rshCollection']] = array(
+                        'rshCollectionKeyField' => $rshCollectionValueField,
+                        'rshCollectionValueField' => $rshCollectionValueField
+                    );
+                } else {
+                    throw new \Exception('关系集合属性尚未设定');
+                }
+            }
         }
         return $schema;
     }
