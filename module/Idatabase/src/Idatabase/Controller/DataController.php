@@ -100,7 +100,6 @@ class DataController extends BaseActionController
      */
     public function treeAction()
     {
-        if ($rshCollection) {}
         $fatherField = $this->params()->fromQuery('fatherField', '_id');
         $fatherValue = $this->params()->fromPost('fatherValue', '');
         return new JsonModel($this->tree($fatherField, $fatherValue));
@@ -114,10 +113,11 @@ class DataController extends BaseActionController
     private function tree($fatherField, $fatherValue = '')
     {
         $rshCollection = isset($this->_schema['post'][$fatherField]['rshCollection']) ? $this->_schema['post'][$fatherField]['rshCollection'] : '';
-        if(empty($rshCollection))
+        if (empty($rshCollection))
             throw new \Exception('无效的关联集合');
-            
-        $this->_rshCollection[$rshCollection][''];
+        
+        $rshCollectionKeyField = $this->_rshCollection[$rshCollection]['rshCollectionKeyField'];
+        $rshCollectionValueField = $this->_rshCollection[$rshCollection]['rshCollectionValueField'];
         
         if ($fatherField == '')
             throw new \Exception('$fatherField不存在');
@@ -136,15 +136,18 @@ class DataController extends BaseActionController
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
             $row['expanded'] = true;
-            if ($row['_id'] instanceof \MongoId) {
-                $children = $this->tree($fatherField, $row['_id']->__toString());
-                if ($children != false) {
-                    $row['children'] = $children;
-                } else {
-                    $row['leaf'] = true;
-                }
-                $datas[] = $row;
+            if ($row[$rshCollectionValueField] instanceof \MongoId) {
+                $fatherValue = $row[$rshCollectionValueField]->__toString();
+            } else {
+                $fatherValue = $row[$rshCollectionValueField];
             }
+            $children = $this->tree($fatherField, $fatherValue);
+            if (! empty($children)) {
+                $row['children'] = $children;
+            } else {
+                $row['leaf'] = true;
+            }
+            $datas[] = $row;
         }
         return $datas;
     }
