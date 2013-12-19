@@ -314,6 +314,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 			
 			var treeField = '';
 			var treeLabel = '';
+			var root = {
+				leaf:true,
+				expanded:true
+			};
 			structureStore.load(function(records, operation, success) {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
@@ -324,6 +328,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 					if(record.get('rshKey')) {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
+					}
+					
+					if(isTree) {
+						root[record.get('field')] = ''
 					}
 					
 					//创建添加和编辑的field表单开始
@@ -741,16 +749,20 @@ Ext.define('icc.controller.idatabase.Collection', {
 								collection_id : collection_id
 							}
 		                },
-		                folderSort: false
+		                folderSort: false,
+		                root : root
 		            });
 					
-					dataStore.on('beforeexpand', function(node) {
-					      if (node == this.getRootNode()) {
-					          Ext.Ajax.abort(this.proxy.activeRequest);
-					          delete this.proxy.activeRequest;
-					      }
-					 }, dataStore); 
-					//dataStore.setRootNode({ text:'root', leaf:false, expended:true });
+//					if(dataStore.isLoading) {
+//						Ext.Ajax.abort(dataStore.proxy.activeRequest);
+//					}
+//					dataStore.on('beforeexpand', function(node) {
+//					      if (node == this.getRootNode()) {
+//					          Ext.Ajax.abort(this.proxy.activeRequest);
+//					          delete this.proxy.activeRequest;
+//					      }
+//					 }, dataStore); 
+//					dataStore.setRootNode({ text:'Root', leaf:false, expended:true });
 				}
 				else {
 					var dataStore = Ext.create('Ext.data.Store',{

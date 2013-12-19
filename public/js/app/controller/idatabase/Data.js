@@ -186,7 +186,6 @@ Ext.define('icc.controller.idatabase.Data', {
 							var _id = [];
 							for ( var i = 0; i < selections.length; i++) {
 								selection = selections[i];
-								grid.store.remove(selection);
 								_id.push(selection.get('_id'));
 							}
 
