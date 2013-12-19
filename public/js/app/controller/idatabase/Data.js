@@ -21,7 +21,11 @@ Ext.define('icc.controller.idatabase.Data', {
 	activeDataGrid : function() {
 		return this.getProjectTabPanel().getActiveTab().down(
 				'idatabaseCollectionTabPanel').getActiveTab().down(
-				'idatabaseDataGrid');
+				'idatabaseDataGrid') ? this.getProjectTabPanel().getActiveTab().down(
+				'idatabaseCollectionTabPanel').getActiveTab().down(
+				'idatabaseDataGrid') : this.getProjectTabPanel().getActiveTab().down(
+				'idatabaseCollectionTabPanel').getActiveTab().down(
+				'idatabaseDataTreeGrid');
 	},
 	init : function() {
 		var me = this;
@@ -101,9 +105,9 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners[controllerName + 'Grid button[action=add]'] = {
+		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=add]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel');
+				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
 					collection_id : grid.collection_id,
@@ -174,7 +178,7 @@ Ext.define('icc.controller.idatabase.Data', {
 
 		listeners[controllerName + 'Grid button[action=remove]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel');
+				var grid = button.up('gridpanel') ;
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					Ext.Msg.confirm('提示信息', '请确认是否要删除您选择的信息?', function(btn) {

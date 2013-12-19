@@ -35,6 +35,8 @@ class DataController extends BaseActionController
 
     private $_mapping;
 
+    private $_fatherField = '';
+
     /**
      * 存储当前collection的关系集合数据
      *
@@ -100,9 +102,12 @@ class DataController extends BaseActionController
      */
     public function treeAction()
     {
-        $fatherField = $this->params()->fromQuery('fatherField', '_id');
-        $fatherValue = $this->params()->fromPost('fatherValue', '');
-        return new JsonModel($this->tree($fatherField, $fatherValue));
+        if (empty($this->_fatherField)) {
+            return $this->msg(false, '树形结构，请设定字段属性和父字段属性');
+        }
+        
+        $fatherValue = $this->params()->fromQuery('fatherValue', '');
+        return new JsonModel($this->tree($this->_fatherField, $fatherValue));
     }
 
     /**
@@ -114,13 +119,13 @@ class DataController extends BaseActionController
     {
         $rshCollection = isset($this->_schema['post'][$fatherField]['rshCollection']) ? $this->_schema['post'][$fatherField]['rshCollection'] : '';
         if (empty($rshCollection))
-            throw new \Exception('无效的关联集合');
+            return $this->msg(false, '无效的关联集合');
         
         $rshCollectionKeyField = $this->_rshCollection[$rshCollection]['rshCollectionKeyField'];
         $rshCollectionValueField = $this->_rshCollection[$rshCollection]['rshCollectionValueField'];
         
         if ($fatherField == '')
-            throw new \Exception('$fatherField不存在');
+            return $this->msg(false, '$fatherField不存在');
         
         if ($fatherField == '_id')
             $fatherValue = myMongoId($fatherValue);
@@ -198,7 +203,7 @@ class DataController extends BaseActionController
     }
 
     /**
-     * 编辑新的集合信息
+     * 编辑新的集合信息/关联字段的集合信息/fatherField字段信息
      *
      * @author young
      * @name 编辑新的集合信息
@@ -357,6 +362,10 @@ class DataController extends BaseActionController
             $row = $cursor->getNext();
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
             $schema[$type][$row['field']] = $row;
+            
+            if (isset($row['isFatherField']) && $row['isFatherField']) {
+                $this->_fatherField = $row['field'];
+            }
             
             if (! empty($row['rshCollection'])) {
                 $rshCollectionStructures = $this->_structure->findAll(array(

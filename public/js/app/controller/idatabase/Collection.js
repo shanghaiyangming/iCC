@@ -306,40 +306,26 @@ Ext.define('icc.controller.idatabase.Collection', {
 				allowBlank : false
 			} ];
 			
-			var gridColumns =  [ {
-				text : "_id",
-				sortable : false,
-				dataIndex : '_id',
-				flex:1,
-				editor : 'textfield',
-				hidden:true
-			}, {
-				xtype: 'datecolumn',
-				format : 'Y-m-d H:i:s',
-				text : "创建时间",
-				sortable : false,
-				flex:1,
-				dataIndex : '__CREATE_TIME__'
-			}, {
-				xtype: 'datecolumn',
-				format : 'Y-m-d H:i:s',
-				text : "修改时间",
-				sortable : false,
-				flex:1,
-				dataIndex : '__MODIFY_TIME__',
-				hidden:true
-			}]; 
+			var gridColumns =  []; 
 			
 			var structureStore = Ext.create('icc.store.idatabase.Structure');
 			structureStore['proxy']['extraParams']['project_id'] = project_id;
 			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
 			
+			var fatherField = '';
+			var fatherLabel = '';
 			structureStore.load(function(records, operation, success) {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
 				var addOrEditFields = [];
 				
 				Ext.Array.forEach(records,function(record) {
+					//获取fatherField
+					if(record.get('isFatherField')) {
+						fatherField = record.get('field');
+						fatherLabel = record.get('label');
+					}
+					
 					//创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype      : record.get('type'),
@@ -480,7 +466,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					modelFields.push(field);
 					
 					// 绘制grid的column信息
-					if (record.get('main')) {
+					if (record.get('main') && !record.get('isFatherField')) {
 						var column = {
 							text : record.get('label'),
 							dataIndex : record.get('field'),
@@ -546,6 +532,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						
 						gridColumns.push(column);
 					}
+					
 					// 创建model的fields结束
 					
 					// 创建条件检索form
@@ -700,6 +687,32 @@ Ext.define('icc.controller.idatabase.Collection', {
 					// 创建条件检索form结束
 				});
 				
+				//完善树状结构
+				gridColumns = Ext.Array.merge(gridColumns, [{
+						text : "_id",
+						sortable : false,
+						dataIndex : '_id',
+						flex:1,
+						editor : 'textfield',
+						hidden:true
+					}, {
+						xtype: 'datecolumn',
+						format : 'Y-m-d H:i:s',
+						text : "创建时间",
+						sortable : false,
+						flex:1,
+						dataIndex : '__CREATE_TIME__'
+					}, {
+						xtype: 'datecolumn',
+						format : 'Y-m-d H:i:s',
+						text : "修改时间",
+						sortable : false,
+						flex:1,
+						dataIndex : '__MODIFY_TIME__',
+						hidden:true
+					}
+				]);
+				
 				// 创建数据的model
 				var dataModelName = 'dataModel'+collection_id;
 				var dataModel = Ext.define(dataModelName,{
@@ -710,9 +723,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 				// 加载数据store
 				if(isTree) {
 					var fatherField = '';
-					Ext.Array.merge({
-		                xtype: 'treecolumn', //this is so we know which column will show the tree
-		                text: 'Tree',
+					gridColumns = Ext.Array.merge({
+		                xtype: 'treecolumn',
+		                text: fatherLabel,
 		                flex: 2,
 		                sortable: false,
 		                dataIndex: fatherField
