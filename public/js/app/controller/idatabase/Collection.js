@@ -312,8 +312,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 			structureStore['proxy']['extraParams']['project_id'] = project_id;
 			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
 			
-			var fatherField = '';
-			var fatherLabel = '';
+			var treeField = '';
+			var treeLabel = '';
 			structureStore.load(function(records, operation, success) {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
@@ -321,9 +321,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 				
 				Ext.Array.forEach(records,function(record) {
 					//获取fatherField
-					if(record.get('isFatherField')) {
-						fatherField = record.get('field');
-						fatherLabel = record.get('label');
+					if(record.get('rshKey')) {
+						treeField = record.get('field');
+						treeLabel = record.get('label');
 					}
 					
 					//创建添加和编辑的field表单开始
@@ -466,7 +466,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					modelFields.push(field);
 					
 					// 绘制grid的column信息
-					if (record.get('main') && !record.get('isFatherField')) {
+					if (record.get('main')) {
 						var column = {
 							text : record.get('label'),
 							dataIndex : record.get('field'),
@@ -722,17 +722,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 				
 				// 加载数据store
 				if(isTree) {
-					var fatherField = '';
 					gridColumns = Ext.Array.merge({
 		                xtype: 'treecolumn',
-		                text: fatherLabel,
+		                text: treeLabel,
 		                flex: 2,
 		                sortable: false,
-		                dataIndex: fatherField
+		                dataIndex: treeField
 		            },gridColumns);
 					
 					var dataStore = Ext.create('Ext.data.TreeStore',{
 		                model: dataModelName,
+		                autoLoad: false,
 		                proxy: {
 		                    type: 'ajax',
 		                    url: '/idatabase/data/tree',
@@ -743,6 +743,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 		                },
 		                folderSort: false
 		            });
+					
+					//dataStore.setRootNode({ text:'root', leaf:false, expended:true });
 				}
 				else {
 					var dataStore = Ext.create('Ext.data.Store',{

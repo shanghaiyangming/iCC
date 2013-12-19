@@ -99,6 +99,9 @@ class DataController extends BaseActionController
 
     /**
      * 获取树状表格数据
+     * 
+     * 解决方案路径：
+     * http://www.sencha.com/forum/showthread.php?152584-EXT-4.0.7-TreeStore-loading-twice-if-autoload-to-false
      */
     public function treeAction()
     {
