@@ -117,9 +117,9 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners[controllerName + 'Grid button[action=edit]'] = {
+		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=edit]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel');
+				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
@@ -139,9 +139,9 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners[controllerName + 'Grid button[action=save]'] = {
+		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=save]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel');
+				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var store = grid.store;
 				var records = grid.store.getUpdatedRecords();
 				console.info(records,records.length);
@@ -176,9 +176,9 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners[controllerName + 'Grid button[action=remove]'] = {
+		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=remove]'] = {
 			click : function(button) {
-				var grid = button.up('gridpanel') ;
+				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					Ext.Msg.confirm('提示信息', '请确认是否要删除您选择的信息?', function(btn) {

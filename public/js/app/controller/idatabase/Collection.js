@@ -744,6 +744,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 		                folderSort: false
 		            });
 					
+					dataStore.on('beforeexpand', function(node) {
+					      if (node == this.getRootNode()) {
+					          Ext.Ajax.abort(this.proxy.activeRequest);
+					          delete this.proxy.activeRequest;
+					      }
+					 }, dataStore); 
 					//dataStore.setRootNode({ text:'root', leaf:false, expended:true });
 				}
 				else {

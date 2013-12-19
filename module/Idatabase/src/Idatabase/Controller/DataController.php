@@ -99,7 +99,7 @@ class DataController extends BaseActionController
 
     /**
      * 获取树状表格数据
-     * 
+     *
      * 解决方案路径：
      * http://www.sencha.com/forum/showthread.php?152584-EXT-4.0.7-TreeStore-loading-twice-if-autoload-to-false
      */
@@ -110,7 +110,16 @@ class DataController extends BaseActionController
         }
         
         $fatherValue = $this->params()->fromQuery('fatherValue', '');
-        return new JsonModel($this->tree($this->_fatherField, $fatherValue));
+        $tree = $this->tree($this->_fatherField, $fatherValue);
+        $root = array(
+            'leaf' => empty($tree) ? true : false,
+            'expended' => true
+        );
+        foreach ($this->_schema['all'] as $field => $detail) {
+            $root[$field] = '';
+        }
+        $root['children'] = $tree;
+        return new JsonModel($root);
     }
 
     /**
@@ -350,7 +359,8 @@ class DataController extends BaseActionController
     {
         $schema = array(
             'file' => array(),
-            'post' => array()
+            'post' => array(),
+            'all' => array()
         );
         
         $cursor = $this->_structure->find(array(
@@ -365,6 +375,7 @@ class DataController extends BaseActionController
             $row = $cursor->getNext();
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
             $schema[$type][$row['field']] = $row;
+            $schema['all'][$row['field']] = $row;
             
             if (isset($row['isFatherField']) && $row['isFatherField']) {
                 $this->_fatherField = $row['field'];
