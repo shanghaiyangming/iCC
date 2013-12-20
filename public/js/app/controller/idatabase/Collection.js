@@ -738,6 +738,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 		                dataIndex: treeField
 		            },gridColumns);
 					
+					gridColumns = Ext.Array.filter(gridColumns,function(item,index,array){
+						if(item.xtype !== 'treecolumn' && item.dataIndex===treeField) {
+							return false;
+						}
+						return true;
+					});
+					
 					var dataStore = Ext.create('Ext.data.TreeStore',{
 		                model: dataModelName,
 		                autoLoad: false,
@@ -749,8 +756,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								collection_id : collection_id
 							}
 		                },
-		                folderSort: false,
-		                root : root
+		                folderSort: false
 		            });
 					
 //					if(dataStore.isLoading) {
@@ -762,7 +768,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 //					          delete this.proxy.activeRequest;
 //					      }
 //					 }, dataStore); 
-//					dataStore.setRootNode({ text:'Root', leaf:false, expended:true });
+					dataStore.setRootNode(root);
 				}
 				else {
 					var dataStore = Ext.create('Ext.data.Store',{
