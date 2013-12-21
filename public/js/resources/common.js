@@ -11,7 +11,7 @@ if (typeof console == "undefined" || typeof console.log == "undefined") {
 
 Ext.Loader.setConfig({enabled: true});
 Ext.onReady(function(){
-	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox','Ext.form.field.VTypes'],function(){
+	Ext.require(['Ext.data.proxy.Ajax','Ext.form.field.ComboBox','Ext.form.field.VTypes','Ext.data.TreeStore'],function(){
 		Ext.override('Ext.data.proxy.Ajax', { timeout:60000 });
 		Ext.override('Ext.form.action.Submit',{waitTitle :'系统提示',waitMsg:'数据处理中，请稍后……'});
 		Ext.form.field.ComboBox.override({
@@ -70,6 +70,38 @@ Ext.onReady(function(){
 		Ext.Ajax.on('requestexception', function(ajax, response ,options ,eOpts ) {
 			Ext.Msg.alert('提示信息', '网络连接异常，请检查您的网络状况是否正常');
 		});
+		
+		﻿Ext.override(Ext.data.TreeStore, {
+			load: function(options) {
+				options = options || {};
+				options.params = options.params || {};
+
+				var me = this,
+					node = options.node || me.tree.getRootNode(),
+					root;
+
+				if (!node) {
+					node = me.setRootNode({
+						expanded: true
+					});
+				}
+
+				if (me.clearOnLoad) {
+					node.removeAll(false);
+				}
+
+				Ext.applyIf(options, {
+					node: node
+				});
+				options.params[me.nodeParam] = node ? node.getId() : 'root';
+
+				if (node) {
+					node.set('loading', true);
+				}
+				return me.callParent([options]);
+			}
+		});
+		
 		
 	});
 	

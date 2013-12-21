@@ -756,19 +756,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 								collection_id : collection_id
 							}
 		                },
-		                folderSort: false
+		                folderSort: true
 		            });
-					
-//					if(dataStore.isLoading) {
-//						Ext.Ajax.abort(dataStore.proxy.activeRequest);
-//					}
-//					dataStore.on('beforeexpand', function(node) {
-//					      if (node == this.getRootNode()) {
-//					          Ext.Ajax.abort(this.proxy.activeRequest);
-//					          delete this.proxy.activeRequest;
-//					      }
-//					 }, dataStore); 
-					dataStore.setRootNode(root);
 				}
 				else {
 					var dataStore = Ext.create('Ext.data.Store',{

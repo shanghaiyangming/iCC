@@ -64,7 +64,10 @@ Ext.define('icc.view.idatabase.Data.TreeGrid', {
 					action : 'remove'
 				} ]
 			}],
-			store : this.store
+			store : this.store,
+			listeners : {
+				
+			}
 		});
 
 		this.callParent();

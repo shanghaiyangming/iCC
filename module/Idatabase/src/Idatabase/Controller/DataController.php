@@ -112,14 +112,11 @@ class DataController extends BaseActionController
         $fatherValue = $this->params()->fromQuery('fatherValue', '');
         $tree = $this->tree($this->_fatherField, $fatherValue);
         $root = array(
-            'leaf' => empty($tree) ? true : false,
-            'expended' => true
+            'text' => '.',
+            'children' => $tree
         );
-        foreach ($this->_schema['all'] as $field => $detail) {
-            $root[$field] = '';
-        }
-        $root['children'] = $tree;
         return new JsonModel($root);
+        // return new JsonModel($tree);
     }
 
     /**
