@@ -111,12 +111,7 @@ class DataController extends BaseActionController
         
         $fatherValue = $this->params()->fromQuery('fatherValue', '');
         $tree = $this->tree($this->_fatherField, $fatherValue);
-        $root = array(
-            'text' => '.',
-            'children' => $tree
-        );
-        return new JsonModel($root);
-        // return new JsonModel($tree);
+        return new JsonModel($tree);
     }
 
     /**
@@ -149,7 +144,6 @@ class DataController extends BaseActionController
         $datas = array();
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
-            $row['expanded'] = true;
             if ($row[$rshCollectionValueField] instanceof \MongoId) {
                 $fatherValue = $row[$rshCollectionValueField]->__toString();
             } else {
@@ -157,6 +151,7 @@ class DataController extends BaseActionController
             }
             $children = $this->tree($fatherField, $fatherValue);
             if (! empty($children)) {
+                $row['expanded'] = true;
                 $row['children'] = $children;
             } else {
                 $row['leaf'] = true;
