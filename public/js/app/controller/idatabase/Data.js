@@ -135,6 +135,7 @@ Ext.define('icc.controller.idatabase.Data', {
 							var tmp = selections[0].get(field).split(',');
 							form.findField(field+'[lng]').setValue(tmp[0]);
 							form.findField(field+'[lat]').setValue(tmp[1]);
+							return true;
 						}
 					});
 					win.show();
