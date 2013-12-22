@@ -85,7 +85,9 @@ class DataController extends BaseActionController
         
         $action = $this->params()->fromQuery('action', null);
         
-        if ($action == 'search') {}
+        if ($action == 'search') {
+        	
+        }
         
         if (empty($sort)) {
             $sort = $this->defaultOrder();
