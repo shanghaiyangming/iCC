@@ -756,7 +756,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 								collection_id : collection_id
 							}
 		                },
-		                folderSort: true
+		                folderSort: true,
+		                root: {
+		                    text: 'Root',
+		                    id: 'root',
+		                    expanded: true
+		                }
 		            });
 				}
 				else {

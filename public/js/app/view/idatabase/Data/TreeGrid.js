@@ -12,7 +12,7 @@ Ext.define('icc.view.idatabase.Data.TreeGrid', {
 	useArrows: true,
     rootVisible: false,
     multiSelect: true,
-    singleExpand: true,
+    singleExpand: false,
 	selType : 'rowmodel',
 	plugins : [ Ext.create('Ext.grid.plugin.CellEditing', {
 		clicksToEdit : 2

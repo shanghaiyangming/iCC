@@ -105,7 +105,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=add]'] = {
+		listeners['idatabaseDataGrid button[action=add],idatabaseDataTreeGrid button[action=add]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var win = Ext.widget(controllerName + 'Add', {
@@ -117,7 +117,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=edit]'] = {
+		listeners['idatabaseDataGrid button[action=edit],idatabaseDataTreeGrid button[action=edit]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var selections = grid.getSelectionModel().getSelection();
@@ -130,7 +130,12 @@ Ext.define('icc.controller.idatabase.Data', {
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
 					Ext.Array.forEach(grid.addOrEditFields,function(item,index){
-						
+						if(item.xtype=='2dfield') {
+							var field = item.name;
+							var tmp = selections[0].get(field).split(',');
+							form.findField(field+'[lng]').setValue(tmp[0]);
+							form.findField(field+'[lat]').setValue(tmp[1]);
+						}
 					});
 					win.show();
 				} else {
@@ -139,7 +144,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=save]'] = {
+		listeners['idatabaseDataGrid button[action=save],idatabaseDataTreeGrid button[action=save]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var store = grid.store;
@@ -176,7 +181,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 
-		listeners['idatabaseDataGrid,idatabaseDataTreeGrid button[action=remove]'] = {
+		listeners['idatabaseDataGrid button[action=remove],idatabaseDataTreeGrid button[action=remove]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var selections = grid.getSelectionModel().getSelection();
