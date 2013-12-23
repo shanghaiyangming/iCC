@@ -809,11 +809,28 @@ function array_unset_recursive(&$array, $remove)
  */
 function myMongoId($var = null)
 {
-    if ($var instanceof MongoId) {
-        return $var->__toString();
+    if (is_array($var)) {
+        $newArray = array();
+        foreach ($var as $row) {
+            if ($row instanceof MongoId) {
+                $newArray[] = $row->__toString();
+            } else {
+                try {
+                    $newArray[] = new MongoId($row);
+                }
+                catch(Exception $e) {
+                    continue;
+                }
+            }
+        }
+        return $newArray;
     } else {
-        $var = ! empty($var) && strlen($var) == 24 ? $var : null;
-        return new MongoId($var);
+        if ($var instanceof MongoId) {
+            return $var->__toString();
+        } else {
+            $var = ! empty($var) && strlen($var) == 24 ? $var : null;
+            return new MongoId($var);
+        }
     }
 }
 

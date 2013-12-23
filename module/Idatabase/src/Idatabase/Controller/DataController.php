@@ -33,6 +33,8 @@ class DataController extends BaseActionController
 
     private $_schema;
 
+    private $_fields = array();
+
     private $_order;
 
     private $_mapping;
@@ -55,19 +57,16 @@ class DataController extends BaseActionController
     {
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
-        if (empty($this->_project_id)) {
+        if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
-        }
         
-        // 处理集合数据开始
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
-        if (empty($this->_collection_id)) {
+        if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
-        }
+        
         $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
-        // 处理集合数据结束
         
         $this->_data = $this->model($this->_collection_name);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
@@ -90,6 +89,9 @@ class DataController extends BaseActionController
         $sort = array();
         
         $action = $this->params()->fromQuery('action', null);
+        $start = intval($this->params()->fromQuery('start', 0));
+        $limit = intval($this->params()->fromQuery('limit', 10));
+        $idbComboboxSelectedValue = trim($this->params()->fromQuery('idbComboboxSelectedValue', ''));
         
         if ($action == 'search' || $action == 'excel') {
             $query = $this->searchCondition();
@@ -99,18 +101,49 @@ class DataController extends BaseActionController
             $sort = $this->defaultOrder();
         }
         
-        $cursor = $this->_data->find($query);
+        $cursor = $this->_data->find($query, $this->_fields);
         $cursor->sort($sort);
-        $rst = iterator_to_array($cursor, false);
+        if ($action !== 'excel') {
+            $cursor->skip($start)->limit($limit);
+        }
+        
+        $total = $cursor->count();
+        $datas = iterator_to_array($cursor, false);
+        
+        if (!empty($idbComboboxSelectedValue)) {
+            $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
+            if (! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
+                $rshCollectionValueField = $this->_schema['this']['rshCollectionValueField'];
+                $cursor = $this->_data->find(array(
+                     $rshCollectionValueField=> array(
+                        '$in' => myMongoId($comboboxSelectedLists)
+                    )
+                ), $this->_fields);
+                $extraDatas = iterator_to_array($cursor, false);
+                $datas = array_merge($datas, $extraDatas);
+                $uniqueArray = array();
+                array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
+                {
+                    if (! in_array($value['_id'], $uniqueArray)) {
+                        $uniqueArray[] = $value['_id'];
+                    } else {
+                        unset($datas[$key]);
+                    }
+                });
+                $datas = array_values($datas);
+                $total = count($datas);
+            }
+        }
+        
         if ($action == 'excel') {
             $name = 'excel_' . date('YmdHis');
             $excel = array(
                 'title' => $title,
-                'datas' => convertToPureArray($rst)
+                'result' => convertToPureArray($datas)
             );
             arrayToExcel($name, $excel);
         }
-        return $this->rst($rst, $cursor->count(), true);
+        return $this->rst($datas, $total, true);
     }
 
     /**
@@ -384,7 +417,10 @@ class DataController extends BaseActionController
         $schema = array(
             'file' => array(),
             'post' => array(),
-            'all' => array()
+            'all' => array(),
+            'combobox' => array(
+                'rshCollectionValueField' => '_id'
+            )
         );
         
         $cursor = $this->_structure->find(array(
@@ -400,6 +436,13 @@ class DataController extends BaseActionController
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
             $schema[$type][$row['field']] = $row;
             $schema['all'][$row['field']] = $row;
+            $this->_fields[$row['field']] = true;
+            
+            if ($row['rshKey'])
+                $this->_schema['combobox']['rshCollectionKeyField'] = $row['field'];
+            
+            if ($row['rshValue'])
+                $this->_schema['combobox']['rshCollectionValueField'] = $row['field'];
             
             if (isset($row['isFatherField']) && $row['isFatherField']) {
                 $this->_fatherField = $row['field'];
@@ -415,18 +458,15 @@ class DataController extends BaseActionController
                     $rshCollectionKeyField = '';
                     $rshCollectionValueField = '_id';
                     foreach ($rshCollectionStructures as $rshCollectionStructure) {
-                        if ($rshCollectionStructure['rshKey']) {
+                        if ($rshCollectionStructure['rshKey'])
                             $rshCollectionKeyField = $rshCollectionStructure['field'];
-                        }
                         
-                        if ($rshCollectionStructure['rshValue']) {
+                        if ($rshCollectionStructure['rshValue'])
                             $rshCollectionValueField = $rshCollectionStructure['field'];
-                        }
                     }
                     
-                    if (empty($rshCollectionKeyField)) {
+                    if (empty($rshCollectionKeyField))
                         throw new \Exception('关系集合未设定关系键值');
-                    }
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
                         'rshCollectionKeyField' => $rshCollectionValueField,
