@@ -115,7 +115,7 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 				},
 				renderer : function(value) {
 					var store = Ext.data.StoreManager.lookup('idatabase.Structure.Type');
-					var record = store.findRecord('val',value);
+					var record = store.findRecord('val',value,0,false,true,true);
 					if (record != null) {
 						return record.get('name');
 					}
