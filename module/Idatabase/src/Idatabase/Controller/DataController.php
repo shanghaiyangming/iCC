@@ -91,7 +91,7 @@ class DataController extends BaseActionController
         $action = $this->params()->fromQuery('action', null);
         $start = intval($this->params()->fromQuery('start', 0));
         $limit = intval($this->params()->fromQuery('limit', 10));
-        $idbComboboxSelectedValue = trim($this->params()->fromQuery('idbComboboxSelectedValue', ''));
+        
         
         if ($action == 'search' || $action == 'excel') {
             $query = $this->searchCondition();
@@ -107,33 +107,9 @@ class DataController extends BaseActionController
             $cursor->skip($start)->limit($limit);
         }
         
-        $total = $cursor->count();
         $datas = iterator_to_array($cursor, false);
-        
-        if (!empty($idbComboboxSelectedValue)) {
-            $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
-            if (! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
-                $rshCollectionValueField = $this->_schema['this']['rshCollectionValueField'];
-                $cursor = $this->_data->find(array(
-                     $rshCollectionValueField=> array(
-                        '$in' => myMongoId($comboboxSelectedLists)
-                    )
-                ), $this->_fields);
-                $extraDatas = iterator_to_array($cursor, false);
-                $datas = array_merge($datas, $extraDatas);
-                $uniqueArray = array();
-                array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
-                {
-                    if (! in_array($value['_id'], $uniqueArray)) {
-                        $uniqueArray[] = $value['_id'];
-                    } else {
-                        unset($datas[$key]);
-                    }
-                });
-                $datas = array_values($datas);
-                $total = count($datas);
-            }
-        }
+        $datas = $this->comboboxSelectedValues($datas);
+        $total = count($datas);
         
         if ($action == 'excel') {
             $name = 'excel_' . date('YmdHis');
@@ -144,6 +120,39 @@ class DataController extends BaseActionController
             arrayToExcel($name, $excel);
         }
         return $this->rst($datas, $total, true);
+    }
+    
+    /**
+     * 处理combobox产生的追加数据
+     * @param array $datas
+     * @return array
+     */
+    private function comboboxSelectedValues($datas) {
+        $idbComboboxSelectedValue = trim($this->params()->fromQuery('idbComboboxSelectedValue', ''));
+        if (! empty($idbComboboxSelectedValue)) {
+        	$comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
+        	if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
+        		$rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+        		$cursor = $this->_data->find(array(
+        				$rshCollectionValueField => array(
+        						'$in' => myMongoId($comboboxSelectedLists)
+        				)
+        		), $this->_fields);
+        		$extraDatas = iterator_to_array($cursor, false);
+        		$datas = array_merge($datas, $extraDatas);
+        		$uniqueArray = array();
+        		array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
+        		{
+        			if (! in_array($value['_id'], $uniqueArray)) {
+        				$uniqueArray[] = $value['_id'];
+        			} else {
+        				unset($datas[$key]);
+        			}
+        		});
+        		$datas = array_values($datas);
+        	}
+        }
+        return $datas;
     }
 
     /**
