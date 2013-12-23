@@ -676,7 +676,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 									name : record.get('field')+'[lat]',
 									fieldLabel : '维度'
 								},{
-									name : 'near__'+record.get('field'),
+									name : record.get('field')+'[distance]',
 									fieldLabel : '附近范围(km)'
 								}]
 							};

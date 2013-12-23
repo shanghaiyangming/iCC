@@ -59,14 +59,16 @@ class DataController extends BaseActionController
             throw new \Exception('$this->_project_id值未设定');
         }
         
+        // 处理集合数据开始
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        
         $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
         if (empty($this->_collection_id)) {
             throw new \Exception('$this->_collection_id值未设定');
         }
         $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
+        // 处理集合数据结束
+        
         $this->_data = $this->model($this->_collection_name);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
         
@@ -86,6 +88,7 @@ class DataController extends BaseActionController
     {
         $rst = array();
         $query = array();
+        $sort = array();
         
         $action = $this->params()->fromQuery('action', null);
         
@@ -96,11 +99,12 @@ class DataController extends BaseActionController
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
-        
+
         $cursor = $this->_data->find($query);
         $cursor->sort($sort);
         $rst = iterator_to_array($cursor, false);
         return $this->rst($rst, $cursor->count(), true);
+
     }
 
     /**
@@ -461,29 +465,46 @@ class DataController extends BaseActionController
     private function searchCondition()
     {
         $query = array();
+        
+        // 扩展两个系统默认参数加入查询条件
+        $this->_schema['post'] = array_merge($this->_schema['post'], array(
+            '__CREATE_TIME__' => array(
+                'type' => 'datefield'
+            ),
+            '__MODIFY_TIME__' => array(
+                'type' => 'datefield'
+            )
+        ));
+        
         foreach ($this->_schema['post'] as $field => $detail) {
             $subQuery = array();
             $not = false;
             $exact = false;
             
-            if (isset($_REQUEST['exclusive__' . $field])) {
+            if (isset($_REQUEST['exclusive__' . $field]) && $_REQUEST['exclusive__' . $field]) {
                 $not = true;
             }
             
-            if (isset($_REQUEST['exactMatch__' . $field])) {
+            if (isset($_REQUEST['exactMatch__' . $field]) && $_REQUEST['exactMatch__' . $field]) {
                 $exact = true;
             }
             
             if (isset($_REQUEST[$field])) {
+                if (is_array($_REQUEST[$field]) && trim(join('', $_REQUEST[$field])) == '')
+                    continue;
+                
+                if (! is_array($_REQUEST[$field]) && trim($_REQUEST[$field]) == '')
+                    continue;
+                
                 switch ($detail['type']) {
                     case 'numberfiled':
                         $min = trim($_REQUEST[$field]['min']);
                         $max = trim($_REQUEST[$field]['max']);
                         $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
                         $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
-                        if (empty($min))
+                        if (!empty($min))
                             $subQuery[$field]['$gte'] = $min;
-                        if (empty($max))
+                        if (!empty($max))
                             $subQuery[$field]['$lte'] = $max;
                         break;
                     case 'datefield':
@@ -491,21 +512,21 @@ class DataController extends BaseActionController
                         $end = trim($_REQUEST[$field]['end']);
                         $start = preg_match("/^[0-9]+$/", $start) ? new \MongoDate(intval($start)) : new \MongoDate(strtotime($start));
                         $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
-                        if (empty($start))
+                        if (!empty($start))
                             $subQuery[$field]['$gte'] = $start;
-                        if (empty($end))
+                        if (!empty($end))
                             $subQuery[$field]['$lte'] = $end;
                         break;
                     case '2dfield':
                         $lng = floatval(trim($_REQUEST[$field]['lng']));
                         $lat = floatval(trim($_REQUEST[$field]['lat']));
-                        $limit = ! empty($_REQUEST[$field]['limit']) ? floatval($_REQUEST[$field]['limit']) : 10;
+                        $distance = ! empty($_REQUEST[$field]['distance']) ? floatval($_REQUEST[$field]['distance']) : 10;
                         $subQuery = array(
                             '$near' => array(
                                 $lng,
                                 $lat
                             ),
-                            '$maxDistance' => $limit / 111.12
+                            '$maxDistance' => $distance / 111.12
                         );
                         break;
                     default:
@@ -520,10 +541,21 @@ class DataController extends BaseActionController
         }
         
         if (empty($query['$and'])) {
-            return $query;
+            return array();
         }
         
         return $query;
+    }
+
+    /**
+     * 根据条件创建排序条件
+     *
+     * @return array
+     */
+    private function sortCondition()
+    {
+        $sort = $this->defaultOrder();
+        return $sort;
     }
 
     /**
