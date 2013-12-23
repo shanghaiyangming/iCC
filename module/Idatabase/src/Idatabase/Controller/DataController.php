@@ -112,6 +112,9 @@ class DataController extends BaseActionController
         $total = count($datas);
         
         if ($action == 'excel') {
+            //在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
+            
+            //结束
             $name = 'excel_' . date('YmdHis');
             $excel = array(
                 'title' => $title,
