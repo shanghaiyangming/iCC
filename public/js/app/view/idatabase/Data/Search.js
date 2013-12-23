@@ -29,7 +29,9 @@ Ext.define('icc.view.idatabase.Data.Search', {
 				fieldLabel : '非',
 				name : 'exclusive__' + '__CREATE_TIME__',
 				xtype : 'checkboxfield',
-				width : 30
+				width : 30,
+				inputValue: true,
+                checked   : false
 			},{
 				fieldLabel : '开始时间',
 				name : '__CREATE_TIME__[start]'
@@ -51,7 +53,9 @@ Ext.define('icc.view.idatabase.Data.Search', {
 				fieldLabel : '非',
 				name : 'exclusive__' + '__MODIFY_TIME__',
 				xtype : 'checkboxfield',
-				width : 30
+				width : 30,
+				inputValue: true,
+                checked   : false
 			}, {
 				fieldLabel : '开始时间',
 				name : '__MODIFY_TIME__[start]'

@@ -561,7 +561,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 							fieldLabel : '非',
 							name : 'exclusive__' + record.get('field'),
 							xtype : 'checkboxfield',
-							width : 30
+							width : 30,
+							inputValue: true,
+			                checked   : false
 						};
 						
 						//开启精确匹配

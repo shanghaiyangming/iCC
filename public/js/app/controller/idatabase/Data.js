@@ -150,7 +150,6 @@ Ext.define('icc.controller.idatabase.Data', {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var store = grid.store;
 				var records = grid.store.getUpdatedRecords();
-				console.info(records,records.length);
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
@@ -226,8 +225,12 @@ Ext.define('icc.controller.idatabase.Data', {
 				if (form.isValid()) {
 					var extraParams = form.getValues();
 					var store = me.activeDataGrid().store;
-					store.proxy['extraParams']['action'] = 'search';
-					store.proxy['extraParams'] = Ext.Object.merge(store.proxy['extraParams'],extraParams);
+					form.getFields().each(function(items,index){
+						if(items.xtype!='hiddenfield')
+							delete store.proxy.extraParams[items.name];
+					});
+					store.proxy.extraParams.action = 'search';
+					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams,extraParams);
 					store.load();
 				}
 			}

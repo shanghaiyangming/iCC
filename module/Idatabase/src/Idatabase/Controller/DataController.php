@@ -99,12 +99,11 @@ class DataController extends BaseActionController
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
-
+        
         $cursor = $this->_data->find($query);
         $cursor->sort($sort);
         $rst = iterator_to_array($cursor, false);
         return $this->rst($rst, $cursor->count(), true);
-
     }
 
     /**
@@ -481,13 +480,14 @@ class DataController extends BaseActionController
             $not = false;
             $exact = false;
             
-            if (isset($_REQUEST['exclusive__' . $field]) && $_REQUEST['exclusive__' . $field]) {
+            if (isset($_REQUEST['exclusive__' . $field]) && filter_var($_REQUEST['exclusive__' . $field], FILTER_VALIDATE_BOOLEAN))
                 $not = true;
-            }
             
-            if (isset($_REQUEST['exactMatch__' . $field]) && $_REQUEST['exactMatch__' . $field]) {
+            if (isset($_REQUEST['exactMatch__' . $field]) && filter_var($_REQUEST['exactMatch__' . $field], FILTER_VALIDATE_BOOLEAN))
                 $exact = true;
-            }
+            
+            if (! empty($detail['rshCollection']))
+                $exact = true;
             
             if (isset($_REQUEST[$field])) {
                 if (is_array($_REQUEST[$field]) && trim(join('', $_REQUEST[$field])) == '')
@@ -502,20 +502,34 @@ class DataController extends BaseActionController
                         $max = trim($_REQUEST[$field]['max']);
                         $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
                         $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
-                        if (!empty($min))
-                            $subQuery[$field]['$gte'] = $min;
-                        if (!empty($max))
-                            $subQuery[$field]['$lte'] = $max;
+                        if ($not) {
+                            if (! empty($min))
+                                $subQuery[$field]['$lte'] = $min;
+                            if (! empty($max))
+                                $subQuery[$field]['$gte'] = $max;
+                        } else {
+                            if (! empty($min))
+                                $subQuery[$field]['$gte'] = $min;
+                            if (! empty($max))
+                                $subQuery[$field]['$lte'] = $max;
+                        }
                         break;
                     case 'datefield':
                         $start = trim($_REQUEST[$field]['start']);
                         $end = trim($_REQUEST[$field]['end']);
                         $start = preg_match("/^[0-9]+$/", $start) ? new \MongoDate(intval($start)) : new \MongoDate(strtotime($start));
                         $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
-                        if (!empty($start))
-                            $subQuery[$field]['$gte'] = $start;
-                        if (!empty($end))
-                            $subQuery[$field]['$lte'] = $end;
+                        if ($not) {
+                            if (! empty($start))
+                                $subQuery[$field]['$lte'] = $start;
+                            if (! empty($end))
+                                $subQuery[$field]['$gte'] = $end;
+                        } else {
+                            if (! empty($start))
+                                $subQuery[$field]['$gte'] = $start;
+                            if (! empty($end))
+                                $subQuery[$field]['$lte'] = $end;
+                        }
                         break;
                     case '2dfield':
                         $lng = floatval(trim($_REQUEST[$field]['lng']));
@@ -530,12 +544,12 @@ class DataController extends BaseActionController
                         );
                         break;
                     default:
-                        $subQuery[$field] = $exact ? trim($_REQUEST[$field]) : myMongoRegex($_REQUEST[$field]);
+                        if ($not)
+                            $subQuery[$field]['$ne'] = trim($_REQUEST[$field]);
+                        else
+                            $subQuery[$field] = $exact ? trim($_REQUEST[$field]) : myMongoRegex($_REQUEST[$field]);
                         break;
                 }
-                $subQuery = $not ? array(
-                    '$not' => $subQuery
-                ) : $subQuery;
                 $query['$and'][] = $subQuery;
             }
         }
