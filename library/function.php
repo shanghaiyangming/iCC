@@ -114,8 +114,8 @@ function arrayToExcel($name, $datas)
     $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
     PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
     $objPHPExcel = new PHPExcel();
-    $objPHPExcel->getProperties()->setCreator('Automation');
-    $objPHPExcel->getProperties()->setLastModifiedBy('Automation');
+    $objPHPExcel->getProperties()->setCreator('icc');
+    $objPHPExcel->getProperties()->setLastModifiedBy('icc');
     $objPHPExcel->getProperties()->setTitle($name);
     $objPHPExcel->getProperties()->setSubject($name);
     $objPHPExcel->getProperties()->setDescription($name);
@@ -177,7 +177,7 @@ function arrayToExcel($name, $datas)
         }
         $i ++;
     }
-    $objPHPExcel->getActiveSheet()->setTitle($name);
+    $objPHPExcel->getActiveSheet()->setTitle('Sheet1');
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="' . $name . '.xlsx"');
     header('Cache-Control: max-age=0');
@@ -260,7 +260,7 @@ function callSoap($wsdl, $options)
         $client = new SoapClient($wsdl, $options);
         return $client;
     } catch (Exception $e) {
-        logError(exceptionMsg($e));
+        var_dump(exceptionMsg($e));
         return false;
     }
 }
@@ -449,7 +449,7 @@ function doGet($url, $params = array())
         $response = $client->request('GET');
         return $response->getBody();
     } catch (Exception $e) {
-        logError(exceptionMsg($e));
+        var_dump(exceptionMsg($e));
         return $msg;
     }
 }
@@ -480,7 +480,7 @@ function doPost($url, $params = array())
         $response = $client->request('POST');
         return $response->getBody();
     } catch (Exception $e) {
-        logError(exceptionMsg($e));
+        var_dump(exceptionMsg($e));
         return $msg;
     }
 }
@@ -525,7 +525,7 @@ function doRequest($url, $get = array(), $post = array())
             throw new Exception('error status is ' . $response->getStatus());
         }
     } catch (Exception $e) {
-        logError(exceptionMsg($e));
+        var_dump(exceptionMsg($e));
         return false;
     }
 }
@@ -571,7 +571,7 @@ function addrToGeo($address, $city = '')
         $rst = json_decode($body, true);
         return $rst;
     } catch (Exception $e) {
-        logError(exceptionMsg($e));
+        var_dump(exceptionMsg($e));
         return array();
     }
 }
@@ -819,7 +819,7 @@ function myMongoId($var = null)
 
 /**
  * 将文本转化为MongoRegex查询对象
- * 
+ *
  * @param string $text            
  * @return \MongoRegex
  */

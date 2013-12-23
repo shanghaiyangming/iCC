@@ -103,7 +103,12 @@ class DataController extends BaseActionController
         $cursor->sort($sort);
         $rst = iterator_to_array($cursor, false);
         if ($action == 'excel') {
-            arrayToExcel($name, convertToPureArray($rst));
+            $name = 'excel_' . date('YmdHis');
+            $excel = array(
+                'title' => $title,
+                'datas' => convertToPureArray($rst)
+            );
+            arrayToExcel($name, $excel);
         }
         return $this->rst($rst, $cursor->count(), true);
     }
