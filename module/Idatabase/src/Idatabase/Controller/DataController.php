@@ -522,9 +522,9 @@ class DataController extends BaseActionController
                         $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
                         if ($not) {
                             if (! empty($min))
-                                $subQuery[$field]['$lte'] = $min;
+                                $subQuery['$or'][$field]['$lte'] = $min;
                             if (! empty($max))
-                                $subQuery[$field]['$gte'] = $max;
+                                $subQuery['$or'][$field]['$gte'] = $max;
                         } else {
                             if (! empty($min))
                                 $subQuery[$field]['$gte'] = $min;
@@ -539,9 +539,9 @@ class DataController extends BaseActionController
                         $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
                         if ($not) {
                             if (! empty($start))
-                                $subQuery[$field]['$lte'] = $start;
+                                $subQuery['$or'][$field]['$lte'] = $start;
                             if (! empty($end))
-                                $subQuery[$field]['$gte'] = $end;
+                                $subQuery['$or'][$field]['$gte'] = $end;
                         } else {
                             if (! empty($start))
                                 $subQuery[$field]['$gte'] = $start;
