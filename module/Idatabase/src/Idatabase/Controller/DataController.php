@@ -65,7 +65,7 @@ class DataController extends BaseActionController
         if (empty($this->_collection_id)) {
             throw new \Exception('$this->_collection_id值未设定');
         }
-        
+        $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         $this->_data = $this->model($this->_collection_name);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
@@ -89,7 +89,9 @@ class DataController extends BaseActionController
         
         $action = $this->params()->fromQuery('action', null);
         
-        if ($action == 'search') {}
+        if ($action == 'search') {
+            $query = $this->searchCondition();
+        }
         
         if (empty($sort)) {
             $sort = $this->defaultOrder();
@@ -451,6 +453,77 @@ class DataController extends BaseActionController
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
         $validData = array_merge($validPostData, $validFileData);
         return $validData;
+    }
+
+    /**
+     * 处理检索条件
+     */
+    private function searchCondition()
+    {
+        $query = array();
+        foreach ($this->_schema['post'] as $field => $detail) {
+            $subQuery = array();
+            $not = false;
+            $exact = false;
+            
+            if (isset($_REQUEST['exclusive__' . $field])) {
+                $not = true;
+            }
+            
+            if (isset($_REQUEST['exactMatch__' . $field])) {
+                $exact = true;
+            }
+            
+            if (isset($_REQUEST[$field])) {
+                switch ($detail['type']) {
+                    case 'numberfiled':
+                        $min = trim($_REQUEST[$field]['min']);
+                        $max = trim($_REQUEST[$field]['max']);
+                        $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
+                        $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
+                        if (empty($min))
+                            $subQuery[$field]['$gte'] = $min;
+                        if (empty($max))
+                            $subQuery[$field]['$lte'] = $max;
+                        break;
+                    case 'datefield':
+                        $start = trim($_REQUEST[$field]['start']);
+                        $end = trim($_REQUEST[$field]['end']);
+                        $start = preg_match("/^[0-9]+$/", $start) ? new \MongoDate(intval($start)) : new \MongoDate(strtotime($start));
+                        $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
+                        if (empty($start))
+                            $subQuery[$field]['$gte'] = $start;
+                        if (empty($end))
+                            $subQuery[$field]['$lte'] = $end;
+                        break;
+                    case '2dfield':
+                        $lng = floatval(trim($_REQUEST[$field]['lng']));
+                        $lat = floatval(trim($_REQUEST[$field]['lat']));
+                        $limit = ! empty($_REQUEST[$field]['limit']) ? floatval($_REQUEST[$field]['limit']) : 10;
+                        $subQuery = array(
+                            '$near' => array(
+                                $lng,
+                                $lat
+                            ),
+                            '$maxDistance' => $limit / 111.12
+                        );
+                        break;
+                    default:
+                        $subQuery[$field] = $exact ? trim($_REQUEST[$field]) : myMongoRegex($_REQUEST[$field]);
+                        break;
+                }
+                $subQuery = $not ? array(
+                    '$not' => $subQuery
+                ) : $subQuery;
+                $query['$and'][] = $subQuery;
+            }
+        }
+        
+        if (empty($query['$and'])) {
+            return $query;
+        }
+        
+        return $query;
     }
 
     /**

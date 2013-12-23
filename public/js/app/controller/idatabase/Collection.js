@@ -379,7 +379,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 					
 					var rshCollection = record.get('rshCollection');
-					if(rshCollection != '' && rshCollection.length == 24) {
+					if(rshCollection != '') {
 						var rshCollectionModel = 'rshCollectionModel'+rshCollection;
 						var convert = function(value) {
 							if(Ext.isObject(value)) {
@@ -525,7 +525,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 						
 						// 存在关联集合数据，则直接采用combobox的方式进行显示
-						if(rshCollection != '' && rshCollection.length == 24) {
+						if(rshCollection != '') {
 							column.field = {
 								xtype : 'combobox',
 								typeAhead : true,
@@ -652,10 +652,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 								},
 								items : [exclusive, {
 									fieldLabel : '最小值(>=)',
-									name : record.get('field')+'[start]'
+									name : record.get('field')+'[min]'
 								}, {
 									fieldLabel : '最大值(<=)',
-									name : record.get('field')+'[end]'
+									name : record.get('field')+'[max]'
 								} ]
 							};
 						}

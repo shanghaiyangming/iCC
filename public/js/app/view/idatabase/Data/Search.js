@@ -68,7 +68,7 @@ Ext.define('icc.view.idatabase.Data.Search', {
 				items : this.searchFields,
 				buttons : [ {
 					text : '搜索',
-					action : 'submit'
+					action : 'search'
 				},{
 					text : '统计',
 					action : 'static'
