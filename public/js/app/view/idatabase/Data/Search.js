@@ -78,7 +78,7 @@ Ext.define('icc.view.idatabase.Data.Search', {
 					action : 'static'
 				}, {
 					text : '导出',
-					action : 'submit'
+					action : 'excel'
 				}]
 			} ]
 		});

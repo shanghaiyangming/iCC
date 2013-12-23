@@ -223,13 +223,30 @@ Ext.define('icc.controller.idatabase.Data', {
 			click : function(button) {
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
-					var extraParams = form.getValues();
+					var extraParams = form.getValues(false,true);
 					var store = me.activeDataGrid().store;
 					form.getFields().each(function(items,index){
 						if(items.xtype!='hiddenfield')
 							delete store.proxy.extraParams[items.name];
 					});
 					store.proxy.extraParams.action = 'search';
+					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams,extraParams);
+					store.load();
+				}
+			}
+		}
+		
+		listeners['idatabaseDataSearch button[action=excel]'] = {
+			click : function(button) {
+				var form = button.up('form').getForm();
+				if (form.isValid()) {
+					var extraParams = form.getValues(false,true);
+					var store = me.activeDataGrid().store;
+					form.getFields().each(function(items,index){
+						if(items.xtype!='hiddenfield')
+							delete store.proxy.extraParams[items.name];
+					});
+					store.proxy.extraParams.action = 'excel';
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams,extraParams);
 					store.load();
 				}

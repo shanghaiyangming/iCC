@@ -77,12 +77,11 @@ class DataController extends BaseActionController
     }
 
     /**
-     * 读取指定项目内的全部集合列表
-     * 支持专家模式和普通模式显示，对于一些说明表和关系表，请在定义时，定义为普通模式
+     * 读取集合内的全部数据
      *
      * @author young
-     * @name 读取指定项目内的全部集合列表
-     * @version 2013.11.19 young
+     * @name 读取集合内的全部数据
+     * @version 2013.12.23 young
      */
     public function indexAction()
     {
@@ -92,7 +91,7 @@ class DataController extends BaseActionController
         
         $action = $this->params()->fromQuery('action', null);
         
-        if ($action == 'search') {
+        if ($action == 'search' || $action == 'excel') {
             $query = $this->searchCondition();
         }
         
@@ -103,7 +102,26 @@ class DataController extends BaseActionController
         $cursor = $this->_data->find($query);
         $cursor->sort($sort);
         $rst = iterator_to_array($cursor, false);
+        if ($action == 'excel') {
+            arrayToExcel($name, convertToPureArray($rst));
+        }
         return $this->rst($rst, $cursor->count(), true);
+    }
+
+    /**
+     * 导出excel表格
+     *
+     * @author young
+     * @name 导出excel表格
+     * @version 2013.11.19 young
+     */
+    public function excelAction()
+    {
+        $forwardPlugin = $this->forward();
+        $returnValue = $forwardPlugin->dispatch('idatabase/data/index', array(
+            'action' => 'excel'
+        ));
+        return $returnValue;
     }
 
     /**

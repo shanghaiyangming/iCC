@@ -25,6 +25,7 @@ Ext.define('icc.view.idatabase.Index.Add', {
 					allowBlank : false,
 					value : this.collection_id
 				}, {
+					xtype : 'textareafield',
 					name : 'keys',
 					fieldLabel : '索引条件',
 					allowBlank : false
