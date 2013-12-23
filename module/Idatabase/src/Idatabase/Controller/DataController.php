@@ -23,6 +23,8 @@ class DataController extends BaseActionController
 
     private $_structure;
 
+    private $_collection;
+
     private $_project_id;
 
     private $_collection_id;
@@ -57,6 +59,8 @@ class DataController extends BaseActionController
             throw new \Exception('$this->_project_id值未设定');
         }
         
+        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        
         $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
         if (empty($this->_collection_id)) {
             throw new \Exception('$this->_collection_id值未设定');
@@ -85,9 +89,7 @@ class DataController extends BaseActionController
         
         $action = $this->params()->fromQuery('action', null);
         
-        if ($action == 'search') {
-        	
-        }
+        if ($action == 'search') {}
         
         if (empty($sort)) {
             $sort = $this->defaultOrder();
@@ -376,6 +378,8 @@ class DataController extends BaseActionController
             }
             
             if (! empty($row['rshCollection'])) {
+                $row['rshCollection'] = $this->getCollectionIdByName($row['rshCollection']);
+                
                 $rshCollectionStructures = $this->_structure->findAll(array(
                     'collection_id' => $row['rshCollection']
                 ));
@@ -474,5 +478,30 @@ class DataController extends BaseActionController
             $order['_id'] = - 1;
         }
         return $order;
+    }
+
+    /**
+     * 根据集合的名称获取集合的_id
+     *
+     * @param string $name            
+     * @throws \Exception or string
+     */
+    private function getCollectionIdByName($name)
+    {
+        try {
+            new \MongoId($name);
+            return $name;
+        } catch (\MongoException $ex) {}
+        
+        $collectionInfo = $this->_collection->findOne(array(
+            'project_id' => $this->_project_id,
+            'name' => $name
+        ));
+        
+        if ($collectionInfo == null) {
+            throw new \Exception('集合名称不存在于指定项目');
+        }
+        
+        return $collectionInfo['_id']->__toString();
     }
 }

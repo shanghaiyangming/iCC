@@ -33,8 +33,7 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 				}, {
 					name : 'field',
 					fieldLabel : '属性名(英文数字)',
-					allowBlank : false,
-					vtype : 'alphanum'
+					allowBlank : false
 				}, {
 					name : 'label',
 					fieldLabel : '属性描述',

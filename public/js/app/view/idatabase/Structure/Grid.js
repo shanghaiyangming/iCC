@@ -90,8 +90,7 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 				field : {
 					xtype : 'textfield',
 					vtype : 'mongoField',
-					allowBlank : false,
-					vtype : 'alphanum'
+					allowBlank : false
 				}
 			},{
 				text : '描述',
@@ -202,10 +201,10 @@ Ext.define('icc.view.idatabase.Structure.Grid',{
 					xtype : 'combobox',
 					store : collectionStore,
 					displayField : 'name',
-					valueField : '_id'
+					valueField : 'alias'
 				},
 				renderer : function(value) {
-					var record = collectionStore.findRecord('_id',value);
+					var record = collectionStore.findRecord('alias',value);
 					if (record != null) {
 						return record.get('name');
 					}

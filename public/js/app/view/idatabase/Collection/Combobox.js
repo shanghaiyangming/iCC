@@ -3,7 +3,7 @@ Ext.define('icc.view.idatabase.Collection.Combobox', {
 	alias : 'widget.idatabaseCollectionCombobox',
 	fieldLabel : '集合列表',
 	store : 'idatabase.Collection',
-	valueField : '_id',
+	valueField : 'alias',
 	displayField : 'name',
 	queryMode : 'remote',
 	pageSize : 20,
