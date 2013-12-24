@@ -18,37 +18,84 @@ use Zend\Json\Json;
 
 class DataController extends BaseActionController
 {
-
+    /**
+     * 读取当前数据集合的mongocollection实例
+     * @var object
+     */
     private $_data;
 
+    /**
+     * 读取数据属性结构的mongocollection实例
+     * @var object
+     */
     private $_structure;
 
+    /**
+     * 读取集合列表集合的mongocollection实例
+     * @var object
+     */
     private $_collection;
 
-    private $_project_id;
+    /**
+     * 当前集合所属项目
+     * @var string
+     */
+    private $_project_id = '';
 
-    private $_collection_id;
+    /**
+     * 当前集合所属集合 集合的alias别名或者_id的__toString()结果
+     * @var string
+     */
+    private $_collection_id = '';
 
-    private $_collection_name;
+    /**
+     * 存储数据的物理集合名称
+     * @var string
+     */
+    private $_collection_name = '';
 
-    private $_schema;
+    /**
+     * 存储当前集合的结局结构信息
+     * @var array
+     */
+    private $_schema = null;
 
+    /**
+     * 存储查询显示字段列表
+     * @var array
+     */
     private $_fields = array(
         '_id' => true,
         '__CREATE_TIME__' => true,
         '__MODIFY_TIME__' => true
     );
 
+    /**
+     * 存储字段与字段名称的数组
+     * @var array
+     */
     private $_title = array(
         '_id' => '系统编号',
         '__CREATE_TIME__' => '创建时间',
         '__MODIFY_TIME__' => '更新时间'
     );
 
+    /**
+     * 排序的mongocollection实例
+     * @var string
+     */
     private $_order;
 
+    /**
+     * 数据集合映射物理集合
+     * @var object
+     */
     private $_mapping;
 
+    /**
+     * 当集合为树状集合时，存储父节点数据的集合名称
+     * @var string
+     */
     private $_fatherField = '';
 
     /**
@@ -125,8 +172,6 @@ class DataController extends BaseActionController
             
             // 结束
             convertToPureArray($datas);
-            $name = 'excel_' . date('YmdHis');
-            
             array_walk($datas, function (&$value, $key)
             {
                 $value = ksort($value);
@@ -136,7 +181,7 @@ class DataController extends BaseActionController
                 'title' => array_values($this->_title),
                 'result' => $datas
             );
-            arrayToExcel($name, $excel);
+            arrayToExcel($excel);
         }
         return $this->rst($datas, $total, true);
     }

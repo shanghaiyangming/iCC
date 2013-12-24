@@ -57,12 +57,15 @@ function isValidMobile($mobile)
 /**
  * 将数组数据导出为csv文件
  *
- * @param string $name            
- * @param array $datas            
+ * @param array $datas  
+ * @param string $name                  
  */
-function arrayToCVS($name, $datas)
+function arrayToCVS($datas,$name='')
 {
     resetTimeMemLimit();
+    if (empty($name)) {
+    	$name = 'export_' . date("Y_m_d_H_i_s");
+    }
     $result = array_merge(array(
         $datas['title']
     ), $datas['result']);
@@ -98,9 +101,9 @@ function excelTitle($i)
 
 /**
  * 导出excel表格
- *
- * @param $name excel表格的名称，不包含.xlsx            
+ *     
  * @param $datas 二维数据
+ * @param $name excel表格的名称，不包含.xlsx    
  *            填充表格的数据
  * @example $datas['title'] = array('col1','col2','col3','col4');
  *          $datas['result'] = array(array('v11','v12','v13','v14')

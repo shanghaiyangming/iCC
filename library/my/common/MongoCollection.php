@@ -92,7 +92,7 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$collection is null');
         }
         
-        GlobalEventManager::trigger('logError', null, array());
+        GlobalEventManager::trigger(EVENT_LOG_ERROR, null, array('error'));
         
         $this->_collection = $collection;
         $this->_database = $database;

@@ -6,6 +6,8 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\GlobalEventManager;
 use Monolog\Logger;
+use Zend\EventManager\Event;
+use Zend\Json\Encoder;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -29,11 +31,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     public function onBootstrap(MvcEvent $e)
     {
         $serviceLocator = $e->getApplication()->getServiceManager();
-        GlobalEventManager::attach('logError', function ($message) use($serviceLocator)
+        GlobalEventManager::attach(EVENT_LOG_ERROR, function (Event $event) use($serviceLocator)
         {
-            $logger = $serviceLocator->get('LogMongodbService');
-            var_dump($message);
-            $logger->addRecord(Logger::ERROR, $message, array());
+            $message = Encoder::encode($event->getParams());
+            $serviceLocator->get('LogMongodbService')->addRecord(Logger::ERROR, $message, array());
             return true;
         });
     }
