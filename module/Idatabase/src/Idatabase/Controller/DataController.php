@@ -130,7 +130,7 @@ class DataController extends BaseActionController
 
     /**
      * 处理combobox产生的追加数据
-     * 
+     *
      * @param array $datas            
      * @return array
      */
@@ -143,7 +143,7 @@ class DataController extends BaseActionController
                 $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
                 $cursor = $this->_data->find(array(
                     $rshCollectionValueField => array(
-                        '$in' => myMongoId($comboboxSelectedLists)
+                        '$in' => $rshCollectionValueField == '_id' ? myMongoId($comboboxSelectedLists) : $comboboxSelectedLists
                     )
                 ), $this->_fields);
                 $extraDatas = iterator_to_array($cursor, false);
