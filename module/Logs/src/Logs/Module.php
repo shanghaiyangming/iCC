@@ -37,5 +37,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
             $serviceLocator->get('LogMongodbService')->addRecord(Logger::ERROR, $message, array());
             return true;
         });
+        
+        GlobalEventManager::attach(EVENT_LOG_DEBUG, function (Event $event) use($serviceLocator)
+        {
+        	$message = Encoder::encode($event->getParams());
+        	$serviceLocator->get('LogMongodbService')->addRecord(Logger::DEBUG, $message, array());
+        	return true;
+        });
     }
 }

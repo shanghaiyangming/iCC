@@ -27,3 +27,7 @@ defined('IDATABASE_COLLECTION_ORDERBY') || define('IDATABASE_COLLECTION_ORDERBY'
  * 自定义事件
  */
 defined('EVENT_LOG_ERROR') || define('EVENT_LOG_ERROR', 'event_log_error');
+defined('EVENT_LOG_DEBUG') || define('EVENT_LOG_DEBUG', 'event_log_debug');
+
+
+

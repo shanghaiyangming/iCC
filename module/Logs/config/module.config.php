@@ -11,9 +11,9 @@ return array(
                     'name' => 'Monolog\Handler\MongoDBHandler',
                     'args' => array(
                         'mongo' => new \MongoClient("mongodb://127.0.0.1:27017"),
-                        'database'=>'logs',
-                        'collection'=>'logs'.date("Ym"),
-                        'level' => \Monolog\Logger::DEBUG,
+                        'database' => 'logs',
+                        'collection' => 'logs' . date("Ym"),
+                        'level' => \Monolog\Logger::ERROR,
                         'bubble' => true
                     )
                 )
