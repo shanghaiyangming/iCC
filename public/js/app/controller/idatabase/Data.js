@@ -219,7 +219,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			}
 		};
 		
-		listeners['idatabaseDataSearch button[action=search],idatabaseDataSearch button[action=excel]'] = {
+		listeners['idatabaseDataSearch button[action=search],button[action=excel]'] = {
 			click : function(button) {
 				var form = button.up('form').getForm();
 				if (form.isValid()) {

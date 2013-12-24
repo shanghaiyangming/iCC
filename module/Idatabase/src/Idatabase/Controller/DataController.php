@@ -33,7 +33,11 @@ class DataController extends BaseActionController
 
     private $_schema;
 
-    private $_fields = array();
+    private $_fields = array(
+        '_id' => true,
+        '__CREATE_TIME__' => true,
+        '__MODIFY_TIME__' => true
+    );
 
     private $_order;
 
@@ -92,7 +96,6 @@ class DataController extends BaseActionController
         $start = intval($this->params()->fromQuery('start', 0));
         $limit = intval($this->params()->fromQuery('limit', 10));
         
-        
         if ($action == 'search' || $action == 'excel') {
             $query = $this->searchCondition();
         }
@@ -112,9 +115,9 @@ class DataController extends BaseActionController
         $total = count($datas);
         
         if ($action == 'excel') {
-            //在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
+            // 在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
             
-            //结束
+            // 结束
             $name = 'excel_' . date('YmdHis');
             $excel = array(
                 'title' => $title,
@@ -124,36 +127,38 @@ class DataController extends BaseActionController
         }
         return $this->rst($datas, $total, true);
     }
-    
+
     /**
      * 处理combobox产生的追加数据
-     * @param array $datas
+     * 
+     * @param array $datas            
      * @return array
      */
-    private function comboboxSelectedValues($datas) {
+    private function comboboxSelectedValues($datas)
+    {
         $idbComboboxSelectedValue = trim($this->params()->fromQuery('idbComboboxSelectedValue', ''));
         if (! empty($idbComboboxSelectedValue)) {
-        	$comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
-        	if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
-        		$rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
-        		$cursor = $this->_data->find(array(
-        				$rshCollectionValueField => array(
-        						'$in' => myMongoId($comboboxSelectedLists)
-        				)
-        		), $this->_fields);
-        		$extraDatas = iterator_to_array($cursor, false);
-        		$datas = array_merge($datas, $extraDatas);
-        		$uniqueArray = array();
-        		array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
-        		{
-        			if (! in_array($value['_id'], $uniqueArray)) {
-        				$uniqueArray[] = $value['_id'];
-        			} else {
-        				unset($datas[$key]);
-        			}
-        		});
-        		$datas = array_values($datas);
-        	}
+            $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
+            if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
+                $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+                $cursor = $this->_data->find(array(
+                    $rshCollectionValueField => array(
+                        '$in' => myMongoId($comboboxSelectedLists)
+                    )
+                ), $this->_fields);
+                $extraDatas = iterator_to_array($cursor, false);
+                $datas = array_merge($datas, $extraDatas);
+                $uniqueArray = array();
+                array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
+                {
+                    if (! in_array($value['_id'], $uniqueArray)) {
+                        $uniqueArray[] = $value['_id'];
+                    } else {
+                        unset($datas[$key]);
+                    }
+                });
+                $datas = array_values($datas);
+            }
         }
         return $datas;
     }
@@ -579,9 +584,9 @@ class DataController extends BaseActionController
                         $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
                         if ($not) {
                             if (! empty($min))
-                                $subQuery['$or'][$field]['$lte'] = $min;
+                                $subQuery['$or'][][$field]['$lte'] = $min;
                             if (! empty($max))
-                                $subQuery['$or'][$field]['$gte'] = $max;
+                                $subQuery['$or'][][$field]['$gte'] = $max;
                         } else {
                             if (! empty($min))
                                 $subQuery[$field]['$gte'] = $min;
@@ -596,9 +601,9 @@ class DataController extends BaseActionController
                         $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
                         if ($not) {
                             if (! empty($start))
-                                $subQuery['$or'][$field]['$lte'] = $start;
+                                $subQuery['$or'][][$field]['$lte'] = $start;
                             if (! empty($end))
-                                $subQuery['$or'][$field]['$gte'] = $end;
+                                $subQuery['$or'][][$field]['$gte'] = $end;
                         } else {
                             if (! empty($start))
                                 $subQuery[$field]['$gte'] = $start;

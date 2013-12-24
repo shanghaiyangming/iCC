@@ -27,7 +27,8 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 		text : '创建时间',
 		dataIndex : '__CREATE_TIME__',
 		flex : 1,
-		format : 'Y-m-d'
+		format : 'Y-m-d',
+		hidden : true
 	} ],
 	initComponent : function() {
 		var me = this;
@@ -57,6 +58,9 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 						xtype : 'menu',
 						plain : true,
 						items : [ {
+							xtype : 'searchBar',
+							store : store
+						}, {
 							xtype : 'button',
 							text : '新增',
 							iconCls : 'add',
@@ -122,9 +126,6 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							action : 'dbimport'
 						} ]
 					}
-				}, '-', {
-					xtype : 'searchBar',
-					store : store
 				} ]
 			} ]
 		});
