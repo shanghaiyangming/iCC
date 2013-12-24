@@ -92,6 +92,8 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$collection is null');
         }
         
+        GlobalEventManager::trigger('logError', null, array());
+        
         $this->_collection = $collection;
         $this->_database = $database;
         $this->_cluster = $cluster;
@@ -329,7 +331,7 @@ class MongoCollection extends \MongoCollection
         if ($limit > 0) {
             $cursor->limit($limit);
         }
-        return iterator_to_array($cursor);
+        return iterator_to_array($cursor,false);
     }
 
     /**

@@ -39,6 +39,12 @@ class DataController extends BaseActionController
         '__MODIFY_TIME__' => true
     );
 
+    private $_title = array(
+        '_id' => '系统编号',
+        '__CREATE_TIME__' => '创建时间',
+        '__MODIFY_TIME__' => '更新时间'
+    );
+
     private $_order;
 
     private $_mapping;
@@ -118,10 +124,17 @@ class DataController extends BaseActionController
             // 在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
             
             // 结束
+            convertToPureArray($datas);
             $name = 'excel_' . date('YmdHis');
+            
+            array_walk($datas, function (&$value, $key)
+            {
+                $value = ksort($value);
+            });
+            
             $excel = array(
-                'title' => $title,
-                'result' => convertToPureArray($datas)
+                'title' => array_values($this->_title),
+                'result' => $datas
             );
             arrayToExcel($name, $excel);
         }
@@ -454,6 +467,7 @@ class DataController extends BaseActionController
             $schema[$type][$row['field']] = $row;
             $schema['all'][$row['field']] = $row;
             $this->_fields[$row['field']] = true;
+            $this->_title[$row['field']] = $row['label'];
             
             if ($row['rshKey'])
                 $this->_schema['combobox']['rshCollectionKeyField'] = $row['field'];
@@ -494,6 +508,8 @@ class DataController extends BaseActionController
                 }
             }
         }
+        
+        ksort($this->_title);
         return $schema;
     }
 
