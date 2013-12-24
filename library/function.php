@@ -1,8 +1,9 @@
 <?php
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Date;
 
 /**
  * ICC函数定义集合文件
- * 
+ *
  * 请将所有项目的自定义函数，放于该函数内
  * 命名规则为驼峰式 例如abcDefGhi()
  */
@@ -107,9 +108,12 @@ function excelTitle($i)
  * @return 直接浏览器输出excel表格 注意这个函数前不能有任何形式的输出
  *        
  */
-function arrayToExcel($name, $datas)
+function arrayToExcel($datas, $name = '')
 {
     resetTimeMemLimit();
+    if (empty($name)) {
+        $name = 'export_' . date("Y_m_d_H_i_s");
+    }
     // 便于处理大的大型excel表格，存储在磁盘缓存中
     $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
     PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
@@ -816,8 +820,7 @@ function myMongoId($var = null)
             } else {
                 try {
                     $newArray[] = new MongoId($row);
-                }
-                catch(Exception $e) {
+                } catch (Exception $e) {
                     continue;
                 }
             }
