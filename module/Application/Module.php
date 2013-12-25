@@ -49,25 +49,6 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
-        // 绑定响应返回json的策略
-        $view = $locator->get('Zend\View\View');
-        $strategy = $locator->get('ViewJsonStrategy');
-        $view->getEventManager()->attach($strategy, 100);
-        
-        // 渲染结束绑定onRenderError事件
-        $events = $e->getTarget()->getEventManager();
-        $events->attach(MvcEvent::EVENT_RENDER, array(
-            $this,
-            'onRenderError'
-        ));
-        
-        // 绑定缓存事件
-//         $cache = $locator->get(CACHE_ADAPTER);
-//         $cacheListenerAggregate = new CacheListenerAggregate($cache);
-//         $cacheListenerAggregate->attach($eventManager);
-//         GlobalEventManager::setEventCollection($eventManager);
-        // 也可以使用\Zend\EventManager\StaticEventManager来实现事件的全局化
-        
         //开启FirePHP调试或者关闭
         \FirePHP::getInstance(true)->setEnabled(true);
     }
