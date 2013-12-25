@@ -163,9 +163,8 @@ class MongoCollection extends \MongoCollection
     {
         $err = $this->_db->lastError();
         //在浏览器中输出错误信息以便发现问题
-        fb($err,\FirePHP::LOG);
         if (self::debug) {
-            var_dump($err);
+            fb($err,\FirePHP::LOG);
         } else {
             if ($err['err'] != null) {
                 GlobalEventManager::trigger('logError', null, array(
