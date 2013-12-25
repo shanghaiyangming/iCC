@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     $vendorDir . '/react/promise/src/React/Promise/functions.php',
+    $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
 );

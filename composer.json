@@ -18,13 +18,13 @@
         "zendframework/zendservice-apple-apns": "dev-master",
         "doctrine/doctrine-mongo-odm-module": "dev-master",
         "cboden/ratchet": "dev-master",
-        "react/promise": ">=2.0.x-dev",
+        "react/promise": "v2.0.0",
         "gregwar/captcha": "dev-master",
         "lusitanian/oauth": "~0.2",
-        "ftdebugger/react-zf2": "dev-master",
         "react/async": "~1.0",
         "react/stream": ">=0.3.0",
-        "react/socket": ">=0.3.0"
+        "react/socket": ">=0.3.0",
+		"firephp/firephp-core": "dev-master"
     },
     "config": {
         "process-timeout": 3600

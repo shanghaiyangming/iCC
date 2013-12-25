@@ -9,25 +9,24 @@ class RejectedPromiseTest extends TestCase
 
     public function getPromiseTestAdapter()
     {
-        $promise = null;
+        $val = null;
+        $promiseCalled = false;
 
         return [
-            'promise' => function () use (&$promise) {
-                if (!$promise) {
-                    $promise = new RejectedPromise();
-                }
+            'promise' => function () use (&$val, &$promiseCalled) {
+                $promiseCalled = true;
 
-                return $promise;
+                return new RejectedPromise($val);
             },
-            'resolve' => function () {
+            'resolve' => function ($value) {
                 throw new \LogicException('You cannot call resolve() for React\Promise\RejectedPromise');
             },
-            'reject' => function ($reason) use (&$promise) {
-                if (!$promise) {
-                    $promise = new RejectedPromise();
+            'reject' => function ($reason) use (&$val, &$promiseCalled) {
+                if ($promiseCalled) {
+                    throw new \LogicException('You must call reject() before promise() for React\Promise\RejectedPromise');
                 }
 
-                $promise = new RejectedPromise($reason);
+                $val = $reason;
             },
             'progress' => function () {
                 throw new \LogicException('You cannot call progress() for React\Promise\RejectedPromise');

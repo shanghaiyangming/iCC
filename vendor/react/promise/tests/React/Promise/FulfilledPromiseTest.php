@@ -9,20 +9,21 @@ class FulfilledPromiseTest extends TestCase
 
     public function getPromiseTestAdapter()
     {
-        $promise = null;
+        $val = null;
+        $promiseCalled = false;
 
         return [
-            'promise' => function () use (&$promise) {
-                if (!$promise) {
-                    $promise = new FulfilledPromise();
+            'promise' => function () use (&$val, &$promiseCalled) {
+                $promiseCalled = true;
+
+                return new FulfilledPromise($val);
+            },
+            'resolve' => function ($value) use (&$val, &$promiseCalled) {
+                if ($promiseCalled) {
+                    throw new \LogicException('You must call resolve() before promise() for React\Promise\FulfilledPromise');
                 }
 
-                return $promise;
-            },
-            'resolve' => function ($value) use (&$promise) {
-                if (!$promise) {
-                    $promise = new FulfilledPromise($value);
-                }
+                $val = $value;
             },
             'reject' => function () {
                 throw new \LogicException('You cannot call reject() for React\Promise\FulfilledPromise');

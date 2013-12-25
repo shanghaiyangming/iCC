@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "93142be6c7a1113aaf7fda1c71b3e16e",
+    "hash": "72266217493ad7db35218054e92cddd9",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cboden/Ratchet.git",
-                "reference": "5d437cd853e60ac478cdbba858fdb8aabf00edc0"
+                "reference": "c2f82efb8536a3d6a94e19a371f928f76ed0f31c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/5d437cd853e60ac478cdbba858fdb8aabf00edc0",
-                "reference": "5d437cd853e60ac478cdbba858fdb8aabf00edc0",
+                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/c2f82efb8536a3d6a94e19a371f928f76ed0f31c",
+                "reference": "c2f82efb8536a3d6a94e19a371f928f76ed0f31c",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "server",
                 "sockets"
             ],
-            "time": "2013-12-01 16:01:32"
+            "time": "2013-12-21 18:04:53"
         },
         {
             "name": "codeplex/phpexcel",
@@ -144,7 +144,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -283,9 +284,10 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -301,7 +303,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -357,7 +359,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -581,7 +584,8 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -597,9 +601,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -776,7 +780,8 @@
                 {
                     "name": "Jonathan H. Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
+                    "homepage": "http://www.jwage.com/",
+                    "role": "Creator"
                 },
                 {
                     "name": "Kris Wallsmith",
@@ -840,32 +845,28 @@
             "time": "2012-05-30 15:01:08"
         },
         {
-            "name": "ftdebugger/react-zf2",
+            "name": "firephp/firephp-core",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ftdebugger/react-zf2.git",
-                "reference": "8e93a71a0dde0cfa0eb68467d50d9af9f60fe352"
+                "url": "https://github.com/firephp/firephp-core.git",
+                "reference": "72493df5f36b0239adf7694240f91eca4bc25099"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ftdebugger/react-zf2/zipball/8e93a71a0dde0cfa0eb68467d50d9af9f60fe352",
-                "reference": "8e93a71a0dde0cfa0eb68467d50d9af9f60fe352",
+                "url": "https://api.github.com/repos/firephp/firephp-core/zipball/72493df5f36b0239adf7694240f91eca4bc25099",
+                "reference": "72493df5f36b0239adf7694240f91eca4bc25099",
                 "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "react/react": "0.3.*",
-                "zendframework/zendframework": ">=2.1.5"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "ReactZF": "src"
-                }
+                "classmap": [
+                    "lib/FirePHPCore/FirePHP.class.php",
+                    "lib/FirePHPCore/fb.php"
+                ],
+                "files": [
+                    "lib/FirePHPCore/fb.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -873,17 +874,14 @@
             ],
             "authors": [
                 {
-                    "name": "Evgeny Shpilevsky",
-                    "email": "evgeny@shpilevsky.com",
-                    "role": "Developer"
+                    "name": "Christoph Dorn",
+                    "email": "christoph@christophdorn.com",
+                    "homepage": "http://christophdorn.com"
                 }
             ],
-            "description": "Module for integration Zend Framework 2 and React PHP",
-            "keywords": [
-                "react",
-                "zend"
-            ],
-            "time": "2013-05-17 12:06:21"
+            "description": "Traditional FirePHPCore library for sending PHP variables to the browser.",
+            "homepage": "https://github.com/firephp/firephp-core",
+            "time": "2013-11-06 16:41:22"
         },
         {
             "name": "gregwar/captcha",
@@ -1428,17 +1426,60 @@
             "time": "2013-02-06 23:27:19"
         },
         {
-            "name": "react/promise",
-            "version": "dev-master",
+            "name": "react/event-loop",
+            "version": "v0.3.3",
+            "target-dir": "React/EventLoop",
             "source": {
                 "type": "git",
-                "url": "https://github.com/reactphp/promise.git",
-                "reference": "c9784de0e84e8360533c3c5e1b2981b59c1f8f80"
+                "url": "https://github.com/reactphp/event-loop.git",
+                "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/c9784de0e84e8360533c3c5e1b2981b59c1f8f80",
-                "reference": "c9784de0e84e8360533c3c5e1b2981b59c1f8f80",
+                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/49208fa3a15c9eae4adf8351ee9caa4064fe550d",
+                "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-libev": "*",
+                "ext-libevent": ">=0.0.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "React\\EventLoop": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Event loop abstraction layer that libraries can use for evented I/O.",
+            "keywords": [
+                "event-loop"
+            ],
+            "time": "2013-07-08 22:38:22"
+        },
+        {
+            "name": "react/promise",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "58129a9cb9da88f2055309a805e2696b06928bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/58129a9cb9da88f2055309a805e2696b06928bb0",
+                "reference": "58129a9cb9da88f2055309a805e2696b06928bb0",
                 "shasum": ""
             },
             "require": {
@@ -1471,41 +1512,28 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2013-12-17 19:19:23"
+            "time": "2013-12-10 15:40:36"
         },
         {
-            "name": "react/react",
-            "version": "v0.3.3",
+            "name": "react/socket",
+            "version": "v0.3.2",
+            "target-dir": "React/Socket",
             "source": {
                 "type": "git",
-                "url": "https://github.com/reactphp/react.git",
-                "reference": "210c11a6041cfa2ce1701a4870b69475d9081265"
+                "url": "https://github.com/reactphp/socket.git",
+                "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/react/zipball/210c11a6041cfa2ce1701a4870b69475d9081265",
-                "reference": "210c11a6041cfa2ce1701a4870b69475d9081265",
+                "url": "https://api.github.com/repos/reactphp/socket/zipball/9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
+                "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
                 "shasum": ""
             },
             "require": {
                 "evenement/evenement": "1.0.*",
-                "guzzle/parser": "~3.0",
                 "php": ">=5.3.3",
-                "react/promise": "~1.0"
-            },
-            "replace": {
-                "react/cache": "self.version",
-                "react/dns": "self.version",
-                "react/event-loop": "self.version",
-                "react/http": "self.version",
-                "react/http-client": "self.version",
-                "react/socket": "self.version",
-                "react/socket-client": "self.version",
-                "react/stream": "self.version"
-            },
-            "suggest": {
-                "ext-libev": "*",
-                "ext-libevent": "*"
+                "react/event-loop": "0.3.*",
+                "react/stream": "0.3.*"
             },
             "type": "library",
             "extra": {
@@ -1515,19 +1543,63 @@
             },
             "autoload": {
                 "psr-0": {
-                    "React": "src"
+                    "React\\Socket": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "description": "Nuclear Reactor written in PHP.",
+            "description": "Library for building an evented socket server.",
             "keywords": [
-                "event-loop",
-                "reactor"
+                "Socket"
             ],
-            "time": "2013-07-09 01:55:25"
+            "time": "2013-04-26 20:23:10"
+        },
+        {
+            "name": "react/stream",
+            "version": "v0.3.3",
+            "target-dir": "React/Stream",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/stream.git",
+                "reference": "b72900ab00513b591fb101faecad38f9c8eab8da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/stream/zipball/b72900ab00513b591fb101faecad38f9c8eab8da",
+                "reference": "b72900ab00513b591fb101faecad38f9c8eab8da",
+                "shasum": ""
+            },
+            "require": {
+                "evenement/evenement": "1.0.*",
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "react/event-loop": "0.3.*",
+                "react/promise": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "React\\Stream": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Basic readable and writable stream interfaces that support piping.",
+            "keywords": [
+                "pipe",
+                "stream"
+            ],
+            "time": "2013-07-09 00:44:12"
         },
         {
             "name": "symfony/console",
@@ -1923,9 +1995,8 @@
         "zendframework/zendservice-apple-apns": 20,
         "doctrine/doctrine-mongo-odm-module": 20,
         "cboden/ratchet": 20,
-        "react/promise": 20,
         "gregwar/captcha": 20,
-        "ftdebugger/react-zf2": 20
+        "firephp/firephp-core": 20
     },
     "platform": {
         "php": ">=5.3.3"

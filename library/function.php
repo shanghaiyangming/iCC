@@ -1,6 +1,4 @@
 <?php
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Date;
-
 /**
  * ICC函数定义集合文件
  *
