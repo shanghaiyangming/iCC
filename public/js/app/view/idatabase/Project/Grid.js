@@ -4,7 +4,7 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 	requires : [ 'icc.common.Paging','icc.store.idatabase.Project' ],
 	title : '项目管理',
 	region : 'west',
-	width : 400,
+	width : 360,
 	collapsible : true,
 	closable : false,
 	multiSelect : false,
