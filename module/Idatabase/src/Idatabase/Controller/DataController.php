@@ -174,7 +174,7 @@ class DataController extends BaseActionController
             convertToPureArray($datas);
             array_walk($datas, function (&$value, $key)
             {
-                $value = ksort($value);
+                ksort($value);
             });
             
             $excel = array(

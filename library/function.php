@@ -115,6 +115,7 @@ function arrayToExcel($datas, $name = '')
     if (empty($name)) {
         $name = 'export_' . date("Y_m_d_H_i_s");
     }
+    
     // 便于处理大的大型excel表格，存储在磁盘缓存中
     $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
     PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
