@@ -4,7 +4,7 @@ Ext.define('icc.view.idatabase.Index.Grid',{
 	requires : [ 'icc.common.Paging','icc.view.common.Combobox.Boolean' ],
 	collapsible : false,
 	closable : false,
-	multiSelect : false,
+	multiSelect : true,
 	disableSelection : false,
 	sortableColumns : false,
 	initComponent : function() {
@@ -13,9 +13,6 @@ Ext.define('icc.view.idatabase.Index.Grid',{
 		store['proxy']['extraParams']['project_id'] = me.project_id;
 		store['proxy']['extraParams']['collection_id'] = me.collection_id;
 		store.load();
-
-		var collectionStore = Ext.create('icc.store.idatabase.Collection');
-		collectionStore['proxy']['extraParams']['project_id'] = me.project_id;
 
 		Ext.apply(me,{
 			store : store,

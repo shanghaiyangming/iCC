@@ -1,6 +1,5 @@
 <?php
 /**
- * 
  * 应用框架设定
  * @author ming
  *
@@ -36,9 +35,6 @@ class Module
             )
         );
     }
-
-    public function getConsoleUsage(AdapterInterface $console)
-    {}
 
     public function onBootstrap(MvcEvent $e)
     {

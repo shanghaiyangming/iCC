@@ -317,6 +317,9 @@ class MongoCollection extends \MongoCollection
         if ($limit > 0) {
             $cursor->limit($limit);
         }
+        
+        if ($cursor->count() == 0)
+            return null;
         return iterator_to_array($cursor, false);
     }
 

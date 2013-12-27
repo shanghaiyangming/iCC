@@ -20,10 +20,48 @@ use Zend\Json\Json;
 class IndexController extends BaseActionController
 {
 
+    /**
+     * 当前的model 读取索引集合的mongocollection实例
+     *
+     * @var object
+     */
     private $_model;
 
+    /**
+     * 当前collection的_id
+     *
+     * @var string
+     */
     private $_collection_id;
 
+    /**
+     * 获取集合的数据结构的实例
+     *
+     * @var object
+     */
+    private $_structure = null;
+
+    /**
+     * 存储当前集合的结局结构信息
+     *
+     * @var array
+     */
+    private $_schema = array();
+
+    /**
+     * 需要被添加或者删除索引的物理集合的mongocollection实例
+     *
+     * @var
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     private $_targetCollection;
 
     public function init()
@@ -33,7 +71,7 @@ class IndexController extends BaseActionController
         if (empty($this->_collection_id)) {
             throw new \Exception('$this->_collection_id值未设定');
         }
-        
+        $this->getSchema();
         $this->_targetCollection = $this->model('idatabase_collection_' . $this->_collection_id);
     }
 
@@ -66,16 +104,28 @@ class IndexController extends BaseActionController
         if (! isJson($keys)) {
             return $this->msg(false, 'keys必须符合json格式,例如：{"index_name":1,"2d":"2d"}');
         }
-        $datas = array();
-        $datas['keys'] = $keys;
-        $datas['collection_id'] = $this->_collection_id;
         
-        $keys = Json::decode($keys);
-        if (! $this->_targetCollection->ensureIndex($keys, array(
-            'background' => true
-        ))) {
-            return $this->msg(false, '创建索引失败');
+        $keys = Json::decode($keys, Json::TYPE_ARRAY);
+        if (! is_array($keys) || empty($keys)) {
+            return $this->msg(false, '请检查$keys是否为空');
         }
+        $keys = $this->filterKey($keys);
+        // 检测字段是否都存在
+        if (! $this->checkKeys(array_keys($keys))) {
+            return $this->msg(false, '键值中包含未定义的字段');
+        }
+        
+        if (in_array($needle, $haystack)) {
+            if (! $this->_targetCollection->ensureIndex($keys, array(
+                'background' => true
+            ))) {
+                return $this->msg(false, '创建索引失败');
+            }
+        }
+        
+        $datas = array();
+        $datas['keys'] = Json::encode($keys);
+        $datas['collection_id'] = $this->_collection_id;
         $this->_model->insert($datas);
         return $this->msg(true, '创建索引成功');
     }
@@ -89,20 +139,95 @@ class IndexController extends BaseActionController
      */
     public function removeAction()
     {
-        $_id = myMongoId($this->params()->fromPost('_id', ''));
-        $index = $this->_model->findOne(array(
-            '_id' => $_id
-        ));
-        if ($index == null) {
-            return $this->msg(false, '无效的索引');
+        $_id = $this->params()->fromPost('_id', null);
+        try {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
         }
-        $keys = Json::decode($index['keys']);
-        if (! $this->_targetCollection->deleteIndex($keys)) {
-            return $this->msg(false, '创建索引失败');
+        
+        if (! is_array($_id)) {
+            return $this->msg(false, '请选择你要删除的项');
         }
-        $this->_model->remove(array(
-            '_id' => $_id
-        ));
+        
+        foreach ($_id as $row) {
+            $index = $this->_model->findOne(array(
+                '_id' => myMongoId($row)
+            ));
+            if ($index == null) {
+                return $this->msg(false, '无效的索引');
+            }
+            $keys = Json::decode($index['keys']);
+            if (! $this->_targetCollection->deleteIndex($keys)) {
+                return $this->msg(false, '删除索引失败');
+            }
+            $this->_model->remove(array(
+                '_id' => myMongoId($row)
+            ));
+        }
+        
         return $this->msg(true, '删除索引成功');
+    }
+
+    /**
+     * 检测所得的键名是否
+     *
+     * @param array $keys            
+     * @return boolean
+     */
+    private function checkKeys($keys)
+    {
+        if (! is_array($keys)) {
+            throw new \Exception('$keys必须为数组');
+        }
+        if (empty($this->_schema)) {
+            $this->_schema = $this->getSchema();
+        }
+        return count($keys) === count(array_intersect($keys, array_values($this->_schema)));
+    }
+
+    /**
+     * 获取当前结合的结构
+     */
+    private function getSchema()
+    {
+        if ($this->_structure == null) {
+            $this->_structure = $this->model(IDATABASE_STRUCTURES);
+        }
+        
+        $query = array(
+            'collection_id' => $this->_collection_id
+        );
+        
+        $structures = $this->_structure->findAll($query);
+        if (! empty($structures)) {
+            foreach ($structures as $row) {
+                $this->_schema[] = $row['field'];
+            }
+        } else {
+            throw new \Exception("你尚未定义数据结构");
+        }
+    }
+
+    /**
+     * 规范化创建索引的keys
+     *
+     * @param array $keys            
+     * @return array
+     */
+    private function filterKey($keys)
+    {
+        if(!is_array($keys)) {
+            throw new \Exception('$keys必须是数组');
+        }
+        
+        array_walk($keys, function (&$items, $index)
+        {
+            if (preg_match("/^[-]?1$/", $items)) {
+                $items = intval($items);
+            } else
+                $items = strval($items);
+        });
+        return $keys;
     }
 }
