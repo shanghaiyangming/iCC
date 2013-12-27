@@ -262,14 +262,18 @@ Ext.define('icc.controller.idatabase.Collection', {
 		listeners[controllerName + 'Grid button[action=index]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel');
-				var win = Ext.widget('idatabaseIndexWindow', {
-					project_id : grid.project_id,
-					collection_id : record.get('_id'),
-					plugin : me.plugin,
-					plugin_id : me.plugin_id,
-					plugin_collection_id : record.get('plugin_collection_id')
-				});
-				win.show();
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseIndexWindow', {
+						project_id : grid.project_id,
+						collection_id : record.get('_id'),
+						plugin : me.plugin,
+						plugin_id : me.plugin_id,
+						plugin_collection_id : record.get('plugin_collection_id')
+					});
+					win.show();
+				}
 			}
 		};
 

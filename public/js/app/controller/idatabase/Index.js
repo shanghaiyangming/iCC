@@ -84,7 +84,9 @@ Ext.define('icc.controller.idatabase.Index', {
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
 					collection_id : grid.collection_id,
-					orderBy : orderBy
+					plugin : grid.plugin,
+					plugin_id : grid.plugin_id,
+					plugin_collection_id : grid.plugin_collection_id
 				});
 				win.show();
 			}
@@ -97,7 +99,10 @@ Ext.define('icc.controller.idatabase.Index', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						project_id : grid.project_id,
-						collection_id : grid.collection_id
+						collection_id : grid.collection_id,
+						plugin : grid.plugin,
+						plugin_id : grid.plugin_id,
+						plugin_collection_id : grid.plugin_collection_id
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -105,42 +110,6 @@ Ext.define('icc.controller.idatabase.Index', {
 				} else {
 					Ext.Msg.alert('提示信息', '请选择你要编辑的项');
 				}
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=save]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var store = grid.store;
-				var records = grid.store.getUpdatedRecords();
-				var recordsNumber = records.length;
-				if (recordsNumber == 0) {
-					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
-				}
-				var updateList = [];
-				for ( var i = 0; i < recordsNumber; i++) {
-					record = records[i];
-					updateList.push(record.data);
-				}
-
-				Ext.Ajax.request({
-					url : me.actions.save,
-					params : {
-						project_id : grid.project_id,
-						collection_id : grid.collection_id,
-						updateInfos : Ext.encode(updateList)
-					},
-					scope : me,
-					success : function(response) {
-						var text = response.responseText;
-						var json = Ext.decode(text);
-						Ext.Msg.alert('提示信息', json.msg);
-						if (json.success) {
-							store.load();
-						}
-					}
-				});
-
 			}
 		};
 

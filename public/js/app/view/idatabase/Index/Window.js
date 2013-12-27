@@ -7,7 +7,10 @@ Ext.define('icc.view.idatabase.Index.Window', {
 			items : [ {
 				xtype : 'idatabaseIndexGrid',
 				project_id : this.project_id,
-				collection_id : this.collection_id
+				collection_id : this.collection_id,
+				plugin : this.plugin,
+				plugin_id : this.plugin_id,
+				plugin_collection_id : this.plugin_collection_id
 			} ]
 		});
 

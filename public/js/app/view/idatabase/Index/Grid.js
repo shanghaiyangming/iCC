@@ -44,11 +44,6 @@ Ext.define('icc.view.idatabase.Index.Grid',{
 							action : 'add'
 						}, {
 							xtype : 'button',
-							text : '保存',
-							iconCls : 'save',
-							action : 'save'
-						}, {
-							xtype : 'button',
 							text : '删除',
 							iconCls : 'remove',
 							action : 'remove'

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * iDatabase索引控制器
  *
