@@ -65,7 +65,7 @@ Ext.define('icc.view.idatabase.Index.Grid',{
 				dataIndex : '__CREATE_TIME__',
 				flex : 1,
 				format : 'Y-m-d',
-				hidden : true
+				hidden : false
 			}]
 		});
 	

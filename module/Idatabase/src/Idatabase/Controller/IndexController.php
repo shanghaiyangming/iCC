@@ -51,19 +51,25 @@ class IndexController extends BaseActionController
     /**
      * 需要被添加或者删除索引的物理集合的mongocollection实例
      *
-     * @var
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
+     * @var object
      */
     private $_targetCollection;
+    
+    /**
+     * 索引类型
+     * @var array
+     */
+    private $_indexType = array(
+        '2d',
+        '2dsphere',
+        'text',
+        'hashed'
+    );
 
+    /**
+     * init
+     * @see \My\Common\Controller\Action::init()
+     */
     public function init()
     {
         $this->_model = $this->model(IDATABASE_INDEXES);
@@ -114,13 +120,11 @@ class IndexController extends BaseActionController
         if (! $this->checkKeys(array_keys($keys))) {
             return $this->msg(false, '键值中包含未定义的字段');
         }
-        
-        if (in_array($needle, $haystack)) {
-            if (! $this->_targetCollection->ensureIndex($keys, array(
-                'background' => true
-            ))) {
-                return $this->msg(false, '创建索引失败');
-            }
+
+        if (! $this->_targetCollection->ensureIndex($keys, array(
+            'background' => true
+        ))) {
+            return $this->msg(false, '创建索引失败');
         }
         
         $datas = array();
@@ -223,10 +227,19 @@ class IndexController extends BaseActionController
         
         array_walk($keys, function (&$items, $index)
         {
+            $items = trim($items);
             if (preg_match("/^[-]?1$/", $items)) {
                 $items = intval($items);
-            } else
-                $items = strval($items);
+            } else {
+                $items = strtolower($items);
+                if(in_array($items,$this->_indexType)){
+                    $items = strval($items);
+                }
+                else {
+                    throw new \Exception("无效的索引类型");
+                }
+            }
+                
         });
         return $keys;
     }
