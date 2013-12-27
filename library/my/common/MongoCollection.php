@@ -88,8 +88,13 @@ class MongoCollection extends \MongoCollection
 
     public function __construct(Config $config, $collection = null, $database = 'ICCv1', $cluster = 'default', $collectionOptions = null)
     {
+        //检测是否加载了FirePHP
+        if(!class_exists("\FirePHP")) {
+            throw new \Exception('请安装FirePHP');
+        }
+        
         if ($collection === null) {
-            throw new \Exception('$collection is null');
+            throw new \Exception('$collection集合为空');
         }
         
         GlobalEventManager::trigger(EVENT_LOG_ERROR, null, array('error'));
@@ -154,24 +159,6 @@ class MongoCollection extends \MongoCollection
             $query['__REMOVED__'] = false;
         }
         return $query;
-    }
-
-    /**
-     * 打印最后一个错误信息
-     */
-    private function debug()
-    {
-        $err = $this->_db->lastError();
-        //在浏览器中输出错误信息以便发现问题
-        if (self::debug) {
-            fb($err,\FirePHP::LOG);
-        } else {
-            if ($err['err'] != null) {
-                GlobalEventManager::trigger('logError', null, array(
-                    json_encode($err)
-                ));
-            }
-        }
     }
 
     /**
@@ -669,6 +656,25 @@ class MongoCollection extends \MongoCollection
             $id = new \MongoId($id);
         }
         return $this->_fs->remove($id);
+    }
+    
+
+    /**
+     * 打印最后一个错误信息
+     */
+    private function debug()
+    {
+        $err = $this->_db->lastError();
+        //在浏览器中输出错误信息以便发现问题
+        if (self::debug) {
+            fb($err,\FirePHP::LOG);
+        } else {
+            if ($err['err'] != null) {
+                GlobalEventManager::trigger('logError', null, array(
+                json_encode($err)
+                ));
+            }
+        }
     }
 
     /**
