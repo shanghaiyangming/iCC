@@ -88,16 +88,14 @@ class MongoCollection extends \MongoCollection
 
     public function __construct(Config $config, $collection = null, $database = 'ICCv1', $cluster = 'default', $collectionOptions = null)
     {
-        //检测是否加载了FirePHP
-        if(!class_exists("\FirePHP")) {
+        // 检测是否加载了FirePHP
+        if (! class_exists("FirePHP")) {
             throw new \Exception('请安装FirePHP');
         }
         
         if ($collection === null) {
             throw new \Exception('$collection集合为空');
         }
-        
-        GlobalEventManager::trigger(EVENT_LOG_ERROR, null, array('error'));
         
         $this->_collection = $collection;
         $this->_database = $database;
@@ -134,7 +132,7 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 检测是简单查询还是复杂查询，涉及复杂查询
+     * 检测是简单查询还是复杂查询，涉及复杂查询采用$and方式进行处理，简单模式采用连接方式进行处理
      *
      * @param array $query            
      * @throws \Exception
@@ -171,7 +169,7 @@ class MongoCollection extends \MongoCollection
         $defaultCollectionOptions = array(
             'capped' => false, // 是否开启固定集合
             'size' => pow(1024, 3), // 如果简单开启capped=>true,单个集合的最大尺寸为1G
-            'max' => pow(10, 7), // 如果简单开启capped=>true,单个集合的最大条数为1千万条数据
+            'max' => pow(10, 8), // 如果简单开启capped=>true,单个集合的最大条数为1亿条数据
             'autoIndexId' => true
         );
         
@@ -319,7 +317,7 @@ class MongoCollection extends \MongoCollection
         if ($limit > 0) {
             $cursor->limit($limit);
         }
-        return iterator_to_array($cursor,false);
+        return iterator_to_array($cursor, false);
     }
 
     /**
@@ -414,7 +412,8 @@ class MongoCollection extends \MongoCollection
      * 插入特定的数据，注意此方法無法針對$a添加_id属性，详见参数丢失原因的文档说明
      * 解决这个问题，请使用上面的方法insertRef
      * 注意因为参数检查的原因，无法直接覆盖insert方法并采用引用，如下原因
-     * <b>Strict Standards</b>:  Declaration of My\Common\MongoCollection::insert() should be compatible with MongoCollection::insert($array_of_fields_OR_object, array $options = NULL) 
+     * <b>Strict Standards</b>: Declaration of My\Common\MongoCollection::insert() should be compatible with MongoCollection::insert($array_of_fields_OR_object, array $options = NULL)
+     *
      * @param array $object            
      * @param array $options            
      */
@@ -657,7 +656,6 @@ class MongoCollection extends \MongoCollection
         }
         return $this->_fs->remove($id);
     }
-    
 
     /**
      * 打印最后一个错误信息
@@ -665,13 +663,13 @@ class MongoCollection extends \MongoCollection
     private function debug()
     {
         $err = $this->_db->lastError();
-        //在浏览器中输出错误信息以便发现问题
+        // 在浏览器中输出错误信息以便发现问题
         if (self::debug) {
-            fb($err,\FirePHP::LOG);
+            fb($err, \FirePHP::LOG);
         } else {
             if ($err['err'] != null) {
                 GlobalEventManager::trigger('logError', null, array(
-                json_encode($err)
+                    json_encode($err)
                 ));
             }
         }

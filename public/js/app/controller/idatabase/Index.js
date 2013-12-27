@@ -56,31 +56,9 @@ Ext.define('icc.controller.idatabase.Index', {
 			}
 		};
 
-		listeners[controllerName + 'Edit button[action=submit]'] = {
-			click : function(button) {
-				var grid = me.getList();
-				var store = grid.store;
-				var form = button.up('form').getForm();
-				if (form.isValid()) {
-					form.submit({
-						waitTitle : '系统提示',
-						waitMsg : '系统处理中，请稍后……',
-						success : function(form, action) {
-							Ext.Msg.alert('成功提示', action.result.msg);
-							store.load();
-						},
-						failure : function(form, action) {
-							Ext.Msg.alert('失败提示', action.result.msg);
-						}
-					});
-				}
-			}
-		};
-
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click : function(button) {
 				var grid = button.up('gridpanel');
-				var orderBy = grid.store.getTotalCount();
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id : grid.project_id,
 					collection_id : grid.collection_id,
@@ -89,27 +67,6 @@ Ext.define('icc.controller.idatabase.Index', {
 					plugin_collection_id : grid.plugin_collection_id
 				});
 				win.show();
-			}
-		};
-
-		listeners[controllerName + 'Grid button[action=edit]'] = {
-			click : function(button) {
-				var grid = button.up('gridpanel');
-				var selections = grid.getSelectionModel().getSelection();
-				if (selections.length > 0) {
-					var win = Ext.widget(controllerName + 'Edit', {
-						project_id : grid.project_id,
-						collection_id : grid.collection_id,
-						plugin : grid.plugin,
-						plugin_id : grid.plugin_id,
-						plugin_collection_id : grid.plugin_collection_id
-					});
-					var form = win.down('form').getForm();
-					form.loadRecord(selections[0]);
-					win.show();
-				} else {
-					Ext.Msg.alert('提示信息', '请选择你要编辑的项');
-				}
 			}
 		};
 
