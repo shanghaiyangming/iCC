@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ICC函数定义集合文件
  *
@@ -55,14 +56,14 @@ function isValidMobile($mobile)
 /**
  * 将数组数据导出为csv文件
  *
- * @param array $datas  
- * @param string $name                  
+ * @param array $datas            
+ * @param string $name            
  */
-function arrayToCVS($datas,$name='')
+function arrayToCVS($datas, $name = '')
 {
     resetTimeMemLimit();
     if (empty($name)) {
-    	$name = 'export_' . date("Y_m_d_H_i_s");
+        $name = 'export_' . date("Y_m_d_H_i_s");
     }
     $result = array_merge(array(
         $datas['title']
@@ -99,9 +100,9 @@ function excelTitle($i)
 
 /**
  * 导出excel表格
- *     
- * @param $datas 二维数据
- * @param $name excel表格的名称，不包含.xlsx    
+ *
+ * @param $datas 二维数据            
+ * @param $name excel表格的名称，不包含.xlsx
  *            填充表格的数据
  * @example $datas['title'] = array('col1','col2','col3','col4');
  *          $datas['result'] = array(array('v11','v12','v13','v14')
