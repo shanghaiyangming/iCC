@@ -543,6 +543,7 @@ class DataController extends BaseActionController
             return $this->msg(false, '请输入当前用户的登录密码');
         }
         
+        fb($_SESSION,\FirePHP::LOG);
         if (empty($_SESSION['account']['password'])) {
             return $this->msg(false, '当前会话已经过期，请重新登录');
         }
