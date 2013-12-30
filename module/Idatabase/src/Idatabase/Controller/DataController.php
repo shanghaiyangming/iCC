@@ -197,8 +197,9 @@ class DataController extends BaseActionController
             array_walk($datas, function (&$value, $key)
             {
                 ksort($value);
-                array_walk($value, function(&$cell,$field) {
-                    if(isset($this->_rshData[$field])) {
+                array_walk($value, function (&$cell, $field)
+                {
+                    if (isset($this->_rshData[$field])) {
                         $cell = $this->_rshData[$field][$cell];
                     }
                 });
@@ -235,7 +236,7 @@ class DataController extends BaseActionController
             while ($cursor->hasNext()) {
                 $datas[$row[$detail['rshCollectionValueField']]] = $row[$detail['rshCollectionKeyField']];
             }
-            $this->_rshData[$detail['rshCollectionAlias']] = $datas;
+            $this->_rshData[$detail['collectionAlias']] = $datas;
         }
     }
 
@@ -626,7 +627,7 @@ class DataController extends BaseActionController
                         throw new \Exception('关系集合未设定关系键值');
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
-                        'rshCollectionAlias' => $row['alias'],
+                        'collectionAlias' => $row['alias'],
                         'rshCollectionKeyField' => $rshCollectionValueField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
