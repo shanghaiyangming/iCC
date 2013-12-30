@@ -902,6 +902,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Data.Field.2dfield": [],
   "icc.view.idatabase.Data.Grid": [],
   "icc.view.idatabase.Data.Main": [],
+  "icc.view.idatabase.Data.Password": [],
   "icc.view.idatabase.Data.Search": [],
   "icc.view.idatabase.Data.TreeGrid": [],
   "icc.view.idatabase.Index.Add": [],
@@ -2031,6 +2032,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Data.Main": [
     "widget.idatabaseDataMain"
+  ],
+  "icc.view.idatabase.Data.Password": [
+    "widget.idatabaseDataPassword"
   ],
   "icc.view.idatabase.Data.Search": [
     "widget.idatabaseDataSearch"

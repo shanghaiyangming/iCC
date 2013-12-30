@@ -3,7 +3,7 @@ Ext.define('icc.controller.idatabase.Data', {
 	models : [],
 	stores : [],
 	views : [ 'idatabase.Data.Main', 'idatabase.Data.Grid',
-			'idatabase.Data.Search', 'idatabase.Data.Add',
+			'idatabase.Data.Search', 'idatabase.Data.Add','idatabase.Data.Password',
 			'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield' ],
 	controllerName : 'idatabaseData',
 	plugin : false,
@@ -218,6 +218,25 @@ Ext.define('icc.controller.idatabase.Data', {
 				}
 			}
 		};
+		
+		listeners['idatabaseDataGrid button[action=drop],idatabaseDataTreeGrid button[action=drop]'] = {
+				click : function(button) {
+					var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
+					var selections = grid.getSelectionModel().getSelection();
+					Ext.Msg.confirm('安全警告', '您当前执行的是清空操作，清空后数据将无法找回，请确认您是否要清空全部数据?', function(btn) {
+						if (btn == 'yes') {
+							var win = Ext.widget(controllerName + 'Password', {
+								project_id : grid.project_id,
+								collection_id : grid.collection_id,
+								height: 240,
+								width : 320
+							});
+							
+							win.show();
+						}
+					}, me);
+				}
+			};		
 		
 		listeners['idatabaseDataSearch button[action=search],button[action=excel]'] = {
 			click : function(button) {
