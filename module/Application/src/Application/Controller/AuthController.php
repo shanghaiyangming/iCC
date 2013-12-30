@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Gregwar\Captcha\CaptchaBuilder;
+use Zend\Authentication\AuthenticationService;
 
 class AuthController extends AbstractActionController
 {
@@ -44,6 +45,9 @@ class AuthController extends AbstractActionController
         $this->_account = $this->model(SYSTEM_ACCOUNT);
         $username = $this->params()->fromPost('username', null);
         $password = $this->params()->fromPost('password', null);
+        
+        
+        
         
         $accountInfo = $this->_account->findOne(array(
             'username' => $username,

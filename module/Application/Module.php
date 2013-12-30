@@ -51,7 +51,6 @@ class Module
         
         $auth = new AuthenticationService();
         $auth->setStorage(new SessionStorage('account'));
-        $result = $auth->authenticate($authAdapter);
     }
 
 
