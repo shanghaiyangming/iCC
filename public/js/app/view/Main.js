@@ -11,7 +11,9 @@ Ext.define('icc.view.Main', {
         'icc.common.Window',
         'icc.common.SearchBar',
         'icc.common.Combobox',
-        'Ext.ux.form.SearchField'
+        'Ext.ux.form.SearchField',
+        'idatabase.Data.Field.md5field',
+        'idatabase.Data.Field.sha1field'
     ],
     
     xtype: 'app-main',

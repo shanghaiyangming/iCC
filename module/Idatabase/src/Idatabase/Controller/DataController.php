@@ -667,6 +667,14 @@ class DataController extends BaseActionController
                         0
                     );
                     break;
+                case 'md5field':
+                    $value = trim($value);
+                    $value = preg_match('/^[0-9a-f]{32}$/i', $value) ? $value : md5($value);
+                    break;
+                case 'sha1field':
+                    $value = trim($value);
+                    $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
+                    break;
                 default:
                     $value = trim($value);
                     break;
