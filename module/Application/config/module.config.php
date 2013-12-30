@@ -118,7 +118,7 @@ return array(
                 ),
                 'dbs' => array(
                     'ICCv1',
-                    'admin'
+                    'admin'//用户连接系统
                 )
             ),
             'analysis' => array(
