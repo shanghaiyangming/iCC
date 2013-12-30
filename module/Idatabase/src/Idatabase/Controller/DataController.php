@@ -194,6 +194,7 @@ class DataController extends BaseActionController
             $this->dealRshData();
             // 结束
             convertToPureArray($datas);
+            fb($this->_rshData,\FirePHP::LOG);
             array_walk($datas, function (&$value, $key)
             {
                 ksort($value);
@@ -219,24 +220,20 @@ class DataController extends BaseActionController
      */
     private function dealRshData()
     {
-        $this->_rshCollection[$row['rshCollection']] = array(
-            'rshCollectionKeyField' => $rshCollectionValueField,
-            'rshCollectionValueField' => $rshCollectionValueField
-        );
-        
         foreach ($this->_rshCollection as $_id => $detail) {
             $collectionName = 'idatabase_collection_' . $_id;
             $model = $this->model($collectionName);
-            $cursor = $model->findAll(array(), array(
+            $cursor = $model->find(array(), array(
                 $detail['rshCollectionKeyField'] => true,
                 $detail['rshCollectionValueField'] => true
             ));
             
             $datas = array();
             while ($cursor->hasNext()) {
+                $row = $cursor->getNext();
                 $datas[$row[$detail['rshCollectionValueField']]] = $row[$detail['rshCollectionKeyField']];
             }
-            $this->_rshData[$detail['collectionAlias']] = $datas;
+            $this->_rshData[$detail['collectionField']] = $datas;
         }
     }
 
@@ -559,7 +556,7 @@ class DataController extends BaseActionController
         if ($rst['ok'] == 1) {
             return $this->msg(true, '清空数据成功');
         } else {
-            fb($rst, \firePHP::LOG);
+            fb($rst, \FirePHP::LOG);
             return $this->msg(false, '清空数据失败');
         }
     }
@@ -627,7 +624,7 @@ class DataController extends BaseActionController
                         throw new \Exception('关系集合未设定关系键值');
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
-                        'collectionAlias' => $row['alias'],
+                        'collectionField' => $row['field'],
                         'rshCollectionKeyField' => $rshCollectionValueField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
