@@ -424,8 +424,9 @@ function rangeDownload($file)
  */
 function exceptionMsg($e)
 {
-    if (is_subclass_of($e, 'Exception') || $e instanceof Exception)
+    if (is_subclass_of($e, 'Exception') || $e instanceof Exception) {
         return '<h1>Exception info:</h1>File:' . $e->getFile() . '<br />Line:' . $e->getLine() . '<br />Message:' . $e->getMessage() . '<br />Trace:' . $e->getTraceAsString();
+    }
     return false;
 }
 
@@ -455,7 +456,7 @@ function doGet($url, $params = array())
         $response = $client->request('GET');
         return $response->getBody();
     } catch (Exception $e) {
-        var_dump(exceptionMsg($e));
+        fb(exceptionMsg($e), \FirePHP::LOG);
         return $msg;
     }
 }
@@ -486,7 +487,7 @@ function doPost($url, $params = array())
         $response = $client->request('POST');
         return $response->getBody();
     } catch (Exception $e) {
-        var_dump(exceptionMsg($e));
+        fb(exceptionMsg($e), \FirePHP::LOG);
         return $msg;
     }
 }
@@ -531,7 +532,7 @@ function doRequest($url, $get = array(), $post = array())
             throw new Exception('error status is ' . $response->getStatus());
         }
     } catch (Exception $e) {
-        var_dump(exceptionMsg($e));
+        fb(exceptionMsg($e), \FirePHP::LOG);
         return false;
     }
 }
@@ -577,7 +578,7 @@ function addrToGeo($address, $city = '')
         $rst = json_decode($body, true);
         return $rst;
     } catch (Exception $e) {
-        var_dump(exceptionMsg($e));
+        fb(exceptionMsg($e), \FirePHP::LOG);
         return array();
     }
 }

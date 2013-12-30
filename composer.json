@@ -24,7 +24,8 @@
         "react/async": "~1.0",
         "react/stream": ">=0.3.0",
         "react/socket": ">=0.3.0",
-	"firephp/firephp-core": "dev-master"
+        "firephp/firephp-core": "dev-master",
+        "phpmailer/phpmailer": "v5.2.7"
     },
     "config": {
         "process-timeout": 3600
