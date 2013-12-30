@@ -153,6 +153,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
+					return false;
 				}
 				var updateList = [];
 				for ( var i = 0; i < recordsNumber; i++) {
@@ -220,23 +221,42 @@ Ext.define('icc.controller.idatabase.Data', {
 		};
 		
 		listeners['idatabaseDataGrid button[action=drop],idatabaseDataTreeGrid button[action=drop]'] = {
-				click : function(button) {
-					var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
-					var selections = grid.getSelectionModel().getSelection();
-					Ext.Msg.confirm('安全警告', '您当前执行的是清空操作，清空后数据将无法找回，请确认您是否要清空全部数据?', function(btn) {
-						if (btn == 'yes') {
-							var win = Ext.widget(controllerName + 'Password', {
-								project_id : grid.project_id,
-								collection_id : grid.collection_id,
-								height: 240,
-								width : 320
-							});
-							
-							win.show();
+			click : function(button) {
+				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
+				var selections = grid.getSelectionModel().getSelection();
+				Ext.Msg.confirm('安全警告', '您当前执行的是清空操作，清空后数据将无法找回，请确认您是否要清空全部数据?', function(btn) {
+					if (btn == 'yes') {
+						var win = Ext.widget(controllerName + 'Password', {
+							project_id : grid.project_id,
+							collection_id : grid.collection_id,
+							height: 240,
+							width : 320
+						});
+						
+						win.show();
+					}
+				}, me);
+			}
+		};
+		
+		listeners['idatabaseDataPassword button[action=submit]'] = {
+			click : function(button) {
+				var form = button.up('form').getForm();
+				if (form.isValid()) {
+					form.submit({
+						waitTitle : '系统提示',
+						waitMsg : '系统处理中，请稍后……',
+						success : function(form, action) {
+							Ext.Msg.alert('成功提示', action.result.msg);
+							store.load();
+						},
+						failure : function(form, action) {
+							Ext.Msg.alert('失败提示', action.result.msg);
 						}
-					}, me);
+					});
 				}
-			};		
+			}
+		};
 		
 		listeners['idatabaseDataSearch button[action=search],button[action=excel]'] = {
 			click : function(button) {
