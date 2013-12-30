@@ -7,6 +7,12 @@ defined('CACHE_ADAPTER') || define('CACHE_ADAPTER', 'fileCache'); // [fileCache|
 defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development'); // [development|production]
 
 /**
+ * 系统全局设定数据库
+ */
+defined('SYSTEM_ACCOUNT') || define('SYSTEM_ACCOUNT', 'system_account');
+defined('SYSTEM_ROLE') || define('SYSTEM_ROLE', 'system_role');
+
+/**
  * iDatabase常量定义,防止集合命名错误的发生
  */
 defined('IDATABASE_INDEXES') || define('IDATABASE_INDEXES', 'idatabase_indexes');
@@ -21,7 +27,6 @@ defined('IDATABASE_STATISTIC') || define('IDATABASE_STATISTIC', 'idatabase_stati
 defined('IDATABASE_PROMISSION') || define('IDATABASE_PROMISSION', 'idatabase_promission');
 defined('IDATABASE_KEYS') || define('IDATABASE_KEYS', 'idatabase_keys');
 defined('IDATABASE_COLLECTION_ORDERBY') || define('IDATABASE_COLLECTION_ORDERBY', 'idatabase_collection_orderby');
-
 
 /**
  * 自定义事件
