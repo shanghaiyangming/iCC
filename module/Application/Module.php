@@ -13,6 +13,8 @@ use My\Common\CacheListenerAggregate;
 use Zend\EventManager\GlobalEventManager;
 use Monolog\Logger;
 use Monolog\Handler\MongoDBHandler;
+use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\Session as SessionStorage;
 
 class Module
 {
@@ -46,6 +48,10 @@ class Module
         
         //开启FirePHP调试或者关闭
         \FirePHP::getInstance(true)->setEnabled(true);
+        
+        $auth = new AuthenticationService();
+        $auth->setStorage(new SessionStorage('account'));
+        $result = $auth->authenticate($authAdapter);
     }
 
 

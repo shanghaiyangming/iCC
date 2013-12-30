@@ -49,7 +49,7 @@ class AuthController extends AbstractActionController
             'username' => $username,
             'password' => sha1($password),
             'expire' => array(
-                '$lt' => new \MongoDate()
+                '$gt' => new \MongoDate()
             )
         ));
         
