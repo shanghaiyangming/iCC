@@ -267,14 +267,27 @@ Ext.define('icc.controller.idatabase.Data', {
 					form.getFields().each(function(items,index){
 						if(items.xtype!='hiddenfield')
 							delete store.proxy.extraParams[items.name];
-					});
-					
+					});			
 					
 					store.proxy.extraParams.action = button.action;
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams,extraParams);
 					
 					if(button.action=='excel') {
-						window.location.href = '/idatabase/data/index?'+Ext.Object.toQueryString(store.proxy.extraParams);
+						Ext.Msg.confirm('系统提示', '导出数据有可能需要较长的时间，请点击“导出”按钮后，耐心等待，两次操作间隔需大于30秒！', function(btn) {
+							if (btn == 'yes') {
+								button.setDisabled(true);
+								setTimeout(function(){
+									button.setDisabled(false);
+								}, 30000);
+								window.location.href = '/idatabase/data/index?'+Ext.Object.toQueryString(store.proxy.extraParams);
+							}
+						}, me);	
+					}
+					else {
+						button.setDisabled(true);
+						setTimeout(function(){
+							button.setDisabled(false);
+						}, 3000);
 					}
 					store.load();
 				}
