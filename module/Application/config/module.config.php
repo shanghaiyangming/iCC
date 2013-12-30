@@ -19,6 +19,16 @@ return array(
                     )
                 )
             ),
+            'login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route' => '/login',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Auth',
+                        'action' => 'index'
+                    )
+                )
+            ),
             'application' => array(
                 'type' => 'Literal',
                 'options' => array(

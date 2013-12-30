@@ -22,5 +22,11 @@ Ext.define('icc.store.idatabase.Structure.Type', {
 	}, {
 		"name" : '二维坐标输入框(地球经纬度)',
 		"val" : '2dfield'
+	}, {
+		"name" : 'MD5密码输入字段',
+		"val" : 'md5field'
+	}, {
+		"name" : 'SHA1密码输入字段',
+		"val" : 'sha1field'
 	} ]
 });

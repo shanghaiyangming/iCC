@@ -159,39 +159,28 @@ class DataController extends BaseActionController
      */
     public function importAction() {
         try {
-            $cursor = $this->_structure->find(array('collection_id'=>$this->_collection_id));
-            if($cursor->count()==0) {
-                return $this->msg(false, '集合数据结构未定义');
-                return false;
+            if(!isset($_FILES['import'])) {
+                return $this->msg(false, '请上传Excel数据表格文件');
             }
-             
-            $formStructure = array();
-            while($cursor->hasNext()) {
-                $row = $cursor->getNext();
-                $formStructure[$row['alias']] = $row;
-                $formStructure[$row['name']] = $row;
-            }
-             
+            
             if($_FILES['import']['error']==UPLOAD_ERR_OK) {
                 $fileName = $_FILES['import']['name'];
                 $filePath = $_FILES['import']['tmp_name'];
-                $importSheetName = trim($_POST['sheetName']);
+                $importSheetName = trim($this->params()->fromPost('sheetName',''));
                 if($importSheetName=='') {
                     return $this->msg(false, '请设定需要导入的sheet');
                 }
         
-                switch (strtolower(pathinfo($fileName,PATHINFO_EXTENSION))) {
+                $ext = strtolower(pathinfo($fileName,PATHINFO_EXTENSION));
+                switch ($ext) {
                     case 'xls':
                         $inputFileType = 'Excel5';
                         break;
                     case 'xlsx':
                         $inputFileType = 'Excel2007';
                         break;
-                    case 'xml':
-                        $inputFileType = 'Excel2003XML';
-                        break;
                     default:
-                        return $this->msg(false, '很抱歉，您上传的文件格式无法识别');
+                        return $this->msg(false, '很抱歉，您上传的文件格式无法识别,格式要求：*.xls *.xlsx');
                 }
         
                 include_once 'MyReadFilter.php';
@@ -211,9 +200,7 @@ class DataController extends BaseActionController
                 $objActiveSheet = $objPHPExcel->getActiveSheet();
                 $sheetData = $objActiveSheet->toArray(null,true,true,true);
                 $objPHPExcel->disconnectWorksheets();
-        
                 unset($objReader,$objPHPExcel,$objActiveSheet);
-                gc_collect_cycles();//回收内存
         
                 if(empty($sheetData)) {
                     return $this->msg(false, '请确认表格中包含数据');
@@ -221,7 +208,6 @@ class DataController extends BaseActionController
         
                 $getFieldError = 0 ;
                 $title = array_shift($sheetData);
-        
         
                 $fieldInfo = array();
                 foreach($title as $key=>$cell) {
@@ -377,147 +363,6 @@ class DataController extends BaseActionController
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
         $validData = array_merge($validPostData, $validFileData);
         return $validData;
-    }
-
-    /**
-     * 处理检索条件
-     */
-    private function searchCondition()
-    {
-        $query = array();
-        
-        // 扩展两个系统默认参数加入查询条件
-        $this->_schema['post'] = array_merge($this->_schema['post'], array(
-            '__CREATE_TIME__' => array(
-                'type' => 'datefield'
-            ),
-            '__MODIFY_TIME__' => array(
-                'type' => 'datefield'
-            )
-        ));
-        
-        foreach ($this->_schema['post'] as $field => $detail) {
-            $subQuery = array();
-            $not = false;
-            $exact = false;
-            
-            if (isset($_REQUEST['exclusive__' . $field]) && filter_var($_REQUEST['exclusive__' . $field], FILTER_VALIDATE_BOOLEAN))
-                $not = true;
-            
-            if (isset($_REQUEST['exactMatch__' . $field]) && filter_var($_REQUEST['exactMatch__' . $field], FILTER_VALIDATE_BOOLEAN))
-                $exact = true;
-            
-            if (! empty($detail['rshCollection']))
-                $exact = true;
-            
-            if (isset($_REQUEST[$field])) {
-                if (is_array($_REQUEST[$field]) && trim(join('', $_REQUEST[$field])) == '')
-                    continue;
-                
-                if (! is_array($_REQUEST[$field]) && trim($_REQUEST[$field]) == '')
-                    continue;
-                
-                switch ($detail['type']) {
-                    case 'numberfiled':
-                        $min = trim($_REQUEST[$field]['min']);
-                        $max = trim($_REQUEST[$field]['max']);
-                        $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
-                        $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
-                        if ($not) {
-                            if (! empty($min))
-                                $subQuery['$or'][][$field]['$lte'] = $min;
-                            if (! empty($max))
-                                $subQuery['$or'][][$field]['$gte'] = $max;
-                        } else {
-                            if (! empty($min))
-                                $subQuery[$field]['$gte'] = $min;
-                            if (! empty($max))
-                                $subQuery[$field]['$lte'] = $max;
-                        }
-                        break;
-                    case 'datefield':
-                        $start = trim($_REQUEST[$field]['start']);
-                        $end = trim($_REQUEST[$field]['end']);
-                        $start = preg_match("/^[0-9]+$/", $start) ? new \MongoDate(intval($start)) : new \MongoDate(strtotime($start));
-                        $end = preg_match("/^[0-9]+$/", $end) ? new \MongoDate(intval($end)) : new \MongoDate(strtotime($end));
-                        if ($not) {
-                            if (! empty($start))
-                                $subQuery['$or'][][$field]['$lte'] = $start;
-                            if (! empty($end))
-                                $subQuery['$or'][][$field]['$gte'] = $end;
-                        } else {
-                            if (! empty($start))
-                                $subQuery[$field]['$gte'] = $start;
-                            if (! empty($end))
-                                $subQuery[$field]['$lte'] = $end;
-                        }
-                        break;
-                    case '2dfield':
-                        $lng = floatval(trim($_REQUEST[$field]['lng']));
-                        $lat = floatval(trim($_REQUEST[$field]['lat']));
-                        $distance = ! empty($_REQUEST[$field]['distance']) ? floatval($_REQUEST[$field]['distance']) : 10;
-                        $subQuery = array(
-                            '$near' => array(
-                                $lng,
-                                $lat
-                            ),
-                            '$maxDistance' => $distance / 111.12
-                        );
-                        break;
-                    default:
-                        if ($not)
-                            $subQuery[$field]['$ne'] = trim($_REQUEST[$field]);
-                        else
-                            $subQuery[$field] = $exact ? trim($_REQUEST[$field]) : myMongoRegex($_REQUEST[$field]);
-                        break;
-                }
-                $query['$and'][] = $subQuery;
-            }
-        }
-        
-        if (empty($query['$and'])) {
-            return array();
-        }
-        
-        return $query;
-    }
-
-    /**
-     * 根据条件创建排序条件
-     *
-     * @return array
-     */
-    private function sortCondition()
-    {
-        $sort = $this->defaultOrder();
-        return $sort;
-    }
-
-    /**
-     * 获取当前集合的排列顺序
-     *
-     * @return array
-     */
-    private function defaultOrder()
-    {
-        $cursor = $this->_order->find(array(
-            'collection_id' => $this->_collection_id
-        ));
-        $cursor->sort(array(
-            'priority' => - 1,
-            '_id' => - 1
-        ));
-        
-        $order = array();
-        while ($cursor->hasNext()) {
-            $row = $cursor->getNext();
-            $order[$row['field']] = $row['order'];
-        }
-        
-        if (! isset($order['_id'])) {
-            $order['_id'] = - 1;
-        }
-        return $order;
     }
 
     /**
