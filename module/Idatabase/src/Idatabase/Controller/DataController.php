@@ -18,50 +18,59 @@ use Zend\Json\Json;
 
 class DataController extends BaseActionController
 {
+
     /**
      * 读取当前数据集合的mongocollection实例
+     *
      * @var object
      */
     private $_data;
 
     /**
      * 读取数据属性结构的mongocollection实例
+     *
      * @var object
      */
     private $_structure;
 
     /**
      * 读取集合列表集合的mongocollection实例
+     *
      * @var object
      */
     private $_collection;
 
     /**
      * 当前集合所属项目
+     *
      * @var string
      */
     private $_project_id = '';
 
     /**
      * 当前集合所属集合 集合的alias别名或者_id的__toString()结果
+     *
      * @var string
      */
     private $_collection_id = '';
 
     /**
      * 存储数据的物理集合名称
+     *
      * @var string
      */
     private $_collection_name = '';
 
     /**
      * 存储当前集合的结局结构信息
+     *
      * @var array
      */
     private $_schema = null;
 
     /**
      * 存储查询显示字段列表
+     *
      * @var array
      */
     private $_fields = array(
@@ -72,6 +81,7 @@ class DataController extends BaseActionController
 
     /**
      * 存储字段与字段名称的数组
+     *
      * @var array
      */
     private $_title = array(
@@ -81,19 +91,29 @@ class DataController extends BaseActionController
     );
 
     /**
+     * 存储关联数据的集合数据
+     *
+     * @var array
+     */
+    private $_rshData = array();
+
+    /**
      * 排序的mongocollection实例
+     *
      * @var string
      */
     private $_order;
 
     /**
      * 数据集合映射物理集合
+     *
      * @var object
      */
     private $_mapping;
 
     /**
      * 当集合为树状集合时，存储父节点数据的集合名称
+     *
      * @var string
      */
     private $_fatherField = '';
@@ -112,6 +132,7 @@ class DataController extends BaseActionController
      */
     public function init()
     {
+        resetTimeMemLimit();
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
         if (empty($this->_project_id))
@@ -146,6 +167,7 @@ class DataController extends BaseActionController
         $sort = array();
         
         $action = $this->params()->fromQuery('action', null);
+        $sort = $this->params()->fromQuery('sort', null);
         $start = intval($this->params()->fromQuery('start', 0));
         $limit = intval($this->params()->fromQuery('limit', 10));
         
@@ -169,12 +191,17 @@ class DataController extends BaseActionController
         
         if ($action == 'excel') {
             // 在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
-            
+            $this->dealRshData();
             // 结束
             convertToPureArray($datas);
             array_walk($datas, function (&$value, $key)
             {
                 ksort($value);
+                array_walk($value, function(&$cell,$field) {
+                    if(isset($this->_rshData[$field])) {
+                        $cell = $this->_rshData[$field][$cell];
+                    }
+                });
             });
             
             $excel = array(
@@ -184,6 +211,32 @@ class DataController extends BaseActionController
             arrayToExcel($excel);
         }
         return $this->rst($datas, $total, true);
+    }
+
+    /**
+     * 处理数据中的关联数据
+     */
+    private function dealRshData()
+    {
+        $this->_rshCollection[$row['rshCollection']] = array(
+            'rshCollectionKeyField' => $rshCollectionValueField,
+            'rshCollectionValueField' => $rshCollectionValueField
+        );
+        
+        foreach ($this->_rshCollection as $_id => $detail) {
+            $collectionName = 'idatabase_collection_' . $_id;
+            $model = $this->model($collectionName);
+            $cursor = $model->findAll(array(), array(
+                $detail['rshCollectionKeyField'] => true,
+                $detail['rshCollectionValueField'] => true
+            ));
+            
+            $datas = array();
+            while ($cursor->hasNext()) {
+                $datas[$row[$detail['rshCollectionValueField']]] = $row[$detail['rshCollectionKeyField']];
+            }
+            $this->_rshData[$detail['rshCollectionAlias']] = $datas;
+        }
     }
 
     /**
@@ -483,6 +536,34 @@ class DataController extends BaseActionController
     }
 
     /**
+     * 清空某个数据结合
+     * 注意，为了确保数据安全，需要输入当前用户的登录密码
+     */
+    public function dropAction()
+    {
+        $password = $this->params()->fromPost('password', null);
+        if ($password == null) {
+            return $this->msg(false, '请输入当前用户的登录密码');
+        }
+        
+        if (empty($_SESSION['account']['password'])) {
+            return $this->msg(false, '当前会话已经过期，请重新登录');
+        }
+        
+        if ($_SESSION['account']['password'] !== $password) {
+            return $this->msg(false, '您输入的登录密码错误，请重新输入');
+        }
+        
+        $rst = $this->_data->drop();
+        if ($rst['ok'] == 1) {
+            return $this->msg(true, '清空数据成功');
+        } else {
+            fb($rst, \firePHP::LOG);
+            return $this->msg(false, '清空数据失败');
+        }
+    }
+
+    /**
      * 获取集合的数据结构
      *
      * @return array
@@ -545,6 +626,7 @@ class DataController extends BaseActionController
                         throw new \Exception('关系集合未设定关系键值');
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
+                        'rshCollectionAlias' => $row['alias'],
                         'rshCollectionKeyField' => $rshCollectionValueField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
@@ -763,5 +845,27 @@ class DataController extends BaseActionController
         }
         
         return $collectionInfo['_id']->__toString();
+    }
+
+    /**
+     * 根据集合的编号获取集合的别名
+     *
+     * @param string $_id            
+     * @throws \Exception
+     */
+    private function getCollectionAliasById($_id)
+    {
+        if (! ($_id instanceof \MongoId)) {
+            $_id = myMongoId($_id);
+        }
+        $collectionInfo = $this->_collection->findOne(array(
+            'project_id' => $this->_project_id,
+            '_id' => $_id
+        ));
+        if ($collectionInfo == null) {
+            throw new \Exception('集合名称不存在于指定项目');
+        }
+        
+        return $collectionInfo['alias'];
     }
 }
