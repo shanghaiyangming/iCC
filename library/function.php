@@ -267,7 +267,7 @@ function callSoap($wsdl, $options)
         $client = new SoapClient($wsdl, $options);
         return $client;
     } catch (Exception $e) {
-        var_dump(exceptionMsg($e));
+        fb(exceptionMsg($e), \FirePHP::LOG);
         return false;
     }
 }
