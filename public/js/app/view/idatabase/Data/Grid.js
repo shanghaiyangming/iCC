@@ -58,6 +58,12 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 					width : 60,
 					tooltip : '删除',
 					action : 'remove'
+				} , '->', {
+					text : '清空',
+					iconCls : 'recycle',
+					width : 60,
+					tooltip : '清空',
+					action : 'drop'
 				} ]
 			}],
 			store : this.store,

@@ -194,7 +194,6 @@ class DataController extends BaseActionController
             $this->dealRshData();
             // 结束
             convertToPureArray($datas);
-            fb($this->_rshData,\FirePHP::LOG);
             array_walk($datas, function (&$value, $key)
             {
                 ksort($value);
@@ -625,7 +624,7 @@ class DataController extends BaseActionController
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
                         'collectionField' => $row['field'],
-                        'rshCollectionKeyField' => $rshCollectionValueField,
+                        'rshCollectionKeyField' => $rshCollectionKeyField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
                 } else {
