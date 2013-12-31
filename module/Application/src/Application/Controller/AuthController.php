@@ -46,9 +46,6 @@ class AuthController extends AbstractActionController
         $username = $this->params()->fromPost('username', null);
         $password = $this->params()->fromPost('password', null);
         
-        
-        
-        
         $accountInfo = $this->_account->findOne(array(
             'username' => $username,
             'password' => sha1($password),
@@ -77,6 +74,13 @@ class AuthController extends AbstractActionController
     {
     	unset($_SESSION['account']);
     	$this->redirect()->toRoute('login');
+    }
+    
+    /**
+     * 保持登录状态
+     */
+    public function keepAction() {
+        
     }
 
     /**

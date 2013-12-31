@@ -52,12 +52,12 @@ class IndexController extends AbstractActionController
                 'username' => 'admin',
                 'password' => sha1('yangming1983'),
                 'roles' => 'admin',
+                'mode' => 'common',/*common/professional*/
                 'expire' => new \MongoDate(strtotime('2099-12-31 23:59:59')),
                 'active' => true,
                 'father' => ''
             ));
         }
-        
         echo '安装成功';
         $view = new ViewModel();
         $view->setTerminal(true);

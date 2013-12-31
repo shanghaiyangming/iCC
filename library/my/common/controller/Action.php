@@ -15,6 +15,9 @@ abstract class Action extends AbstractActionController
 
     public function __construct()
     {
+        //确保输出为UTF-8
+        header("Content-type:text/html;charset=utf-8");
+        
         // 增加权限控制方法在这里
         
         // 添加初始化事件函数
