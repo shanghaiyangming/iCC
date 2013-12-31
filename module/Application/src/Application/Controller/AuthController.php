@@ -13,8 +13,9 @@ use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Gregwar\Captcha\CaptchaBuilder;
 use Zend\Authentication\AuthenticationService;
+use My\Common\Controller\Action;
 
-class AuthController extends AbstractActionController
+class AuthController extends Action
 {
 
     private $_account;
@@ -42,9 +43,11 @@ class AuthController extends AbstractActionController
      */
     public function loginAction()
     {
+
         $this->_account = $this->model(SYSTEM_ACCOUNT);
         $username = $this->params()->fromPost('username', null);
         $password = $this->params()->fromPost('password', null);
+        fb($this->params()->fromPost(),'LOG');
         
         $accountInfo = $this->_account->findOne(array(
             'username' => $username,
@@ -53,14 +56,22 @@ class AuthController extends AbstractActionController
                 '$gt' => new \MongoDate()
             )
         ));
-        
+        fb(array(
+            'username' => $username,
+            'password' => sha1($password),
+            'expire' => array(
+                '$gt' => new \MongoDate()
+            )
+        ),'LOG');
+        fb($accountInfo,'LOG');
         if($accountInfo==null) {
             return $this->msg(false,'无效的用户密码');
         }
         
         fb($accountInfo,'LOG');
         $_SESSION['account'] = $accountInfo;
-        //$this->redirect()->toRoute('home');
+
+        $this->redirect()->toRoute('home');
     }
 
     /**

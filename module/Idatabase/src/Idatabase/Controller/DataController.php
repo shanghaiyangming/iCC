@@ -548,7 +548,7 @@ class DataController extends BaseActionController
             return $this->msg(false, '当前会话已经过期，请重新登录');
         }
         
-        if ($_SESSION['account']['password'] !== $password) {
+        if ($_SESSION['account']['password'] !== sha1($password)) {
             return $this->msg(false, '您输入的登录密码错误，请重新输入');
         }
         

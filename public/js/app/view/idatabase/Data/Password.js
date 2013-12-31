@@ -15,6 +15,7 @@ Ext.define('icc.view.idatabase.Data.Password', {
 			allowBlank : false
 		}, {
 			name : 'password',
+			inputType : 'password',
 			fieldLabel : '登录密码',
 			allowBlank : false
 		} ];

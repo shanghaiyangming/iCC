@@ -15,7 +15,6 @@ use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
-use My\Common\Excel\MyReadFilter;
 
 class DataController extends BaseActionController
 {
