@@ -168,6 +168,69 @@ class KeyController extends BaseActionController
         
         return $this->msg(true, '编辑信息成功');
     }
+    
+    /**
+     * 批量修改密钥
+     *
+     * @author young
+     * @name 批量修改密钥
+     * @version 2013.11.14 young
+     * @return JsonModel
+     */
+    public function saveAction() {
+        $updateInfos = $this->params()->fromPost('updateInfos', null);
+        try {
+            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($updateInfos)) {
+            return $this->msg(false, '更新数据无效');
+        }
+        
+        foreach ($updateInfos as $row) {
+            $_id = $row['_id'];
+            unset($row['_id']);
+            
+            if ($row['name'] == null) {
+                return $this->msg(false, '请填写密钥名称');
+            }
+            
+            if ($row['key'] == null) {
+                return $this->msg(false, '请填写密钥');
+            }
+            
+            if (strlen($row['key']) < 8) {
+                return $this->msg(false, '密钥长度不少于8位');
+            }
+            
+            if ($row['desc'] == null) {
+                return $this->msg(false, '请填写密钥描述');
+            }
+            
+            if ($row['expire'] == null) {
+                return $this->msg(false, '请设定密钥过期时间');
+            }
+            
+            $row['expire'] = intval(strtotime($row['expire']));
+            if ($row['expire'] === 0) {
+                return $this->msg(false, '无效的日期格式');
+            }
+            $row['expire'] = new \MongoDate($row['expire']);
+            
+            array_unset_recursive($row,array('_id','project_id'));
+            
+            $this->_keys->update(array(
+                '_id' => myMongoId($_id),
+                'project_id' => $this->_project_id
+            ), array(
+                '$set' => $row
+            ));
+        }
+        
+        return $this->msg(true, '更新密钥成功');
+    }
 
     /**
      * 删除密钥

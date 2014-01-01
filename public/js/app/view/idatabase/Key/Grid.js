@@ -6,25 +6,61 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 	closable : false,
 	multiSelect : false,
 	disableSelection : false,
+	selType : 'rowmodel',
+	plugins : [ Ext.create('Ext.grid.plugin.CellEditing',{
+		clicksToEdit : 2
+	})],
 	columns : [ {
 		text : '密钥名称',
 		dataIndex : 'name',
-		flex : 1
+		flex : 1,
+		field : {
+			xtype : 'textfield',
+			allowBlank : false
+		}
 	}, {
 		text : '密钥描述',
 		dataIndex : 'desc',
-		flex : 1
+		flex : 1,
+		field : {
+			xtype : 'textfield',
+			allowBlank : false
+		}
+	}, {
+		text : '项目编号',
+		dataIndex : 'project_id',
+		flex : 1,
+		field : {
+			xtype : 'textfield',
+			allowBlank : false
+		}
+	}, {
+		text : '密钥',
+		dataIndex : 'key',
+		flex : 1,
+		field : {
+			xtype : 'textfield',
+			allowBlank : false
+		}
+		
 	}, {
 		xtype : 'datecolumn',
 		text : '过期时间',
 		dataIndex : 'expire',
-		format : 'Y-m-d',
-		flex : 1
+		format : 'Y-m-d H:i:s',
+		flex : 1,
+		field : {
+			xtype : 'datefield',
+			allowBlank : false,
+			format : 'Y-m-d H:i:s'
+		}
 	}, {
 		xtype : 'booleancolumn',
 		text : '有效性',
 		dataIndex : 'active',
 		flex : 1,
+		trueText : '√',
+		falseText : '×',
 		field : {
 			xtype : 'commonComboboxBoolean'
 		}

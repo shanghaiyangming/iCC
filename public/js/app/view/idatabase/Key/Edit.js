@@ -5,7 +5,7 @@ Ext.define('icc.view.idatabase.Key.Edit', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'iform',
-			url : '/idatabase/plugin/edit',
+			url : '/idatabase/key/edit',
 			items : [ {
 				xtype : 'hiddenfield',
 				name : '_id',

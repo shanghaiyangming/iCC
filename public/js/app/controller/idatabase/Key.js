@@ -109,33 +109,36 @@ Ext.define('icc.controller.idatabase.Key', {
 
 		listeners[controllerName + 'Grid button[action=save]'] = {
 			click : function(button) {
-				var records = me.getList().store.getUpdatedRecords();
-				var recordsNumber = records.length;
-				if (recordsNumber == 0) {
-					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
-				}
-				var updateList = [];
-				for ( var i = 0; i < recordsNumber; i++) {
-					record = records[i];
-					updateList.push(record.data);
-				}
+                            var grid = button.up('gridpanel');
+                            var records = me.getList().store.getUpdatedRecords();
+                            var recordsNumber = records.length;
+                            if (recordsNumber == 0) {
+                                    Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
+                                    return false;
+                            }
+                            var updateList = [];
+                            for ( var i = 0; i < recordsNumber; i++) {
+                                record = records[i];
+                                updateList.push(record.data);
+                            }
 
-				Ext.Ajax.request({
-					url : me.actions.save,
-					params : {
-						updateInfos : Ext.encode(updateList)
-					},
-					scope : me,
-					success : function(response) {
-						var text = response.responseText;
-						var json = Ext.decode(text);
-						Ext.Msg.alert('提示信息', json.msg);
-						if (json.success) {
-							me.getList().store.load();
-						}
-					}
-				});
-
+                            Ext.Ajax.request({
+                                url : me.actions.save,
+                                params : {
+                                    updateInfos : Ext.encode(updateList),
+                                    project_id : grid.project_id
+                                },
+                                scope : me,
+                                success : function(response) {
+                                    var text = response.responseText;
+                                    var json = Ext.decode(text);
+                                    Ext.Msg.alert('提示信息', json.msg);
+                                    if (json.success) {
+                                        me.getList().store.load();
+                                    }
+                                }
+                            });
+                            return true;
 			}
 		};
 

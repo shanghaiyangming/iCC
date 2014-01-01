@@ -264,6 +264,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					});
 					win.show();
 				}
+				return true;
 			}
 		};
 
@@ -286,6 +287,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					});
 					win.show();
 				}
+				return true;
 			}
 		};
 

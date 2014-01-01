@@ -13,23 +13,27 @@ Ext.define('icc.model.common.Model', {
 		name : '__CREATE_TIME__',
 		type : 'string',
 		convert : function(value, record) {
-			if (value == undefined || value == '') {
-				return '';
+			if(Ext.isObject(value) && value['sec']!=undefined) {
+			    var date = new Date();
+			    date.setTime(value.sec * 1000);
+			    return date;
 			}
-			var date = new Date();
-			date.setTime(value.sec * 1000);
-			return date;
+			else {
+			    return value;
+			}
 		}
 	}, {
 		name : '__MODIFY_TIME__',
 		type : 'string',
 		convert : function(value, record) {
-			if (value == undefined || value == '') {
-				return '';
+			if(Ext.isObject(value) && value['sec']!=undefined) {
+			    var date = new Date();
+			    date.setTime(value.sec * 1000);
+			    return date;
 			}
-			var date = new Date();
-			date.setTime(value.sec * 1000);
-			return date;
+			else {
+			    return value;
+			}
 		}
 	} ]
 });
