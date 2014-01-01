@@ -29,7 +29,12 @@ class AuthController extends Action
      */
     public function indexAction()
     {
-        $view = new ViewModel();
+        fb($this->params(),'LOG');
+        $failure = $this->params()->fromRoute('failure', false);
+        fb($failure,'LOG');
+        $view = new ViewModel(array(
+            'failure' => $failure
+        ));
         $view->setTerminal(true);
         return $view;
     }
@@ -43,11 +48,9 @@ class AuthController extends Action
      */
     public function loginAction()
     {
-
         $this->_account = $this->model(SYSTEM_ACCOUNT);
         $username = $this->params()->fromPost('username', null);
         $password = $this->params()->fromPost('password', null);
-        fb($this->params()->fromPost(),'LOG');
         
         $accountInfo = $this->_account->findOne(array(
             'username' => $username,
@@ -56,22 +59,15 @@ class AuthController extends Action
                 '$gt' => new \MongoDate()
             )
         ));
-        fb(array(
-            'username' => $username,
-            'password' => sha1($password),
-            'expire' => array(
-                '$gt' => new \MongoDate()
-            )
-        ),'LOG');
-        fb($accountInfo,'LOG');
-        if($accountInfo==null) {
-            return $this->msg(false,'无效的用户密码');
+        
+        if ($accountInfo == null) {
+            return $this->redirect()->toRoute('login', array(
+                'failure' => true
+            ));
         }
         
-        fb($accountInfo,'LOG');
         $_SESSION['account'] = $accountInfo;
-
-        $this->redirect()->toRoute('home');
+        return $this->redirect()->toRoute('home');
     }
 
     /**
@@ -83,15 +79,16 @@ class AuthController extends Action
      */
     public function logoutAction()
     {
-    	unset($_SESSION['account']);
-    	$this->redirect()->toRoute('login');
+        unset($_SESSION['account']);
+        $this->redirect()->toRoute('login');
     }
-    
+
     /**
      * 保持登录状态
      */
-    public function keepAction() {
-        
+    public function keepAction()
+    {
+    	
     }
 
     /**
@@ -107,7 +104,6 @@ class AuthController extends Action
         $builder = new CaptchaBuilder();
         $builder->setBackgroundColor(255, 255, 255);
         $builder->setTextColor(255, 0, 255);
-        // $builder->setTextColor(68, 134, 246);
         $builder->setPhrase(rand(100000, 999999));
         $_SESSION['phrase'] = $builder->getPhrase();
         $builder->build(150, 40);

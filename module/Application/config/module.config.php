@@ -17,15 +17,32 @@ return array(
                         'controller' => 'Application\Controller\Index',
                         'action' => 'index'
                     )
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'homeWildcard' => array(
+                        'type' => 'Zend\Mvc\Router\Http\Wildcard',
+                        'may_terminate' => true
+                    )
                 )
             ),
             'login' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/login',
+                    'route' => '/login[/:failure]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Auth',
                         'action' => 'index'
+                    )
+                )
+            ),
+            'install' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route' => '/install',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action' => 'install'
                     )
                 )
             ),
@@ -118,8 +135,8 @@ return array(
                 ),
                 'dbs' => array(
                     'ICCv1',
-                    'admin'//用户连接系统
-                )
+                    'admin' // 用户连接系统
+                                )
             ),
             'analysis' => array(
                 'servers' => array(

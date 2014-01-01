@@ -46,12 +46,20 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
-        //开启FirePHP调试或者关闭
+        $this->initFirePHP();
+        $this->initAuthentication();
+    }
+
+    public function initFirePHP()
+    {
+        // 开启FirePHP调试或者关闭
         \FirePHP::getInstance(true)->setEnabled(true);
-        
+    }
+
+    public function initAuthentication()
+    {
+        // 初始化授权
         $auth = new AuthenticationService();
         $auth->setStorage(new SessionStorage('account'));
     }
-
-
 }
