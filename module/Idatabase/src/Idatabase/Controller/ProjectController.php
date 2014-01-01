@@ -52,7 +52,6 @@ class ProjectController extends BaseActionController
                 )
             );
         }
-        fb($query,\FirePHP::LOG);
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 

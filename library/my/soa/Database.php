@@ -7,6 +7,14 @@ class Database
         
     }
     
+    public function find($query,$sort) {
+        
+    }
+    
+    public function count() {
+        
+    }
+    
     public function __destruct() {
         
     }

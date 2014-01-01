@@ -38,20 +38,10 @@ abstract class BaseActionController extends Action
         
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, function ($event) use($serviceLocator)
         {
-            $this->project_id = $this->params()
-                ->fromQuery('project_id', false) ? $this->params()
-                ->fromPost('project_id', null) : $this->params()
-                ->fromQuery('project_id', null);
-            
-            $this->collection_id = $this->params()
-                ->fromQuery('collection_id', false) ? $this->params()
-                ->fromPost('collection_id', null) : $this->params()
-                ->fromQuery('collection_id', null);
-            
             // 身份验证不通过的情况下，执行以下操作
-            if (false) {
+            if (!isset($_SESSION['account'])) {
                 $event->stopPropagation(true);
-                $event->setViewModel($this->msg(false, 'exit'));
+                $event->setViewModel($this->msg(false, '未通过身份验证'));
             }
         });
         

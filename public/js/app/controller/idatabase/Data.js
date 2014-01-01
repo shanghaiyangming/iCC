@@ -232,7 +232,6 @@ Ext.define('icc.controller.idatabase.Data', {
 							height: 240,
 							width : 320
 						});
-						
 						win.show();
 					}
 				}, me);
@@ -241,6 +240,8 @@ Ext.define('icc.controller.idatabase.Data', {
 		
 		listeners['idatabaseDataPassword button[action=submit]'] = {
 			click : function(button) {
+				var grid = me.activeDataGrid();
+				var store = grid.store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -248,6 +249,7 @@ Ext.define('icc.controller.idatabase.Data', {
 						waitMsg : '系统处理中，请稍后……',
 						success : function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
+							button.up('window').close();
 							store.load();
 						},
 						failure : function(form, action) {
@@ -292,7 +294,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					store.load();
 				}
 			}
-		}
+		};
 
 		me.control(listeners);
 	}
