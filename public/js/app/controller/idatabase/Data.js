@@ -121,7 +121,11 @@ Ext.define('icc.controller.idatabase.Data', {
 			click : function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var selections = grid.getSelectionModel().getSelection();
-				if (selections.length > 0) {
+				if (selections.length>1) {
+					Ext.Msg.alert('提示信息', '请选择“一项”您要编辑的项目，请勿多选');
+					return false;
+				}
+				if (selections.length === 1) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						project_id : grid.project_id,
 						collection_id : grid.collection_id,
