@@ -851,3 +851,17 @@ function myMongoRegex($text)
     return new \MongoRegex('/' . preg_replace("/[\s\r\t\n]/", '.*', $text) . '/i');
 }
 
+/**
+ * 特别处理POST变量中的点
+ * @param string $_POST
+ * @return string
+ */
+function convertVarNameWithDot(&$array) {
+    if(!empty($array)) {
+        array_walk($array, function($value,&$key){
+        	$key = str_replace('__DOT__', '.', $key);
+        });
+    }
+    return $array;
+}
+
