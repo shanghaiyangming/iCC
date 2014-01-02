@@ -6,7 +6,7 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	collapsible : false,
 	split : true,
 	closable : false,
-	multiSelect : false,
+	multiSelect : true,
 	disableSelection : false,
 	sortableColumns : false,
 	selType : 'rowmodel',
