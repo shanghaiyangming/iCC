@@ -352,12 +352,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 					switch (record.get('type')) {
 						case 'boolfield':
-							var addOrEditField = {
-								xtype: record.get('type'),
-								fieldLabel: record.get('label'),
-								radioName: record.get('field'),
-								allowBlank: !record.get('required')
-							};
+							addOrEditField.radioName = record.get('field');
 							break;
 						case 'filefield':
 							addOrEditField = {

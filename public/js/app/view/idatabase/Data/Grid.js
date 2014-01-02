@@ -1,7 +1,7 @@
 Ext.define('icc.view.idatabase.Data.Grid', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.idatabaseDataGrid',
-	region : 'center', 
+	region : 'center',
 	border : false,
 	collapsible : false,
 	split : true,
@@ -9,10 +9,6 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	multiSelect : true,
 	disableSelection : false,
 	sortableColumns : false,
-	selType : 'rowmodel',
-	plugins : [ Ext.create('Ext.grid.plugin.CellEditing', {
-		clicksToEdit : 2
-	}) ],
 	columns : [ {
 		text : '_id',
 		dataIndex : '_id',
@@ -24,7 +20,7 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 		dataIndex : '__CREATE_TIME__',
 		flex : 1,
 		format : 'Y-m-d H:i:s'
-	} , {
+	}, {
 		xtype : 'datecolumn',
 		text : '最后修改时间',
 		dataIndex : '__MODIFY_TIME__',
@@ -34,6 +30,10 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	} ],
 	initComponent : function() {
 		Ext.apply(this, {
+			selType : 'rowmodel',
+			plugins : [ Ext.create('Ext.grid.plugin.CellEditing', {
+				clicksToEdit : 2
+			}) ],
 			dockedItems : [ {
 				xtype : 'toolbar',
 				dock : 'top',
@@ -58,14 +58,14 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 					width : 60,
 					tooltip : '删除',
 					action : 'remove'
-				} , '->', {
+				}, '->', {
 					text : '清空',
 					iconCls : 'recycle',
 					width : 60,
 					tooltip : '清空',
 					action : 'drop'
 				} ]
-			}],
+			} ],
 			store : this.store,
 			bbar : {
 				xtype : 'paging',
