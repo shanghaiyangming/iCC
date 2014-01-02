@@ -67,6 +67,7 @@ class ProjectController extends BaseActionController
     {
         $name = $this->params()->fromPost('name', null);
         $sn = $this->params()->fromPost('sn', null);
+        $isSystem = filter_var($this->params()->fromPost('isSystem', ''), FILTER_VALIDATE_BOOLEAN);
         $desc = $this->params()->fromPost('desc', null);
         
         if ($name == null) {
@@ -92,6 +93,7 @@ class ProjectController extends BaseActionController
         $project = array();
         $project['name'] = $name;
         $project['sn'] = $sn;
+        $project['isSystem'] = isset($_SESSION['account']['role']) && $_SESSION['account']['role'] === 'root' ? $isSystem : false;
         $project['desc'] = $desc;
         $this->_project->insert($project);
         
@@ -111,6 +113,7 @@ class ProjectController extends BaseActionController
         $_id = $this->params()->fromPost('_id', null);
         $name = $this->params()->fromPost('name', null);
         $sn = $this->params()->fromPost('sn', null);
+        $isSystem = filter_var($this->params()->fromPost('isSystem', ''), FILTER_VALIDATE_BOOLEAN);
         $desc = $this->params()->fromPost('desc', null);
         
         if ($_id == null) {
@@ -144,6 +147,7 @@ class ProjectController extends BaseActionController
         $project = array();
         $project['name'] = $name;
         $project['sn'] = $sn;
+        $project['isSystem'] = isset($_SESSION['account']['role']) && $_SESSION['account']['role'] === 'root' ? $isSystem : false;
         $project['desc'] = $desc;
         $this->_project->update(array(
             '_id' => myMongoId($_id)

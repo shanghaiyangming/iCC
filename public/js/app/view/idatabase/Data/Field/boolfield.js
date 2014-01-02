@@ -8,15 +8,6 @@ Ext.define('icc.view.idatabase.Data.Field.boolfield', {
 	},
 	layout : 'hbox',
 	initComponent : function() {
-		console.info({
-			boxLabel : '是',
-			name : this.radioName,
-			inputValue : true
-		}, {
-			boxLabel : '否',
-			name : this.radioName,
-			inputValue : false
-		} );
 		Ext.apply(this, {
 			items : [ {
 				boxLabel : '是',

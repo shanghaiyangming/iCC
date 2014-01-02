@@ -55,14 +55,22 @@ class IndexController extends Action
         )) == null) {
             $datas = array();
             $this->_account->insert(array(
+                'username' => 'root',
+                'password' => sha1('yangming1983'),
+                'role' => 'root',
+                'isProfessional' => 1,/*[common/professional]*/
+                'expire' => new \MongoDate(strtotime('2020-12-31 23:59:59')),
+                'active' => true
+            ));
+            $this->_account->insert(array(
                 'username' => 'admin',
                 'password' => sha1('yangming1983'),
-                'roles' => 'admin',
-                'mode' => 'professional',/*[common/professional]*/
+                'role' => 'admin',
+                'isProfessional' => 1,/*[common/professional]*/
                 'expire' => new \MongoDate(strtotime('2020-12-31 23:59:59')),
-                'active' => true,
-                'father' => ''
+                'active' => true
             ));
+            
         }
         return $this->redirect()->toRoute('home');
     }

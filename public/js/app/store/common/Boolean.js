@@ -7,5 +7,8 @@ Ext.define('icc.store.common.Boolean', {
 	}, {
 		"name" : '否',
 		"value" : false
+	} , {
+		"name" : '无',
+		"value" : ''
 	} ]
 });

@@ -322,10 +322,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 			var treeField = '';
 			var treeLabel = '';
-			var root = {
-				leaf: true,
-				expanded: true
-			};
 			structureStore.load(function(records, operation, success) {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
@@ -337,11 +333,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
 					}
-
-					if (isTree) {
-						root[record.get('field')] = ''
-					}
-
 					//创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype: record.get('type'),
@@ -352,6 +343,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 					switch (record.get('type')) {
 						case 'boolfield':
+							delete addOrEditField.name;
 							addOrEditField.radioName = record.get('field');
 							break;
 						case 'filefield':
@@ -698,6 +690,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 									name: record.get('field') + '[distance]',
 									fieldLabel: '附近范围(km)'
 								}]
+							};
+						} else if(record.get('type') == 'boolfield') {
+							searchField = {
+								xtype: 'commonComboboxBoolean',
+								fieldLabel: record.get('label'),
+								name: record.get('field')
 							};
 						} else {
 							searchField = {
