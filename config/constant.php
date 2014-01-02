@@ -5,6 +5,8 @@
 defined('ROOT_PATH') || define('ROOT_PATH', dirname(__DIR__));
 defined('CACHE_ADAPTER') || define('CACHE_ADAPTER', 'fileCache'); // [fileCache|memcachedCache|redisCache]
 defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development'); // [development|production]
+defined('DEFAULT_DATABASE') || define('DEFAULT_DATABASE', 'ICCv1');
+defined('DEFAULT_CLUSTER') || define('DEFAULT_CLUSTER', 'default');
 
 /**
  * 系统全局设定数据库
@@ -27,6 +29,7 @@ defined('IDATABASE_STATISTIC') || define('IDATABASE_STATISTIC', 'idatabase_stati
 defined('IDATABASE_PROMISSION') || define('IDATABASE_PROMISSION', 'idatabase_promission');
 defined('IDATABASE_KEYS') || define('IDATABASE_KEYS', 'idatabase_keys');
 defined('IDATABASE_COLLECTION_ORDERBY') || define('IDATABASE_COLLECTION_ORDERBY', 'idatabase_collection_orderby');
+defined('IDATABASE_MAPPING') || define('IDATABASE_MAPPING', 'idatabase_mapping');
 
 /**
  * 自定义事件

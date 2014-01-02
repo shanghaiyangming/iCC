@@ -28,9 +28,9 @@ class MongoCollection extends \MongoCollection
 
     private $_collection = '';
 
-    private $_database = 'ICCv1';
+    private $_database = DEFAULT_DATABASE;
 
-    private $_cluster = 'default';
+    private $_cluster = DEFAULT_CLUSTER;
 
     private $_collectionOptions = NULL;
 
@@ -86,7 +86,7 @@ class MongoCollection extends \MongoCollection
 
     const debug = false;
 
-    public function __construct(Config $config, $collection = null, $database = 'ICCv1', $cluster = 'default', $collectionOptions = null)
+    public function __construct(Config $config, $collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER, $collectionOptions = null)
     {
         // 检测是否加载了FirePHP
         if (! class_exists("FirePHP")) {

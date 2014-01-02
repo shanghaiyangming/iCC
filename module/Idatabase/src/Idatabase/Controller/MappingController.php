@@ -21,23 +21,24 @@ class MappingController extends BaseActionController
     private $_mapping;
 
     private $_project_id;
-    
+
     private $_collection_id;
 
     public function init()
     {
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
-        
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
+        $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
+        if (empty($this->_collection_id))
+            throw new \Exception('$this->_collection_id值未设定');
+        
+        $this->_mapping = $this->model(IDATABASE_MAPPING);
     }
 
     /**
-     * 读取指定项目内的全部集合列表
-     * 支持专家模式和普通模式显示，对于一些说明表和关系表，请在定义时，定义为普通模式
+     * 读取映射关系
      *
      * @author young
      * @name 读取指定项目内的全部集合列表
@@ -45,65 +46,49 @@ class MappingController extends BaseActionController
      */
     public function indexAction()
     {
-        $search = trim($this->params()->fromQuery('query', ''));
-        $plugin_id = $this->params()->fromQuery('plugin_id', '');
-        
-        $sort = array(
-            'orderBy' => 1,
-            '_id' => - 1
-        );
-        
         $query = array(
-            'plugin_id' => $plugin_id,
-            'project_id' => $this->_project_id
+            'project_id' => $this->_project_id,
+            'collection_id' => $this->_collection_id
+        );
+        return $this->findAll(IDATABASE_MAPPING, $query);
+    }
+
+    /**
+     * 更新映射关系
+     *
+     * @author young
+     * @name 更新映射关系
+     * @version 2014.01.02 young
+     * @return JsonModel
+     */
+    public function updateAction()
+    {
+        $collection = $this->params()->fromPost('collection', '');
+        $database = $this->params()->fromPost('database', DEFAULT_DATABASE);
+        $cluster = $this->params()->fromPost('cluster', DEFAULT_CLUSTER);
+        
+        $criteria = array(
+            'project_id' => $this->_project_id,
+            'collection_id' => $this->_collection_id
         );
         
-        if ($search != '') {
-            $search = myMongoRegex($search);
-            $query = array(
-                '$and' => array(
-                    $query,
-                    array(
-                        '$or' => array(
-                            array(
-                                'name' => $search
-                            ),
-                            array(
-                                'alias' => $search
-                            )
-                        )
-                    )
-                )
-            );
+        $datas = array(
+            'collection' => $collection,
+            'database' => $database,
+            'cluster' => $cluster
+        );
+        
+        $rst = $this->_mapping->update($criteria, array(
+            '$set' => $datas
+        ), array(
+            'upsert' => true
+        ));
+        
+        if($rst['ok']) {
+            return $this->msg(true, '设定映射关系成功');
         }
-        
-        return $this->findAll(IDATABASE_COLLECTIONS, $query, $sort);
+        else {
+            return $this->msg(false, Json::encode($rst));
+        }
     }
-
-    /**
-     * 添加新的集合
-     *
-     * @author young
-     * @name 添加新的集合
-     * @version 2013.11.20 young
-     * @return JsonModel
-     */
-    public function addAction()
-    {
-        
-    }
-
-    /**
-     * 批量编辑集合信息
-     *
-     * @author young
-     * @name 批量编辑集合信息
-     * @version 2013.12.02 young
-     * @return JsonModel
-     */
-    public function saveAction()
-    {
-        return $this->msg(true, '集合编辑不支持批量修改功能');
-    }
-
 }
