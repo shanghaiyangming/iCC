@@ -351,6 +351,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 
 					switch (record.get('type')) {
+						case 'boolfield':
+							var addOrEditField = {
+								xtype: record.get('type'),
+								fieldLabel: record.get('label'),
+								radioName: record.get('field'),
+								allowBlank: !record.get('required')
+							};
+							break;
 						case 'filefield':
 							addOrEditField = {
 								xtype: 'filefield',
@@ -475,6 +483,15 @@ Ext.define('icc.controller.idatabase.Collection', {
 							break;
 						case 'boolfield':
 							field.type = 'boolean';
+							field.convert = function(value, record) {
+								if(Ext.isBoolean(value)) {
+									return value;
+								}
+								else if(Ext.isString(value)) {
+									return value==='true'||value==='√' ? true : false;
+								}
+								return value;
+							};
 							break;
 					}
 					modelFields.push(field);
@@ -489,9 +506,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 						switch (record.get('type')) {
 							case 'boolfield':
 								column.xtype = 'booleancolumn';
-								column.trueText: '√';
-								column.falseText: '×';
-								column.field : {
+								column.trueText = '√';
+								column.falseText = '×';
+								column.field = {
 									xtype : 'commonComboboxBoolean'
 								};
 								break;

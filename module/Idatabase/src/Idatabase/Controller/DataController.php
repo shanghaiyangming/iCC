@@ -675,6 +675,9 @@ class DataController extends BaseActionController
                     $value = trim($value);
                     $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
                     break;
+                case 'boolfield':
+                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    break;
                 default:
                     $value = trim($value);
                     break;

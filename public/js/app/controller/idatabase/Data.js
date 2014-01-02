@@ -137,6 +137,16 @@ Ext.define('icc.controller.idatabase.Data', {
 							form.findField(field+'[lat]').setValue(tmp[1]);
 							return true;
 						}
+						else if(item.xtype=='boolfield') {
+							var field = item.radioName;
+							var fieldValue = selections[0].get(field);
+							fieldValue = Ext.isBoolean(fieldValue) ? fieldValue : false;
+							if(fieldValue===true) {
+								form.findField(field).setValue(true);
+							} else {
+								form.findField(field).next().setValue(true);
+							}
+						}
 					});
 					win.show();
 				} else {

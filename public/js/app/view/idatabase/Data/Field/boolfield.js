@@ -1,22 +1,30 @@
 Ext.define('icc.view.idatabase.Data.Field.boolfield', {
-	extend : 'Ext.form.FieldContainer',
+	extend : 'Ext.form.RadioGroup',
 	alias : 'widget.boolfield',
 	fieldLabel : '是否选择boolean',
-	name : 'booleanName',
-	defaultType : 'radiofield',
+	radioName : 'booleanName',
 	defaults : {
 		flex : 1
 	},
 	layout : 'hbox',
 	initComponent : function() {
+		console.info({
+			boxLabel : '是',
+			name : this.radioName,
+			inputValue : true
+		}, {
+			boxLabel : '否',
+			name : this.radioName,
+			inputValue : false
+		} );
 		Ext.apply(this, {
 			items : [ {
 				boxLabel : '是',
-				name : this.name,
+				name : this.radioName,
 				inputValue : true
 			}, {
 				boxLabel : '否',
-				name : this.name,
+				name : this.radioName,
 				inputValue : false
 			} ]
 		});
