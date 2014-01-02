@@ -11,6 +11,9 @@ Ext.define('icc.store.idatabase.Structure.Type', {
 		"name" : '数字输入框',
 		"val" : 'numberfield'
 	}, {
+		"name" : '是非选择框',
+		"val" : 'boolfield'
+	},{
 		"name" : '富文本编辑器',
 		"val" : 'htmleditor'
 	}, {
