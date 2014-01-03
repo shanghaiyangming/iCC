@@ -134,11 +134,11 @@ class DataController extends BaseActionController
     {
         resetTimeMemLimit();
         
-        //特殊处理某些变量
+        //特殊处理包含点的变量,将__DOT__转换为.
         convertVarNameWithDot($_POST);
         convertVarNameWithDot($_FILES);
         convertVarNameWithDot($_REQUEST);
-
+        
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
         if (empty($this->_project_id))

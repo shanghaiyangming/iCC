@@ -162,4 +162,12 @@ class TestController extends AbstractActionController
         
         return $this->response;
     }
+    
+    public function irAction() {
+        $o = $this->model('test');
+        $o->insertByFindAndModify(array('a.b'=>'a.b','c'=>'c'));
+        echo '<pre>';
+        var_dump($o->findAll(array(),array('_id'=>-1),0,0,array('a.b'=>true)));
+        return $this->response;
+    }
 }

@@ -858,10 +858,13 @@ function myMongoRegex($text)
  */
 function convertVarNameWithDot(&$array) {
     if(!empty($array)) {
-        array_walk($array, function($value,&$key){
-        	$key = str_replace('__DOT__', '.', $key);
+        array_walk($array, function($value,&$key) use (&$array){
+            if(strpos($key,'__DOT__')!==false) {
+                $newKey = str_replace('__DOT__', '.', $key);
+                $array[$newKey] = $value;
+                unset($array[$key]);
+            }
         });
     }
-    return $array;
 }
 

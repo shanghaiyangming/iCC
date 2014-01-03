@@ -339,23 +339,26 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var recordLabel = record.get('label');
 					var allowBlank = !record.get('required');
 					
+					var convertDot = function(name) {
+						return name.replace(/\./, '__DOT__');
+					};
 					//创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype: recordType,
 						fieldLabel: recordLabel,
-						name: recordField,
+						name: convertDot(recordField),
 						allowBlank: allowBlank
-					};
+					};				
 
 					switch (recordType) {
 						case 'boolfield':
 							delete addOrEditField.name;
-							addOrEditField.radioName = recordField;
+							addOrEditField.radioName = convertDot(recordField);
 							break;
 						case 'filefield':
 							addOrEditField = {
 								xtype: 'filefield',
-								name: recordField,
+								name: convertDot(recordField),
 								fieldLabel: recordLabel,
 								labelWidth: 100,
 								msgTarget: 'side',
@@ -366,7 +369,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							break;
 						case '2dfield':
 							addOrEditField.title = recordLabel;
-							addOrEditField.fieldName = recordField;
+							addOrEditField.fieldName = convertDot(recordField);
 							break;
 						case 'datefield':
 							addOrEditField.format = 'Y-m-d H:i:s';
@@ -428,7 +431,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						});
 
 						addOrEditField.xtype = 'combobox';
-						addOrEditField.name = recordField;
+						addOrEditField.name = convertDot(recordField);
 						addOrEditField.fieldLabel = recordLabel;
 						addOrEditField.store = comboboxStore;
 						addOrEditField.queryMode = 'remote';
