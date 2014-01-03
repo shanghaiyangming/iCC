@@ -54,9 +54,10 @@ class IndexController extends BaseActionController
      * @var object
      */
     private $_targetCollection;
-    
+
     /**
      * 索引类型
+     * 
      * @var array
      */
     private $_indexType = array(
@@ -68,17 +69,23 @@ class IndexController extends BaseActionController
 
     /**
      * init
+     * 
      * @see \My\Common\Controller\Action::init()
      */
     public function init()
     {
-        $this->_model = $this->model(IDATABASE_INDEXES);
-        $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
-        if (empty($this->_collection_id)) {
-            throw new \Exception('$this->_collection_id值未设定');
+        try {
+            $this->_model = $this->model(IDATABASE_INDEXES);
+            $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
+            if (empty($this->_collection_id)) {
+                throw new \Exception('$this->_collection_id值未设定');
+            }
+            
+            $this->getSchema();
+            $this->_targetCollection = $this->model('idatabase_collection_' . $this->_collection_id);
+        } catch (\Exception $e) {
+            return $this->msg(false, $e->getMessage());
         }
-        $this->getSchema();
-        $this->_targetCollection = $this->model('idatabase_collection_' . $this->_collection_id);
     }
 
     /**
@@ -120,7 +127,7 @@ class IndexController extends BaseActionController
         if (! $this->checkKeys(array_keys($keys))) {
             return $this->msg(false, '键值中包含未定义的字段');
         }
-
+        
         if (! $this->_targetCollection->ensureIndex($keys, array(
             'background' => true
         ))) {
@@ -221,7 +228,7 @@ class IndexController extends BaseActionController
      */
     private function filterKey($keys)
     {
-        if(!is_array($keys)) {
+        if (! is_array($keys)) {
             throw new \Exception('$keys必须是数组');
         }
         
@@ -232,14 +239,12 @@ class IndexController extends BaseActionController
                 $items = intval($items);
             } else {
                 $items = strtolower($items);
-                if(in_array($items,$this->_indexType)){
+                if (in_array($items, $this->_indexType)) {
                     $items = strval($items);
-                }
-                else {
+                } else {
                     throw new \Exception("无效的索引类型");
                 }
             }
-                
         });
         return $keys;
     }
