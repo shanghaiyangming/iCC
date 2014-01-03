@@ -333,24 +333,30 @@ Ext.define('icc.controller.idatabase.Collection', {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
 					}
+					
+					var recordType = record.get('type');
+					var recordField = record.get('field');
+					var recordLabel = record.get('label');
+					var allowBlank = !record.get('required');
+					
 					//创建添加和编辑的field表单开始
 					var addOrEditField = {
-						xtype: record.get('type'),
-						fieldLabel: record.get('label'),
-						name: record.get('field'),
-						allowBlank: !record.get('required')
+						xtype: recordType,
+						fieldLabel: recordLabel,
+						name: recordField,
+						allowBlank: allowBlank
 					};
 
-					switch (record.get('type')) {
+					switch (recordType) {
 						case 'boolfield':
 							delete addOrEditField.name;
-							addOrEditField.radioName = record.get('field');
+							addOrEditField.radioName = recordField;
 							break;
 						case 'filefield':
 							addOrEditField = {
 								xtype: 'filefield',
-								name: record.get('field'),
-								fieldLabel: record.get('label'),
+								name: recordField,
+								fieldLabel: recordLabel,
 								labelWidth: 100,
 								msgTarget: 'side',
 								allowBlank: true,
@@ -359,8 +365,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							};
 							break;
 						case '2dfield':
-							addOrEditField.title = record.get('label');
-							addOrEditField.fieldName = record.get('field');
+							addOrEditField.title = recordLabel;
+							addOrEditField.fieldName = recordField;
 							break;
 						case 'datefield':
 							addOrEditField.format = 'Y-m-d H:i:s';
@@ -422,8 +428,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 						});
 
 						addOrEditField.xtype = 'combobox';
-						addOrEditField.name = record.get('field');
-						addOrEditField.fieldLabel = record.get('label');
+						addOrEditField.name = recordField;
+						addOrEditField.fieldLabel = recordLabel;
 						addOrEditField.store = comboboxStore;
 						addOrEditField.queryMode = 'remote';
 						addOrEditField.forceSelection = true;
@@ -440,10 +446,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 					// 创建model的fields开始
 					var field = {
-						name: record.get('field'),
+						name: recordField,
 						type: 'string'
 					};
-					switch (record.get('type')) {
+					switch (recordType) {
 						case '2dfield':
 							field.type = 'string';
 							field.convert = function(value, record) {
@@ -486,11 +492,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 					// 绘制grid的column信息
 					if (record.get('main')) {
 						var column = {
-							text: record.get('label'),
-							dataIndex: record.get('field'),
+							text: recordLabel,
+							dataIndex: recordField,
 							flex: 1
 						};
-						switch (record.get('type')) {
+						switch (recordType) {
 							case 'boolfield':
 								column.xtype = 'booleancolumn';
 								column.trueText = '√';
@@ -508,7 +514,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								column.align = 'center';
 								column.field = {
 									xtype: 'datefield',
-									allowBlank: !record.get('required'),
+									allowBlank: allowBlank,
 									format: 'Y-m-d H:i:s'
 								};
 								break;
@@ -517,19 +523,19 @@ Ext.define('icc.controller.idatabase.Collection', {
 								column.align = 'right';
 								column.field = {
 									xtype: 'numberfield',
-									allowBlank: !record.get('required')
+									allowBlank: allowBlank
 								};
 								break;
 							case 'filefield':
 								if (record.get('showImage') != undefined && record.get('showImage') == true) {
 									column.xtype = 'templatecolumn';
-									column.tpl = '<a href="{' + record.get('field') + '}" target="_blank"><img src="{' + record.get('field') + '}?size=100x100" border="0" height="100" /></a>';
+									column.tpl = '<a href="{' + recordField + '}" target="_blank"><img src="{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
 								}
 								break;
 							default:
 								column.field = {
 									xtype: 'textfield',
-									allowBlank: !record.get('required')
+									allowBlank: allowBlank
 								};
 								break;
 						}
@@ -540,7 +546,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								xtype: 'combobox',
 								typeAhead: true,
 								store: comboboxStore,
-								allowBlank: !record.get('required'),
+								allowBlank: allowBlank,
 								displayField: record.get('rshCollectionDisplayField'),
 								valueField: record.get('rshCollectionValueField')
 							};
@@ -562,14 +568,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 					// 创建model的fields结束
 
 					// 创建条件检索form
-					if (record.get('searchable') && record.get('type') != 'filefield') {
+					if (record.get('searchable') && recordType != 'filefield') {
 
 						var rshCollection = record.get('rshCollection');
 
 						//$not操作
 						var exclusive = {
 							fieldLabel: '非',
-							name: 'exclusive__' + record.get('field'),
+							name: 'exclusive__' + recordField,
 							xtype: 'checkboxfield',
 							width: 30,
 							inputValue: true,
@@ -579,7 +585,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						//开启精确匹配
 						var exactMatch = {
 							fieldLabel: '等于',
-							name: 'exactMatch__' + record.get('field'),
+							name: 'exactMatch__' + recordField,
 							xtype: 'checkboxfield',
 							width: 30
 						};
@@ -613,8 +619,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 							searchFieldItem = {
 								xtype: 'combobox',
-								name: record.get('field'),
-								fieldLabel: record.get('label'),
+								name: recordField,
+								fieldLabel: recordLabel,
 								typeAhead: true,
 								store: comboboxSearchStore,
 								displayField: record.get('rshCollectionDisplayField'),
@@ -624,18 +630,18 @@ Ext.define('icc.controller.idatabase.Collection', {
 							searchField = {
 								xtype: 'fieldset',
 								layout: 'hbox',
-								title: record.get('label'),
+								title: recordLabel,
 								fieldDefaults: {
 									labelAlign: 'top',
 									labelSeparator: ''
 								},
 								items: [exclusive, searchFieldItem]
 							};
-						} else if (record.get('type') == 'datefield') {
+						} else if (recordType == 'datefield') {
 							searchField = {
 								xtype: 'fieldset',
 								layout: 'hbox',
-								title: record.get('label'),
+								title: recordLabel,
 								defaultType: 'datefield',
 								fieldDefaults: {
 									labelAlign: 'top',
@@ -645,17 +651,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 								items: [exclusive,
 								{
 									fieldLabel: '开始时间',
-									name: record.get('field') + '[start]'
+									name: recordField + '[start]'
 								}, {
 									fieldLabel: '截止时间',
-									name: record.get('field') + '[end]'
+									name: recordField + '[end]'
 								}]
 							};
-						} else if (record.get('type') == 'numberfield') {
+						} else if (recordType == 'numberfield') {
 							searchField = {
 								xtype: 'fieldset',
 								layout: 'hbox',
-								title: record.get('label'),
+								title: recordLabel,
 								defaultType: 'numberfield',
 								fieldDefaults: {
 									labelAlign: 'top',
@@ -664,44 +670,44 @@ Ext.define('icc.controller.idatabase.Collection', {
 								items: [exclusive,
 								{
 									fieldLabel: '最小值(>=)',
-									name: record.get('field') + '[min]'
+									name: recordField + '[min]'
 								}, {
 									fieldLabel: '最大值(<=)',
-									name: record.get('field') + '[max]'
+									name: recordField + '[max]'
 								}]
 							};
-						} else if (record.get('type') == '2dfield') {
+						} else if (recordType == '2dfield') {
 							searchField = {
 								xtype: 'fieldset',
 								layout: 'hbox',
-								title: record.get('label'),
+								title: recordLabel,
 								defaultType: 'numberfield',
 								fieldDefaults: {
 									labelAlign: 'top',
 									labelSeparator: ''
 								},
 								items: [{
-									name: record.get('field') + '[lng]',
+									name: recordField + '[lng]',
 									fieldLabel: '经度'
 								}, {
-									name: record.get('field') + '[lat]',
+									name: recordField + '[lat]',
 									fieldLabel: '维度'
 								}, {
-									name: record.get('field') + '[distance]',
+									name: recordField + '[distance]',
 									fieldLabel: '附近范围(km)'
 								}]
 							};
-						} else if(record.get('type') == 'boolfield') {
+						} else if(recordType == 'boolfield') {
 							searchField = {
 								xtype: 'commonComboboxBoolean',
-								fieldLabel: record.get('label'),
-								name: record.get('field')
+								fieldLabel: recordLabel,
+								name: recordField
 							};
 						} else {
 							searchField = {
 								xtype: 'fieldset',
 								layout: 'hbox',
-								title: record.get('label'),
+								title: recordLabel,
 								defaultType: 'textfield',
 								fieldDefaults: {
 									labelAlign: 'top',
@@ -709,8 +715,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 								},
 								items: [exclusive, exactMatch,
 								{
-									name: record.get('field'),
-									fieldLabel: record.get('label')
+									name: recordField,
+									fieldLabel: recordLabel
 								}]
 							};
 						}

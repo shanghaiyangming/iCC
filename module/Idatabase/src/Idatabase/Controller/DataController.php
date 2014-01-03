@@ -133,6 +133,12 @@ class DataController extends BaseActionController
     public function init()
     {
         resetTimeMemLimit();
+        
+        //特殊处理某些变量
+        convertVarNameWithDot($_POST);
+        convertVarNameWithDot($_FILES);
+        convertVarNameWithDot($_REQUEST);
+
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
         if (empty($this->_project_id))
