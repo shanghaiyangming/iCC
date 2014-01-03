@@ -334,31 +334,36 @@ Ext.define('icc.controller.idatabase.Collection', {
 						treeLabel = record.get('label');
 					}
 					
-					var recordType = record.get('type');
-					var recordField = record.get('field');
-					var recordLabel = record.get('label');
-					var allowBlank = !record.get('required');
-					
 					var convertDot = function(name) {
 						return name.replace(/\./, '__DOT__');
 					};
+					
+					var convertToDot = function(name) {
+						return name.replace('__DOT__', '.');
+					};
+					
+					var recordType = record.get('type');
+					var recordField = convertDot(record.get('field'));
+					var recordLabel = record.get('label');
+					var allowBlank = !record.get('required');
+
 					//创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype: recordType,
 						fieldLabel: recordLabel,
-						name: convertDot(recordField),
+						name: recordField,
 						allowBlank: allowBlank
 					};				
 
 					switch (recordType) {
 						case 'boolfield':
 							delete addOrEditField.name;
-							addOrEditField.radioName = convertDot(recordField);
+							addOrEditField.radioName = recordField;
 							break;
 						case 'filefield':
 							addOrEditField = {
 								xtype: 'filefield',
-								name: convertDot(recordField),
+								name: recordField,
 								fieldLabel: recordLabel,
 								labelWidth: 100,
 								msgTarget: 'side',
@@ -369,7 +374,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							break;
 						case '2dfield':
 							addOrEditField.title = recordLabel;
-							addOrEditField.fieldName = convertDot(recordField);
+							addOrEditField.fieldName = recordField;
 							break;
 						case 'datefield':
 							addOrEditField.format = 'Y-m-d H:i:s';
@@ -431,7 +436,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						});
 
 						addOrEditField.xtype = 'combobox';
-						addOrEditField.name = convertDot(recordField);
+						addOrEditField.name = recordField;
 						addOrEditField.fieldLabel = recordLabel;
 						addOrEditField.store = comboboxStore;
 						addOrEditField.queryMode = 'remote';
@@ -449,7 +454,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 					// 创建model的fields开始
 					var field = {
-						name: recordField,
+						name: convertToDot(recordField),
 						type: 'string'
 					};
 					switch (recordType) {
@@ -496,7 +501,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					if (record.get('main')) {
 						var column = {
 							text: recordLabel,
-							dataIndex: recordField,
+							dataIndex: convertToDot(recordField),
 							flex: 1
 						};
 						switch (recordType) {

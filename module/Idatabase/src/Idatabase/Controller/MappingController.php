@@ -84,10 +84,9 @@ class MappingController extends BaseActionController
             'upsert' => true
         ));
         
-        if($rst['ok']) {
+        if ($rst['ok']) {
             return $this->msg(true, '设定映射关系成功');
-        }
-        else {
+        } else {
             return $this->msg(false, Json::encode($rst));
         }
     }

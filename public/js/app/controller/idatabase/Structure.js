@@ -146,6 +146,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 						var json = Ext.decode(text);
 						Ext.Msg.alert('提示信息', json.msg);
 						if (json.success) {
+							me.activeTabGrid.close();
 							store.load();
 						}
 					}

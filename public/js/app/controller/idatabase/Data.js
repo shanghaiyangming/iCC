@@ -131,18 +131,35 @@ Ext.define('icc.controller.idatabase.Data', {
 						collection_id : grid.collection_id,
 						addOrEditFields : grid.addOrEditFields
 					});
+					
+					var convertDot = function(name) {
+						return name.replace('__DOT__', '.');
+					};
+					
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
 					Ext.Array.forEach(grid.addOrEditFields,function(item,index){
+						//转换处理dot
+						var field = '';
+						var sourceField = '';
+						if(item.name!=undefined) {
+							field = item.name;
+						}
+						else if(item.radioName!=undefined) {
+							field = item.radioName;
+						}
+						else if(item.fieldName!=undefined) {
+							field = item.fieldName;
+						}
+						sourceField = convertDot(field);
+						
 						if(item.xtype=='2dfield') {
-							var field = item.name;
 							var tmp = selections[0].get(field).split(',');
 							form.findField(field+'[lng]').setValue(tmp[0]);
 							form.findField(field+'[lat]').setValue(tmp[1]);
 							return true;
 						}
 						else if(item.xtype=='boolfield') {
-							var field = item.radioName;
 							var fieldValue = selections[0].get(field);
 							fieldValue = Ext.isBoolean(fieldValue) ? fieldValue : false;
 							if(fieldValue===true) {
@@ -150,6 +167,9 @@ Ext.define('icc.controller.idatabase.Data', {
 							} else {
 								form.findField(field).next().setValue(true);
 							}
+						}
+						else {
+							form.findField(field).setValue(selections[0].get(sourceField));
 						}
 					});
 					win.show();
