@@ -853,13 +853,16 @@ function myMongoRegex($text)
 
 /**
  * 特别处理POST变量中的点
- * @param string $_POST
+ * 
+ * @param string $_POST            
  * @return string
  */
-function convertVarNameWithDot(&$array) {
-    if(!empty($array)) {
-        array_walk($array, function($value,&$key) use (&$array){
-            if(strpos($key,'__DOT__')!==false) {
+function convertVarNameWithDot(&$array)
+{
+    if (! empty($array)) {
+        array_walk($array, function ($value, &$key) use(&$array)
+        {
+            if (strpos($key, '__DOT__') !== false) {
                 $newKey = str_replace('__DOT__', '.', $key);
                 $array[$newKey] = $value;
                 unset($array[$key]);

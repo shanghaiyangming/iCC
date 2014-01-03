@@ -356,6 +356,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};				
 
 					switch (recordType) {
+						case 'documentfield':
+							addOrEditField.xtype = 'textareafield';
+							addOrEditField.name = recordField;
+							break;
 						case 'boolfield':
 							delete addOrEditField.name;
 							addOrEditField.radioName = recordField;
@@ -458,6 +462,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 						type: 'string'
 					};
 					switch (recordType) {
+						case 'documentfield':
+							field.type = 'string';
+							field.convert = function(value, record) {
+								if(Ext.isObject(value) || Ext.isArray(value)) {
+									return Ext.JSON.encode(value);
+								}
+								else {
+									return value;
+								}
+							};
+							break;
 						case '2dfield':
 							field.type = 'string';
 							field.convert = function(value, record) {
@@ -505,6 +520,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 							flex: 1
 						};
 						switch (recordType) {
+							case 'documentfield':
+								column.field = {
+									xtype : 'textfield',
+									allowBlank: allowBlank
+								};
+								break;
 							case 'boolfield':
 								column.xtype = 'booleancolumn';
 								column.trueText = '√';

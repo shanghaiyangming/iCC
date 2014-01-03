@@ -124,6 +124,12 @@ class DataController extends BaseActionController
      * @var array
      */
     private $_rshCollection = array();
+    
+    /**
+     * 无法解析的json数组异常时，错误提示信息
+     * @var unknown
+     */
+    private $_jsonExceptMessage = '子文档类型数据必须符合标准json格式，示例：{"a":1}<br />1.请注意属性务必使用双引号包裹<br />2.请检查Json数据是否完整<br />';
 
     /**
      * 初始化函数
@@ -391,7 +397,13 @@ class DataController extends BaseActionController
                 }
             }
             
-            $datas = $this->dealData($datas);
+            try {
+                $datas = $this->dealData($datas);
+            }
+            catch(\Zend\Json\Exception\RuntimeException $e) {
+                return $this->msg(false, $this->_jsonExceptMessage);
+            }
+            
             if (empty($datas)) {
                 return $this->msg(false, '未发现添加任何有效数据');
             }
@@ -449,7 +461,13 @@ class DataController extends BaseActionController
             }
         }
         
-        $datas = $this->dealData($datas);
+        try {
+            $datas = $this->dealData($datas);
+        }
+        catch(\Zend\Json\Exception\RuntimeException $e) {
+            return $this->msg(false, $this->_jsonExceptMessage);
+        }
+        
         if (empty($datas)) {
             return $this->msg(false, '未发现任何信息变更');
         }
@@ -497,7 +515,12 @@ class DataController extends BaseActionController
             if ($oldDataInfo != null) {
                 $datas = array_intersect_key($row, $this->_schema['post']);
                 if (! empty($datas)) {
-                    $datas = $this->dealData($datas);
+                    try {
+                        $datas = $this->dealData($datas);
+                    }
+                    catch(\Zend\Json\Exception\RuntimeException $e) {
+                        return $this->msg(false, $this->_jsonExceptMessage);
+                    }
                     $this->_data->update(array(
                         '_id' => myMongoId($_id)
                     ), array(
@@ -683,6 +706,10 @@ class DataController extends BaseActionController
                     break;
                 case 'boolfield':
                     $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    break;
+                case 'documentfield':
+                    $value = trim($value);
+                    $value = Json::decode($value,Json::TYPE_ARRAY);
                     break;
                 default:
                     $value = trim($value);

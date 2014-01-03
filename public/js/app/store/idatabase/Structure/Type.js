@@ -13,7 +13,10 @@ Ext.define('icc.store.idatabase.Structure.Type', {
 	}, {
 		"name" : '是非选择框',
 		"val" : 'boolfield'
-	},{
+	}, {
+		"name" : '子文档结构',
+		"val" : 'documentfield'
+	}, {
 		"name" : '富文本编辑器',
 		"val" : 'htmleditor'
 	}, {
