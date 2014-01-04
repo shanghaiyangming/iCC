@@ -292,8 +292,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							var text = response.responseText;
 							var json = Ext.decode(text);
 							var collection = '';
-							var database = '';
-							var cluster = '';
+							var database = 'ICCv1';
+							var cluster = 'default';
 							var active = false;
 
 							if (json.total > 0) {

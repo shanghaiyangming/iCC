@@ -92,10 +92,4 @@ class MappingController extends BaseActionController
             return $this->msg(false, Json::encode($rst));
         }
     }
-
-    public function databaseAction()
-    {}
-
-    public function clusterAction()
-    {}
 }
