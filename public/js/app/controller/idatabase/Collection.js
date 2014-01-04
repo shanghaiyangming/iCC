@@ -273,6 +273,54 @@ Ext.define('icc.controller.idatabase.Collection', {
 			}
 		};
 
+		listeners[controllerName + 'Grid button[action=mapping]'] = {
+			click: function(button) {
+				var grid = button.up('gridpanel');
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var project_id = grid.project_id;
+					var collection_id = record.get('_id');
+					Ext.Ajax.request({
+						url: '/idatabase/mapping/index',
+						params: {
+							project_id: project_id,
+							collection_id: collection_id
+						},
+						scope: me,
+						success: function(response) {
+							var text = response.responseText;
+							var json = Ext.decode(text);
+							var collection = '';
+							var database = '';
+							var cluster = '';
+							var active = false;
+
+							if (json.total > 0) {
+								if (json.result[0].active) {
+									collection = json.result[0].collection;
+									database = json.result[0].database;
+									cluster = json.result[0].cluster;
+									active = json.result[0].active;
+								}
+							}
+
+							var win = Ext.widget('idatabaseMappingWindow', {
+								project_id: project_id,
+								collection_id: collection_id,
+								collection: collection,
+								database: database,
+								cluster: cluster,
+								active: active
+							});
+							win.show();
+						}
+					});
+				}
+				return true;
+			}
+		};
+
 		listeners[controllerName + 'Grid button[action=static]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');

@@ -158,4 +158,11 @@
     background-image: url(./icons/bin_closed.png) !important;
 }
 
+.mapping {
+    background-image: url(./icons/link.png) !important;
+}
+
+.lock {
+    background-image: url(./icons/lock.png) !important;
+}
 

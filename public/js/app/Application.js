@@ -17,7 +17,8 @@ Ext.define('icc.Application', {
         'idatabase.Plugin.System',
         'idatabase.Data',
         'idatabase.Index',
-        'idatabase.Key'
+        'idatabase.Key',
+        'idatabase.Mapping'
     ],
 
     stores: [

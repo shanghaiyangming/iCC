@@ -41,8 +41,8 @@ class MappingController extends BaseActionController
      * 读取映射关系
      *
      * @author young
-     * @name 读取指定项目内的全部集合列表
-     * @version 2013.11.19 young
+     * @name 读取映射关系
+     * @version 2013.01.04 young
      */
     public function indexAction()
     {
@@ -63,9 +63,10 @@ class MappingController extends BaseActionController
      */
     public function updateAction()
     {
-        $collection = $this->params()->fromPost('collection', '');
-        $database = $this->params()->fromPost('database', DEFAULT_DATABASE);
-        $cluster = $this->params()->fromPost('cluster', DEFAULT_CLUSTER);
+        $collection = trim($this->params()->fromPost('collection', ''));
+        $database = trim($this->params()->fromPost('database', DEFAULT_DATABASE));
+        $cluster = trim($this->params()->fromPost('cluster', DEFAULT_CLUSTER));
+        $active = filter_var($this->params()->fromPost('active', ''), FILTER_VALIDATE_BOOLEAN);
         
         $criteria = array(
             'project_id' => $this->_project_id,
@@ -75,7 +76,8 @@ class MappingController extends BaseActionController
         $datas = array(
             'collection' => $collection,
             'database' => $database,
-            'cluster' => $cluster
+            'cluster' => $cluster,
+            'active' => $active
         );
         
         $rst = $this->_mapping->update($criteria, array(
@@ -90,4 +92,10 @@ class MappingController extends BaseActionController
             return $this->msg(false, Json::encode($rst));
         }
     }
+
+    public function databaseAction()
+    {}
+
+    public function clusterAction()
+    {}
 }
