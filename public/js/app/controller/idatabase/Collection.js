@@ -333,15 +333,15 @@ Ext.define('icc.controller.idatabase.Collection', {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
 					}
-					
+
 					var convertDot = function(name) {
 						return name.replace(/\./g, '__DOT__');
 					};
-					
+
 					var convertToDot = function(name) {
-						return name.replace('/__DOT__/g', '.');
+						return name.replace(/__DOT__/g, '.');
 					};
-					
+
 					var recordType = record.get('type');
 					var recordField = convertDot(record.get('field'));
 					var recordLabel = record.get('label');
@@ -353,42 +353,42 @@ Ext.define('icc.controller.idatabase.Collection', {
 						fieldLabel: recordLabel,
 						name: recordField,
 						allowBlank: allowBlank
-					};				
+					};
 
 					switch (recordType) {
-						case 'documentfield':
-							addOrEditField.xtype = 'textareafield';
-							addOrEditField.name = recordField;
-							break;
-						case 'boolfield':
-							delete addOrEditField.name;
-							addOrEditField.radioName = recordField;
-							break;
-						case 'filefield':
-							addOrEditField = {
-								xtype: 'filefield',
-								name: recordField,
-								fieldLabel: recordLabel,
-								labelWidth: 100,
-								msgTarget: 'side',
-								allowBlank: true,
-								anchor: '100%',
-								buttonText: '浏览本地文件'
-							};
-							break;
-						case '2dfield':
-							addOrEditField.title = recordLabel;
-							addOrEditField.fieldName = recordField;
-							break;
-						case 'datefield':
-							addOrEditField.format = 'Y-m-d H:i:s';
-							break;
-						case 'numberfield':
-							addOrEditField.decimalPrecision = 8;
-							break;
-						case 'htmleditor':
-							addOrEditField.height = 300;
-							break;
+					case 'documentfield':
+						addOrEditField.xtype = 'textareafield';
+						addOrEditField.name = recordField;
+						break;
+					case 'boolfield':
+						delete addOrEditField.name;
+						addOrEditField.radioName = recordField;
+						break;
+					case 'filefield':
+						addOrEditField = {
+							xtype: 'filefield',
+							name: recordField,
+							fieldLabel: recordLabel,
+							labelWidth: 100,
+							msgTarget: 'side',
+							allowBlank: true,
+							anchor: '100%',
+							buttonText: '浏览本地文件'
+						};
+						break;
+					case '2dfield':
+						addOrEditField.title = recordLabel;
+						addOrEditField.fieldName = recordField;
+						break;
+					case 'datefield':
+						addOrEditField.format = 'Y-m-d H:i:s';
+						break;
+					case 'numberfield':
+						addOrEditField.decimalPrecision = 8;
+						break;
+					case 'htmleditor':
+						addOrEditField.height = 300;
+						break;
 					};
 
 					var rshCollection = record.get('rshCollection');
@@ -462,53 +462,50 @@ Ext.define('icc.controller.idatabase.Collection', {
 						type: 'string'
 					};
 					switch (recordType) {
-						case 'documentfield':
-							field.type = 'string';
-							field.convert = function(value, record) {
-								if(Ext.isObject(value) || Ext.isArray(value)) {
-									return Ext.JSON.encode(value);
-								}
-								else {
-									return value;
-								}
-							};
-							break;
-						case '2dfield':
-							field.type = 'string';
-							field.convert = function(value, record) {
-								if (Ext.isArray(value)) {
-									return value.join(',');
-								}
+					case 'documentfield':
+						console.info(field);
+						field.convert = function(value, record) {
+							console.info(value);
+							if (Ext.isObject(value) || Ext.isArray(value)) {
+								return Ext.JSON.encode(value);
+							} else {
 								return value;
-							};
-							break;
-						case 'datefield':
-							field.type = 'string';
-							field.convert = function(value, record) {
-								if (Ext.isObject(value) && value['sec'] != undefined) {
-									var date = new Date();
-									date.setTime(value.sec * 1000);
-									return date;
-								} else {
-									return value;
-								}
-							};
-							break;
-						case 'numberfield':
-							field.type = 'float';
-							break;
-						case 'boolfield':
-							field.type = 'boolean';
-							field.convert = function(value, record) {
-								if(Ext.isBoolean(value)) {
-									return value;
-								}
-								else if(Ext.isString(value)) {
-									return value==='true'||value==='√' ? true : false;
-								}
+							}
+						};
+						break;
+					case '2dfield':
+						field.convert = function(value, record) {
+							if (Ext.isArray(value)) {
+								return value.join(',');
+							}
+							return value;
+						};
+						break;
+					case 'datefield':
+						field.convert = function(value, record) {
+							if (Ext.isObject(value) && value['sec'] != undefined) {
+								var date = new Date();
+								date.setTime(value.sec * 1000);
+								return date;
+							} else {
 								return value;
-							};
-							break;
+							}
+						};
+						break;
+					case 'numberfield':
+						field.type = 'float';
+						break;
+					case 'boolfield':
+						field.type = 'boolean';
+						field.convert = function(value, record) {
+							if (Ext.isBoolean(value)) {
+								return value;
+							} else if (Ext.isString(value)) {
+								return value === 'true' || value === '√' ? true : false;
+							}
+							return value;
+						};
+						break;
 					}
 					modelFields.push(field);
 
@@ -520,53 +517,53 @@ Ext.define('icc.controller.idatabase.Collection', {
 							flex: 1
 						};
 						switch (recordType) {
-							case 'documentfield':
-								column.field = {
-									xtype : 'textfield',
-									allowBlank: allowBlank
-								};
-								break;
-							case 'boolfield':
-								column.xtype = 'booleancolumn';
-								column.trueText = '√';
-								column.falseText = '×';
-								column.field = {
-									xtype : 'commonComboboxBoolean'
-								};
-								break;
-							case '2dfield':
-								column.align = 'center';
-								break;
-							case 'datefield':
-								column.xtype = 'datecolumn';
-								column.format = 'Y-m-d H:i:s';
-								column.align = 'center';
-								column.field = {
-									xtype: 'datefield',
-									allowBlank: allowBlank,
-									format: 'Y-m-d H:i:s'
-								};
-								break;
-							case 'numberfield':
-								column.format = '0,000.00';
-								column.align = 'right';
-								column.field = {
-									xtype: 'numberfield',
-									allowBlank: allowBlank
-								};
-								break;
-							case 'filefield':
-								if (record.get('showImage') != undefined && record.get('showImage') == true) {
-									column.xtype = 'templatecolumn';
-									column.tpl = '<a href="{' + recordField + '}" target="_blank"><img src="{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
-								}
-								break;
-							default:
-								column.field = {
-									xtype: 'textfield',
-									allowBlank: allowBlank
-								};
-								break;
+						case 'documentfield':
+							column.field = {
+								xtype: 'textfield',
+								allowBlank: allowBlank
+							};
+							break;
+						case 'boolfield':
+							column.xtype = 'booleancolumn';
+							column.trueText = '√';
+							column.falseText = '×';
+							column.field = {
+								xtype: 'commonComboboxBoolean'
+							};
+							break;
+						case '2dfield':
+							column.align = 'center';
+							break;
+						case 'datefield':
+							column.xtype = 'datecolumn';
+							column.format = 'Y-m-d H:i:s';
+							column.align = 'center';
+							column.field = {
+								xtype: 'datefield',
+								allowBlank: allowBlank,
+								format: 'Y-m-d H:i:s'
+							};
+							break;
+						case 'numberfield':
+							column.format = '0,000.00';
+							column.align = 'right';
+							column.field = {
+								xtype: 'numberfield',
+								allowBlank: allowBlank
+							};
+							break;
+						case 'filefield':
+							if (record.get('showImage') != undefined && record.get('showImage') == true) {
+								column.xtype = 'templatecolumn';
+								column.tpl = '<a href="{' + recordField + '}" target="_blank"><img src="{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
+							}
+							break;
+						default:
+							column.field = {
+								xtype: 'textfield',
+								allowBlank: allowBlank
+							};
+							break;
 						}
 
 						// 存在关联集合数据，则直接采用combobox的方式进行显示
@@ -726,7 +723,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 									fieldLabel: '附近范围(km)'
 								}]
 							};
-						} else if(recordType == 'boolfield') {
+						} else if (recordType == 'boolfield') {
 							searchField = {
 								xtype: 'commonComboboxBoolean',
 								fieldLabel: recordLabel,
@@ -881,7 +878,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						if (!isTree) {
 							grid.store.load();
 						}
-						
+
 					}
 				});
 

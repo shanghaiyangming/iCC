@@ -133,7 +133,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					});
 					
 					var convertDot = function(name) {
-						return name.replace('/__DOT__/g', '.');
+						return name.replace(/__DOT__/g, '.');
 					};
 					
 					var form = win.down('form').getForm();
@@ -171,11 +171,13 @@ Ext.define('icc.controller.idatabase.Data', {
 						else {
 							form.findField(field).setValue(selections[0].get(sourceField));
 						}
+						return true;
 					});
 					win.show();
 				} else {
 					Ext.Msg.alert('提示信息', '请选择你要编辑的项');
 				}
+				return true;
 			}
 		};
 
