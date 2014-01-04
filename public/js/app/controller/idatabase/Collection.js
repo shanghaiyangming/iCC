@@ -297,12 +297,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 							var active = false;
 
 							if (json.total > 0) {
-								if (json.result[0].active) {
-									collection = json.result[0].collection;
-									database = json.result[0].database;
-									cluster = json.result[0].cluster;
-									active = json.result[0].active;
-								}
+								collection = json.result[0].collection;
+								database = json.result[0].database;
+								cluster = json.result[0].cluster;
+								active = json.result[0].active;
 							}
 
 							var win = Ext.widget('idatabaseMappingWindow', {
