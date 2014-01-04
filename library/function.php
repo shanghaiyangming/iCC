@@ -322,11 +322,12 @@ function setHeaderExpires($expireTime = 31536000)
  */
 function isJson($string)
 {
-    if (strpos($string, "{") !== false) {
-        json_decode($string);
-        return (json_last_error() == JSON_ERROR_NONE);
+    //过滤掉纯数字类型的符合json格式的字符串，如果单纯为数字，请使用其他数据类型
+    if (strpos($string, "{") === false && strpos($string, "[") === false) {
+        return false;
     }
-    return false;
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
 }
 
 /**
