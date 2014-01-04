@@ -24,9 +24,9 @@ class StructureController extends BaseActionController
     private $_structure;
 
     private $_model;
-    
+
     private $_collection;
-    
+
     private $_fieldRgex = '/^[a-z]{1}[a-z0-9_\.]*$/i';
 
     public function init()
@@ -140,7 +140,7 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请填写字段名称');
         }
         
-        if (!preg_match($this->_fieldRgex,$datas['field'])) {
+        if (!$this->checkFieldName($datas['field'])) {
             return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
         }
         
@@ -203,7 +203,7 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请填写字段名称');
         }
         
-        if (!preg_match($this->_fieldRgex,$datas['field'])) {
+        if (!$this->checkFieldName($datas['field'])) {
             return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
         }
         
@@ -269,7 +269,7 @@ class StructureController extends BaseActionController
                 return $this->msg(false, '请填写字段名称');
             }
             
-            if (!preg_match($this->_fieldRgex,$row['field'])) {
+            if (!$this->checkFieldName($row['field'])) {
                 return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
             }
             
@@ -421,20 +421,25 @@ class StructureController extends BaseActionController
         }
         return true;
     }
-    
-    private function checkPluginProject(){
+
+    /**
+     * 检查mongodb的属性名称命名空间
+     *
+     * @param string $name            
+     * @return boolean
+     */
+    private function checkFieldName($name)
+    {
+        if (! preg_match($this->_fieldRgex, $name)) {
+            return false;
+        }
         
-    }
-    
-    private function syncPluginProject() {
+        if (strpos($name, '.') !== false) {
+            if (!preg_match("/\.[a-z]{1}/i", $name)) {
+                return false;
+            }
+        }
         
-    }
-    
-    private function syncPluginCollection($project_id,$plugin_id) {
-    
-    }
-    
-    private function syncPluginStructure() {
-        
+        return true;
     }
 }
