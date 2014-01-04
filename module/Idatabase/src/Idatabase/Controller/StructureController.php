@@ -141,7 +141,7 @@ class StructureController extends BaseActionController
         }
         
         if (!$this->checkFieldName($datas['field'])) {
-            return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
+            return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
         }
         
         if ($datas['label'] == null) {
@@ -204,7 +204,7 @@ class StructureController extends BaseActionController
         }
         
         if (!$this->checkFieldName($datas['field'])) {
-            return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
+            return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
         }
         
         if ($datas['label'] == null) {
@@ -270,7 +270,7 @@ class StructureController extends BaseActionController
             }
             
             if (!$this->checkFieldName($row['field'])) {
-                return $this->msg(false, '字段名必须为以英文字母开始的字母、数字、下划线的组合');
+                return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
             }
             
             if ($row['label'] == null) {
