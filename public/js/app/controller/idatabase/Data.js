@@ -133,7 +133,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					});
 					
 					var convertDot = function(name) {
-						return name.replace('__DOT__', '.');
+						return name.replace('/__DOT__/g', '.');
 					};
 					
 					var form = win.down('form').getForm();

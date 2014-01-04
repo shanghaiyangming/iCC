@@ -124,9 +124,10 @@ class DataController extends BaseActionController
      * @var array
      */
     private $_rshCollection = array();
-    
+
     /**
      * 无法解析的json数组异常时，错误提示信息
+     *
      * @var unknown
      */
     private $_jsonExceptMessage = '子文档类型数据必须符合标准json格式，示例：{"a":1}<br />1.请注意属性务必使用双引号包裹<br />2.请检查Json数据是否完整<br />';
@@ -140,11 +141,11 @@ class DataController extends BaseActionController
     {
         resetTimeMemLimit();
         
-        //特殊处理包含点的变量,将__DOT__转换为.
+        // 特殊处理包含点的变量,将__DOT__转换为.
         convertVarNameWithDot($_POST);
         convertVarNameWithDot($_FILES);
         convertVarNameWithDot($_REQUEST);
-
+        
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
         if (empty($this->_project_id))
@@ -399,9 +400,8 @@ class DataController extends BaseActionController
             
             try {
                 $datas = $this->dealData($datas);
-            }
-            catch(\Zend\Json\Exception\RuntimeException $e) {
-                return $this->msg(false, $this->_jsonExceptMessage);
+            } catch (\Zend\Json\Exception\RuntimeException $e) {
+                return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
             }
             
             if (empty($datas)) {
@@ -462,12 +462,9 @@ class DataController extends BaseActionController
         }
         
         try {
-            fb($datas,'LOG');
             $datas = $this->dealData($datas);
-            fb($datas,'LOG');
-        }
-        catch(\Zend\Json\Exception\RuntimeException $e) {
-            return $this->msg(false, $this->_jsonExceptMessage);
+        } catch (\Zend\Json\Exception\RuntimeException $e) {
+            return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
         }
         
         if (empty($datas)) {
@@ -519,9 +516,8 @@ class DataController extends BaseActionController
                 if (! empty($datas)) {
                     try {
                         $datas = $this->dealData($datas);
-                    }
-                    catch(\Zend\Json\Exception\RuntimeException $e) {
-                        return $this->msg(false, $this->_jsonExceptMessage);
+                    } catch (\Zend\Json\Exception\RuntimeException $e) {
+                        return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
                     }
                     $this->_data->update(array(
                         '_id' => myMongoId($_id)
@@ -711,10 +707,16 @@ class DataController extends BaseActionController
                     break;
                 case 'documentfield':
                     $value = trim($value);
-                    if(!isJson($value)) {
-                        throw new \Zend\Json\Exception\RuntimeException('无效的json字符串');
+                    if (! empty($value)) {
+                        if (! isJson($value)) {
+                            throw new \Zend\Json\Exception\RuntimeException($key);
+                        }
+                        try {
+                            $value = Json::decode($value, Json::TYPE_ARRAY);
+                        } catch (\Zend\Json\Exception\RuntimeException $e) {
+                            throw new \Zend\Json\Exception\RuntimeException($key);
+                        }
                     }
-                    $value = Json::decode($value,Json::TYPE_ARRAY);
                     break;
                 default:
                     $value = trim($value);

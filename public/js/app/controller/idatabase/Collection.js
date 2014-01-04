@@ -335,11 +335,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 					}
 					
 					var convertDot = function(name) {
-						return name.replace(/\./, '__DOT__');
+						return name.replace(/\./g, '__DOT__');
 					};
 					
 					var convertToDot = function(name) {
-						return name.replace('__DOT__', '.');
+						return name.replace('/__DOT__/g', '.');
 					};
 					
 					var recordType = record.get('type');
