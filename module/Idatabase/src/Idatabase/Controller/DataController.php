@@ -159,7 +159,19 @@ class DataController extends BaseActionController
         $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         
-        $this->_data = $this->model($this->_collection_name);
+        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        
+        $mapCollection = $this->_mapping->findOne(array(
+            'project_id' => $this->_project_id,
+            'collection_id' => $this->_collection_id,
+            'active' => true
+        ));
+        if ($mapCollection != null) {
+            $this->_data = $this->model($mapCollection['collection'], $mapCollection['database'], $mapCollection['cluster']);
+        } else {
+            $this->_data = $this->model($this->_collection_name);
+        }
+        
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
         
         $this->_schema = $this->getSchema();
