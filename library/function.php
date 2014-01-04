@@ -852,22 +852,22 @@ function myMongoRegex($text)
 }
 
 /**
- * 特别处理POST变量中的点
+ * 特别处理变量中的点
+ * 莫名的现象array_walk会个别键丢失的问题，例如：sub1__DOT__document
  * 
- * @param string $_POST            
- * @return string
+ * @param array $_POST            
+ * @return null
  */
 function convertVarNameWithDot(&$array)
 {
     if (! empty($array)) {
-        array_walk($array, function ($value, &$key) use(&$array)
-        {
+        foreach($array as $key=>$value) {
             if (strpos($key, '__DOT__') !== false) {
                 $newKey = str_replace('__DOT__', '.', $key);
                 $array[$newKey] = $value;
                 unset($array[$key]);
             }
-        });
+        }
     }
 }
 

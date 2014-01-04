@@ -144,7 +144,7 @@ class DataController extends BaseActionController
         convertVarNameWithDot($_POST);
         convertVarNameWithDot($_FILES);
         convertVarNameWithDot($_REQUEST);
-        
+
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
         
         if (empty($this->_project_id))
@@ -462,7 +462,9 @@ class DataController extends BaseActionController
         }
         
         try {
+            fb($datas,'LOG');
             $datas = $this->dealData($datas);
+            fb($datas,'LOG');
         }
         catch(\Zend\Json\Exception\RuntimeException $e) {
             return $this->msg(false, $this->_jsonExceptMessage);
@@ -709,6 +711,9 @@ class DataController extends BaseActionController
                     break;
                 case 'documentfield':
                     $value = trim($value);
+                    if(!isJson($value)) {
+                        throw new \Zend\Json\Exception\RuntimeException('无效的json字符串');
+                    }
                     $value = Json::decode($value,Json::TYPE_ARRAY);
                     break;
                 default:
