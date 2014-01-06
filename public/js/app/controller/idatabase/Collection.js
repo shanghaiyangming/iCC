@@ -350,23 +350,22 @@ Ext.define('icc.controller.idatabase.Collection', {
 		var isTree = record.get('isTree');
 		var isRowExpander = record.get('isRowExpander');
 		var rowBodyTpl = record.get('rowExpanderTpl');
-		if(rowBodyTpl==undefined) {
+		if (rowBodyTpl == undefined) {
 			rowBodyTpl = '';
 		}
 		var pluginsRowExpander = {};
-		
-		if(isRowExpander && rowBodyTpl!='') {
+
+		if (isRowExpander && rowBodyTpl != '') {
 			var pluginsRowExpander = {
 				ptype: 'rowexpander',
-				expandOnDblClick : false,
-				expandOnEnter : false,
-				rowBodyTpl : new Ext.XTemplate(rowBodyTpl)
+				expandOnDblClick: false,
+				expandOnEnter: false,
+				rowBodyTpl: new Ext.XTemplate(rowBodyTpl)
 			};
-		}
-		else {
+		} else {
 			isRowExpander = false;
 		}
-		
+
 		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
@@ -904,7 +903,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 					});
 				}
-				
+
 				panel = Ext.widget('idatabaseDataMain', {
 					id: collection_id,
 					name: collection_name,
@@ -916,8 +915,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					isTree: isTree,
 					searchFields: searchFields,
 					addOrEditFields: addOrEditFields,
-					isRowExpander : isRowExpander,
-					pluginsRowExpander : pluginsRowExpander
+					isRowExpander: isRowExpander,
+					pluginsRowExpander: pluginsRowExpander
 				});
 
 				panel.on({

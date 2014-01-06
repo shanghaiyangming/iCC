@@ -347,7 +347,7 @@ class DataController extends BaseActionController
         if ($fatherField == '')
             return $this->msg(false, '$fatherField不存在');
         
-        if ($fatherField == '_id')
+        if ($fatherField === '_id')
             $fatherValue = myMongoId($fatherValue);
         
         $cursor = $this->_data->find(array(
@@ -601,7 +601,7 @@ class DataController extends BaseActionController
             return $this->msg(true, '清空数据成功');
         } else {
             fb($rst, \FirePHP::LOG);
-            return $this->msg(false, '清空数据失败');
+            return $this->msg(false, '清空数据失败'.Json::encode($rst));
         }
     }
 
@@ -647,7 +647,9 @@ class DataController extends BaseActionController
                 $this->_fatherField = $row['field'];
             }
             
+            
             if (! empty($row['rshCollection'])) {
+                fb($row['rshCollection'],'LOG');
                 $rshCollectionStructures = $this->_structure->findAll(array(
                     'collection_id' => $this->getCollectionIdByName($row['rshCollection'])
                 ));
