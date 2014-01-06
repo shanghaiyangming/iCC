@@ -212,6 +212,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				if (record) {
 					this.buildDataPanel(grid.project_id, record.get('_id'), record.get('name'), this.collectionTabPanel(), record.get('isTree'));
 				}
+				return true;
 			}
 		};
 
@@ -314,6 +315,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							win.show();
 						}
 					});
+				} else {
+					Ext.Msg.alert('提示信息', '请选择一项您要添加映射关系的集合');
 				}
 				return true;
 			}
