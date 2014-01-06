@@ -649,7 +649,6 @@ class DataController extends BaseActionController
             
             
             if (! empty($row['rshCollection'])) {
-                fb($row['rshCollection'],'LOG');
                 $rshCollectionStructures = $this->_structure->findAll(array(
                     'collection_id' => $this->getCollectionIdByName($row['rshCollection'])
                 ));
@@ -672,7 +671,6 @@ class DataController extends BaseActionController
                         'rshCollectionKeyField' => $rshCollectionKeyField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
-                    fb($this->_rshCollection,'LOG');
                 } else {
                     throw new \Exception('关系集合属性尚未设定');
                 }

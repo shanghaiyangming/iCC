@@ -45,7 +45,7 @@ class StructureController extends BaseActionController
         }
         
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        
+        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         $this->_model = $this->_structure;
     }
 
@@ -72,7 +72,7 @@ class StructureController extends BaseActionController
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
-            if (isset($row['rshCollection']) && $row['rshCollection'] != '' && strlen($row['rshCollection']) == 24) {
+            if (isset($row['rshCollection']) && $row['rshCollection'] != '') {
                 $row = array_merge($row, $this->getRshCollectionInfo($row['rshCollection']));
             }
             $rst[] = $row;
@@ -84,19 +84,20 @@ class StructureController extends BaseActionController
     /**
      * 获取关联集合的信息
      *
-     * @param string $collection_id            
+     * @param string $collectionName           
      * @return array
      */
-    private function getRshCollectionInfo($collection_id)
+    private function getRshCollectionInfo($collectionName)
     {
         $rst = array();
         $cursor = $this->_structure->find(array(
-            'collection_id' => $collection_id
+            'collection_id' => $this->getCollectionIdByName($collectionName)
         ));
-        
+
         $rst = array(
             'rshCollectionValueField' => '_id'
         );
+
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
             if ($row['rshKey'])
@@ -441,5 +442,32 @@ class StructureController extends BaseActionController
         }
         
         return true;
+    }
+    
+    /**
+     * 根据集合的名称获取集合的_id
+     *
+     * @param string $name
+     * @throws \Exception or string
+     */
+    private function getCollectionIdByName($name)
+    {
+        try {
+            new \MongoId($name);
+            return $name;
+        } catch (\MongoException $ex) {
+        	//fb(exceptionMsg($ex),'LOG');
+        }
+    
+        $collectionInfo = $this->_collection->findOne(array(
+            'project_id' => $this->_project_id,
+            'name' => $name
+        ));
+        
+        if ($collectionInfo == null) {
+            throw new \Exception('集合名称不存在于指定项目');
+        }
+        
+        return $collectionInfo['_id']->__toString();
     }
 }
