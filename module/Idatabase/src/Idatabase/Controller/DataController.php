@@ -245,6 +245,7 @@ class DataController extends BaseActionController
     private function dealRshData()
     {
         foreach ($this->_rshCollection as $_id => $detail) {
+            $_id = $this->getCollectionIdByName($_id);
             $collectionName = 'idatabase_collection_' . $_id;
             $model = $this->model($collectionName);
             $cursor = $model->find(array(), array(
@@ -490,7 +491,7 @@ class DataController extends BaseActionController
                 '$set' => $datas
             ));
         } catch (\Exception $e) {
-            return $this->msg(false, $e->getTraceAsString());
+            return $this->msg(false, $e->getMessage());
         }
         return $this->msg(true, '编辑信息成功');
     }
@@ -531,11 +532,16 @@ class DataController extends BaseActionController
                     } catch (\Zend\Json\Exception\RuntimeException $e) {
                         return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
                     }
-                    $this->_data->update(array(
-                        '_id' => myMongoId($_id)
-                    ), array(
-                        '$set' => $datas
-                    ));
+                    
+                    try {
+                        $this->_data->update(array(
+                            '_id' => myMongoId($_id)
+                        ), array(
+                            '$set' => $datas
+                        ));
+                    } catch (\Exception $e) {
+                        return $this->msg(false, exceptionMsg($e));
+                    }
                 }
             }
         }
@@ -642,10 +648,8 @@ class DataController extends BaseActionController
             }
             
             if (! empty($row['rshCollection'])) {
-                $row['rshCollection'] = $this->getCollectionIdByName($row['rshCollection']);
-                
                 $rshCollectionStructures = $this->_structure->findAll(array(
-                    'collection_id' => $row['rshCollection']
+                    'collection_id' => $this->getCollectionIdByName($row['rshCollection'])
                 ));
                 if (! empty($rshCollectionStructures)) {
                     $rshCollectionKeyField = '';
@@ -666,6 +670,7 @@ class DataController extends BaseActionController
                         'rshCollectionKeyField' => $rshCollectionKeyField,
                         'rshCollectionValueField' => $rshCollectionValueField
                     );
+                    fb($this->_rshCollection,'LOG');
                 } else {
                     throw new \Exception('关系集合属性尚未设定');
                 }

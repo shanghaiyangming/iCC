@@ -26,7 +26,9 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					collection_id : this.collection_id,
 					columns : this.gridColumns,
 					store : this.gridStore,
-					addOrEditFields : this.addOrEditFields
+					addOrEditFields : this.addOrEditFields,
+					isRowExpander : this.isRowExpander,
+					pluginsRowExpander : this.pluginsRowExpander
 				}, {
 					xtype : 'idatabaseDataSearch',
 					project_id : this.project_id,

@@ -95,7 +95,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
-				console.info(grid.plugin, grid.plugin_id);
 				var win = Ext.widget(controllerName + 'Add', {
 					project_id: grid.project_id,
 					plugin: grid.plugin,
@@ -210,7 +209,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				var record = selected[0];
 				if (record) {
-					this.buildDataPanel(grid.project_id, record.get('_id'), record.get('name'), this.collectionTabPanel(), record.get('isTree'));
+					this.buildDataPanel(grid.project_id, this.collectionTabPanel(), record);
 				}
 			}
 		};
@@ -342,7 +341,29 @@ Ext.define('icc.controller.idatabase.Collection', {
 		panel.close();
 		this.buildDataPanel(project_id, collection_id, collection_name, tabpanel, isTree);
 	},
-	buildDataPanel: function(project_id, collection_id, collection_name, tabpanel, isTree) {
+	buildDataPanel: function(project_id, tabpanel, record) {
+		var collection_id = record.get('_id');
+		var collection_name = record.get('name');
+		var isTree = record.get('isTree');
+		var isRowExpander = record.get('isRowExpander');
+		var rowBodyTpl = record.get('rowExpanderTpl');
+		if(rowBodyTpl==undefined) {
+			rowBodyTpl = '';
+		}
+		var pluginsRowExpander = {};
+		
+		if(isRowExpander && rowBodyTpl!='') {
+			var pluginsRowExpander = {
+				ptype: 'rowexpander',
+				expandOnDblClick : false,
+				expandOnEnter : false,
+				rowBodyTpl : new Ext.XTemplate(rowBodyTpl)
+			};
+		}
+		else {
+			isRowExpander = false;
+		}
+		
 		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
@@ -363,6 +384,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 			var gridColumns = [];
 
 			var structureStore = Ext.create('icc.store.idatabase.Structure');
+			console.info(structureStore);
 			structureStore['proxy']['extraParams']['project_id'] = project_id;
 			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
 
@@ -509,9 +531,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 					switch (recordType) {
 					case 'documentfield':
-						console.info(field);
 						field.convert = function(value, record) {
-							console.info(value);
 							if (Ext.isObject(value) || Ext.isArray(value)) {
 								return Ext.JSON.encode(value);
 							} else {
@@ -881,7 +901,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 					});
 				}
-
+				
 				panel = Ext.widget('idatabaseDataMain', {
 					id: collection_id,
 					name: collection_name,
@@ -892,7 +912,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 					gridStore: dataStore,
 					isTree: isTree,
 					searchFields: searchFields,
-					addOrEditFields: addOrEditFields
+					addOrEditFields: addOrEditFields,
+					isRowExpander : isRowExpander,
+					pluginsRowExpander : pluginsRowExpander
 				});
 
 				panel.on({

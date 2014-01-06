@@ -189,6 +189,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					if (panel == null) {
 						//读取插件列表，构建插件体系
 						var pluginStore = Ext.create('icc.store.idatabase.Plugin');
+						console.info(pluginStore);
 						pluginStore['proxy']['extraParams']['project_id'] = id;
 						pluginStore.load(function(records, operation, success){
 							if(success) {

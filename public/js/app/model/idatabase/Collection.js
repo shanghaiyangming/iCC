@@ -27,5 +27,11 @@ Ext.define('icc.model.idatabase.Collection', {
 	}, {
 		name : 'plugin_collection_id',
 		type : 'string'
+	} , {
+		name : 'isRowExpander',
+		type : 'boolean'
+	} , {
+		name : 'rowExpanderTpl',
+		type : 'string'
 	} ]
 });
