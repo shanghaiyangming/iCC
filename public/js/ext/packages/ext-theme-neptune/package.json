@@ -4,7 +4,7 @@
     "creator": "Sencha",
     "summary": "Ext JS Neptune Theme",
     "detailedDescription": "The Neptune Theme provides a clean, modern style for Ext JS",
-    "version": "4.2.1",
+    "version": "4.2.2",
     "compatVersion": "4.2.0",
     "format": "1",
     "extend": "ext-theme-neutral"

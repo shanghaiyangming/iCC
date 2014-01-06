@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 // @tag foundation,core
 // @require Class.js
@@ -832,6 +829,7 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
                 overriddenClassName = data.override,
                 requires = data.requires,
                 uses = data.uses,
+                compat = data.compatibility,
                 classReady = function () {
                     var cls, temp;
 
@@ -850,6 +848,7 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
 
                         // We don't want to apply these:
                         delete data.override;
+                        delete data.compatibility;
                         delete data.requires;
                         delete data.uses;
 
@@ -872,8 +871,10 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
 
             me.existCache[className] = true;
 
-            // Override the target class right after it's created
-            me.onCreated(classReady, me, overriddenClassName);
+            if (!compat || Ext.checkVersion(compat)) {
+                // Override the target class right after it's created
+                me.onCreated(classReady, me, overriddenClassName);
+            }
 
             return me;
         },
@@ -1578,9 +1579,75 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
          *              }
          *          }
          *      });
+         * 
+         * Starting in version 4.2.2, overrides can declare their `compatibility` based
+         * on the framework version or on versions of other packages. For details on the
+         * syntax and options for these checks, see `Ext.checkVersion`.
+         * 
+         * The simplest use case is to test framework version for compatibility:
+         * 
+         *      Ext.define('App.overrides.grid.Panel', {
+         *          override: 'Ext.grid.Panel',
+         *
+         *          compatibility: '4.2.2', // only if framework version is 4.2.2
+         *
+         *          //...
+         *      });
+         * 
+         * An array is treated as an OR, so if any specs match, the override is
+         * compatible.
+         * 
+         *      Ext.define('App.overrides.some.Thing', {
+         *          override: 'Foo.some.Thing',
+         *
+         *          compatibility: [
+         *              '4.2.2',
+         *              'foo@1.0.1-1.0.2'
+         *          ],
+         *
+         *          //...
+         *      });
+         * 
+         * To require that all specifications match, an object can be provided:
+         * 
+         *      Ext.define('App.overrides.some.Thing', {
+         *          override: 'Foo.some.Thing',
+         *
+         *          compatibility: {
+         *              and: [
+         *                  '4.2.2',
+         *                  'foo@1.0.1-1.0.2'
+         *              ]
+         *          },
+         *
+         *          //...
+         *      });
+         * 
+         * Because the object form is just a recursive check, these can be nested:
+         * 
+         *      Ext.define('App.overrides.some.Thing', {
+         *          override: 'Foo.some.Thing',
+         *
+         *          compatibility: {
+         *              and: [
+         *                  '4.2.2',  // exactly version 4.2.2 of the framework *AND*
+         *                  {
+         *                      // either (or both) of these package specs:
+         *                      or: [
+         *                          'foo@1.0.1-1.0.2',
+         *                          'bar@3.0+'
+         *                      ]
+         *                  }
+         *              ]
+         *          },
+         *
+         *          //...
+         *      });
          *
          * IMPORTANT: An override is only included in a build if the class it overrides is
-         * required. Otherwise, the override, like the target class, is not included.
+         * required. Otherwise, the override, like the target class, is not included. In
+         * Sencha Cmd v4, the `compatibility` declaration can likewise be used to remove
+         * incompatible overrides from a build.
          *
          * @param {String} className The class name to create in string dot-namespaced format, for example:
          * 'My.very.awesome.Class', 'FeedViewer.plugin.CoolPager'
@@ -1594,12 +1661,13 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
          *  - `statics`
          *  - `config`
          *  - `alias`
+         *  - `xtype` (for {@link Ext.Component Components} only)
          *  - `self`
          *  - `singleton`
          *  - `alternateClassName`
          *  - `override`
          *
-         * @param {Function} createdFn Optional callback to execute after the class is created, the execution scope of which
+         * @param {Function} [createdFn] Callback to execute after the class is created, the execution scope of which
          * (`this`) will be the newly created class itself.
          * @return {Ext.Base}
          * @member Ext

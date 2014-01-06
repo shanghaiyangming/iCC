@@ -4,21 +4,23 @@
     margin: $fieldset-margin;
 }
 
-// Insane IE bug: Fieldset padding-top is rendered *outside* the border!
-// So we transfer the padding-top to the body element.
-.#{$prefix}ie8m,
-.#{$prefix}quirks .#{$prefix}ie {
-    .#{$prefix}fieldset {
-        padding-top: 0;
-        .#{$prefix}fieldset-body {
-            padding-top: top($fieldset-padding);
+@if $include-ie {
+    // Insane IE bug: Fieldset padding-top is rendered *outside* the border!
+    // So we transfer the padding-top to the body element.
+    .#{$prefix}ie8m,
+    .#{$prefix}quirks .#{$prefix}ie {
+        .#{$prefix}fieldset {
+            padding-top: 0;
+            .#{$prefix}fieldset-body {
+                padding-top: top($fieldset-padding);
+            }
         }
     }
 }
 
 .#{$prefix}fieldset-header-checkbox {
     line-height: $fieldset-header-line-height;
-    margin: $fieldset-checkbox-margin;
+    margin: top($fieldset-checkbox-margin) 0 0;
 }
 
 .#{$prefix}fieldset-header {
@@ -62,10 +64,12 @@
 }
 
 // Use Webkit's built-in fieldset legend padding which takes precedence over padding-left/right
-.#{$prefix}webkit {
-    .#{$prefix}fieldset-header {
-        -webkit-padding-start: #{left($fieldset-header-padding)};
-        -webkit-padding-end: #{right($fieldset-header-padding)};
+@if $include-webkit {
+    .#{$prefix}webkit {
+        .#{$prefix}fieldset-header {
+            -webkit-padding-start: #{left($fieldset-header-padding)};
+            -webkit-padding-end: #{right($fieldset-header-padding)};
+        }
     }
 }
 
@@ -135,12 +139,12 @@
 
 .#{$prefix}fieldset {
     .#{$prefix}tool-toggle {
-        @if $fieldset-collapse-tool-background-image != null {
+        @if not is-null($fieldset-collapse-tool-background-image) {
             background-image: theme-background-image($fieldset-collapse-tool-background-image);
         }
         background-position: $fieldset-collapse-tool-background-position;
     }
-    @if $fieldset-collapse-tool-background-position-over != null {
+    @if not is-null($fieldset-collapse-tool-background-position-over) {
         .#{$prefix}tool-over .#{$prefix}tool-toggle {
             background-position: $fieldset-collapse-tool-background-position-over;
         }
@@ -152,7 +156,7 @@
         background-position: $fieldset-collapse-tool-background-position-collapsed;
     }
 
-    @if $fieldset-collapse-tool-background-position-collapsed-over != null {
+    @if not is-null($fieldset-collapse-tool-background-position-collapsed-over) {
         .#{$prefix}tool-over .#{$prefix}tool-toggle {
             background-position: $fieldset-collapse-tool-background-position-collapsed-over;
         }

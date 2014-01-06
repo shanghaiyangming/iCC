@@ -5,7 +5,7 @@
     border-width: $form-field-border-width; 
     border-style: $form-field-border-style;
     border-color: $form-field-border-color;
-    @if $form-field-background-image != null {
+    @if not is-null($form-field-background-image) {
         background-image: theme-background-image($form-field-background-image);
     }
     height: $form-field-height;

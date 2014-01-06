@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * This layout allows you to easily render content into an HTML table. The total number of columns can be specified, and
@@ -209,7 +206,7 @@ Ext.define('Ext.layout.container.Table', {
             // If no cell present, create and insert one
             itemCt = tdEl = Ext.get(trEl.cells[cellIdx] || trEl.insertCell(cellIdx));
             if (me.needsDivWrap()) { //create wrapper div if needed - see docs below
-                itemCt = tdEl.first() || tdEl.createChild({tag: 'div'});
+                itemCt = tdEl.first() || tdEl.createChild({ tag: 'div', role: 'presentation' });
                 itemCt.setWidth(null);
             }
 
@@ -379,6 +376,7 @@ Ext.define('Ext.layout.container.Table', {
                 cellpadding: 0,
                 cn: {
                     tag: 'tbody',
+                    role: 'presentation',
                     cn: rows
                 }
             }, me.tableAttrs),
@@ -401,6 +399,7 @@ Ext.define('Ext.layout.container.Table', {
             if (!tr) {
                 tr = rows[rowIdx] = {
                     tag: 'tr',
+                    role: 'presentation',
                     cn: []
                 };
                 if (me.trAttrs) {
@@ -410,7 +409,8 @@ Ext.define('Ext.layout.container.Table', {
 
             // If no cell present, create and insert one
             cell = tr.cn[cellIdx] = {
-                tag: 'td'
+                tag: 'td',
+                role: 'presentation'
             };
             if (tdAttrs) {
                 Ext.apply(cell, tdAttrs);
@@ -424,7 +424,8 @@ Ext.define('Ext.layout.container.Table', {
 
             if (needsDivWrap) { //create wrapper div if needed - see docs below
                 cell = cell.cn = {
-                    tag: 'div'
+                    tag: 'div',
+                    role: 'presentation'
                 };
             }
 

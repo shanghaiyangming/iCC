@@ -30,12 +30,14 @@ img {
     display: table;
 }
 
-.#{$prefix}strict .#{$prefix}ie7 .#{$prefix}clear {
-    // In IE7 strict the clear element has to have both a height and width of 0, otherwise the height of its parent element gets
-    // increased by 1px.  We cannot simply add the zero height/width for all browsers, because in IE quirks the height
-    // of the clear element's parent element gets increased by 1px if the clear element has either height:0 or width:0.
-    height: 0;
-    width: 0;
+@if $include-ie {
+    .#{$prefix}strict .#{$prefix}ie7 .#{$prefix}clear {
+        // In IE7 strict the clear element has to have both a height and width of 0, otherwise the height of its parent element gets
+        // increased by 1px.  We cannot simply add the zero height/width for all browsers, because in IE quirks the height
+        // of the clear element's parent element gets increased by 1px if the clear element has either height:0 or width:0.
+        height: 0;
+        width: 0;
+    }
 }
 
 .#{$prefix}layer {
@@ -184,3 +186,13 @@ img {
 .#{$prefix}item-disabled * {
     cursor: default;
 }
+
+// TODO: remove outline from individual components that need it instead of resetting globally
+.#{$prefix}webkit {
+    * {
+        &:focus {
+            outline:none !important;
+        }
+    }
+}
+

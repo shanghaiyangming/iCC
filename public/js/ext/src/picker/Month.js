@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @private
@@ -44,7 +41,7 @@ Ext.define('Ext.picker.Month', {
               '<tpl for="months">',
                   '<div class="{parent.baseCls}-item {parent.baseCls}-month">',
                       // the href attribute is required for the :hover selector to work in IE6/7/quirks
-                      '<a style="{parent.monthStyle}" hidefocus="on" class="{parent.baseCls}-item-inner" href="#">{.}</a>',
+                      '<a style="{parent.monthStyle}" role="button" hidefocus="on" class="{parent.baseCls}-item-inner" href="#">{.}</a>',
                   '</div>',
               '</tpl>',
           '</div>',
@@ -52,31 +49,31 @@ Ext.define('Ext.picker.Month', {
               '<div class="{baseCls}-yearnav">',
                   '<div class="{baseCls}-yearnav-button-ct">',
                       // the href attribute is required for the :hover selector to work in IE6/7/quirks
-                      '<a id="{id}-prevEl" class="{baseCls}-yearnav-button {baseCls}-yearnav-prev" href="#" hidefocus="on" ></a>',
+                      '<a id="{id}-prevEl" class="{baseCls}-yearnav-button {baseCls}-yearnav-prev" href="#" hidefocus="on" role="button"></a>',
                   '</div>',
                   '<div class="{baseCls}-yearnav-button-ct">',
                       // the href attribute is required for the :hover selector to work in IE6/7/quirks
-                      '<a id="{id}-nextEl" class="{baseCls}-yearnav-button {baseCls}-yearnav-next" href="#" hidefocus="on" ></a>',
+                      '<a id="{id}-nextEl" class="{baseCls}-yearnav-button {baseCls}-yearnav-next" href="#" hidefocus="on" role="button"></a>',
                   '</div>',
               '</div>',
               '<tpl for="years">',
                   '<div class="{parent.baseCls}-item {parent.baseCls}-year">',
                       // the href attribute is required for the :hover selector to work in IE6/7/quirks
-                      '<a hidefocus="on" class="{parent.baseCls}-item-inner" href="#">{.}</a>',
+                      '<a hidefocus="on" class="{parent.baseCls}-item-inner" role="button" href="#">{.}</a>',
                   '</div>',
               '</tpl>',
           '</div>',
           '<div class="' + Ext.baseCSSPrefix + 'clear"></div>',
-        '</div>',
-        '<tpl if="showButtons">',
-            '<div id="{id}-buttonsEl" class="{baseCls}-buttons">{%',
-                'var me=values.$comp, okBtn=me.okBtn, cancelBtn=me.cancelBtn;',
-                'okBtn.ownerLayout = cancelBtn.ownerLayout = me.componentLayout;',
-                'okBtn.ownerCt = cancelBtn.ownerCt = me;',
-                'Ext.DomHelper.generateMarkup(okBtn.getRenderTree(), out);',
-                'Ext.DomHelper.generateMarkup(cancelBtn.getRenderTree(), out);',
-            '%}</div>',
-        '</tpl>'
+          '<tpl if="showButtons">',
+              '<div id="{id}-buttonsEl" class="{baseCls}-buttons">{%',
+                  'var me=values.$comp, okBtn=me.okBtn, cancelBtn=me.cancelBtn;',
+                  'okBtn.ownerLayout = cancelBtn.ownerLayout = me.componentLayout;',
+                  'okBtn.ownerCt = cancelBtn.ownerCt = me;',
+                  'Ext.DomHelper.generateMarkup(okBtn.getRenderTree(), out);',
+                  'Ext.DomHelper.generateMarkup(cancelBtn.getRenderTree(), out);',
+              '%}</div>',
+          '</tpl>',
+        '</div>'
     ],
 
     //<locale>
@@ -218,6 +215,10 @@ Ext.define('Ext.picker.Month', {
             margin = me.monthMargin,
             style = '';
 
+        if (me.padding && !me.width) {
+            me.cacheWidth();
+        }
+
         me.callParent();
 
         for (; i < monthLen; ++i) {
@@ -234,6 +235,19 @@ Ext.define('Ext.picker.Month', {
             showButtons: me.showButtons,
             monthStyle: style
         });
+    },
+
+    cacheWidth: function() {
+        var me = this,
+            padding = me.parseBox(me.padding),
+            widthEl = Ext.getBody().createChild({
+                cls: me.baseCls + ' ' + me.borderBoxCls,
+                style: 'position:absolute;top:-1000px;left:-1000px;',
+                html: '&nbsp;' // required for opera 11.64 to measure a width
+            });
+
+        me.self.prototype.width = widthEl.getWidth() + padding.left + padding.right;
+        widthEl.remove();
     },
 
     // @private

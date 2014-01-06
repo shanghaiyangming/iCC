@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * A specialized panel intended for use as an application window. Windows are floated, {@link #resizable}, and
@@ -89,11 +86,71 @@ Ext.define('Ext.window.Window', {
      * @cfg {String/Number/Ext.Component} defaultFocus
      * Specifies a Component to receive focus when this Window is focused.
      *
-     * This may be one of:
+     * If a String is provided, the Component will be resolved using the {@link #down} method which uses {@link Ext.ComponentQuery}.
+     * If the string begins with an alphanumeric value, it will first attempt to find the Component based on the {@link Ext.AbstractComponent#id} or {@link Ext.AbstractComponent#itemId}.
+     *
+     * An example of finding the Component with an id/itemId:
+     *
+     *     Ext.create('Ext.window.Window', {
+     *         autoShow     : true,
+     *         width        : 300,
+     *         title        : 'Login',
+     *         defaultFocus : 'username',
+     *         items        : [
+     *             {
+     *                 xtype      : 'textfield',
+     *                 fieldLabel : 'Username',
+     *                 itemId     : 'username',
+     *                 name       : 'username'
+     *             },
+     *             {
+     *                 xtype      : 'textfield',
+     *                 inputType  : 'password',
+     *                 fieldLabel : 'Password',
+     *                 itemId     : 'password',
+     *                 name       : 'password'
+     *             }
+     *         ]
+     *     });
+     *
+     * If a Number is provided, this will resolve an {@link Ext.button.Button} at that index. This is very useful if
+     * the window has buttons in the {@link #buttons} config and you want to provide default focus to one of them.
+     *
+     * An example of this would be:
+     *
+     *     Ext.create('Ext.window.Window', {
+     *         autoShow     : true,
+     *         width        : 300,
+     *         title        : 'Login',
+     *         defaultFocus : 1,
+     *         items        : [
+     *             {
+     *                 xtype      : 'textfield',
+     *                 fieldLabel : 'Username',
+     *                 name       : 'username'
+     *            },
+     *            {
+     *                 xtype      : 'textfield',
+     *                 inputType  : 'password',
+     *                 fieldLabel : 'Password',
+     *                 name       : 'password'
+     *             }
+     *         ],
+     *         buttons      : [
+     *             {
+     *                 text : 'Cancel'
+     *             },
+     *             {
+     *                 text : 'Login'
+     *             }
+     *         ]
+     *     });
+     *
+     * In summary, defaultFocus may be one of:
      *
      *   - The index of a footer Button.
      *   - The id or {@link Ext.AbstractComponent#itemId} of a descendant Component.
-     *   - A Component.
+     *   - A descendant {@link Ext.Component}.
      */
 
     /**
@@ -114,7 +171,7 @@ Ext.define('Ext.window.Window', {
      * @cfg {Boolean} [maximized=false]
      * True to initially display the window in a maximized state.
      */
-    
+
     /**
      * @cfg {Boolean} [hideShadowOnDeactivate=false]
      * True to hide this Window's shadow when another floating item in the same z-index stack is activated.
@@ -249,7 +306,7 @@ Ext.define('Ext.window.Window', {
     floating: true,
 
     itemCls: Ext.baseCSSPrefix + 'window-item',
-    
+
     initialAlphaNum: /^[a-z0-9]/,
 
     overlapHeader: true,
@@ -258,10 +315,10 @@ Ext.define('Ext.window.Window', {
 
     // Flag to Renderable to always look up the framing styles for this Component
     alwaysFramed: true,
-    
+
     // Buffer this so we don't recreate the same object
     isRootCfg: {
-        isRoot: true    
+        isRoot: true
     },
 
     /**
@@ -269,6 +326,8 @@ Ext.define('Ext.window.Window', {
      * `true` in this class to identify an object as an instantiated Window, or subclass thereof.
      */
     isWindow: true,
+    
+    ariaRole: 'dialog',
 
     // @private
     initComponent: function() {
@@ -325,10 +384,6 @@ Ext.define('Ext.window.Window', {
             me.addClsWithUI('plain');
         }
 
-        if (me.modal) {
-            me.ariaRole = 'dialog';
-        }
-
         me.addStateEvents(['maximize', 'restore', 'resize', 'dragend']);
     },
 
@@ -342,7 +397,7 @@ Ext.define('Ext.window.Window', {
     },
 
     // State Management
-    
+
     // @private
     getState: function() {
         var me = this,
@@ -351,7 +406,7 @@ Ext.define('Ext.window.Window', {
             ghostBox = me.ghostBox,
             pos;
 
-        
+
         state.maximized = maximized;
         if (maximized) {
             pos = me.restorePos;
@@ -535,7 +590,7 @@ Ext.define('Ext.window.Window', {
             // String is ID or CQ selector
             else if (Ext.isString(defaultComp)) {
                 selector = defaultComp;
-                
+
                 // Try id/itemId match if selector begins with alphanumeric
                 if (selector.match(me.initialAlphaNum)) {
                     result = me.down('#' + selector);
@@ -644,9 +699,9 @@ Ext.define('Ext.window.Window', {
         this.fireEvent('minimize', this);
         return this;
     },
-    
+
     resumeHeaderLayout: function(changed) {
-        this.header.resumeLayouts(changed ? this.isRootCfg : null);    
+        this.header.resumeLayouts(changed ? this.isRootCfg : null);
     },
 
     afterCollapse: function() {
@@ -672,7 +727,7 @@ Ext.define('Ext.window.Window', {
             tools = me.tools,
             changed;
 
-        
+
         if (header) {
             header.suspendLayouts();
             if (me.maximized) {
@@ -700,12 +755,18 @@ Ext.define('Ext.window.Window', {
         var me = this,
             header = me.header,
             tools = me.tools,
-            changed;
+            width = me.width,
+            height = me.height,
+            restore, changed;
 
         if (!me.maximized) {
             me.expand(false);
             if (!me.hasSavedRestore) {
-                me.restoreSize = me.getSize();
+                restore = me.restoreSize = {
+                    width: Ext.isNumber(width) ? width : null,
+                    height: Ext.isNumber(height) ? height : null
+                };
+                
                 me.restorePos = me.getPosition(true);
             }
 
@@ -727,7 +788,6 @@ Ext.define('Ext.window.Window', {
                 me.resumeHeaderLayout(changed);
             }
 
-            me.maximized = true;
             me.el.disableShadow();
 
             if (me.dd) {
@@ -739,17 +799,19 @@ Ext.define('Ext.window.Window', {
             if (me.resizer) {
                 me.resizer.disable();
             }
-            
+
             me.el.addCls(Ext.baseCSSPrefix + 'window-maximized');
             me.container.addCls(Ext.baseCSSPrefix + 'window-maximized-ct');
 
             me.syncMonitorWindowResize();
             me.fitContainer(animate = (animate || !!me.animateTarget) ? {
                 callback: function() {
+                    me.maximized = true;
                     me.fireEvent('maximize', me);
                 }
             } : null);
             if (!animate) {
+                me.maximized = true;
                 me.fireEvent('maximize', me);
             }
         }
@@ -790,14 +852,13 @@ Ext.define('Ext.window.Window', {
                 me.resumeHeaderLayout(changed);
             }
 
-            me.maximized = false;
-
             // Restore the position/sizing
             newBox.x = me.restorePos[0];
             newBox.y = me.restorePos[1];
             me.setBox(newBox, animate = (animate || !!me.animateTarget) ? {
                 callback: function() {
                     me.el.enableShadow(true);
+                    me.maximized = false;
                     me.fireEvent('restore', me);
                 }
             } : null);
@@ -812,7 +873,7 @@ Ext.define('Ext.window.Window', {
                     header.addCls(header.indicateDragCls)
                 }
             }
-            
+
             if (me.resizer) {
                 me.resizer.enable();
             }
@@ -823,6 +884,7 @@ Ext.define('Ext.window.Window', {
 
             if (!animate) {
                 me.el.enableShadow(true);
+                me.maximized = false;
                 me.fireEvent('restore', me);
             }
         }
@@ -864,6 +926,12 @@ Ext.define('Ext.window.Window', {
      */
     toggleMaximize: function() {
         return this[this.maximized ? 'restore': 'maximize']();
+    },
+
+    createGhost: function() {
+        var ghost = this.callParent(arguments);
+        ghost.xtype = 'window';
+        return ghost;
     }
 
 });

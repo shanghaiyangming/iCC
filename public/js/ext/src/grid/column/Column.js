@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * This class specifies the definition for a column inside a {@link Ext.grid.Panel}. It encompasses
@@ -95,6 +92,8 @@ Ext.define('Ext.grid.column.Column', {
     hoverCls: Ext.baseCSSPrefix + 'column-header-over',
 
     handleWidth: 4,
+    
+    ariaRole: 'columnheader',
 
     sortState: null,
 
@@ -113,18 +112,20 @@ Ext.define('Ext.grid.column.Column', {
      */
     noWrap: true,
 
-    renderTpl:
-        '<div id="{id}-titleEl" {tipMarkup}class="' + Ext.baseCSSPrefix + 'column-header-inner">' +
-            '<span id="{id}-textEl" class="' + Ext.baseCSSPrefix + 'column-header-text' +
-                '{childElCls}">' +
-                '{text}' +
-            '</span>' +
-            '<tpl if="!menuDisabled">'+
-                '<div id="{id}-triggerEl" class="' + Ext.baseCSSPrefix + 'column-header-trigger' +
-                '{childElCls}"></div>' +
-            '</tpl>' +
-        '</div>' +
-        '{%this.renderContainer(out,values)%}',
+    renderTpl: [
+        '<div id="{id}-titleEl" role="presentation" {tipMarkup}class="', Ext.baseCSSPrefix, 'column-header-inner',
+            '<tpl if="empty"> ', Ext.baseCSSPrefix, 'column-header-inner-empty</tpl>">',
+            '<span id="{id}-textEl" class="', Ext.baseCSSPrefix, 'column-header-text',
+                '{childElCls}">',
+                '{text}',
+            '</span>',
+            '<tpl if="!menuDisabled">',
+                '<div id="{id}-triggerEl" role="presentation" class="', Ext.baseCSSPrefix, 'column-header-trigger',
+                '{childElCls}"></div>',
+            '</tpl>',
+        '</div>',
+        '{%this.renderContainer(out,values)%}'
+    ],
 
     /**
      * @cfg {Object[]} columns
@@ -136,7 +137,6 @@ Ext.define('Ext.grid.column.Column', {
      */
 
     /**
-     * @override
      * @cfg {String} stateId
      * An identifier which identifies this column uniquely within the owning grid's {@link #stateful state}.
      *
@@ -445,30 +445,72 @@ Ext.define('Ext.grid.column.Column', {
         }
         me.on(listeners);
     },
+    
+    initItems: function() {
+        var me = this;
+        
+        me.callParent(arguments);
+        
+        if (me.isGroupHeader) {
+            if (!me.hasVisibleChildren()) {
+                me.hide();
+            }
+        }
+    },
+    
+    hasVisibleChildren: function() {
+        var items = this.items.items,
+            len = items.length,
+            i;
+            
+        for (i = 0; i < len; ++i) {
+            if (!items[i].hidden) {
+                return true;
+            }
+        }   
+        return false; 
+    },
 
     onAdd: function(child) {
+        var me = this,
+            ownerHeaderCt = me.getOwnerHeaderCt();
+            
         if (child.isColumn) {
             child.isSubHeader = true;
             child.addCls(this.groupSubHeaderCls);
         }
-        if (this.hidden) {
-            child.hide();
+        
+        if (me.hidden) {
+            // Only hide automatically during construction time (no header)
+            if (!ownerHeaderCt) {
+                child.hide();
+            } else if (!child.hidden) {
+                me.show();
+            }
         }
-        this.callParent(arguments);
+        me.callParent(arguments);
     },
 
     onRemove: function(child) {
+        var me = this;
+        
         if (child.isSubHeader) {
             child.isSubHeader = false;
-            child.removeCls(this.groupSubHeaderCls);
+            child.removeCls(me.groupSubHeaderCls);
         }
-        this.callParent(arguments);
+        me.callParent(arguments);
+        
+        // By this point, the component will be removed from the items collection
+        if (me.isGroupHeader && !me.hasVisibleChildren()) {
+            me.hide();
+        }
     },
 
     initRenderData: function() {
         var me = this,
             tipMarkup = '',
             tip = me.tooltip,
+            text = me.text,
             attr = me.tooltipType == 'qtip' ? 'data-qtip' : 'title';
 
         if (!Ext.isEmpty(tip)) {
@@ -476,7 +518,8 @@ Ext.define('Ext.grid.column.Column', {
         }
 
         return Ext.applyIf(me.callParent(arguments), {
-            text: me.text,
+            text: text,
+            empty: text === '&#160;' || text === ' ' || text === '',
             menuDisabled: me.menuDisabled,
             tipMarkup: tipMarkup
         });
@@ -592,8 +635,7 @@ Ext.define('Ext.grid.column.Column', {
 
     afterRender: function() {
         var me = this,
-            triggerEl = me.triggerEl,
-            triggerWidth;
+            triggerEl = me.triggerEl;
 
         me.callParent(arguments);
 
@@ -940,15 +982,15 @@ Ext.define('Ext.grid.column.Column', {
             ownerIsGroup,
             item, items, len, i;
             
-        if (!me.isVisible()) {
-            // Already hidden
-            return me;
-        }
-
         // If we have no ownerHeaderCt, it's during object construction, so
         // just set the hidden flag and jump out
         if (!ownerHeaderCt) {
             me.callParent();
+            return me;
+        }
+            
+        if (me.rendered && !me.isVisible()) {
+            // Already hidden
             return me;
         }
 
@@ -1001,77 +1043,16 @@ Ext.define('Ext.grid.column.Column', {
             ownerCt = me.ownerCt,
             items,
             len, i,
-            item,
-            myWidth,
-            availFlex,
-            totalFlex,
-            oldLen,
-            defaultWidth = Ext.grid.header.Container.prototype.defaultWidth;
+            item;
             
         if (me.isVisible()) {
             return me;
         }
 
-        if (!me.rendered) {
-            me.hidden = false;
-            return;
-        }
-
-        availFlex = ownerHeaderCt.el.getViewSize().width - (ownerHeaderCt.view.el.dom.scrollHeight > ownerHeaderCt.view.el.dom.clientHeight ? Ext.getScrollbarSize().width : 0);
-
-        // Size all other columns to accommodate re-shown column
-        if (ownerHeaderCt.forceFit) {
-            // Find all non-flexed visible siblings
-            items = Ext.ComponentQuery.query(':not([flex])', ownerHeaderCt.getVisibleGridColumns());
-
-            // Not all siblings have been converted to flex.
-            // The full conversion of all to flex only happens when the headerCt's ColumnLayout detects that there are no flexed children.
-            // Therefore, to force the fit, it converts all widths to flexes.
-            // So as long as we are not in that situation with artificial flexes, original column widths can be restored.
-            if (items.length) {
-                me.width = me.savedWidth || me.width || defaultWidth;
-            }
-            // Showing back into a fully flexed HeaderContainer
-            else {
-                items = ownerHeaderCt.getVisibleGridColumns();
-                len = items.length;
-                oldLen = me.visibleSiblingCount;
-
-                // Attempt to restore to a flex equal to saved width.
-                // If no saved width, it's the first show, use the width.
-                // The first show of a flex inside a forceFit container cannot work properly because flex values will
-                // have been allocated as the flexed pixel width.
-                myWidth = (me.savedWidth || me.width || defaultWidth);
-
-                // Scale the restoration width depending on whether there are now more or fewer visible
-                // siblings than we this column was hidden.
-                //
-                // For example, if this was hidden when there was only one other sibling, it's going to
-                // look VERY greedy now if it tries to claim all the space saved in 'savedWidth'.
-                //
-                // Likewise if there were lots of other columns present when this was hidden, but few now, this would
-                // get squeezed out of existence.
-                myWidth = Math.min(myWidth * (oldLen / len), defaultWidth,
-                    Math.max(availFlex - (len * defaultWidth), defaultWidth));
-
-                me.width = null;
-                me.flex = myWidth;
-                availFlex -= myWidth;
-                totalFlex = 0;
-                for (i = 0; i < len; i++) {
-                    item = items[i];
-                    item.flex = (item.width || item.getWidth());
-                    totalFlex += item.flex;
-                    item.width = null;
-                }
-
-                // Now distribute the flex values so that they all add up to the total available flex *minus the flex of this*
-                // The theory here is that the column should *ideally* return to its original size with its flex value being its
-                // original size and the remaining flex distributed according to width proportions.
-                for (i = 0; i < len; i++) {
-                    item = items[i];
-                    item.flex = item.flex / totalFlex * availFlex;
-                }
+        if (me.rendered) {
+            // Size all other columns to accommodate re-shown column.
+            if (ownerHeaderCt.forceFit) {
+                ownerHeaderCt.applyForceFit(me);
             }
         }
 
@@ -1126,9 +1107,13 @@ Ext.define('Ext.grid.column.Column', {
             return me.width;
         }
     },
+    
+    getCellId: function() {
+        return Ext.baseCSSPrefix + 'grid-cell-headerId-' + this.getItemId();
+    },
 
     getCellSelector: function() {
-        return '.' + Ext.baseCSSPrefix + 'grid-cell-' + this.getItemId();
+        return '.' + this.getCellId();
     },
 
     getCellInnerSelector: function() {

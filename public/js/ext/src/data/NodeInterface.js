@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * This class is used as a set of methods that are applied to the prototype of a
@@ -214,8 +211,8 @@ Ext.define('Ext.data.NodeInterface', {
 
             modelClass.override(this.getPrototypeBody());
             this.applyFields(modelClass, [
-                { name : 'parentId',   type : idType,    defaultValue : null,  useNull : idField.useNull },
-                { name : 'index',      type : 'int',     defaultValue : 0,     persist : false          , convert: null },
+                { name : 'parentId',   type : idType,    defaultValue : null,  useNull : idField.useNull                },
+                { name : 'index',      type : 'int',     defaultValue : -1,    persist : false          , convert: null },
                 { name : 'depth',      type : 'int',     defaultValue : 0,     persist : false          , convert: null },
                 { name : 'expanded',   type : 'bool',    defaultValue : false, persist : false          , convert: null },
                 { name : 'expandable', type : 'bool',    defaultValue : true,  persist : false          , convert: null },
@@ -261,6 +258,7 @@ Ext.define('Ext.data.NodeInterface', {
                 idchanged     : true,
                 append        : true,
                 remove        : true,
+                bulkremove    : true,
                 move          : true,
                 insert        : true,
                 beforeappend  : true,
@@ -444,9 +442,14 @@ Ext.define('Ext.data.NodeInterface', {
                         i,
                         phantom = me.phantom,
                         dataObject = me[me.persistenceProperty],
+                        fields = me.fields,
+                        modified = me.modified,
                         propName, newValue,
-                        field;
-                        
+                        field, currentValue, key,
+                        newParentId = info.parentId,
+                        settingIndexInNewParent,
+                        persistentField;
+
                     if (!info) {
                         Ext.Error.raise('NodeInterface expects update info to be passed');
                     }
@@ -455,14 +458,56 @@ Ext.define('Ext.data.NodeInterface', {
                     // We do NOT need the expense of Model.set. We just need to ensure
                     // that the dirty flag is set.
                     for (propName in info) {
-                        field = me.fields.get(propName);
+                        field = fields.get(propName);
                         newValue = info[propName];
-                        
-                        // Only flag dirty when persistent fields are modified
-                        if (field && field.persist) {
-                            me.dirty = me.dirty || !me.isEqual(dataObject[propName], newValue);
+                        persistentField = field && field.persist;
+
+                        currentValue = dataObject[propName];
+
+                        // If we are setting the index value, and the developer has changed it to be persistent, and the
+                        // new parent node is different to the starting one, it must be dirty.
+                        // The index may be the same value, but it's in a different parent.
+                        // This is so that a Writer can write the correct persistent fields which must include
+                        // the index to insert at if the parentId has changed.
+                        settingIndexInNewParent = persistentField && (propName === 'index') && (currentValue !== -1) && (newParentId && newParentId !== modified.parentId);
+
+                        // If new value is the same (unless we are setting the index in a new parent node), then skip the change.
+                        if (!settingIndexInNewParent && me.isEqual(currentValue, newValue)) {
+                            continue;
                         }
                         dataObject[propName] = newValue;
+
+                        // Only flag dirty when persistent fields are modified
+                        if (persistentField) {
+
+                            // Already modified, just check if we've reverted it back to start value (unless we are setting the index in a new parent node)
+                            if (!settingIndexInNewParent && modified.hasOwnProperty(propName)) {
+
+                                // If we have reverted to start value, possibly clear dirty flag
+                                if (me.isEqual(modified[propName], newValue)) {
+                                    // The original value in me.modified equals the new value, so
+                                    // the field is no longer modified:
+                                    delete modified[propName];
+
+                                    // We might have removed the last modified field, so check to
+                                    // see if there are any modified fields remaining and correct
+                                    // me.dirty:
+                                    me.dirty = false;
+                                    for (key in modified) {
+                                        if (modified.hasOwnProperty(key)){
+                                            me.dirty = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Not already modified, set dirty flag
+                            else {
+                                me.dirty = true;
+                                modified[propName] = currentValue;
+                            }
+                        }
                     }
                     if (commit) {
                         me.commit();
@@ -513,7 +558,7 @@ Ext.define('Ext.data.NodeInterface', {
                     var me = this;
 
                     if (me.get('expandable')) {
-                        return !(me.isLeaf() || (me.isLoaded() && !me.hasChildNodes()));
+                        return !(me.isLeaf() || (me.isLoaded() && !me.phantom && !me.hasChildNodes()));
                     }
                     return false;
                 },
@@ -692,8 +737,8 @@ Ext.define('Ext.data.NodeInterface', {
                     }
 
                     // Update previous sibling to point to its new next.
-                    // Note: the code below is an assignment statement. The value of which is tested for truthiness.
-                    if (previousSibling = node.previousSibling) {
+                    previousSibling = node.previousSibling
+                    if (previousSibling) {
                         node.previousSibling.nextSibling = node.nextSibling;
                     }
                     
@@ -1566,15 +1611,20 @@ Ext.define('Ext.data.NodeInterface', {
                     }
                     ln = collapseNodes.length;
 
-                    // Collapse the collapsible children.
-                    // Pass our callback to the last one.
-                    for (i = 0; i < ln; ++i) {
-                        node = collapseNodes[i];
-                        if (i === ln - 1) {
-                            node.collapse(recursive, callback, scope);
-                        } else {
-                            node.collapse(recursive);
+                    if (ln) {
+                        // Collapse the collapsible children.
+                        // Pass our callback to the last one.
+                        for (i = 0; i < ln; ++i) {
+                            node = collapseNodes[i];
+                            if (i === ln - 1) {
+                                node.collapse(recursive, callback, scope);
+                            } else {
+                                node.collapse(recursive);
+                            }
                         }
+                    } else {
+                        // Nothing to collapse, so fire the callback
+                        Ext.callback(callback, scope);
                     }
                 },
 

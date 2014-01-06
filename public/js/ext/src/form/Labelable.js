@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * A mixin which allows a component to be configured and decorated with a label and/or error message as is
@@ -42,10 +39,13 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
  */
 Ext.define("Ext.form.Labelable", {
     requires: ['Ext.XTemplate'],
+    
+    isLabelable: true,
 
     autoEl: {
         tag: 'table',
-        cellpadding: 0
+        cellpadding: 0,
+        role: 'presentation'
     },
 
     childEls: [
@@ -136,13 +136,19 @@ Ext.define("Ext.form.Labelable", {
             '<tpl if="labelOnLeft">',
                 '<td role="presentation" id="{id}-labelCell" style="{labelCellStyle}" {labelCellAttrs}>',
                     '{beforeLabelTpl}',
-                    '<label id="{id}-labelEl" {labelAttrTpl}<tpl if="inputId"> for="{inputId}"</tpl> class="{labelCls}"',
+                    '<label id="{id}-labelEl" {labelAttrTpl}',
+                        '<tpl if="inputId && !(boxLabel && !fieldLabel)"> for="{inputId}"</tpl>',
+                        ' class="{labelCls}"',
                         '<tpl if="labelStyle"> style="{labelStyle}"</tpl>',
                         // Required for Opera
                         ' unselectable="on"',
                     '>',
                         '{beforeLabelTextTpl}',
-                        '<tpl if="fieldLabel">{fieldLabel}{labelSeparator}</tpl>',
+                        '<tpl if="fieldLabel">{fieldLabel}',
+                            '<tpl if="labelSeparator">',
+                                '<span role="separator">{labelSeparator}</span>',
+                            '</tpl>',
+                        '</tpl>',
                         '{afterLabelTextTpl}',
                     '</label>',
                     '{afterLabelTpl}',
@@ -163,7 +169,11 @@ Ext.define("Ext.form.Labelable", {
                             ' unselectable="on"',
                         '>',
                             '{beforeLabelTextTpl}',
-                            '<tpl if="fieldLabel">{fieldLabel}{labelSeparator}</tpl>',
+                            '<tpl if="fieldLabel">{fieldLabel}',
+                                '<tpl if="labelSeparator">',
+                                    '<span role="separator">{labelSeparator}</span>',
+                                '</tpl>',
+                            '</tpl>',
                             '{afterLabelTextTpl}',
                         '</label>',
                     '</div>',
@@ -179,10 +189,10 @@ Ext.define("Ext.form.Labelable", {
                 '{afterBodyEl}',
                 '</td>',
                 '<td role="presentation" id="{id}-sideErrorCell" vAlign="{[values.labelAlign===\'top\' && !values.hideLabel ? \'bottom\' : \'middle\']}" style="{[values.autoFitErrors ? \'display:none\' : \'\']}" width="{errorIconWidth}">',
-                    '<div role="presentation" id="{id}-errorEl" class="{errorMsgCls}" style="display:none"></div>',
+                    '<div role="alert" aria-live="polite" id="{id}-errorEl" class="{errorMsgCls}" style="display:none"></div>',
                 '</td>',
             '<tpl elseif="msgTarget==\'under\'">',
-                '<div role="presentation" id="{id}-errorEl" class="{errorMsgClass}" colspan="2" style="display:none"></div>',
+                '<div role="alert" aria-live="polite" id="{id}-errorEl" class="{errorMsgClass}" colspan="2" style="display:none"></div>',
                 '{afterBodyEl}',
                 '</td>',
             '</tpl>',
@@ -202,12 +212,20 @@ Ext.define("Ext.form.Labelable", {
 
     htmlActiveErrorsTpl: [
         '<tpl if="errors && errors.length">',
-            '<ul class="{listCls}"><tpl for="errors"><li role="alert">{.}</li></tpl></ul>',
+            '<ul class="{listCls}">',
+                '<tpl if="Ext.enableAria">',
+                    '<tpl if="fieldLabel"><div>{fieldLabel}</div></tpl>',
+                '</tpl>',
+                '<tpl for="errors"><li>{.}</li></tpl>',
+            '</ul>',
         '</tpl>'
     ],
     
     plaintextActiveErrorsTpl: [
         '<tpl if="errors && errors.length">',
+            '<tpl if="Ext.enableAria">',
+                '<tpl if="fieldLabel">{fieldLabel}\n</tpl>',
+            '</tpl>',
             '<tpl for="errors"><tpl if="xindex &gt; 1">\n</tpl>{.}</tpl>',
         '</tpl>'
     ],
@@ -605,7 +623,8 @@ Ext.define("Ext.form.Labelable", {
             bodyColspan    : me.getBodyColspan(),
             externalError  : !me.autoFitErrors,
             errorMsgCls    : me.getErrorMsgCls(),
-            errorIconWidth : Ext.form.Labelable.errorIconWidth
+            errorIconWidth : Ext.form.Labelable.errorIconWidth,
+            boxLabel       : me.boxLabel
         },
         me, me.labelableRenderProps, true);
 
@@ -809,14 +828,20 @@ Ext.define("Ext.form.Labelable", {
      * @param {String[]} errors The error messages
      */
     setActiveErrors: function(errors) {
+        var me = this,
+            tpl;
+        
         errors = Ext.Array.from(errors);
-        this.activeError = errors[0];
-        this.activeErrors = errors;
-        this.activeError = this.getTpl('activeErrorsTpl').apply({
+        tpl = me.getTpl('activeErrorsTpl');
+        
+        me.activeErrors = errors;
+        me.activeError = tpl.apply({
+            fieldLabel: me.fieldLabel,
             errors: errors,
             listCls: Ext.plainListCls 
         });
-        this.renderActiveError();
+        
+        me.renderActiveError();
     },
 
     /**
@@ -848,9 +873,6 @@ Ext.define("Ext.form.Labelable", {
         if (me.rendered && !me.isDestroyed && !me.preventMark) {
             // Add/remove invalid class
             me.el[hasError ? 'addCls' : 'removeCls'](me.invalidCls);
-
-            // Update the aria-invalid attribute
-            me.getActionEl().dom.setAttribute('aria-invalid', hasError);
 
             // Update the errorEl (There will only be one if msgTarget is 'side' or 'under') with the error message text
             if (me.errorEl) {

@@ -39,12 +39,12 @@
     }
 
     $vertical: false;
-    @if $background-gradient != null and ($background-direction == left or $background-direction == right) {
+    @if not is-null($background-gradient) and ($background-direction == left or $background-direction == right) {
         $vertical: true;
     }
 
     $background-stretch-position: null;
-    @if $background-stretch == null {
+    @if is-null($background-stretch) {
         @if $vertical {
             $background-stretch: left;
         } @else {
@@ -62,7 +62,7 @@
         $background-stretch-position: left;
     }
 
-    @if $background-gradient != null {
+    @if not is-null($background-gradient) {
         $stretch: slicer-background-stretch($cls-ui, $background-stretch);
     }
 
@@ -92,7 +92,7 @@
     // requires more padding, that wins. This is the amount of padding you need in CSS3
     // browsers.
     //
-    @if $padding != null {
+    @if not is-null($padding) {
         $padding-top:    max($padding-top,    top($padding));
         $padding-right:  max($padding-right,  right($padding));
         $padding-bottom: max($padding-bottom, bottom($padding));
@@ -135,30 +135,28 @@
            nopx($padding-left);
 
     .#{$prefix}#{$cls-ui} {
-        @if $supports-border-radius {
-            @if length($border-radius) == 2 {
-                @include border-top-left-radius(nth($border-radius, 1));
-                @include border-top-right-radius(nth($border-radius, 2));
-            } @else if length($border-radius) == 3 {
-                @include border-top-left-radius(nth($border-radius, 1));
-                @include border-top-right-radius(nth($border-radius, 2));
-                @include border-bottom-right-radius(nth($border-radius, 3));
-            } @else if length($border-radius) == 4 {
-                @include border-top-left-radius(nth($border-radius, 1));
-                @include border-top-right-radius(nth($border-radius, 2));
-                @include border-bottom-right-radius(nth($border-radius, 3));
-                @include border-bottom-left-radius(nth($border-radius, 4));
-            } @else {
-                @include border-radius($border-radius);
-            }
+        @if length($border-radius) == 2 {
+            @include border-top-left-radius(nth($border-radius, 1));
+            @include border-top-right-radius(nth($border-radius, 2));
+        } @else if length($border-radius) == 3 {
+            @include border-top-left-radius(nth($border-radius, 1));
+            @include border-top-right-radius(nth($border-radius, 2));
+            @include border-bottom-right-radius(nth($border-radius, 3));
+        } @else if length($border-radius) == 4 {
+            @include border-top-left-radius(nth($border-radius, 1));
+            @include border-top-right-radius(nth($border-radius, 2));
+            @include border-bottom-right-radius(nth($border-radius, 3));
+            @include border-bottom-left-radius(nth($border-radius, 4));
+        } @else {
+            @include border-radius($border-radius);
         }
 
         padding: $padding-top $padding-right $padding-bottom $padding-left;
         border-width: $border-width;
         border-style: solid;
 
-        @if $background-color != null {
-            @if $supports-gradients and $background-gradient != null {
+        @if not is-null($background-color) {
+            @if not is-null($background-gradient) {
                 @include background-gradient($background-color, $background-gradient, $background-direction);
             }
             @else {
@@ -185,9 +183,9 @@
         }
     }
 
-    @if not $supports-gradients or $compile-all {
+    @if $include-slicer-border-radius {
         .#{$prefix}#{$cls-ui}-mc {
-            @if $background-gradient != null {
+            @if not is-null($background-gradient) {
                 background-image: slicer-frame-background-image($cls-ui, '#{$cls}/#{$cls-img-ui}-fbg');
 
                 @if $vertical {
@@ -196,78 +194,73 @@
                     background-position: 0 $background-stretch-position;
                 }
             }
-            @if $background-color != null {
+            @if not is-null($background-color) {
                 background-color: $background-color;
             }
         }
-        @if $include-frame-rtl and $background-gradient != null {
+
+        @if $include-frame-rtl and not is-null($background-gradient) {
             .#{$prefix}rtl.#{$prefix}#{$cls-ui}-mc {
                 background-image: slicer-frame-background-image-rtl($cls-ui, '#{$cls}/#{$cls-img-ui}-fbg-rtl');
                 background-position: rtl-background-position($background-stretch-position 0);
             }
         }
+    }
 
-        @if $background-gradient != null {
-            .#{$prefix}nlg {
-                .#{$prefix}#{$cls-ui} {
-                    background-image: slicer-background-image($cls-ui, '#{$cls}/#{$cls-img-ui}-bg');
+    @if $include-slicer-gradient and not is-null($background-gradient) {
+        .#{$prefix}nlg {
+            .#{$prefix}#{$cls-ui} {
+                background-image: slicer-background-image($cls-ui, '#{$cls}/#{$cls-img-ui}-bg');
 
-                    @if $vertical {
-                        background-position: $background-stretch-position 0;
-                    } @else {
-                        background-position: 0 $background-stretch-position;
-                    }
+                @if $vertical {
+                    background-position: $background-stretch-position 0;
+                } @else {
+                    background-position: 0 $background-stretch-position;
                 }
+            }
 
-                @if $include-frame-rtl {
-                    .#{$prefix}rtl.#{$prefix}#{$cls-ui} {
-                        background-image: slicer-background-image-rtl($cls-ui, '#{$cls}/#{$cls-img-ui}-bg-rtl');
-                        background-position: rtl-background-position($background-stretch-position 0);
-                    }
+            @if $include-frame-rtl {
+                .#{$prefix}rtl.#{$prefix}#{$cls-ui} {
+                    background-image: slicer-background-image-rtl($cls-ui, '#{$cls}/#{$cls-img-ui}-bg-rtl');
+                    background-position: rtl-background-position($background-stretch-position 0);
                 }
             }
         }
     }
 
-    @if not $supports-border-radius or $compile-all {
+    @if $include-slicer-border-radius {
         .#{$prefix}nbr {
             // This rule must be in x-nbr to avoid matching on CSS3 browsers.
             .#{$prefix}#{$cls-ui} {
                 padding: 0 !important;
                 border-width: 0 !important;
                 @include border-radius(0px);
-                @if $background-color != null {
+                @if not is-null($background-color) {
                     background-color: transparent;
                 } @else {
                     background: #fff;
                 }
-                @if $background-gradient != null {
+                @if not is-null($background-gradient) {
                     background-image: none;
                 }
             }
         }
 
-        // This rule must be more specific than other x-nlg rules or else framing will
-        // not be applied to the element. This rule must also be in x-nbr to avoid
-        // matching on CSS3 browsers.
-        //
-        body.#{$prefix}nbr {
-            .#{$prefix}#{$cls-ui}-frameInfo {
-                // Pass along Div/Table, Horz/Vert, border-radius and border-width
-                // Here we're encoding the framing information in an arbitrary fashion so
-                // it can be parsed by the component and get information about the framing.
-                // Originally, this tried to embed the information using a background image
-                // pointing to about:blank#info however in IE with SSL, this would trigger
-                // the insecure content warning. We also tried encoding the info using a
-                // filter as follows (where framing-info is a string containg the encoded data):
-                // filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=false, src="ext-frame#{$framing-info}");
-                // However the filter property can only be read by IE, making it impossible
-                // to debug nocss3 mode in modern browsers. Font-family meets all the
-                // requirements for tunneling data to JavaScript. It can contain an
-                // arbitrary string value, which can be read in JS in any browser, and it
-                // does not trigger any network interactions.
-                font-family: #{$framing-info};
-            }
+        .#{$prefix}#{$cls-ui}-frameInfo {
+            // Pass along Div/Table, Horz/Vert, border-radius and border-width
+            // Here we're encoding the framing information in an arbitrary fashion so
+            // it can be parsed by the component and get information about the framing.
+            // Originally, this tried to embed the information using a background image
+            // pointing to about:blank#info however in IE with SSL, this would trigger
+            // the insecure content warning. We also tried encoding the info using a
+            // filter as follows (where framing-info is a string containg the encoded data):
+            // filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=false, src="ext-frame#{$framing-info}");
+            // However the filter property can only be read by IE, making it impossible
+            // to debug nocss3 mode in modern browsers. Font-family meets all the
+            // requirements for tunneling data to JavaScript. It can contain an
+            // arbitrary string value, which can be read in JS in any browser, and it
+            // does not trigger any network interactions.
+            font-family: #{$framing-info};
         }
 
         // These rules apply to elements that are not rendered on CSS3 browsers so we do
@@ -427,7 +420,7 @@
 
                 @if $background-color != transparent {
                     background-image: slicer-sides-sprite($cls-ui, '#{$cls}/#{$cls-img-ui}-sides');
-                    @if $background-gradient == null {
+                    @if is-null($background-gradient) {
                         background-repeat: repeat-y;
                     }
                 }

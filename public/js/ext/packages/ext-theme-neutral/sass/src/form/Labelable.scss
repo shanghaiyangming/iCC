@@ -46,17 +46,19 @@ div.#{$prefix}lbl-top-err-icon {
     margin-bottom: $form-item-margin-bottom;
 }
 
-// IE6 cannot do border-color: transparent
-// So we revert pack to a pad row for IE6
-.#{$prefix}ie6 {
-    .#{$prefix}form-form-item {
-        td {
-            border-top-width: 0;
+@if $include-ie {
+    // IE6 cannot do border-color: transparent
+    // So we revert pack to a pad row for IE6
+    .#{$prefix}ie6 {
+        .#{$prefix}form-form-item {
+            td {
+                border-top-width: 0;
+            }
         }
-    }
 
-    // Padding row for IE6 when Labelable Fields are in a form layout
-    td.#{$prefix}form-item-pad {
-        height: $form-item-margin-bottom;
+        // Padding row for IE6 when Labelable Fields are in a form layout
+        td.#{$prefix}form-item-pad {
+            height: $form-item-margin-bottom;
+        }
     }
 }

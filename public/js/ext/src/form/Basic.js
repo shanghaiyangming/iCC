@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Provides input field management, validation, submission, and form loading services for the collection
@@ -112,7 +109,7 @@ Ext.define('Ext.form.Basic', {
         // let us react to items being added/remove at different places in the hierarchy which may have an
         // impact on the dirty/valid state.
         me.monitor = new Ext.container.Monitor({
-            selector: '[isFormField]',
+            selector: '[isFormField]:not([excludeForm])',
             scope: me,
             addHandler: me.onFieldAdd,
             removeHandler: me.onFieldRemove
@@ -343,6 +340,7 @@ Ext.define('Ext.form.Basic', {
         me.clearListeners();
         me.checkValidityTask.cancel();
         me.checkDirtyTask.cancel();
+        me.isDestroyed = true;
     },
     
     onFieldAdd: function(field){
@@ -428,7 +426,13 @@ Ext.define('Ext.form.Basic', {
      */
     checkValidity: function() {
         var me = this,
-            valid = !me.hasInvalidField();
+            valid;
+        
+        if (me.isDestroyed) {
+            return;
+        }
+            
+        valid = !me.hasInvalidField();
         if (valid !== me.wasValid) {
             me.onValidityChange(valid);
             me.fireEvent('validitychange', me, valid);
@@ -489,7 +493,14 @@ Ext.define('Ext.form.Basic', {
      * when an individual field's `dirty` state changes.
      */
     checkDirty: function() {
-        var dirty = this.isDirty();
+        var me = this,
+            dirty;
+            
+        if (me.isDestroyed) {
+            return;
+        }
+            
+        dirty = this.isDirty();
         if (dirty !== this.wasDirty) {
             this.fireEvent('dirtychange', this, dirty);
             this.wasDirty = dirty;
@@ -940,19 +951,17 @@ Ext.define('Ext.form.Basic', {
      * method is used.
      * @return {String/Object}
      */
-    getValues: function(asString, dirtyOnly, includeEmptyText, useDataValues) {
+    getValues: function(asString, dirtyOnly, includeEmptyText, useDataValues, isSubmitting) {
         var values  = {},
             fields  = this.getFields().items,
-            f,
             fLen    = fields.length,
             isArray = Ext.isArray,
-            field, data, val, bucket, name;
+            field, data, val, bucket, name, f;
 
         for (f = 0; f < fLen; f++) {
             field = fields[f];
-
             if (!dirtyOnly || field.isDirty()) {
-                data = field[useDataValues ? 'getModelData' : 'getSubmitData'](includeEmptyText);
+                data = field[useDataValues ? 'getModelData' : 'getSubmitData'](includeEmptyText, isSubmitting);
 
                 if (Ext.isObject(data)) {
                     for (name in data) {
@@ -963,20 +972,24 @@ Ext.define('Ext.form.Basic', {
                                 val = field.emptyText || '';
                             }
 
-                            if (values.hasOwnProperty(name)) {
-                                bucket = values[name];
+                            if (!field.isRadio) {
+                                if (values.hasOwnProperty(name)) {
+                                    bucket = values[name];
 
-                                if (!isArray(bucket)) {
-                                    bucket = values[name] = [bucket];
-                                }
+                                    if (!isArray(bucket)) {
+                                        bucket = values[name] = [bucket];
+                                    }
 
-                                if (isArray(val)) {
-                                    values[name] = bucket.concat(val);
+                                    if (isArray(val)) {
+                                        values[name] = bucket.concat(val);
+                                    } else {
+                                        bucket.push(val);
+                                    }
                                 } else {
-                                    bucket.push(val);
+                                    values[name] = val;
                                 }
                             } else {
-                                values[name] = val;
+                                values[name] = values[name] || val;
                             }
                         }
                     }

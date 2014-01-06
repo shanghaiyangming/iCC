@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /*
  * This is a derivative of the similarly named class in the YUI Library.
@@ -174,14 +171,21 @@ Ext.define('Ext.dd.DragDropManager', {
      * @private
      */
     _execOnAll: function(sMethod, args) {
-        var i, j, oDD;
-        for (i in this.ids) {
-            for (j in this.ids[i]) {
-                oDD = this.ids[i][j];
-                if (! this.isTypeOfDD(oDD)) {
-                    continue;
+        var ids = this.ids,
+            i, j, oDD, item;
+            
+        for (i in ids) {
+            if (ids.hasOwnProperty(i)) {
+                item = ids[i];
+                for (j in item) {
+                    if (item.hasOwnProperty(j)) {
+                        oDD = item[j];
+                        if (! this.isTypeOfDD(oDD)) {
+                            continue;
+                        }
+                        oDD[sMethod].apply(oDD, args);
+                    }
                 }
-                oDD[sMethod].apply(oDD, args);
             }
         }
     },
@@ -323,10 +327,24 @@ Ext.define('Ext.dd.DragDropManager', {
      * DragDrop.unreg, use that method instead of calling this directly.
      * @private
      */
-    _remove: function(oDD) {
-        for (var g in oDD.groups) {
-            if (g && this.ids[g] && this.ids[g][oDD.id]) {
-                delete this.ids[g][oDD.id];
+    _remove: function(oDD, clearGroup) {
+        // If we're clearing everything, we'll just end up wiping
+        // this.ids & this.handleIds
+        if (this.clearingAll) {
+            return;
+        }
+        
+        var ids = this.ids,
+            groups = oDD.groups,
+            g;
+            
+        for (g in groups) {
+            if (groups.hasOwnProperty(g)) {
+                if (clearGroup) {
+                    delete ids[g];
+                } else if (ids[g]) {
+                    delete ids[g][oDD.id];
+                }
             }
         }
         delete this.handleIds[oDD.id];
@@ -463,6 +481,7 @@ Ext.define('Ext.dd.DragDropManager', {
             me.handleMouseUp(e);
         }
 
+        me.mousedownEvent = e.clone();
         me.currentTarget = e.getTarget();
         me.dragCurrent = oDD;
 
@@ -1116,20 +1135,26 @@ Ext.define('Ext.dd.DragDropManager', {
      * @private
      */
     unregAll: function() {
-
-        if (this.dragCurrent) {
-            this.stopDrag();
-            this.dragCurrent = null;
+        var me = this,
+            cache = me.elementCache,
+            i;
+            
+        if (me.dragCurrent) {
+            me.stopDrag();
+            me.dragCurrent = null;
         }
 
-        this._execOnAll("unreg", []);
+        me.clearingAll = true;
+        me._execOnAll("unreg", []);
+        delete me.clearingAll;
 
-        for (var i in this.elementCache) {
-            delete this.elementCache[i];
+        for (i in cache) {
+            delete cache[i];
         }
 
-        this.elementCache = {};
-        this.ids = {};
+        me.elementCache = {};
+        me.ids = {};
+        me.handleIds = {};
     },
 
     /**

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
@@ -237,7 +234,7 @@ Ext.define('Ext.form.field.Field', {
     getSubmitData: function() {
         var me = this,
             data = null;
-        if (!me.disabled && me.submitValue && !me.isFileUpload()) {
+        if (!me.disabled && me.submitValue) {
             data = {};
             data[me.getName()] = '' + me.getValue();
         }
@@ -258,10 +255,13 @@ Ext.define('Ext.form.field.Field', {
      * strings if that particular name has multiple values. It can also return null if there are no parameters to be
      * submitted.
      */
-    getModelData: function() {
+    getModelData: function(includeEmptyText, /*private*/ isSubmitting) {
         var me = this,
             data = null;
-        if (!me.disabled && !me.isFileUpload()) {
+        
+        // Note that we need to check if this operation is being called from a Submit action because displayfields aren't
+        // to be submitted,  but they can call this to get their model data.
+        if (!me.disabled && (me.submitValue || !isSubmitting)) {
             data = {};
             data[me.getName()] = me.getValue();
         }
@@ -309,16 +309,28 @@ Ext.define('Ext.form.field.Field', {
      *    if it has changed.
      */
     checkChange: function() {
-        if (!this.suspendCheckChange) {
-            var me = this,
-                newVal = me.getValue(),
-                oldVal = me.lastValue;
-            if (!me.isEqual(newVal, oldVal) && !me.isDestroyed) {
+        var me = this,
+            newVal, oldVal;
+            
+        if (!me.suspendCheckChange) {
+            newVal = me.getValue();
+            oldVal = me.lastValue;
+                
+            if (!me.isDestroyed && me.didValueChange(newVal, oldVal)) {
                 me.lastValue = newVal;
                 me.fireEvent('change', me, newVal, oldVal);
                 me.onChange(newVal, oldVal);
             }
         }
+    },
+    
+    /**
+     * @private
+     * Checks if the value has changed. Allows subclasses to override for
+     * any more complex logic.
+     */
+    didValueChange: function(newVal, oldVal){
+        return !this.isEqual(newVal, oldVal);
     },
 
     /**

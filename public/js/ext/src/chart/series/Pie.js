@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @class Ext.chart.series.Pie
@@ -169,7 +166,7 @@ Ext.define('Ext.chart.series.Pie', {
             segment: {
                 margin: 20
             }
-        }, config.highlightCfg);
+        }, config.highlight);
         Ext.apply(me, config, {
             shadowAttributes: [{
                 "stroke-width": 6,
@@ -219,7 +216,7 @@ Ext.define('Ext.chart.series.Pie', {
     },
     
     onRedraw: function(){
-        this.initialize();    
+        this.initialize();
     },
 
     // @private updates some onbefore render parameters.
@@ -228,6 +225,8 @@ Ext.define('Ext.chart.series.Pie', {
             store = me.chart.getChartStore(),
             data = store.data.items,
             i, ln, rec;
+            
+        me.callParent();
         //Add yFields to be used in Legend.js
         me.yField = [];
         if (me.label.field) {
@@ -439,7 +438,7 @@ Ext.define('Ext.chart.series.Pie', {
                 value = 0;
             } else {
                 value = record.get(field);
-                if (first == 0) {
+                if (first === 0) {
                     first = 1;
                 }
             }
@@ -611,6 +610,42 @@ Ext.define('Ext.chart.series.Pie', {
         me.renderCallouts();
     },
 
+    setSpriteAttributes: function(sprite, attrs, animate) {
+        var me = this;
+        if (animate) {
+            sprite.stopAnimation();
+            sprite.animate({
+                to: attrs,
+                duration: me.highlightDuration
+            });
+        }
+        else {
+            sprite.setAttributes(attrs, true);
+        }
+    },
+
+    createLabelLine: function(i) {
+        var me = this;
+            calloutLine = me.label.calloutLine,
+            line = me.chart.surface.add({
+                type: 'path',
+                stroke: (i === undefined ? '#555' : ((calloutLine && calloutLine.color) || me.getLegendColor(i))),
+                lineWidth: (calloutLine && calloutLine.width) || 2,
+                path: 'M0,0Z'
+            });
+        return line;
+    },
+
+    drawLabelLine: function(label, from, to, animate) {
+        var me = this,
+            line = label.lineSprite,
+            path = 'M' + from.x + ' ' + from.y + 'L' + to.x + ' ' + to.y + 'Z';
+
+        me.setSpriteAttributes(line, { 
+            'path': path 
+        }, animate);
+    },
+
     // @private callback for when creating a label sprite.
     onCreateLabel: function(storeItem, item, i, display) {
         var me = this,
@@ -650,8 +685,13 @@ Ext.define('Ext.chart.series.Pie', {
             from = {},
             rho = 1,
             theta = Math.atan2(y, x || 1),
-            dg = theta * 180 / Math.PI,
-            prevDg, labelBox, width, height;
+            dg = Ext.draw.Draw.degrees(theta),
+            prevDg, labelBox, width, height,
+            isOutside = (display === 'outside'),
+            calloutLine = label.attr.calloutLine,
+            lineWidth = (calloutLine && calloutLine.width) || 2,
+            labelPadding = (label.attr.padding || 20) + (isOutside ? lineWidth/2 + 4 : 0),
+            labelPaddingX = 0, labelPaddingY = 0;
 
         opt.hidden = false;
 
@@ -659,27 +699,37 @@ Ext.define('Ext.chart.series.Pie', {
             opt.hidden = true;
         }
 
-        function fixAngle(a) {
-            if (a < 0) {
-                a += 360;
-            }
-            return a % 360;
-        }
-
         label.setAttributes({
+            opacity: (opt.hidden ? 0 : 1),
             text: format(storeItem.get(field), label, storeItem, item, i, display, animate, index)
         }, true);
 
+        if (label.lineSprite) {
+            var attrs = { opacity: (opt.hidden ? 0 : 1) };
+            if (opt.hidden) {
+                attrs.translate = {x:0, y:0};
+            }
+            me.setSpriteAttributes(label.lineSprite, attrs, false);
+        }
+
         switch (display) {
         case 'outside':
-            // calculate the distance to the pie's edge
-            rho = Math.sqrt(x * x + y * y) * 2;
+            label.isOutside = true;
 
-            // add the distance from the label's center to its edge
+            // calculate the distance to the pie's edge
+            rho = item.endRho;
+
+            // calculate the padding around the label
+            labelPaddingX = (Math.abs(dg) <= 90 ? labelPadding : -labelPadding);
+            labelPaddingY = (dg >= 0 ? labelPadding : -labelPadding);
+
+            // add the distance from the label's center to its edge, plus padding
             label.setAttributes({rotation:{degrees: 0}}, true);
             labelBox = label.getBBox();
-            width = labelBox.width/2 * Math.cos(theta) + 4;
-            height = labelBox.height/2 * Math.sin(theta) + 4;
+            width = labelBox.width/2 * Math.cos(theta);
+            height = labelBox.height/2 * Math.sin(theta);
+            width += labelPaddingX;
+            height += labelPaddingY;
 
             rho += Math.sqrt(width*width + height*height);
 
@@ -689,7 +739,7 @@ Ext.define('Ext.chart.series.Pie', {
             break;
 
         case 'rotate':
-            dg = fixAngle(dg);
+            dg = Ext.draw.Draw.normalizeDegrees(dg);
             dg = (dg > 90 && dg < 270) ? dg + 180: dg;
 
             prevDg = label.attr.rotation.degrees;
@@ -701,7 +751,7 @@ Ext.define('Ext.chart.series.Pie', {
                 }
                 dg = dg % 360;
             } else {
-                dg = fixAngle(dg);
+                dg = Ext.draw.Draw.normalizeDegrees(dg);
             }
             //update rotation angle
             opt.rotate = {
@@ -714,6 +764,7 @@ Ext.define('Ext.chart.series.Pie', {
         default:
             break;
         }
+
         //ensure the object has zero translation
         opt.translate = {
             x: 0, y: 0
@@ -726,6 +777,64 @@ Ext.define('Ext.chart.series.Pie', {
             label.setAttributes(opt, true);
         }
         label._from = from;
+
+        // draw a line if the label is outside
+        if (label.isOutside && calloutLine) {
+            var line = label.lineSprite,
+                animateLine = animate,
+                fromPoint = {
+                    // edge of the pie
+                    x: (item.endRho - lineWidth/2) * Math.cos(theta) + centerX,
+                    y: (item.endRho - lineWidth/2) * Math.sin(theta) + centerY
+                },
+                labelCenter = {
+                    // center of the label box
+                    x: opt.x,
+                    y: opt.y
+                },
+                toPoint = {};
+
+            function sign(x) {
+                return x ? x < 0 ? -1 : 1 : 0;
+            }
+
+            if (calloutLine && calloutLine.length) {
+                toPoint = {
+                    x: (item.endRho + calloutLine.length) * Math.cos(theta) + centerX,
+                    y: (item.endRho + calloutLine.length) * Math.sin(theta) + centerY
+                }
+            } else {
+                // Calculate the line length
+                //
+                // Our theta, from the rightmost point, runs:
+                //   0 to -PI counter-clockwise on the upper half of the pie,
+                //   0 to PI clockwise on the lower half of the pie.
+                // By normalizing it, it runs 0 to 2*PI counter-clockwise.
+                var normalTheta = Ext.draw.Draw.normalizeRadians(-theta),
+                    cos = Math.cos(normalTheta),
+                    sin = Math.sin(normalTheta),
+                    labelWidth = (labelBox.width + lineWidth + 4)/2,
+                    labelHeight = (labelBox.height + lineWidth + 4)/2;
+
+                if (Math.abs(cos) * labelHeight > Math.abs(sin) * labelWidth) {
+                    // the line connects to the right or left sides of the label
+                    toPoint.x = labelCenter.x - labelWidth * sign(cos);
+                    toPoint.y = labelCenter.y + labelWidth * sin/cos * sign(cos);
+                } else {
+                    // the line connects to the top or bottom sides of the label
+                    toPoint.x = labelCenter.x - labelHeight * cos/sin * sign(sin);
+                    toPoint.y = labelCenter.y + labelHeight * sign(sin);
+                }
+            }
+
+            if (!line) {
+                line = label.lineSprite = me.createLabelLine(i);
+                animateLine = false;
+            }
+            me.drawLabelLine(label, fromPoint, toPoint, animateLine);
+        } else {
+            delete label.lineSprite;
+        }
     },
 
     // @private callback for when placing a callout sprite.
@@ -850,6 +959,12 @@ Ext.define('Ext.chart.series.Pie', {
             sprite[sh].setAttributes({
                 hidden: true
             }, true);
+            var line = sprite[sh].lineSprite;
+            if (line) {
+                line.setAttributes({
+                    hidden: true
+                }, true);
+            }
         }
         if (this.slices[index].shadowAttrs) {
             for (i = 0, shadows = this.slices[index].shadowAttrs, l = shadows.length; i < l; i++) {
@@ -894,7 +1009,8 @@ Ext.define('Ext.chart.series.Pie', {
             middle,
             r,
             x,
-            y;
+            y,
+            line;
         item = item || this.items[this._index];
 
         //TODO(nico): sometimes in IE itemmouseover is triggered
@@ -935,25 +1051,11 @@ Ext.define('Ext.chart.series.Pie', {
                     y = 0;
                 }
 
-                if (animate) {
-                    label.stopAnimation();
-                    label.animate({
-                        to: {
-                            translate: {
-                                x: x,
-                                y: y
-                            }
-                        },
-                        duration: me.highlightDuration
-                    });
-                }
-                else {
-                    label.setAttributes({
-                        translate: {
-                            x: x,
-                            y: y
-                        }
-                    }, true);
+                me.setSpriteAttributes(label, { translate: {x:x, y:y}}, animate);
+
+                line = label.lineSprite;
+                if (line) {
+                    me.setSpriteAttributes(line, { translate: {x:x, y:y}}, animate);
                 }
             }
             //animate shadows
@@ -973,16 +1075,7 @@ Ext.define('Ext.chart.series.Pie', {
                     attrs = {
                         segment: Ext.applyIf(to, me.highlightCfg.segment)
                     };
-                    if (animate) {
-                        shadow.stopAnimation();
-                        shadow.animate({
-                            to: attrs,
-                            duration: me.highlightDuration
-                        });
-                    }
-                    else {
-                        shadow.setAttributes(attrs, true);
-                    }
+                    me.setSpriteAttributes(shadow, attrs, animate);
                 }
             }
         }
@@ -1050,15 +1143,12 @@ Ext.define('Ext.chart.series.Pie', {
                                 degrees: label.attr.rotation.degrees
                             }
                         }: {});
-                        if (animate) {
-                            label.stopAnimation();
-                            label.animate({
-                                to: attrs,
-                                duration: me.highlightDuration
-                            });
-                        }
-                        else {
-                            label.setAttributes(attrs, true);
+
+                        me.setSpriteAttributes(label, attrs, animate);
+
+                        var line = label.lineSprite;
+                        if (line) {
+                            me.setSpriteAttributes(line, { translate: {x:0, y:0}}, animate);
                         }
                     }
                     if (shadowsEnabled) {
@@ -1075,18 +1165,7 @@ Ext.define('Ext.chart.series.Pie', {
                                 }
                             }
                             shadow = shadows[j];
-                            if (animate) {
-                                shadow.stopAnimation();
-                                shadow.animate({
-                                    to: {
-                                        segment: to
-                                    },
-                                    duration: me.highlightDuration
-                                });
-                            }
-                            else {
-                                shadow.setAttributes({ segment: to }, true);
-                            }
+                            me.setSpriteAttributes(shadow, { segment: to }, animate);
                         }
                     }
                 }

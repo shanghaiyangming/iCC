@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * The TreeStore is a store implementation that is backed by by an {@link Ext.data.Tree}.
@@ -319,16 +316,21 @@ Ext.define('Ext.data.TreeStore', {
                     callbackArgs.push.apply(callbackArgs, args);
                 }
                 Ext.callback(callback, scope || node, callbackArgs);
-            }, me, {single: true});
+            }, me, {
+                single: true,
+                priority: 1001
+            });
         }
         // Node needs loading
         else {
             me.read({
                 node: node,
-                callback: function() {
+                // We use internalCallback here because we want trigger to
+                // the loading event after we've loaded children
+                internalCallback: function() {
                     // Clear the callback, since if we're introducing a custom one,
                     // it may be re-used on reload
-                    delete me.lastOptions.callback;
+                    delete me.lastOptions.internalCallback;
                     callbackArgs = [node.childNodes];
                     if (args) {
                         callbackArgs.push.apply(callbackArgs, args);
@@ -459,10 +461,10 @@ Ext.define('Ext.data.TreeStore', {
     getNodeById: function(id) {
         return this.tree.getNodeById(id);
     },
-    
+
     // inherit docs
     getById: function(id) {
-        return this.getNodeById(id);    
+        return this.getNodeById(id);
     },
 
     /**
@@ -477,43 +479,79 @@ Ext.define('Ext.data.TreeStore', {
         options.params = options.params || {};
 
         var me = this,
-            node = options.node || me.tree.getRootNode();
+            node = options.node || me.tree.getRootNode(),
+            callback = options.callback,
+            scope = options.scope,
+            operation;
 
-        // If there is not a node it means the user hasnt defined a rootnode yet. In this case lets just
+        // If there is not a node it means the user hasnt defined a rootnode yet. In this case let's just
         // create one for them.
         if (!node) {
             node = me.setRootNode({
                 expanded: true
             }, true);
         }
-        
+
+        // If the node we are loading was expanded, we have to expand it after the load
+        if (node.data.expanded) {
+            node.data.loaded = false;
+
+            // Must set expanded to false otherwise the onProxyLoad->fillNode->appendChild calls will update the view.
+            // We ned to update the view in the callback below.
+            if (me.clearOnLoad) {
+                node.data.expanded = false;
+            }
+            options.callback = function() {
+
+                // If newly loaded nodes are to be added to the existing child node set, then we have to collapse
+                // first so that they get removed from the NodeStore, and the subsequent expand will reveal the
+                // newly augmented child node set.
+                if (!me.clearOnLoad) {
+                    node.collapse();
+                }
+                node.expand();
+
+                // Call the original callback (if any)
+                Ext.callback(callback, scope, arguments);
+            }
+        }
+
         // Assign the ID of the Operation so that a ServerProxy can set its idParam parameter,
         // or a REST proxy can create the correct URL
         options.id = node.getId();
 
-        if (me.clearOnLoad) {
-            if(me.clearRemovedOnLoad) {
-                // clear from the removed array any nodes that were descendants of the node being reloaded so that they do not get saved on next sync.
-                me.clearRemoved(node);
+        options = Ext.apply({
+            action: 'read',
+            filters: me.filters.items,
+            sorters: me.getSorters(),
+            node: options.node || node
+        }, options);
+
+        me.lastOptions = options;
+
+        operation = new Ext.data.Operation(options);
+
+        if (me.fireEvent('beforeload', me, operation) !== false) {
+             if (me.clearOnLoad) {
+                if(me.clearRemovedOnLoad) {
+                    // clear from the removed array any nodes that were descendants of the node being reloaded so that they do not get saved on next sync.
+                    me.clearRemoved(node);
+                }
+                // temporarily remove the onNodeRemove event listener so that when removeAll is called, the removed nodes do not get added to the removed array
+                me.tree.un('remove', me.onNodeRemove, me);
+                // remove all the nodes
+                node.removeAll(false);
+                // reattach the onNodeRemove listener
+                me.tree.on('remove', me.onNodeRemove, me);
             }
-            // temporarily remove the onNodeRemove event listener so that when removeAll is called, the removed nodes do not get added to the removed array
-            me.tree.un('remove', me.onNodeRemove, me);
-            // remove all the nodes
-            node.removeAll(false);
-            // reattach the onNodeRemove listener
-            me.tree.on('remove', me.onNodeRemove, me);
+            me.loading = true;
+            me.proxy.read(operation, me.onProxyLoad, me);
         }
 
-        Ext.applyIf(options, {
-            node: node
-        });
-
-        me.callParent([options]);
-        
         if (me.loading && node) {
             node.set('loading', true);
         }
-        
+
         return me;
     },
 
@@ -661,7 +699,9 @@ Ext.define('Ext.data.TreeStore', {
         var me = this,
             successful = operation.wasSuccessful(),
             records = operation.getRecords(),
-            node = operation.node;
+            node = operation.node,
+            scope = operation.scope || me,
+            args = [records, operation, successful];
 
         me.loading = false;
         node.set('loading', false);
@@ -682,10 +722,11 @@ Ext.define('Ext.data.TreeStore', {
          * @param {Boolean} successful True if the operation was successful.
          */
         // deprecate read?
+        Ext.callback(operation.internalCallback, scope, args);
         me.fireEvent('read', me, operation.node, records, successful);
         me.fireEvent('load', me, operation.node, records, successful);
         //this is a callback that would have been passed to the 'read' function and is optional
-        Ext.callback(operation.callback, operation.scope || me, [records, operation, successful]);
+        Ext.callback(operation.callback, scope, args);
     },
     
     cleanRecords: function(node, records){

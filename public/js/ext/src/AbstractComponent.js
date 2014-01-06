@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 
 /**
@@ -953,6 +950,77 @@ Ext.define('Ext.AbstractComponent', {
      */
     shrinkWrap: 2,
 
+    /**
+     * @cfg {Number} [weight=0]
+     * A value to control how Components are laid out in a {@link Ext.layout.container.Border Border} layout or as docked items.
+     *
+     * In a Border layout, this can control how the regions (not the center) region lay out if the west or east take full height
+     * or if the north or south region take full width. Also look at the {@link Ext.layout.container.Border#regionWeights} on the Border layout. An example to show how you can
+     * take control of this is:
+     *
+     *     Ext.create('Ext.container.Viewport', {
+     *         layout      : 'border',
+     *         defaultType : 'panel',
+     *         items       : [
+     *             {
+     *                 region : 'north',
+     *                 title  : 'North',
+     *                 height : 100
+     *             },
+     *             {
+     *                 region : 'south',
+     *                 title  : 'South',
+     *                 height : 100,
+     *                 weight : -25
+     *             },
+     *             {
+     *                 region : 'west',
+     *                 title  : 'West',
+     *                 width  : 200,
+     *                 weight : 15
+     *             },
+     *             {
+     *                 region : 'east',
+     *                 title  : 'East',
+     *                 width  : 200
+     *             },
+     *             {
+     *                 region : 'center',
+     *                 title  : 'center'
+     *             }
+     *         ]
+     *     });
+     *
+     * If docked items, the weight will order how the items are laid out. Here is an example to put a {@link Ext.toolbar.Toolbar} above
+     * a {@link Ext.panel.Panel}'s header:
+     *
+     *     Ext.create('Ext.panel.Panel', {
+     *         renderTo    : document.body,
+     *         width       : 300,
+     *         height      : 300,
+     *         title       : 'Panel',
+     *         html        : 'Panel Body',
+     *         dockedItems : [
+     *             {
+     *                 xtype : 'toolbar',
+     *                 items : [
+     *                     {
+     *                         text : 'Save'
+     *                     }
+     *                 ]
+     *             },
+     *             {
+     *                 xtype  : 'toolbar',
+     *                 weight : -10,
+     *                 items  : [
+     *                     {
+     *                         text : 'Remove'
+     *                     }
+     *                 ]
+     *             }
+     *         ]
+     *     });
+     */
     weight: 0,
 
     /**
@@ -982,6 +1050,7 @@ Ext.define('Ext.AbstractComponent', {
 
     // private
     borderBoxCls: Ext.baseCSSPrefix + 'border-box',
+    rootCls: Ext.baseCSSPrefix + 'body',
 
     /**
      * Creates new Component.
@@ -1012,12 +1081,18 @@ Ext.define('Ext.AbstractComponent', {
              * @event beforeactivate
              * Fires before a Component has been visually activated. Returning `false` from an event listener can prevent
              * the activate from occurring.
+             *
+             * **Note** This event is only fired if this Component is a child of a {@link Ext.container.Container}
+             * that uses {@link Ext.layout.container.Card} as it's layout.
              * @param {Ext.Component} this
              */
             'beforeactivate',
             /**
              * @event activate
              * Fires after a Component has been visually activated.
+             *
+             * **Note** This event is only fired if this Component is a child of a {@link Ext.container.Container}
+             * that uses {@link Ext.layout.container.Card} as it's layout or this Component is a floating Component.
              * @param {Ext.Component} this
              */
             'activate',
@@ -1025,12 +1100,18 @@ Ext.define('Ext.AbstractComponent', {
              * @event beforedeactivate
              * Fires before a Component has been visually deactivated. Returning `false` from an event listener can
              * prevent the deactivate from occurring.
+             *
+             * **Note** This event is only fired if this Component is a child of a {@link Ext.container.Container}
+             * that uses {@link Ext.layout.container.Card} as it's layout.
              * @param {Ext.Component} this
              */
             'beforedeactivate',
             /**
              * @event deactivate
              * Fires after a Component has been visually deactivated.
+             *
+             * **Note** This event is only fired if this Component is a child of a {@link Ext.container.Container}
+             * that uses {@link Ext.layout.container.Card} as it's layout or this Component is a floating Component.
              * @param {Ext.Component} this
              */
             'deactivate',
@@ -1252,13 +1333,17 @@ Ext.define('Ext.AbstractComponent', {
     },
 
     initComponent: function () {
-        // This is called again here to allow derived classes to add plugin configs to the
-        // plugins array before calling down to this, the base initComponent.
-        this.plugins = this.constructPlugins();
+        var me = this;
+
+        // If plugins have been added by a subclass's initComponent before calling up to here,
+        // The processed flag will not have been set, and we must process them again.
+        if (me.plugins && !me.plugins.processed) {
+            me.plugins = me.constructPlugins();
+        }
 
         // this will properly (ignore or) constrain the configured width/height to their
         // min/max values for consistency.
-        this.setSize(this.width, this.height);
+        me.setSize(me.width, me.height);
     },
 
     /**
@@ -1492,6 +1577,11 @@ Ext.define('Ext.AbstractComponent', {
 
         if (plugins) {
             result = [];
+
+            // The processed flag indicates that the plugins have been constructed. THis is usually done
+            // at construction time, so if at initComponent time, there is a non-zero array of plugins which
+            // does NOT have the processed flag, it needs to be processed again.
+            result.processed = true;
             if (!Ext.isArray(plugins)) {
                 plugins = [ plugins ];
             }
@@ -1577,12 +1667,6 @@ Ext.define('Ext.AbstractComponent', {
      * @protected
      */
     beforeLayout: Ext.emptyFn,
-
-    /**
-     * @private
-     * Injected as an override by Ext.Aria.initialize
-     */
-    updateAria: Ext.emptyFn,
 
     /**
      * Called by Component#doAutoRender
@@ -1980,8 +2064,13 @@ Ext.define('Ext.AbstractComponent', {
             targetEl.setStyle('top', (typeof y == 'number') ? (y + 'px') : y);
         }
 
-        if (Ext.isBorderBox && (!me.ownerCt || me.floating)) {
-            targetEl.addCls(me.borderBoxCls);
+        if (!me.ownerCt || me.floating) {
+            if (Ext.scopeCss) {
+                targetEl.addCls(me.rootCls);
+            }
+            if (Ext.isBorderBox) {
+                targetEl.addCls(me.borderBoxCls);
+            }
         }
 
         // Framed components need their width/height to apply to the frame, which is
@@ -2245,7 +2334,7 @@ Ext.define('Ext.AbstractComponent', {
     },
 
     /**
-     * Navigates up the ownership hierarchy searching for an ancestor Container which matches any passed simple selector or component.
+     * Navigates up the ownership hierarchy searching for an ancestor Container which matches any passed selector or component.
      *
      * *Important.* There is not a universal upwards navigation pointer. There are several upwards relationships
      * such as the {@link Ext.button.Button button} which activates a {@link Ext.button.Button#cfg-menu menu}, or the
@@ -2258,8 +2347,8 @@ Ext.define('Ext.AbstractComponent', {
      *
      *     var owningTabPanel = grid.up('tabpanel');
      *
-     * @param {String/Ext.Component} [selector] The simple selector component or actual component to test. If not passed the immediate owner/activater is returned.
-     * @param {String/Number/Ext.Component} [limit] This may be a selector upon which to stop the upward scan, or a limit of teh number of steps, or Component reference to stop on.
+     * @param {String/Ext.Component} [selector] The selector component or actual component to test. If not passed the immediate owner/activater is returned.
+     * @param {String/Number/Ext.Component} [limit] This may be a selector upon which to stop the upward scan, or a limit of the number of steps, or Component reference to stop on.
      * @return {Ext.container.Container} The matching ancestor Container (or `undefined` if no match was found).
      */
     up: function (selector, limit) {
@@ -2495,27 +2584,35 @@ Ext.define('Ext.AbstractComponent', {
     getOverflowStyle: function() {
         var me = this,
             result = null,
+            auto = me.autoScroll,
             ox, oy,
             overflowStyle;
 
         // Note to maintainer. To save on waves of testing, setting and defaulting, the code below
-        // rolls assignent statements into conditional test value expressiona and property object initializers.
+        // rolls assignent statements into conditional test value expressions and property object initializers.
         // This avoids sprawling code. Maintain with care.
-        if (typeof me.autoScroll === 'boolean') {
+        if (typeof auto === 'boolean') {
             result = {
-                overflow: overflowStyle = me.autoScroll ? 'auto' : ''
+                overflow: overflowStyle = (auto ? 'auto' : '')
             };
             me.scrollFlags = {
                 overflowX: overflowStyle,
                 overflowY: overflowStyle,
-                x: true,
-                y: true,
-                both: true
+                x: auto,
+                y: auto,
+                both: auto
             };
         } else {
             ox = me.overflowX;
             oy = me.overflowY;
             if (ox !== undefined || oy !== undefined) {
+                if (ox && ox === true) {
+                    ox = 'auto';
+                }
+                
+                if (oy && oy === true) {
+                    oy = 'auto';
+                }
                 result = {
                     'overflowX':  ox = ox || '',
                     'overflowY':  oy = oy || ''
@@ -2746,6 +2843,16 @@ Ext.define('Ext.AbstractComponent', {
         return hidden;
     },
 
+    /**
+     * Invoked when this component has first achieved size. Occurs after the
+     * {@link #componentLayout} has completed its initial run.
+     *
+     * @param {Number} width The width of this component
+     * @param {Number} height The height of this component
+     * 
+     * @template
+     * @protected
+     */
     onBoxReady: function(width, height) {
         var me = this;
 
@@ -2857,16 +2964,15 @@ Ext.define('Ext.AbstractComponent', {
         }
     },
 
-    mask: function() {
+    mask: function (msg, msgCls, elHeight) {
         var box = this.lastBox,
-            target = this.getMaskTarget(),
-            args = [];
+            target = this.getMaskTarget();
 
         // Pass it the height of our element if we know it.
         if (box) {
-            args[2] = box.height;
+            elHeight = box.height;
         }
-        target.mask.apply(target, args);
+        target.mask(msg, msgCls, elHeight);
     },
 
     unmask: function() {
@@ -3560,8 +3666,12 @@ Ext.define('Ext.AbstractComponent', {
                             afteranimate: Ext.Function.bind(me.afterSetPosition, me, [x, y])
                         },
                         to: {
-                            x: x,
-                            y: y
+                            // Use local coordinates for a component
+                            // We don't need to normalize this for RTL, the anim.target.Component
+                            // calls setPosition, which will normalize the x value to right when
+                            // it's necessary
+                            left: x,
+                            top: y
                         }
                     }, animate));
                 }
@@ -3678,10 +3788,13 @@ Ext.define('Ext.AbstractComponent', {
 
     /**
      * Gets the current size of the component's underlying element.
-     * @return {Object} An object containing the element's size `{width: (element width), height: (element height)}`
+     * @param {Boolean} [contentSize] true to get the width/size minus borders and padding
+     * @return {Object} An object containing the element's size:
+     * @return {Number} return.width
+     * @return {Number} return.height
      */
-    getSize : function() {
-        return this.el.getSize();
+    getSize : function(contentSize) {
+        return this.el.getSize(contentSize);
     },
 
     /**

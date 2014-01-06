@@ -14,7 +14,7 @@
     .#{$prefix}field-label-cell {
         vertical-align: middle;
     }
-    @if $menu-component-margin != null {
+    @if not is-null($menu-component-margin) and $menu-component-margin != 0 {
         margin: $menu-component-margin;
     }
 }
@@ -33,11 +33,18 @@
 .#{$prefix}menu-item-link {
     text-decoration: none;
     outline: 0;
-    zoom: 1;
+    // display:block is required to make the menu item stretch to fill its container so that
+    // when using href, the entire menu item is clickable.
+    // If we ever consider going back to inline or inline-block, please remember inline
+    // will not work because it allows multi line menu items wrap into the padding area
+    // (icon space) in Webkit
+    display: block;
+
 }
 
-@if $include-ie {
-    .#{$prefix}menu-item-text {
+.#{$prefix}menu-item-text {
+    display: inline-block;
+    @if $include-ie {
         zoom: 1;
     }
 }
@@ -45,6 +52,7 @@
 .#{$prefix}menu-item-icon,
 .#{$prefix}menu-item-icon-right,
 .#{$prefix}menu-item-arrow {
+    font-size: 0;
     position: absolute;
     text-align: center;
 }

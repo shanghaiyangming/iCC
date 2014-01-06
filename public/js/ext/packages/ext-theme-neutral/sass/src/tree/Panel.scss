@@ -100,7 +100,7 @@
     }
 }
 
-.#{$prefix}tree-no-row-lines {
+.#{$prefix}tree-no-lines {
     .#{$prefix}tree-expander {
         background-image: theme-background-image('tree/elbow-plus-nl');
     }
@@ -198,29 +198,31 @@
 }
 
 .#{$prefix}grid-tree-loading .#{$prefix}tree-icon {
-    background-image: theme-background-image('tree/loading');
+    background-image: theme-background-image('tree/loading', 'gif');
 }
 
 @if $include-rtl {
     .#{$prefix}grid-tree-loading .#{$prefix}rtl.#{$prefix}tree-icon {
-        background-image: theme-background-image('tree/loading');
+        background-image: theme-background-image('tree/loading', 'gif');
     }
 }
 
 // Sub-normal line-heights on block elements are ignored in IE 6,7 and quirks if the block
 // element contains inline elements with layout.  This bug affects tree cells because of
-// the images inside the cell.  To work around it we set the font size to 1 on the grid
-// cell-inner, and then declare the font-size on the text node. We don't use a font size of 0
-// because that breaks text-overflow: ellipsis on modern browsers.
-.#{$prefix}grid-cell-inner-treecolumn {
-    font-size: 1px;
-    // This approach breaks IE8 strict unless we move the line-height to the text node too.
-    line-height: 0;
+// the images inside the cell.  To work around it we set the font size to 0px on the grid
+// cell-inner, and then declare the font-size on the text node. We don't apply this change
+// in all browsers because it breaks the ellipsis in modern browsers.
+@if $include-ie {
+    .#{$prefix}grid-cell-inner-treecolumn {
+        // use * hack to target IE6, IE7 and IE quirks, so we don't have to use a descendant selector
+        *font-size: 1px;
+    }
 }
 
 .#{$prefix}tree-node-text {
-    font-size: $grid-row-cell-font-size;
-    line-height: $grid-row-cell-line-height;
+    @if $include-ie {
+        *font-size: $grid-row-cell-font-size;
+    }
     padding-left: $tree-icon-spacing;
 }
 

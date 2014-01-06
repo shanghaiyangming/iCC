@@ -1,12 +1,3 @@
-/*misc*/
-.#{$prefix}webkit {
-    * {
-        &:focus {
-            outline:none !important;
-        }
-    }
-}
-
 // form items
 .#{$prefix}form-item {
     vertical-align: top;

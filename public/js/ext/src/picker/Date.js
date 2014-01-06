@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * A date picker. This class is used by the Ext.form.field.Date field to allow browsing and selection of valid
@@ -88,7 +85,7 @@ Ext.define('Ext.picker.Date', {
                         '{#:this.isEndOfWeek}',
                         '<td role="gridcell" id="{[Ext.id()]}">',
                             // the href attribute is required for the :hover selector to work in IE6/7/quirks
-                            '<a role="presentation" hidefocus="on" class="{parent.baseCls}-date" href="#"></a>',
+                            '<a role="button" hidefocus="on" class="{parent.baseCls}-date" href="#"></a>',
                         '</td>',
                     '</tpl>',
                 '</tr></tbody>',
@@ -419,14 +416,18 @@ Ext.define('Ext.picker.Date', {
             me.addCls(Ext.baseCSSPrefix + 'menu');
         }
 
+        if (me.padding && !me.width) {
+            me.cacheWidth();
+        }
+
         me.monthBtn = new Ext.button.Split({
             ownerCt: me,
             ownerLayout: me.getComponentLayout(),
             text: '',
             tooltip: me.monthYearText,
             listeners: {
-                click: me.showMonthPicker,
-                arrowclick: me.showMonthPicker,
+                click: me.doShowMonthPicker,
+                arrowclick: me.doShowMonthPicker,
                 scope: me
             }
         });
@@ -458,6 +459,18 @@ Ext.define('Ext.picker.Date', {
         });
 
         me.protoEl.unselectable();
+    },
+
+    cacheWidth: function() {
+        var me = this,
+            padding = me.parseBox(me.padding),
+            widthEl = Ext.getBody().createChild({
+                cls: me.baseCls + ' ' + me.borderBoxCls,
+                style: 'position:absolute;top:-1000px;left:-1000px;'
+            });
+
+        me.self.prototype.width = widthEl.getWidth() + padding.left + padding.right;
+        widthEl.remove();
     },
 
     // Do the job of a container layout at this point even though we are not a Container.
@@ -835,6 +848,12 @@ Ext.define('Ext.picker.Date', {
         }
         return me;
     },
+    
+    doShowMonthPicker: function(){
+        // Wrap in an extra call so we can prevent the button
+        // being passed as an animation parameter.
+        this.showMonthPicker();
+    },
 
     /**
      * Show the month picker
@@ -845,13 +864,14 @@ Ext.define('Ext.picker.Date', {
      */
     showMonthPicker : function(animate){
         var me = this,
+            el = me.el,
             picker;
         
         if (me.rendered && !me.disabled) {
             picker = me.createMonthPicker();
             picker.setValue(me.getActive());
-            picker.setSize(me.getSize());
-            picker.setPosition(-1, -1);
+            picker.setSize(el.getSize());
+            picker.setPosition(-el.getBorderWidth('l'), -el.getBorderWidth('t'));
             if (me.shouldAnimate(animate)) {
                 me.runAnimation(false);
             } else {
@@ -884,6 +904,7 @@ Ext.define('Ext.picker.Date', {
             me.monthPicker = picker = new Ext.picker.Month({
                 renderTo: me.el,
                 floating: true,
+                padding: me.padding,
                 shadow: false,
                 small: me.showToday === false,
                 listeners: {

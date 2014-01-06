@@ -18,10 +18,12 @@
                 }
             }
 
-            .#{$prefix}gecko & {
-                // firefox adds an additional px of horizontal space inside text inputs
-                padding-left: max((left($grid-editor-padding) - 1), 0);
-                padding-right: max((right($grid-editor-padding) - 1), 0);
+            @if $include-ff {
+                .#{$prefix}gecko & {
+                    // firefox adds an additional px of horizontal space inside text inputs
+                    padding-left: max((left($grid-editor-padding) - 1), 0);
+                    padding-right: max((right($grid-editor-padding) - 1), 0);
+                }
             }
         }
     }

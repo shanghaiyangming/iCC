@@ -6,6 +6,12 @@
     zoom: 1;
 }
 
+// The mask is given position: fixed when called on the body.
+// See Element.mask() and EXTJSIV-10726.
+.#{$prefix}mask-fixed {
+    position: fixed;
+}
+
 @if $include-ie {
     .#{$prefix}mask-shim {
         z-index: 100;

@@ -13,7 +13,7 @@
     height: $horizontal-slider-thumb-height;
 }
 
-@if $include-ext-form-field-base {
+@if $include-ext-form-field-base and $include-ie {
     .#{$prefix}ie6,
     .#{$prefix}ie7,
     .#{$prefix}quirks .#{$prefix}ie {

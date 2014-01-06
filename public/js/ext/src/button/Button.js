@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @docauthor Robert Dougan <rob@sencha.com>
@@ -416,6 +413,8 @@ Ext.define('Ext.button.Button', {
      * An object literal of parameters to pass to the url when the {@link #href} property is specified. Any params
      * override {@link #baseParams}. New params can be set using the {@link #setParams} method.
      */
+    
+    ariaRole: 'button',
 
     childEls: [
         'btnEl', 'btnWrap', 'btnInnerEl', 'btnIconEl'
@@ -425,15 +424,15 @@ Ext.define('Ext.button.Button', {
     // Without it, clicking anywhere on a button disrupts current selection and cursor position
     // in HtmlEditor.
     renderTpl: [
-        '<span id="{id}-btnWrap" class="{baseCls}-wrap',
+        '<span id="{id}-btnWrap" role="presentation" class="{baseCls}-wrap',
             '<tpl if="splitCls"> {splitCls}</tpl>',
             '{childElCls}" unselectable="on">',
-            '<span id="{id}-btnEl" class="{baseCls}-button">',
+            '<span id="{id}-btnEl" class="{baseCls}-button" role="presentation">',
                 '<span id="{id}-btnInnerEl" class="{baseCls}-inner {innerCls}',
                     '{childElCls}" unselectable="on">',
                     '{text}',
                 '</span>',
-                '<span role="img" id="{id}-btnIconEl" class="{baseCls}-icon-el {iconCls}',
+                '<span role="presentation" id="{id}-btnIconEl" class="{baseCls}-icon-el {iconCls}',
                     '{childElCls} {glyphCls}" unselectable="on" style="',
                     '<tpl if="iconUrl">background-image:url({iconUrl});</tpl>',
                     '<tpl if="glyph && glyphFontFamily">font-family:{glyphFontFamily};</tpl>">',
@@ -443,7 +442,13 @@ Ext.define('Ext.button.Button', {
         '</span>',
         // if "closable" (tab) add a close element icon
         '<tpl if="closable">',
-            '<span id="{id}-closeEl" class="{baseCls}-close-btn" title="{closeText}" tabIndex="0"></span>',
+            '<span id="{id}-closeEl" role="presentation"',
+                ' class="{baseCls}-close-btn"',
+                '<tpl if="closeText">',
+                    ' title="{closeText}" aria-label="{closeText}"',
+                '</tpl>',
+                '>',
+            '</span>',
         '</tpl>'
     ],
 
@@ -521,6 +526,28 @@ Ext.define('Ext.button.Button', {
 
     frame: true,
 
+    hasFrameTable: function () {
+        // Instead of browser sniffing, it's easier to check for the presence of frameTable.
+        // If present, we know that it's a browser that doesn't support CSS3BorderRadius.
+        return this.href && this.frameTable;
+    },
+
+    frameTableListener: function () {
+        if (!this.disabled) {
+            this.doNavigate();
+        }
+    },
+
+    doNavigate: function () {
+        // Non-HTML5 browsers don't support a block element inside an A tag.
+        // http://stackoverflow.com/questions/5682048/putting-a-table-inside-a-hyperlink-not-working-in-ie
+        if (this.hrefTarget === '_blank') {
+            window.open(this.href, this.hrefTarget);
+        } else {
+            location.href = this.href;
+        }
+    },
+
     // A reusable object used by getTriggerRegion to avoid excessive object creation.
     _triggerRegion: {},
 
@@ -532,13 +559,12 @@ Ext.define('Ext.button.Button', {
         // properties to it conditionally.
         me.autoEl = {
             tag: 'a',
-            role: 'button',
             hidefocus: 'on',
             unselectable: 'on'
         };
 
         // Ensure no selection happens
-        me.addCls('x-unselectable');
+        me.addCls(Ext.baseCSSPrefix + 'unselectable');
 
         me.callParent(arguments);
 
@@ -813,6 +839,10 @@ Ext.define('Ext.button.Button', {
         // Add whatever button listeners we need
         me.mon(btn, btnListeners);
 
+        if (me.hasFrameTable()) {
+            me.mon(me.frameTable, 'click', me.frameTableListener, me);
+        }
+
         // If the listeners object had an entry for our clickEvent, add a listener now
         if (addOnclick) {
             me.mon(btn, me.clickEvent, me.onClick, me);
@@ -861,7 +891,8 @@ Ext.define('Ext.button.Button', {
             glyph: glyph,
             glyphCls: glyph ? me.glyphCls : '', 
             glyphFontFamily: glyphFontFamily,
-            text     : me.text || '&#160;'
+            text     : me.text || '&#160;',
+            closeText: me.closeText
         };
     },
 
@@ -1244,9 +1275,7 @@ Ext.define('Ext.button.Button', {
     // @private
     onClick: function(e) {
         var me = this;
-        if (me.preventDefault || (me.disabled && me.getHref()) && e) {
-            e.preventDefault();
-        }
+        me.doPreventDefault(e);
 
         // Can be triggered by ENTER or SPACE keydown events which set the button property.
         // Only veto event handling if it's a mouse event with an alternative button.
@@ -1257,6 +1286,12 @@ Ext.define('Ext.button.Button', {
             me.doToggle();
             me.maybeShowMenu();
             me.fireHandler(e);
+        }
+    },
+    
+    doPreventDefault: function(e) {
+        if (this.preventDefault || (this.disabled && this.getHref()) && e) {
+            e.preventDefault();
         }
     },
 
@@ -1536,7 +1571,9 @@ Ext.define('Ext.button.Button', {
     // @private
     onMouseUp: function(e) {
         var me = this;
-        if (e.button === 0) {
+
+        // If the external mouseup listener of the ButtonManager fires after the button has been destroyed, ignore.
+        if (!me.isDestroyed && e.button === 0) {
             if (!me.pressed) {
                 me.removeClsWithUI(me.pressedCls);
             }

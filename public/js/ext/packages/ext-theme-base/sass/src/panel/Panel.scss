@@ -37,7 +37,7 @@
     position: relative;
 }
 
-@if not $supports-gradients or $compile-all {
+@if $include-slicer-gradient {
     .#{$prefix}nlg .#{$prefix}panel-header-vertical {
         .#{$prefix}frame-mc {
             background-repeat: repeat-y;

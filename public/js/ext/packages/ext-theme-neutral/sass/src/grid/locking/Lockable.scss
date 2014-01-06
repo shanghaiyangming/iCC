@@ -36,11 +36,11 @@
     }
 }
 
-.#{$prefix}hmenu-lock .#{$prefix}menu-item-icon {
+.#{$prefix}hmenu-lock {
     background-image: theme-background-image('grid/hmenu-lock');
 }
 
-.#{$prefix}hmenu-unlock .#{$prefix}menu-item-icon {
+.#{$prefix}hmenu-unlock {
     background-image: theme-background-image('grid/hmenu-unlock');
 }
 

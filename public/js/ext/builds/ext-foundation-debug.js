@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 
 
@@ -42,8 +39,6 @@ Ext._startTime = new Date().getTime();
         nonWhitespaceRe = /\S/,
         ExtApp,
         iterableRe = /\[object\s*(?:Array|Arguments|\w*Collection|\w*List|HTML\s+document\.all\s+class)\]/;
-
-    Function.prototype.$extIsFunction = true;
 
     Ext.global = global;
 
@@ -351,8 +346,13 @@ Ext._startTime = new Date().getTime();
         },
 
         
-        isFunction: function(value) {
-            return !!(value && value.$extIsFunction);
+        isFunction:
+        
+        
+        (typeof document !== 'undefined' && typeof document.getElementsByTagName('body') === 'function') ? function(value) {
+            return !!value && toString.call(value) === '[object Function]';
+        } : function(value) {
+            return !!value && typeof value === 'function';
         },
 
         
@@ -393,7 +393,7 @@ Ext._startTime = new Date().getTime();
         
         isIterable: function(value) {
             
-            if (!value || typeof value.length !== 'number' || typeof value === 'string' || value.$extIsFunction) {
+            if (!value || typeof value.length !== 'number' || typeof value === 'string' || Ext.isFunction(value)) {
                 return false;
             }
 
@@ -639,36 +639,126 @@ Ext.globalEval = Ext.global.execScript
 
 
 
-var version = '4.2.1.883', Version;
+var version = '4.2.2.1144',
+    
+    checkVerTemp = [''],
+    endOfVersionRe = /([^\d\.])/,
+    notDigitsRe = /[^\d]/g,
+    plusMinusRe = /[\-+]/g,
+    stripRe = /\s/g,
+    underscoreRe = /_/g,
+    Version;
+
     Ext.Version = Version = Ext.extend(Object, {
+        isVersion: true,
+
+        padModes: {
+            '~': NaN,
+            '^': Infinity
+        },
 
         
-        constructor: function(version) {
-            var parts, releaseStartIndex;
+        release: '',
 
-            if (version instanceof Version) {
+        
+        constructor: function (version, defaultMode) {
+            var me = this,
+                padModes = me.padModes,
+                ch, i, pad, parts, release, releaseStartIndex, ver;
+
+            if (version.isVersion) {
                 return version;
             }
 
-            this.version = this.shortVersion = String(version).toLowerCase().replace(/_/g, '.').replace(/[\-+]/g, '');
+            me.version = ver = String(version).toLowerCase().
+                                    replace(underscoreRe, '.').replace(plusMinusRe, '');
 
-            releaseStartIndex = this.version.search(/([^\d\.])/);
+            ch = ver.charAt(0);
+            if (ch in padModes) {
+                ver = ver.substring(1);
+                pad = padModes[ch];
+            } else {
+                pad = defaultMode ? padModes[defaultMode] : 0; 
+            }
+            me.pad = pad;
+
+            releaseStartIndex = ver.search(endOfVersionRe);
+            me.shortVersion = ver;
 
             if (releaseStartIndex !== -1) {
-                this.release = this.version.substr(releaseStartIndex, version.length);
-                this.shortVersion = this.version.substr(0, releaseStartIndex);
+                me.release = release = ver.substr(releaseStartIndex, version.length);
+                me.shortVersion = ver.substr(0, releaseStartIndex);
+                release = Version.releaseValueMap[release] || release;
             }
 
-            this.shortVersion = this.shortVersion.replace(/[^\d]/g, '');
+            me.releaseValue = release || pad;
+            me.shortVersion = me.shortVersion.replace(notDigitsRe, '');
 
-            parts = this.version.split('.');
+            
+            me.parts = parts = ver.split('.');
+            for (i = parts.length; i--; ) {
+                parts[i] = parseInt(parts[i], 10);
+            }
+            if (pad === Infinity) {
+                
+                parts.push(pad);
+            }
 
-            this.major = parseInt(parts.shift() || 0, 10);
-            this.minor = parseInt(parts.shift() || 0, 10);
-            this.patch = parseInt(parts.shift() || 0, 10);
-            this.build = parseInt(parts.shift() || 0, 10);
+            
+            me.major = parts[0] || pad;
 
-            return this;
+            
+            me.minor = parts[1] || pad;
+
+            
+            me.patch = parts[2] || pad;
+
+            
+            me.build = parts[3] || pad;
+
+            return me;
+        },
+
+        
+        compareTo: function (other) {
+             
+             
+            var me = this,
+                lhsPad = me.pad,
+                lhsParts = me.parts,
+                lhsLength = lhsParts.length,
+                rhsVersion = other.isVersion ? other : new Version(other),
+                rhsPad = rhsVersion.pad,
+                rhsParts = rhsVersion.parts,
+                rhsLength = rhsParts.length,
+                length = Math.max(lhsLength, rhsLength),
+                i, lhs, rhs;
+
+            for (i = 0; i < length; i++) {
+                lhs = (i < lhsLength) ? lhsParts[i] : lhsPad;
+                rhs = (i < rhsLength) ? rhsParts[i] : rhsPad;
+
+                
+                
+                if (lhs < rhs) {
+                    return -1;
+                }
+                if (lhs > rhs) {
+                    return 1;
+                }
+            }
+
+            
+            lhs = me.releaseValue;
+            rhs = rhsVersion.releaseValue;
+            if (lhs < rhs) {
+                return -1;
+            }
+            if (lhs > rhs) {
+                return 1;
+            }
+
+            return 0;
         },
 
         
@@ -683,52 +773,57 @@ var version = '4.2.1.883', Version;
 
         
         getMajor: function() {
-            return this.major || 0;
+            return this.major;
         },
 
         
         getMinor: function() {
-            return this.minor || 0;
+            return this.minor;
         },
 
         
         getPatch: function() {
-            return this.patch || 0;
+            return this.patch;
         },
 
         
         getBuild: function() {
-            return this.build || 0;
+            return this.build;
         },
 
         
         getRelease: function() {
-            return this.release || '';
+            return this.release;
+        },
+
+        
+        getReleaseValue: function() {
+            return this.releaseValue;
         },
 
         
         isGreaterThan: function(target) {
-            return Version.compare(this.version, target) === 1;
+            return this.compareTo(target) > 0;
         },
 
         
         isGreaterThanOrEqual: function(target) {
-            return Version.compare(this.version, target) >= 0;
+            return this.compareTo(target) >= 0;
         },
 
         
         isLessThan: function(target) {
-            return Version.compare(this.version, target) === -1;
+            return this.compareTo(target) < 0;
         },
 
         
         isLessThanOrEqual: function(target) {
-            return Version.compare(this.version, target) <= 0;
+            return this.compareTo(target) <= 0;
         },
 
         
         equals: function(target) {
-            return Version.compare(this.version, target) === 0;
+            return this.compareTo(target) === 0;
         },
 
         
@@ -739,7 +834,8 @@ var version = '4.2.1.883', Version;
 
         
         toArray: function() {
-            return [this.getMajor(), this.getMinor(), this.getPatch(), this.getBuild(), this.getRelease()];
+            var me = this;
+            return [me.getMajor(), me.getMinor(), me.getPatch(), me.getBuild(), me.getRelease()];
         },
 
         
@@ -748,38 +844,38 @@ var version = '4.2.1.883', Version;
         },
 
         
-        gt: function() {
-            return this.isGreaterThan.apply(this, arguments);
+        gt: function (target) {
+            return this.compareTo(target) > 0;
         },
 
         
-        lt: function() {
-            return this.isLessThan.apply(this, arguments);
+        lt: function (target) {
+            return this.compareTo(target) < 0;
         },
 
         
-        gtEq: function() {
-            return this.isGreaterThanOrEqual.apply(this, arguments);
+        gtEq: function (target) {
+            return this.compareTo(target) >= 0;
         },
 
         
-        ltEq: function() {
-            return this.isLessThanOrEqual.apply(this, arguments);
+        ltEq: function (target) {
+            return this.compareTo(target) <= 0;
         }
     });
 
     Ext.apply(Version, {
         
         releaseValueMap: {
-            'dev': -6,
-            'alpha': -5,
-            'a': -5,
-            'beta': -4,
-            'b': -4,
-            'rc': -3,
-            '#': -2,
-            'p': -1,
-            'pl': -1
+            dev:   -6,
+            alpha: -5,
+            a:     -5,
+            beta:  -4,
+            b:     -4,
+            rc:    -3,
+            '#':   -2,
+            p:     -1,
+            pl:    -1
         },
 
         
@@ -788,24 +884,9 @@ var version = '4.2.1.883', Version;
         },
 
         
-        compare: function(current, target) {
-            var currentValue, targetValue, i;
-
-            current = new Version(current).toArray();
-            target = new Version(target).toArray();
-
-            for (i = 0; i < Math.max(current.length, target.length); i++) {
-                currentValue = this.getComponentValue(current[i]);
-                targetValue = this.getComponentValue(target[i]);
-
-                if (currentValue < targetValue) {
-                    return -1;
-                } else if (currentValue > targetValue) {
-                    return 1;
-                }
-            }
-
-            return 0;
+        compare: function (current, target) {
+            var ver = current.isVersion ? current : new Version(current);
+            return ver.compareTo(target);
         }
     });
 
@@ -819,9 +900,7 @@ var version = '4.2.1.883', Version;
 
         
         setVersion: function(packageName, version) {
-            Ext.versions[packageName] = new Version(version);
-            Ext.lastRegisteredVersion = Ext.versions[packageName];
-
+            Ext.lastRegisteredVersion = Ext.versions[packageName] = new Version(version);
             return this;
         },
 
@@ -832,6 +911,99 @@ var version = '4.2.1.883', Version;
             }
 
             return Ext.versions[packageName];
+        },
+
+        
+        checkVersion: function (specs, matchAll) {
+            var isArray = Ext.isArray(specs),
+                compat = isArray ? specs : checkVerTemp,
+                length = compat.length,
+                versions = Ext.versions,
+                frameworkVer = versions.ext || versions.touch,
+                i, index, matches, minVer, maxVer, spec, range, ver;
+
+            if (!isArray) {
+                checkVerTemp[0] = specs;
+            }
+
+            for (i = 0; i < length; ++i) {
+                if (!Ext.isString(spec = compat[i])) {
+                    matches = Ext.checkVersion(spec.and || spec.or, !spec.or);
+                    if (spec.not) {
+                        matches = !matches;
+                    }
+                } else {
+                    if (spec.indexOf(' ') >= 0) {
+                        spec = spec.replace(stripRe, '');
+                    }
+
+                    
+                    
+                    index = spec.indexOf('@');
+                    if (index < 0) {
+                        range = spec;
+                        ver = frameworkVer;
+                    } else {
+                        if (!(ver = versions[spec.substring(0, index)])) {
+                            
+                            
+                            if (matchAll) {
+                                return false;
+                            }
+                            
+                            
+                            continue;
+                        }
+                        range = spec.substring(index+1);
+                    }
+
+                    
+                    index = range.indexOf('-');
+                    if (index < 0) {
+                        
+                        if (range.charAt(index = range.length - 1) === '+') {
+                            minVer = range.substring(0, index);
+                            maxVer = null;
+                        } else {
+                            minVer = maxVer = range;
+                        }
+                    } else if (index > 0) {
+                        
+                        minVer = range.substring(0, index);
+                        maxVer = range.substring(index+1); 
+                    } else {
+                        
+                        minVer = null;
+                        maxVer = range.substring(index+1);
+                    }
+
+                    matches = true;
+                    if (minVer) {
+                        minVer = new Version(minVer, '~'); 
+                        matches = minVer.ltEq(ver);
+                    }
+                    if (matches && maxVer) {
+                        maxVer = new Version(maxVer, '~'); 
+                        matches = maxVer.gtEq(ver);
+                    }
+                } 
+
+                if (matches) {
+                    
+                    if (!matchAll) {
+                        return true;
+                    }
+                } else if (matchAll) {
+                    
+                    return false;
+                }
+            }
+
+            
+            
+            
+            
+            return !!matchAll;
         },
 
         
@@ -957,6 +1129,11 @@ Ext.String = (function() {
         
         htmlDecode: function(value) {
             return (!value) ? value : String(value).replace(entityToCharRegex, htmlDecodeReplaceFn);
+        },
+        
+        
+        hasHtmlCharacters: function(s) {
+            return charToEntityRegex.test(s);
         },
 
         
@@ -2269,6 +2446,18 @@ var TemplateClass = function(){},
         var result = new TemplateClass();
         TemplateClass.prototype = null;
         return result;
+    },
+
+    
+    clear: function (object) {
+        var keys = ExtObject.getKeys(object),
+            n = keys.length;
+
+        while (n--) {
+            delete object[keys[n]];
+        }
+
+        return object;
     },
 
     
@@ -4074,7 +4263,7 @@ var noArgs = [],
                             member.$owner = me;
                             member.$name = name;
 
-                            previous = target[name];
+                            previous = target.hasOwnProperty(name) && target[name];
                             if (previous) {
                                 member.$previous = previous;
                             }
@@ -5365,6 +5554,7 @@ var noArgs = [],
                 overriddenClassName = data.override,
                 requires = data.requires,
                 uses = data.uses,
+                compat = data.compatibility,
                 classReady = function () {
                     var cls, temp;
 
@@ -5383,6 +5573,7 @@ var noArgs = [],
 
                         
                         delete data.override;
+                        delete data.compatibility;
                         delete data.requires;
                         delete data.uses;
 
@@ -5405,8 +5596,10 @@ var noArgs = [],
 
             me.existCache[className] = true;
 
-            
-            me.onCreated(classReady, me, overriddenClassName);
+            if (!compat || Ext.checkVersion(compat)) {
+                
+                me.onCreated(classReady, me, overriddenClassName);
+            }
 
             return me;
         },

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @class Ext.chart.series.Series
@@ -32,7 +29,6 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
  *  - `itemclick` When the user interacts with a marker.
  *  - `itemmouseup` When the user interacts with a marker.
  *  - `itemmousedown` When the user interacts with a marker.
- *  - `itemmousemove` When the user iteracts with a marker.
  *  - `afterrender` Will be triggered when the animation ends or when the series has been rendered completely.
  *
  * For example:
@@ -128,17 +124,6 @@ Ext.define('Ext.chart.series.Series', {
     // @private default padding
     nullPadding: { left:0, right:0, width:0, bottom:0, top:0, height:0 },
 
-    /**
-     * @cfg {Object} listeners
-     * An (optional) object with event callbacks. All event callbacks get the target *item* as first parameter. The callback functions are:
-     *
-     *  - itemclick
-     *  - itemmouseover
-     *  - itemmouseout
-     *  - itemmousedown
-     *  - itemmouseup
-     */
-
     constructor: function(config) {
         var me = this;
         if (config) {
@@ -154,12 +139,58 @@ Ext.define('Ext.chart.series.Series', {
 
         me.addEvents({
             scope: me,
+            
+            /**
+             * @event itemclick
+             * Fires when the user clicks on a marker.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
             itemclick: true,
+            
+            /**
+             * @event itemdblclick
+             * Fires when the user double clicks on a marker.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
+            itemdblclick: true,
+            
+            /**
+             * @event itemmouseover
+             * Fires when the user hovers mouse cursor over a marker.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
             itemmouseover: true,
+            
+            /**
+             * @event itemmouseout
+             * Fires when the user moves mouse cursor out of marker.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
             itemmouseout: true,
+            
+            /**
+             * @event itemmousedown
+             * Fires when a marker receives mousedown event.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
             itemmousedown: true,
+            
+            /**
+             * @event itemmouseup
+             * Fires when a marker receives mouseup event.
+             * @param {Object} item Target item object. See {@link #getItemFromPoint} for
+             * description of object properties.
+             */
             itemmouseup: true,
+            
             mouseleave: true,
+            
+            // Seems that this event is not implemented anywhere?
             afterdraw: true,
 
             /**
@@ -184,6 +215,8 @@ Ext.define('Ext.chart.series.Series', {
             Ext.apply(me.seriesStyle, me.style);
         }
     },
+    
+    initialize: Ext.emptyFn,
     
     onRedraw: Ext.emptyFn,
     
@@ -255,7 +288,7 @@ Ext.define('Ext.chart.series.Series', {
                 // use callback, don't overwrite listeners
                 callback: function() {
                     me.animating = false;
-                    me.fireEvent('afterrender');
+                    me.fireEvent('afterrender', me);
                 }
             }));
         }

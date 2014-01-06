@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Panel is a container that has specific functionality and structural components that make it the perfect building
@@ -591,14 +588,14 @@ Ext.define('Ext.panel.Panel', {
             /**
              * @event float
              * Fires after a collapsed Panel has been "floated" by clicking on
-             * it's header. Only applicable when the Panel is an item in a
+             * its header. Only applicable when the Panel is an item in a
              * {@link Ext.layout.container.Border Border Layout}.
              */
             'float',
 
             /**
              * @event unfloat
-             * Fires after a "floated" Panel has returned to it's collapsed state
+             * Fires after a "floated" Panel has returned to its collapsed state
              * as a result of the mouse leaving the Panel. Only applicable when
              * the Panel is an item in a
              * {@link Ext.layout.container.Border Border Layout}.
@@ -608,7 +605,7 @@ Ext.define('Ext.panel.Panel', {
 
         if (me.collapsible) {
         // Save state on these two events.
-            this.addStateEvents(['expand', 'collapse']);
+            me.addStateEvents(['expand', 'collapse']);
         }
         if (me.unstyled) {
             me.setUI('plain');
@@ -639,22 +636,8 @@ Ext.define('Ext.panel.Panel', {
         me.callParent();
     },
 
-    initAria: function() {
-        this.callParent();
-        this.initHeaderAria();
-    },
-
     getFocusEl: function() {
         return  this.el;
-    },
-
-    initHeaderAria: function() {
-        var me = this,
-            el = me.el,
-            header = me.header;
-        if (el && header) {
-            el.dom.setAttribute('aria-labelledby', header.titleCmp.id);
-        }
     },
 
     /**
@@ -792,9 +775,8 @@ Ext.define('Ext.panel.Panel', {
     bridgeToolbars: function() {
         var me = this,
             docked = [],
-            fbar,
-            fbarDefaults,
-            minButtonWidth = me.minButtonWidth;
+            minButtonWidth = me.minButtonWidth,
+            fbar, fbarDefaults;
 
         function initToolbar (toolbar, pos, useButtonAlign) {
             if (Ext.isArray(toolbar)) {
@@ -940,9 +922,20 @@ Ext.define('Ext.panel.Panel', {
             if (minButtonWidth) {
                 fbarDefaults = fbar.defaults;
                 fbar.defaults = function(config) {
-                    var defaults = fbarDefaults || {};
-                    if ((!config.xtype || config.xtype === 'button' || (config.isComponent && config.isXType('button'))) &&
-                            !('minWidth' in defaults)) {
+                    var defaults = fbarDefaults || {},
+                        // no xtype or a button instance
+                        isButton = !config.xtype || config.isButton,
+                        cls;
+                       
+                    // Here we have an object config with an xtype, check if it's a button
+                    // or a button subclass
+                    if (!isButton) {
+                        cls = Ext.ClassManager.getByAlias('widget.' + config.xtype);
+                        if (cls) {
+                            isButton = cls.prototype.isButton;
+                        }
+                    }
+                    if (isButton && !('minWidth' in defaults)) {
                         defaults = Ext.apply({minWidth: minButtonWidth}, defaults);
                     }
                     return defaults;
@@ -1197,6 +1190,7 @@ Ext.define('Ext.panel.Panel', {
                     frame       : (me.frame || me.alwaysFramed) && me.frameHeader,
                     ignoreParentFrame : me.frame || me.overlapHeader,
                     ignoreBorderManagement: me.frame || me.ignoreHeaderBorderManagement,
+                    headerRole  : me.headerRole,
                     ownerCt     : me,
                     listeners   : me.collapsible && me.titleCollapse ? {
                         click: me.toggleCollapse,
@@ -1208,7 +1202,6 @@ Ext.define('Ext.panel.Panel', {
                 // It also injects the tool instances as properties keyed by their type.
                 me.addDocked(header, 0);
             }
-            me.initHeaderAria();
         } else if (header) {
             header.hide();
         }
@@ -1248,7 +1241,18 @@ Ext.define('Ext.panel.Panel', {
 
     // @inheritdoc
     onHide: function() {
-        var me = this;
+        var me = this,
+            dd = me.dd;
+        
+        if (me.floatedFromCollapse) {
+            me.slideOutFloatedPanel(true);
+        }
+
+        if (me.draggable && dd) {
+            // Panels w/o headers won't have a Component Dragger.
+            dd.endDrag();
+        }
+
         if (me.collapsed && me.placeholder) {
             me.placeholder.hide();
         } else {
@@ -1478,6 +1482,7 @@ Ext.define('Ext.panel.Panel', {
             isLeft = direction === 'left',
             isRight = direction === 'right',
             isVertical = isLeft || isRight,
+            ownerCt = me.ownerCt,
             result = Ext.apply({
                 hideMode: 'offsets',
                 title: me.title || '&#160;',
@@ -1491,9 +1496,11 @@ Ext.define('Ext.panel.Panel', {
                 ui: me.ui,
                 frame: me.frame && me.frameHeader,
                 ignoreParentFrame: me.frame || me.overlapHeader,
+                ignoreBorderManagement: me.frame || me.ignoreHeaderBorderManagement,
                 indicateDrag: me.draggable,
                 collapseImmune: true,
-                ownerCt: me.ownerCt,
+                headerRole: me.headerRole,
+                ownerCt: (ownerCt && me.collapseMode === 'placeholder') ? ownerCt : me,
                 ownerLayout: me.componentLayout,
                 margin: me.margin
             }, defaults);
@@ -1625,7 +1632,7 @@ Ext.define('Ext.panel.Panel', {
         var me = this,
             lastBox = me.lastBox,
             collapseMemento = me.collapseMemento,
-            restoreDimension = this.restoreDimension(),
+            restoreDimension = me.restoreDimension(),
             header = me.header,
             reExpander;
 
@@ -1686,7 +1693,8 @@ Ext.define('Ext.panel.Panel', {
     collapse: function(direction, animate) {
         var me = this,
             collapseDir = direction || me.collapseDirection,
-            ownerCt = me.ownerCt;
+            ownerCt = me.ownerCt,
+            layout = me.ownerLayout;
 
         if (me.isCollapsingOrExpanding) {
             return me;
@@ -1698,6 +1706,12 @@ Ext.define('Ext.panel.Panel', {
 
         if (me.collapsed || me.fireEvent('beforecollapse', me, direction, animate) === false) {
             return me;
+        }
+        
+        if (layout && layout.onBeforeComponentCollapse) {
+            if (layout.onBeforeComponentCollapse(me) === false) {
+                return me;
+            }
         }
 
         if (ownerCt && me.isPlaceHolderCollapse()) {
@@ -2023,9 +2037,9 @@ Ext.define('Ext.panel.Panel', {
         return this.callParent();
     },
 
-    slideOutFloatedPanel: function() {
+    slideOutFloatedPanel: function(preventAnimate) {
         var me = this,
-            compEl = this.el,
+            compEl = me.el,
             collapseDirection;
 
         if (me.isSliding || me.isDestroyed) {
@@ -2044,6 +2058,7 @@ Ext.define('Ext.panel.Panel', {
         compEl.slideOut(collapseDirection, {
             preserveScroll: true,
             duration: Ext.Number.from(me.animCollapse, Ext.fx.Anim.prototype.duration),
+            autoEnd: preventAnimate === true,
             listeners: {
                 afteranimate: function() {
                     me.slideOutFloatedPanelEnd();
@@ -2079,7 +2094,7 @@ Ext.define('Ext.panel.Panel', {
      * This method cleans up after the slide out of the floated panel.
      * @private
      */
-    slideOutFloatedPanelEnd: function() {
+    slideOutFloatedPanelEnd: function(suppressEvents) {
         var me = this;
 
         if (me.collapseTool) {
@@ -2087,7 +2102,9 @@ Ext.define('Ext.panel.Panel', {
         }
         me.slideOutTask.cancel();
         me.isSliding = false;
-        me.fireEvent('unfloat', me);
+        if (!suppressEvents) {
+            me.fireEvent('unfloat', me);
+        }
     },
 
     /**
@@ -2099,7 +2116,8 @@ Ext.define('Ext.panel.Panel', {
      * @return {Ext.panel.Panel} this
      */
     expand: function(animate) {
-        var me = this;
+        var me = this,
+            layout = me.ownerLayout;
 
         if (me.isCollapsingOrExpanding) {
             return me;
@@ -2113,11 +2131,18 @@ Ext.define('Ext.panel.Panel', {
             return me;
         }
 
+        
         if (me.fireEvent('beforeexpand', me, animate) === false) {
             return me;
         }
+        
+        if (layout && layout.onBeforeComponentExpand) {
+            if (layout.onBeforeComponentExpand(me) === false) {
+                return me;
+            }
+        }
 
-        delete this.getHierarchyState().collapsed;
+        delete me.getHierarchyState().collapsed;
 
         if (me.isPlaceHolderCollapse()) {
             return me.placeholderExpand(animate);
@@ -2322,10 +2347,11 @@ Ext.define('Ext.panel.Panel', {
 
     // @private
     initDraggable : function() {
-        
+        var me = this;
+
         // For just simple dragging like Windows
-        if (this.simpleDrag) {
-            this.initSimpleDraggable();
+        if (me.simpleDrag) {
+            me.initSimpleDraggable();
         }
         // For DD package aware dragging of Panels
         else {
@@ -2351,7 +2377,7 @@ Ext.define('Ext.panel.Panel', {
              * The developer must provide implementations of the abstract methods of {@link Ext.dd.DragSource} in order to
              * supply behaviour for each stage of the drag/drop process. See {@link #cfg-draggable}.
              */
-            this.dd = new Ext.panel.DD(this, Ext.isBoolean(this.draggable) ? null : this.draggable);
+            me.dd = new Ext.panel.DD(me, Ext.isBoolean(me.draggable) ? null : me.draggable);
         }
     },
 
@@ -2386,7 +2412,7 @@ Ext.define('Ext.panel.Panel', {
                 ddConfig.constrainTo = me.constrainTo || me.container;
             }
 
-            dd = me.dd = new Ext.util.ComponentDragger(this, ddConfig);
+            dd = me.dd = new Ext.util.ComponentDragger(me, ddConfig);
             me.relayEvents(dd, ['dragstart', 'drag', 'dragend']);
             if (me.maximized) {
                 dd.disable();
@@ -2431,42 +2457,28 @@ Ext.define('Ext.panel.Panel', {
         var me = this,
             ghostPanel = me.ghostPanel,
             box = me.getBox(),
-            header;
+            header = me.header,
+            ghostHeader, tools, i;
 
         if (!ghostPanel) {
-            ghostPanel = new Ext.panel.Panel({
-                renderTo: Ext.getBody(),
-                floating: {
-                    shadow: false
-                },
-                frame: me.frame && !me.alwaysFramed,
-                alwaysFramed: me.alwaysFramed,
-                overlapHeader: me.overlapHeader,
-                headerPosition: me.headerPosition,
-                baseCls: me.baseCls,
-                cls: me.baseCls + '-ghost ' + (cls ||'')
-            });
-            me.ghostPanel = ghostPanel;
+            me.ghostPanel = ghostPanel = Ext.widget(me.createGhost(cls));
         } else {
             ghostPanel.el.show();
         }
-        me.ghostPanel.hidden = false;
+        ghostPanel.setHiddenState(false);
         ghostPanel.floatParent = me.floatParent;
-        if (me.floating) {
-            ghostPanel.zIndexManager.assignZIndices();
-        } else {
-            ghostPanel.toFront();
-        }
-        if (!(me.preventHeader || (me.header === false))) {
-            header = ghostPanel.header;
+        ghostPanel.toFront();
+        if (header && !me.preventHeader) {
+            ghostHeader = ghostPanel.header;
             // restore options
-            if (header) {
-                header.suspendLayouts();
-                Ext.Array.forEach(header.query('tool'), header.remove, header);
-                header.resumeLayouts();
+            ghostHeader.suspendLayouts();
+            tools = ghostHeader.query('tool');
+            for (i = tools.length; i--;) {
+                ghostHeader.remove(tools[i]);
             }
             ghostPanel.addTool(me.ghostTools());
             ghostPanel.setTitle(me.title);
+            ghostHeader.setTitlePosition(header.titlePosition);
 
             if (me.iconCls) {
                 ghostPanel.setIconCls(me.iconCls);
@@ -2476,7 +2488,8 @@ Ext.define('Ext.panel.Panel', {
                 ghostPanel.setGlyph(me.glyph);
             }
             
-            ghostPanel.header.addCls(Ext.baseCSSPrefix + 'header-ghost');
+            ghostHeader.addCls(Ext.baseCSSPrefix + 'header-ghost');
+            ghostHeader.resumeLayouts();
         }
 
         ghostPanel.setPagePosition(box.x, box.y);
@@ -2485,10 +2498,41 @@ Ext.define('Ext.panel.Panel', {
         return ghostPanel;
     },
 
+    createGhost: function(cls) {
+         var me = this,
+             header = me.header,
+             frame = me.frame && !me.alwaysFramed;
+
+        return {
+            xtype: 'panel',
+            hidden: false,
+            header: header ? {
+                titleAlign: header.titleAlign
+            } : null,
+            ui: frame ? me.ui.replace(/-framed$/, '') : me.ui,
+            id: me.id + '-ghost',
+            renderTo: Ext.getBody(),
+            // The ghost's opacity causes the resize handles to obscure the frame in
+            // IE, so always force resizable to be false.
+            resizable: false,
+            floating: {
+                shadow: false
+            },
+            frame: frame,
+            alwaysFramed: me.alwaysFramed,
+            overlapHeader: me.overlapHeader,
+            headerPosition: me.headerPosition,
+            baseCls: me.baseCls,
+            cls: me.baseCls + '-ghost ' + (cls || '')
+        };
+    },
+
     // @private
     unghost: function(show, matchPosition) {
-        var me = this;
-        if (!me.ghostPanel) {
+        var me = this,
+            ghostPanel = me.ghostPanel;
+            
+        if (!ghostPanel) {
             return;
         }
         if (show !== false) {
@@ -2496,7 +2540,7 @@ Ext.define('Ext.panel.Panel', {
             // will work when relative positioned elements have their XY read.
             me.el.show();
             if (matchPosition !== false) {
-                me.setPagePosition(me.ghostPanel.getXY());
+                me.setPagePosition(ghostPanel.getXY());
                 if (me.hideMode == 'offsets') {
                     // clear the hidden style because we just repositioned
                     delete me.el.hideModeStyles;
@@ -2504,8 +2548,8 @@ Ext.define('Ext.panel.Panel', {
             }
             Ext.defer(me.focus, 10, me);
         }
-        me.ghostPanel.el.hide();
-        me.ghostPanel.hidden = true;
+        ghostPanel.el.hide();
+        ghostPanel.setHiddenState(true);
     },
 
     beginDrag: function() {

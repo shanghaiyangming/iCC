@@ -14,7 +14,8 @@
 
 .#{$prefix}boundlist-item {
     padding: $boundlist-item-padding;
-    @if $boundlist-item-height != null {
+    font: $boundlist-item-font-weight $boundlist-item-font-size $boundlist-item-font-family;
+    @if not is-null($boundlist-item-height) {
         line-height: $boundlist-item-height - vertical($boundlist-item-border-width) - vertical($boundlist-item-padding);
     }
 

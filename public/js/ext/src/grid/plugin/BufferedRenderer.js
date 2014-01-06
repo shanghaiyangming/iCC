@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Implements buffered rendering of a grid, allowing users can scroll
@@ -213,10 +210,10 @@ Ext.define('Ext.grid.plugin.BufferedRenderer', {
             // Otherwise it will attempt to process a scroll on a stale view
             if (me.scrollTop !== 0) {
                 me.ignoreNextScrollEvent = true;
-                me.view.el.dom.scrollTop = me.bodyTop = me.scrollTop = 0;
+                me.view.el.dom.scrollTop = 0;
             }
 
-            me.position = me.scrollHeight = 0;
+            me.bodyTop = me.scrollTop = me.position = me.scrollHeight = 0;
             me.lastScrollDirection = me.scrollOffset = null;
 
             // MUST delete, not null out because the calculation checks hasOwnProperty
@@ -343,7 +340,7 @@ Ext.define('Ext.grid.plugin.BufferedRenderer', {
             store = me.store;
 
         if (store.data.getCount()) {
-            return store.getRange(rows.startIndex, rows.startIndex + (me.viewSize || me.store.defaultViewSize) - 1);
+            return store.getRange(rows.startIndex, rows.startIndex + (me.viewSize || store.defaultViewSize) - 1);
         } else {
             return [];
         }
@@ -369,10 +366,32 @@ Ext.define('Ext.grid.plugin.BufferedRenderer', {
             startIdx, endIdx,
             targetRec,
             targetRow,
-            tableTop;
+            tableTop,
+            groupingFeature,
+            group,
+            record;
 
-        // Sanitize the requested record
-        recordIdx = Math.min(Math.max(recordIdx, 0), total - 1);
+        // If we have a grouping summary feature rendering the view in groups,
+        // first, ensure that the record's group is expanded,
+        // then work out which record in the groupStore the record is at.
+        if ((groupingFeature = view.dataSource.groupingFeature) && (groupingFeature.collapsible !== false)) {
+
+            // Sanitize the requested record
+            recordIdx = Math.min(Math.max(recordIdx, 0), view.store.getCount() - 1);
+            record = view.store.getAt(recordIdx);
+            recordIdx = groupingFeature.indexOf(recordIdx);
+            group = groupingFeature.getGroup(record);
+
+            if (group.isCollapsed) {
+                groupingFeature.expand(group.name);
+                total = store.buffered ? store.getTotalCount() : store.getCount();
+            }
+
+        } else {
+
+            // Sanitize the requested record
+            recordIdx = Math.min(Math.max(recordIdx, 0), total - 1);
+        }
 
         // Calculate view start index
         startIdx = Math.max(Math.min(recordIdx - ((me.leadingBufferZone + me.trailingBufferZone) / 2), total - me.viewSize + 1), 0);
@@ -491,29 +510,36 @@ Ext.define('Ext.grid.plugin.BufferedRenderer', {
 
     renderRange: function(start, end, forceSynchronous) {
         var me = this,
+            rows = me.view.all,
             store = me.store;
 
-        // If range is avaliable synchronously, process it now.
-        if (store.rangeCached(start, end)) {
-            me.cancelLoad();
+        // Skip if we are being asked to render exactly the rows that we already have.
+        // This can happen if the viewSize has to be recalculated (due to either a data refresh or a view resize event)
+        // but the calculated size ends up the same.
+        if (!(start === rows.startIndex && end === rows.endIndex)) {
 
-            if (me.synchronousRender || forceSynchronous) {
-                me.onRangeFetched(null, start, end);
-            } else {
-                if (!me.renderTask) {
-                    me.renderTask = new Ext.util.DelayedTask(me.onRangeFetched, me, null, false);
+            // If range is avaliable synchronously, process it now.
+            if (store.rangeCached(start, end)) {
+                me.cancelLoad();
+
+                if (me.synchronousRender || forceSynchronous) {
+                    me.onRangeFetched(null, start, end);
+                } else {
+                    if (!me.renderTask) {
+                        me.renderTask = new Ext.util.DelayedTask(me.onRangeFetched, me, null, false);
+                    }
+                    // Render the new range very soon after this scroll event handler exits.
+                    // If scrolling very quickly, a few more scroll events may fire before
+                    // the render takes place. Each one will just *update* the arguments with which
+                    // the pending invocation is called.
+                    me.renderTask.delay(1, null, null, [null, start, end]);
                 }
-                // Render the new range very soon after this scroll event handler exits.
-                // If scrolling very quickly, a few more scroll events may fire before
-                // the render takes place. Each one will just *update* the arguments with which
-                // the pending invocation is called.
-                me.renderTask.delay(1, null, null, [null, start, end]);
             }
-        }
 
-        // Required range is not in the prefetch buffer. Ask the store to prefetch it.
-        else {
-            me.attemptLoad(start, end);
+            // Required range is not in the prefetch buffer. Ask the store to prefetch it.
+            else {
+                me.attemptLoad(start, end);
+            }
         }
     },
 

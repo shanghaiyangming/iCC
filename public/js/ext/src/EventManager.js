@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 // @tag dom,core
 // @require util/Event.js
@@ -42,11 +39,24 @@ Ext.EventManager = new function() {
         initExtCss = function() {
             // find the body element
             var bd = doc.body || doc.getElementsByTagName('body')[0],
-                cls = [prefix + 'body'],
+                cls = [],
                 htmlCls = [],
                 supportsLG = Ext.supports.CSS3LinearGradient,
                 supportsBR = Ext.supports.CSS3BorderRadius,
                 html;
+
+            /**
+             * @property {Boolean} scopeCss
+             * @member Ext
+             * Set this to true before onReady to prevent any styling from being added to
+             * the body element.  By default a few styles such as font-family, and color
+             * are added to the body element via a "x-body" class.  When this is set to
+             * `true` the "x-body" class is not added to the body element, but is added
+             * to the elements of root-level containers instead.
+             */
+            if (!Ext.scopeCss) {
+                cls.push(prefix + 'body');
+            }
 
             if (!bd) {
                 return false;
@@ -492,8 +502,9 @@ Ext.EventManager = new function() {
          * @param {String/Ext.Element/HTMLElement/Window} el The html element or id to assign the event handler to.
          *
          * @param {String} eventName The name of the event to listen for.
+         * May also be an object who's property names are event names.
          *
-         * @param {Function/String} handler The handler function the event invokes. A String parameter
+         * @param {Function/String} [handler] The handler function the event invokes. A String parameter
          * is assumed to be method name in `scope` object, or Element object if no scope is provided.
          * @param {Ext.EventObject} handler.event The {@link Ext.EventObject EventObject} describing the event.
          * @param {Ext.dom.Element} handler.target The Element which was the target of the event.
@@ -507,7 +518,8 @@ Ext.EventManager = new function() {
          * This may contain any of the following properties (See {@link Ext.Element#addListener}
          * for examples of how to use these options.):
          * @param {Object} options.scope The scope (`this` reference) in which the handler function is executed. Defaults to the Element.
-         * @param {String} options.delegate A simple selector to filter the target or look for a descendant of the target
+         * @param {String} options.delegate A simple selector to filter the target or look for a descendant of the target. See {@link Ext.dom.Query} for
+         * information about simple selectors.
          * @param {Boolean} options.stopEvent True to stop the event. That is stop propagation, and prevent the default action.
          * @param {Boolean} options.preventDefault True to prevent the default action
          * @param {Boolean} options.stopPropagation True to prevent event propagation
@@ -519,6 +531,9 @@ Ext.EventManager = new function() {
          * handler is *not* invoked, but the new handler is scheduled in its place.
          * @param {Ext.dom.Element} options.target Only call the handler if the event was fired on the target Element,
          * *not* if the event was bubbled up from a child node.
+         * @param {Boolean} options.capture `true` to initiate capture which will fire the listeners on the target Element *before* any descendant Elements.
+         * Normal events start with the target element and propagate upward to ancestor elements, whereas captured events propagate from the top of the DOM
+         * downward to descendant elements. This option is the same as the useCapture parameter in the javascript addEventListener method.
          */
         addListener: function(element, eventName, fn, scope, options) {
             // Check if we've been passed a "config style" event.
@@ -793,7 +808,8 @@ Ext.EventManager = new function() {
         createListenerWrap : function(dom, ename, fn, scope, options) {
             options = options || {};
 
-            var f, gen, wrap = function(e, args) {
+            var gen, wrap = function(e, args) {
+                var f;
                 // Compile the implementation upon first firing
                 if (!gen) {
                     f = ['if(!' + Ext.name + ') {return;}'];
@@ -1197,11 +1213,12 @@ Ext.EventManager = new function() {
          * note 1: IE fires ONLY the keydown event on specialkey autorepeat
          * note 2: Safari < 3.1, Gecko (Mac/Linux) & Opera fire only the keypress event on specialkey autorepeat
          * (research done by Jan Wolter at http://unixpapa.com/js/key.html)
+         * note 3: Opera 12 behaves like other modern browsers so this workaround does not work anymore
          * @private
          */
         useKeyDown: Ext.isWebKit ?
                        parseInt(navigator.userAgent.match(/AppleWebKit\/(\d+)/)[1], 10) >= 525 :
-                       !((Ext.isGecko && !Ext.isWindows) || Ext.isOpera),
+                       !((Ext.isGecko && !Ext.isWindows) || (Ext.isOpera && Ext.operaVersion < 12)),
 
         /**
          * Indicates which event to use for getting key presses.

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @private
@@ -40,11 +37,12 @@ Ext.define('Ext.grid.ColumnLayout', {
     lastHeaderCls: Ext.baseCSSPrefix + 'column-header-last',
 
     initLayout: function() {
-        if (!this.scrollbarWidth) {
-            this.self.prototype.scrollbarWidth = Ext.getScrollbarSize().width;
+        var me = this;
+        if (me.scrollbarWidth === undefined) {
+            me.self.prototype.scrollbarWidth = Ext.getScrollbarSize().width;
         }
-        this.grid = this.owner.up('[scrollerOwner]');
-        this.callParent();
+        me.grid = this.owner.up('[scrollerOwner]');
+        me.callParent();
     },
 
     // Collect the height of the table of data upon layout begin
@@ -57,6 +55,7 @@ Ext.define('Ext.grid.ColumnLayout', {
             len = items.length,
             firstCls = me.firstHeaderCls, 
             lastCls = me.lastHeaderCls,
+            removeCls = [firstCls, lastCls],
             i, item;
 
         // If we are one side of a locking grid, then if we are on the "normal" side, we have to grab the normal view
@@ -72,18 +71,13 @@ Ext.define('Ext.grid.ColumnLayout', {
 
         for (i = 0; i < len; i++) {
             item = items[i];
-
-            // Keep the isLast flag correct so that the column's component layout can know whether or not
-            // it needs a right border. See ColumnComponentLayout.beginLayoutCycle
-            item.isLast = false;
-            item.removeCls([firstCls, lastCls]);
+            item.removeCls(removeCls);
             if (i === 0) {
                 item.addCls(firstCls);
             }
 
             if (i === len - 1) {
                 item.addCls(lastCls);
-                item.isLast = true;
             }
         }
 
@@ -91,7 +85,7 @@ Ext.define('Ext.grid.ColumnLayout', {
 
         // If the owner is the grid's HeaderContainer, and the UI displays old fashioned scrollbars and there is a rendered View with data in it,
         // collect the View context to interrogate it for overflow, and possibly invalidate it if there is overflow
-        if (!owner.isColumn && Ext.getScrollbarSize().width && !grid.collapsed && view &&
+        if (!owner.isColumn && me.scrollbarWidth && !grid.collapsed && view &&
                 view.rendered && (ownerContext.viewTable = view.body.dom)) {
             ownerContext.viewContext = ownerContext.context.getCmp(view);
         }
@@ -104,9 +98,7 @@ Ext.define('Ext.grid.ColumnLayout', {
     calculate: function(ownerContext) {
         this.callParent(arguments);
 
-        // If we have calculated the widths, then if forceFit, and there are no flexes, we cannot tell the
-        // TableLayout we are done. We will have to go through the convertWidthsToFlexes stage.
-        if (ownerContext.state.parallelDone && (!this.owner.forceFit || ownerContext.flexedItems.length)) {
+        if (ownerContext.state.parallelDone) {
             // TODO: auto width columns aren't necessarily done here.
             // see view.TableLayout, there is a work around for that there 
             ownerContext.setProp('columnWidthsDone', true);
@@ -201,7 +193,7 @@ Ext.define('Ext.grid.ColumnLayout', {
                 if (isNaN(viewHeight)) {
                     me.done = false;
                 } else if (ownerContext.state.tableHeight > viewHeight) {
-                    result.width -= Ext.getScrollbarSize().width;
+                    result.width -= me.scrollbarWidth;
                     ownerContext.state.parallelDone = false;
                     viewContext.invalidate();
                 }
@@ -283,7 +275,7 @@ Ext.define('Ext.grid.ColumnLayout', {
             // innerCt must also encompass any vertical scrollbar width if there may be one
             view = me.owner.ownerCt.view;
             if (view.scrollFlags.y) {
-                size.width += Ext.getScrollbarSize().width;
+                size.width += me.scrollbarWidth;
             }
         }
 

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @private
@@ -56,18 +53,25 @@ Ext.define('Ext.grid.plugin.BufferedRendererTableView', {
 
     onRemove: function(store, records, indices) {
         var me = this,
-            bufferedRenderer = me.bufferedRenderer;
+            bufferedRenderer = me.bufferedRenderer,
+            storeSize, all, startIndex;
 
         // Ensure all records are removed from the view
         me.callParent([store, records, indices]);
 
         // If there's a BufferedRenderer, the view must refresh to keep the view correct.
         // Removing *may* have removed all of the rendered rows, leaving whitespace below the group header, 
-        // so the refresh will be needed to keep the buffer rendered zone valid - to pull records up from
+        // so the buffered renderer will be needed to keep the buffer rendered zone valid - to pull records up from
         // below the removed zone into visibility.
         if (me.rendered && bufferedRenderer) {
-            if (me.dataSource.getCount() > bufferedRenderer.viewSize) {
-                me.refreshView();
+            storeSize = me.dataSource.getCount();
+            all = me.all;
+            // If that remove left a gap below the rendered range, ask the buffered renderer to render its
+            // current view size. This will do the minimum work required, and *append* rows to the table only
+            // if necessary
+            if (storeSize > all.getCount()) {
+                startIndex = all.startIndex;
+                bufferedRenderer.renderRange(startIndex, Math.min(startIndex + bufferedRenderer.viewSize, storeSize) - 1);
             }
             // No overflow, still we have to ensure the scroll range is updated
             else {

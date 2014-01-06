@@ -34,7 +34,7 @@
         // work around this, we apply a background color to the text container element
         // and then use a Chroma filter to display all pixels of that color as transparent.
         .#{$prefix}ie9m & {
-            @if $background-color != null {
+            @if not is-null($background-color) {
                 background-color: $background-color;
                 filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$ie-rotation}),
                         progid:DXImageTransform.Microsoft.Chroma(color=#{$background-color});

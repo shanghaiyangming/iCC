@@ -4,7 +4,7 @@
     "creator": "Sencha",
     "summary": "Ext JS Neutral Theme",
     "detailedDescription": "The neutral theme is a highly configurable, abstract base theme",
-    "version": "4.2.1",
+    "version": "4.2.2",
     "compatVersion": "4.2.0",
     "format": "1",
     "extend": "ext-theme-base"

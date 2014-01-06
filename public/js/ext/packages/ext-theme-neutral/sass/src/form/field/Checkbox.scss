@@ -51,23 +51,42 @@
 }
 
 .#{$prefix}form-cb-label-before {
-    margin-right: $form-checkbox-label-spacing;
+    padding-right: $form-checkbox-label-spacing + $form-checkbox-size;
 }
 
 @if $include-rtl {
     .#{$prefix}rtl.#{$prefix}field .#{$prefix}form-cb-label-before {
-        margin-right: 0;
-        margin-left: $form-checkbox-label-spacing;
+        padding-right: 0;
+        padding-left: $form-checkbox-label-spacing + $form-checkbox-size;
     }
 }
 
 .#{$prefix}form-cb-label-after {
-    margin-left: $form-checkbox-label-spacing;
+    padding-left: $form-checkbox-label-spacing + $form-checkbox-size;
 }
 
 @if $include-rtl {
     .#{$prefix}rtl.#{$prefix}field .#{$prefix}form-cb-label-after {
-        margin-left: 0;
-        margin-right: $form-checkbox-label-spacing;
+        padding-left: 0;
+        padding-right: $form-checkbox-label-spacing + $form-checkbox-size;
     }
 }
+
+// This is to work around lack of min-width support in older IE browsers. If it's determined
+// that there is no box label, the following class is applied to the wrapper around the inputEl.
+// See EXTJSIV-10302 and EXTJSIV-10977.
+.#{$prefix}form-cb-wrap-inner-no-box-label {
+    .#{$prefix}form-cb {
+        position: static;
+    }
+
+    @if $include-ie {
+        .#{$prefix}quirks .#{$prefix}ie &,
+        .#{$prefix}ie7m & {
+            display: inline;
+            width: $form-checkbox-size;
+            zoom: 1;
+        }
+    }
+}
+

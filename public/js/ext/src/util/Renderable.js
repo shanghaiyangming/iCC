@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Given a component hierarchy of this:
@@ -85,7 +82,7 @@ Ext.define('Ext.util.Renderable', {
 
     frameIdRegex: /[\-]frame\d+[TMB][LCR]$/,
     
-    frameElNames: ['TL','TC','TR','ML','MC','MR','BL','BC','BR'],
+    frameElNames: ['TL','TC','TR','ML','MC','MR','BL','BC','BR','Table'],
 
     frameTpl: [
         '{%this.renderDockedItems(out,values,0);%}',
@@ -115,15 +112,16 @@ Ext.define('Ext.util.Renderable', {
 
     frameTableTpl: [
         '{%this.renderDockedItems(out,values,0);%}',
-        '<table class="', Ext.plainTableCls, '" cellpadding="0"><tbody>',
+        '<table id="{fgid}Table" class="', Ext.plainTableCls, '" cellpadding="0" role="presentation">',
+        '<tbody role="presentation">',
             '<tpl if="top">',
-                '<tr>',
+                '<tr role="presentation">',
                     '<tpl if="left"><td id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl>{frameElCls}" role="presentation"></td></tpl>',
                     '<td id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl>{frameElCls}" role="presentation"></td>',
                     '<tpl if="right"><td id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl>{frameElCls}" role="presentation"></td></tpl>',
                 '</tr>',
             '</tpl>',
-            '<tr>',
+            '<tr role="presentation">',
                 '<tpl if="left"><td id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl>{frameElCls}" role="presentation"></td></tpl>',
                 '<td id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl>{frameElCls}" role="presentation">',
                     '{%this.applyRenderTpl(out, values)%}',
@@ -131,7 +129,7 @@ Ext.define('Ext.util.Renderable', {
                 '<tpl if="right"><td id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl>{frameElCls}" role="presentation"></td></tpl>',
             '</tr>',
             '<tpl if="bottom">',
-                '<tr>',
+                '<tr role="presentation">',
                     '<tpl if="left"><td id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl>{frameElCls}" role="presentation"></td></tpl>',
                     '<td id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl>{frameElCls}" role="presentation"></td>',
                     '<tpl if="right"><td id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl>{frameElCls}" role="presentation"></td></tpl>',
@@ -587,6 +585,7 @@ Ext.define('Ext.util.Renderable', {
                 // proxy el in the finishRender phase.
                 return {
                     tag: 'div',
+                    role: 'presentation',
                     id: (me.$pid = Ext.id())
                 };
             }
@@ -628,6 +627,7 @@ Ext.define('Ext.util.Renderable', {
             baseCls: me.baseCls,
             componentCls: me.componentCls,
             frame: me.frame,
+            role: me.ariaRole,
             childElCls: '' // overridden in RTL
         }, me.renderData);
     },
@@ -1083,6 +1083,11 @@ Ext.define('Ext.util.Renderable', {
      */
     getStyleProxy: function(cls) {
         var result = this.styleProxyEl || (Ext.AbstractComponent.prototype.styleProxyEl = Ext.getBody().createChild({
+                //<debug>
+                // tell the spec runner to ignore this element when checking if the dom is clean 
+                'data-sticky': true,
+                //</debug>
+                role: 'presentation',
                 style: {
                     position: 'absolute',
                     top: '-10000px'

@@ -181,20 +181,20 @@
             border-style: $grid-cell-special-border-style;
             border-right-width: $grid-cell-special-border-width;
         }
-        @if $grid-cell-special-background-color != null {
-            @if $grid-cell-special-background-gradient == null {
+        @if not is-null($grid-cell-special-background-color) {
+            @if is-null($grid-cell-special-background-gradient) {
                 background-color: $grid-cell-special-background-color;
             } @else {
                 @include background-gradient($grid-cell-special-background-color, $grid-cell-special-background-gradient);
             }
 
             .#{$prefix}grid-row-selected & {
-                @if $grid-cell-special-selected-border-color != null {
+                @if not is-null($grid-cell-special-selected-border-color) {
                     border-right-color: $grid-cell-special-selected-border-color;
                 }
 
-                @if $grid-row-cell-selected-background-color != null {
-                    @if $grid-cell-special-background-gradient == null {
+                @if not is-null($grid-row-cell-selected-background-color) {
+                    @if is-null($grid-cell-special-background-gradient) {
                         background-color: $grid-row-cell-selected-background-color;
                     } @else {
                         @include background-gradient($grid-row-cell-selected-background-color, $grid-cell-special-background-gradient, left);
@@ -202,7 +202,7 @@
                 }
             }
 
-            @if not $supports-gradients or $compile-all {
+            @if $include-slicer-gradient {
                 .#{$prefix}nlg & {
                     background-repeat: repeat-y;
                     background-image: slicer-background-image(grid-cell-special, 'grid/cell-special-bg');

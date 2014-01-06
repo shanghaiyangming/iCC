@@ -1,7 +1,7 @@
 /**
  * Creates a visual theme for a Window
  *
- * @param {string} $ui-label
+ * @param {string} $ui
  * The name of the UI being created. Can not included spaces or special punctuation
  * (used in CSS class names).
  *
@@ -125,7 +125,7 @@
  * @member Ext.window.Window
  */
 @mixin extjs-window-ui(
-    $ui-label,
+    $ui: null,
 
     $ui-padding: $window-padding,
     $ui-border-radius: $window-border-radius,
@@ -162,6 +162,9 @@
     $ui-body-border-width: $window-body-border-width,
     $ui-body-border-style: $window-body-border-style,
     $ui-body-color: $window-body-color,
+    $ui-body-font-size: $window-body-font-size,
+    $ui-body-font-weight: $window-body-font-weight,
+    $ui-body-font-family: $window-body-font-family,
 
     $ui-background-color: $window-background-color,
 
@@ -169,21 +172,33 @@
     $ui-force-header-border: $window-force-header-border,
     $ui-include-border-management-rules: $window-include-border-management-rules,
     $ui-wrap-border-color: $window-wrap-border-color,
-    $ui-wrap-border-width: $window-wrap-border-width
+    $ui-wrap-border-width: $window-wrap-border-width,
+
+    // deprecated - use $ui instead
+    $ui-label: null
 ){
-    .#{$prefix}window-#{$ui-label} {
-        @if $ui-border-color != null { border-color: $ui-border-color; }
-        @if $ui-border-radius != null { @include border-radius($ui-border-radius); }
+    @if $ui == null {
+        @if $ui-label != null {
+            @warn '$ui-label is deprecated.  Use $ui instead';
+            $ui: $ui-label;
+        } @else {
+            @warn "#{error('$ui is required')}";
+        }
+    }
+
+    .#{$prefix}window-#{$ui} {
+        @if not is-null($ui-border-color) { border-color: $ui-border-color; }
+        @if not is-null($ui-border-radius) { @include border-radius($ui-border-radius); }
 
         @if $ui-inner-border-width != 0 {
             @include inner-border($ui-inner-border-width, $ui-inner-border-color);
         }
     }
 
-    @if $ui-border-radius != null {
+    @if not is-null($ui-border-radius) and $ui-border-radius != 0{
         @include x-frame(
             'window',
-            $ui-label,
+            $ui,
 
             $border-radius: $ui-border-radius,
             $border-width: $ui-border-width,
@@ -192,20 +207,23 @@
         );
     }
 
-    .#{$prefix}window-body-#{$ui-label} {
-        @if $ui-body-border-color !=null {
+    .#{$prefix}window-body-#{$ui} {
+        @if not is-null($ui-body-border-color) {
             border-color: $ui-body-border-color;
             border-width: $ui-body-border-width;
             border-style: $ui-body-border-style;
         }
 
-        @if $ui-body-background-color != null { background: $ui-body-background-color; }
-        @if $ui-body-color != null { color: $ui-body-color; }
+        @if not is-null($ui-body-background-color) { background: $ui-body-background-color; }
+        @if not is-null($ui-body-color) { color: $ui-body-color; }
+        @if not is-null($ui-body-font-size) {        font-size: $ui-body-font-size; }
+        @if not is-null($ui-body-font-weight) {      font-weight: $ui-body-font-weight; }
+        @if not is-null($ui-body-font-family) {      font-family: $ui-body-font-family; }
     }
 
-    .#{$prefix}window-header-#{$ui-label} {
-        @if $ui-header-font-size != null { font-size: $ui-header-font-size; }
-        @if $ui-border-color != null { border-color: $ui-border-color; }
+    .#{$prefix}window-header-#{$ui} {
+        @if not is-null($ui-header-font-size) { font-size: $ui-header-font-size; }
+        @if not is-null($ui-border-color) { border-color: $ui-border-color; }
         zoom:1;
         background-color: $ui-header-background-color;
 
@@ -220,19 +238,19 @@
         }
     }
 
-    .#{$prefix}window-header-#{$ui-label}-vertical .#{$prefix}window-header-text-container {
+    .#{$prefix}window-header-#{$ui}-vertical .#{$prefix}window-header-text-container {
         @include rotate-element($angle: 90, $background-color: $ui-header-background-color);
     }
 
     @if $include-rtl {
-        .#{$prefix}window-header-#{$ui-label}-vertical .#{$prefix}rtl.#{$prefix}window-header-text-container {
+        .#{$prefix}window-header-#{$ui}-vertical .#{$prefix}rtl.#{$prefix}window-header-text-container {
             @include rotate-element($angle: 270, $background-color: $ui-header-background-color);
         }
     }
 
-    .#{$prefix}window-header-text-container-#{$ui-label} {
-        @if $ui-header-color != null { color: $ui-header-color; }
-        @if $ui-header-font-weight != null { font-weight: $ui-header-font-weight; }
+    .#{$prefix}window-header-text-container-#{$ui} {
+        @if not is-null($ui-header-color) { color: $ui-header-color; }
+        @if not is-null($ui-header-font-weight) { font-weight: $ui-header-font-weight; }
 
         line-height: $ui-header-line-height;
         font-family: $ui-header-font-family;
@@ -255,10 +273,10 @@
         bottom($ui-header-padding) - $header-bottom-padding-adjust,
         left($ui-header-padding);
 
-    @if $ui-border-radius != null {
+    @if not is-null($ui-border-radius) and $ui-border-radius != 0 {
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-top',
+            $ui: '#{$ui}-top',
             $border-radius: top($ui-border-radius) right($ui-border-radius) 0 0,
             $border-width: top($ui-header-border-width) right($ui-header-border-width) $header-border-bottom-width left($ui-header-border-width),
             $padding: $header-expanded-padding,
@@ -267,7 +285,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-right',
+            $ui: '#{$ui}-right',
             $border-radius: 0 top($ui-border-radius) right($ui-border-radius) 0,
             $border-width: left($ui-header-border-width) top($ui-header-border-width) right($ui-header-border-width) $header-border-bottom-width,
             $padding: rotate90($header-expanded-padding),
@@ -277,7 +295,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-bottom',
+            $ui: '#{$ui}-bottom',
             $border-radius: 0 0 top($ui-border-radius) left($ui-border-radius),
             $border-width: $header-border-bottom-width right($ui-header-border-width) top($ui-header-border-width) left($ui-header-border-width),
             $padding: rotate180($header-expanded-padding),
@@ -286,7 +304,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-left',
+            $ui: '#{$ui}-left',
             $border-radius: right($ui-border-radius) 0 0 top($ui-border-radius),
             $border-width: right($ui-header-border-width) $header-border-bottom-width left($ui-header-border-width) top($ui-header-border-width),
             $padding: rotate270($header-expanded-padding),
@@ -296,7 +314,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-collapsed-top',
+            $ui: '#{$ui}-collapsed-top',
             $border-radius: $ui-border-radius,
             $border-width: $ui-header-border-width,
             $padding: $ui-header-padding,
@@ -305,7 +323,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-collapsed-right',
+            $ui: '#{$ui}-collapsed-right',
             $border-radius: $ui-border-radius,
             $border-width: $ui-header-border-width,
             $padding: rotate90($ui-header-padding),
@@ -315,7 +333,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-collapsed-bottom',
+            $ui: '#{$ui}-collapsed-bottom',
             $border-radius: $ui-border-radius,
             $border-width: $ui-header-border-width,
             $padding: rotate180($ui-header-padding),
@@ -324,7 +342,7 @@
 
         @include x-frame(
             $cls: 'window-header',
-            $ui: '#{$ui-label}-collapsed-left',
+            $ui: '#{$ui}-collapsed-left',
             $border-radius: $ui-border-radius,
             $border-width: $ui-header-border-width,
             $padding: rotate270($ui-header-padding),
@@ -334,24 +352,24 @@
     }
 
     @if $ui-header-inner-border-width != 0 {
-        .#{$prefix}window-header-#{$ui-label}-top {
+        .#{$prefix}window-header-#{$ui}-top {
             @include inner-border($ui-header-inner-border-width, $ui-header-inner-border-color);
         }
 
-        .#{$prefix}window-header-#{$ui-label}-right {
+        .#{$prefix}window-header-#{$ui}-right {
             @include inner-border(rotate90($ui-header-inner-border-width), $ui-inner-border-color);
         }
 
-        .#{$prefix}window-header-#{$ui-label}-bottom {
+        .#{$prefix}window-header-#{$ui}-bottom {
             @include inner-border(rotate180($ui-header-inner-border-width), $ui-inner-border-color);
         }
 
-        .#{$prefix}window-header-#{$ui-label}-left {
+        .#{$prefix}window-header-#{$ui}-left {
             @include inner-border(rotate270($ui-header-inner-border-width), $ui-inner-border-color);
         }
     }
 
-    .#{$prefix}window-header-#{$ui-label} {
+    .#{$prefix}window-header-#{$ui} {
         .#{$prefix}window-header-icon {
             width: $ui-header-icon-width;
             height: $ui-header-icon-height;
@@ -377,14 +395,16 @@
             // the partially transparent pixels of the glyph as black. To work around this,
             // we emulate the approximate color that the glyph would have if it had opacity
             // applied by mixing the glyph color with the header's background-color.
-            .#{$prefix}ie8m & {
-                color: mix($ui-header-glyph-color, $ui-header-background-color, $ui-header-glyph-opacity * 100);
+            @if $include-ie {
+                .#{$prefix}ie8m & {
+                    color: mix($ui-header-glyph-color, $ui-header-background-color, $ui-header-glyph-opacity * 100);
+                }
             }
         }
     }
 
     $ui-header-icon-margin: 0 $window-header-icon-spacing 0 0;
-    .#{$prefix}window-header-#{$ui-label}-horizontal {
+    .#{$prefix}window-header-#{$ui}-horizontal {
         .#{$prefix}window-header-icon-before-title {
             margin: $ui-header-icon-margin;
         }
@@ -406,7 +426,7 @@
         }
     }
 
-    .#{$prefix}window-header-#{$ui-label}-vertical {
+    .#{$prefix}window-header-#{$ui}-vertical {
         .#{$prefix}window-header-icon-before-title {
             margin: rotate90($ui-header-icon-margin);
         }
@@ -429,7 +449,7 @@
     }
 
     $ui-tool-margin: 0 0 0 $ui-tool-spacing;
-    .#{$prefix}window-header-#{$ui-label}-horizontal {
+    .#{$prefix}window-header-#{$ui}-horizontal {
         .#{$prefix}tool-after-title {
             margin: $ui-tool-margin;
         }
@@ -451,7 +471,7 @@
         }
     }
 
-    .#{$prefix}window-header-#{$ui-label}-vertical {
+    .#{$prefix}window-header-#{$ui}-vertical {
         .#{$prefix}tool-after-title {
             margin: rotate90($ui-tool-margin);
         }
@@ -476,17 +496,17 @@
     // !important is needed in the following rules to override dock layout's border
     // management rules.
     @if $ui-force-header-border {
-        .#{$prefix}window-header-#{$ui-label} {
+        .#{$prefix}window-header-#{$ui} {
             border-width: $ui-header-border-width !important;
         }
     } @else {
-        .#{$prefix}window-#{$ui-label}-collapsed .#{$prefix}window-header {
+        .#{$prefix}window-#{$ui}-collapsed .#{$prefix}window-header {
             border-width: $ui-header-border-width !important;
         }
     }
 
-    @if not $supports-border-radius or $compile-all {
-        .#{$prefix}nbr .#{$prefix}window-#{$ui-label}-collapsed .#{$prefix}window-header {
+    @if $include-slicer-border-radius {
+        .#{$prefix}nbr .#{$prefix}window-#{$ui}-collapsed .#{$prefix}window-header {
             border-width: 0 !important;
         }
     }
@@ -497,7 +517,7 @@
     // The dock layout should ensure that all constituent elements fit within the element.
     // The only exception is during animated resizing. Overflow inline style is set hidden during animation (AbstractComponent.animate)
     @if $ui-border-width > $border-width-threshold {
-        .#{$prefix}window-#{$ui-label}-resizable {
+        .#{$prefix}window-#{$ui}-resizable {
 
             // Resizable Window element overflow must be visible for embedded handles to accept mouseovers.
             overflow: visible;
@@ -535,7 +555,7 @@
 
     @if $ui-include-border-management-rules {
         @include border-management(
-            $parent-cls: window-#{$ui-label},
+            $parent-cls: window-#{$ui},
             $border-width: $ui-wrap-border-width,
             $border-color: $ui-wrap-border-color
         );
@@ -548,6 +568,6 @@
 
 @if $include-window-default-ui {
     @include extjs-window-ui(
-        $ui-label: 'default'
+        $ui: 'default'
     );
 }

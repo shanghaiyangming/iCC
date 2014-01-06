@@ -328,9 +328,9 @@ a.#{$prefix}monthpicker-item-inner:hover {
 }
 
 //nlg support
-@if not $supports-gradients or $compile-all {
+@if $include-slicer-gradient {
     .#{$prefix}nlg {
-        @if $datepicker-header-background-gradient != null {
+        @if not is-null($datepicker-header-background-gradient) {
             .#{$prefix}datepicker-header {
                 background-image: slicer-background-image(datepicker-header, 'datepicker/datepicker-header-bg');
                 background-repeat: repeat-x;
@@ -338,7 +338,7 @@ a.#{$prefix}monthpicker-item-inner:hover {
             }
         }
 
-        @if $datepicker-footer-background-gradient != null {
+        @if not is-null($datepicker-footer-background-gradient) {
             .#{$prefix}datepicker-footer,
             .#{$prefix}monthpicker-buttons {
                 background-image: slicer-background-image(datepicker-footer, 'datepicker/datepicker-footer-bg');
@@ -349,5 +349,7 @@ a.#{$prefix}monthpicker-item-inner:hover {
     }
 }
 
+$stretch: slicer-background-stretch(datepicker-header, bottom);
+$stretch: slicer-background-stretch(datepicker-footer, bottom);
 @include x-slicer(datepicker-header);
 @include x-slicer(datepicker-footer);

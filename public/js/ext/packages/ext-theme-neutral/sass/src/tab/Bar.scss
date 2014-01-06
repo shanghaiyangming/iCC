@@ -275,11 +275,11 @@
         background-color: $ui-background-color;
     }
 
-    @if $ui-background-gradient != null {
+    @if not is-null($ui-background-gradient) {
         .#{$prefix}tab-bar-#{$ui}-top {
             @include background-gradient($ui-background-color, $ui-background-gradient, top);
 
-            @if not $supports-gradients or $compile-all {
+            @if $include-slicer-gradient {
                 .#{$prefix}nlg & {
                     background: slicer-background-image(tab-bar-#{$ui}-top, 'tab-bar/tab-bar-#{$ui}-top-bg');
                 }
@@ -289,7 +289,7 @@
         .#{$prefix}tab-bar-#{$ui}-bottom {
             @include background-gradient($ui-background-color, $ui-background-gradient, bottom);
 
-            @if not $supports-gradients or $compile-all {
+            @if $include-slicer-gradient {
                 .#{$prefix}nlg & {
                     background: slicer-background-image(tab-bar-#{$ui}-bottom, 'tab-bar/tab-bar-#{$ui}-bottom-bg') bottom 0;
                 }
@@ -299,7 +299,7 @@
         .#{$prefix}tab-bar-#{$ui}-left {
             @include background-gradient($ui-background-color, $ui-background-gradient, left);
 
-            @if not $supports-gradients or $compile-all {
+            @if $include-slicer-gradient {
                 .#{$prefix}nlg & {
                     background: slicer-background-image(tab-bar-#{$ui}-left, 'tab-bar/tab-bar-#{$ui}-left-bg');
                 }
@@ -309,7 +309,7 @@
         .#{$prefix}tab-bar-#{$ui}-right {
             @include background-gradient($ui-background-color, $ui-background-gradient, right);
 
-            @if not $supports-gradients or $compile-all {
+            @if $include-slicer-gradient {
                 .#{$prefix}nlg & {
                     background: slicer-background-image(tab-bar-#{$ui}-right, 'tab-bar/tab-bar-#{$ui}-right-bg') 0 right;
                 }
@@ -318,7 +318,7 @@
     }
 
     $needs-transparency-fix: (($ui-scroller-opacity != 1 or $ui-scroller-opacity-over != 1 or
-        $ui-scroller-opacity-pressed != 1) and $ui-background-gradient == null);
+        $ui-scroller-opacity-pressed != 1) and is-null($ui-background-gradient));
     .#{$prefix}tab-bar-#{$ui} {
         .#{$prefix}box-scroller {
             cursor: $ui-scroller-cursor;
@@ -338,8 +338,10 @@
             // the png transparency issues. See EXTJSIV-8846
             .#{$prefix}box-scroller-plain .#{$prefix}box-scroller {
                 background-color: transparent;
-                .#{$prefix}ie8m & {
-                    background-color: #fff;
+                @if $include-ie {
+                    .#{$prefix}ie8m & {
+                        background-color: #fff;
+                    }
                 }
             }
         }
@@ -550,7 +552,7 @@
             @if $ui-scroller-opacity-disabled != 1 {
                 @include opacity($ui-scroller-opacity-disabled);
             }
-            @if $ui-scroller-cursor-disabled != null {
+            @if not is-null($ui-scroller-cursor-disabled) {
                 cursor: $ui-scroller-cursor-disabled;
             }
         }

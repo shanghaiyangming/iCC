@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @author Ed Spencer
@@ -55,6 +52,8 @@ Ext.define('Ext.tab.Bar', {
      * True to not show the full background on the tabbar
      */
     plain: false,
+    
+    ariaRole: 'tablist',
 
     childEls: [
         'body', 'strip'
@@ -62,10 +61,13 @@ Ext.define('Ext.tab.Bar', {
 
     // @private
     renderTpl: [
-        '<div id="{id}-body" class="{baseCls}-body {bodyCls} {bodyTargetCls}{childElCls}<tpl if="ui"> {baseCls}-body-{ui}<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl></tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
+        '<div id="{id}-body" role="presentation" class="{baseCls}-body {bodyCls} {bodyTargetCls}{childElCls}',
+            '<tpl if="ui"> {baseCls}-body-{ui}',
+                '<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl>',
+            '</tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
             '{%this.renderContainer(out,values)%}',
         '</div>',
-        '<div id="{id}-strip" class="{baseCls}-strip {baseCls}-strip-{dock}{childElCls}',
+        '<div id="{id}-strip" role="presentation" class="{baseCls}-strip {baseCls}-strip-{dock}{childElCls}',
             '<tpl if="ui"> {baseCls}-strip-{ui}',
                 '<tpl for="uiCls"> {parent.baseCls}-strip-{parent.ui}-{.}</tpl>',
             '</tpl>">',
@@ -335,9 +337,6 @@ Ext.define('Ext.tab.Bar', {
                 tab = tabs[i];
                 closeEl = tab.closeEl;
                 if (closeEl) {
-                    closeXY = closeEl.getXY();
-                    closeWidth = closeEl.getWidth();
-                    closeHeight = closeEl.getHeight();
                     // Read the dom to determine if the contents of the tab are reversed
                     // (rotated 180 degrees).  If so, we can cache the result becuase
                     // it's safe to assume all tabs in the tabbar will be the same
@@ -349,15 +348,14 @@ Ext.define('Ext.tab.Bar', {
                     }
 
                     direction = isTabReversed ? this._reverseDockNames[me.dock] : me.dock;
+                    
+                    closeWidth = closeEl.getWidth();
+                    closeHeight = closeEl.getHeight();
+                    closeXY = me.getCloseXY(closeEl, tabX, tabY, tabWidth, tabHeight,
+                        closeWidth, closeHeight, direction);
+                    closeX = closeXY[0];
+                    closeY = closeXY[1];
 
-                    if (direction === 'right') {
-                        closeX = tabX + tabWidth - ((closeXY[1] - tabY) + closeEl.getHeight()); 
-                        closeY = tabY + (closeXY[0] - tabX); 
-                    } else {
-                        closeX = tabX + (closeXY[1] - tabY);
-                        closeY = tabY + tabX + tabHeight - closeXY[0] - closeEl.getWidth();
-                    }
-                        
                     closeRegion = new Ext.util.Region(
                         closeY,
                         closeX + closeWidth,
@@ -375,6 +373,22 @@ Ext.define('Ext.tab.Bar', {
             tab: tab,
             close: close
         };
+    },
+
+    // @private
+    getCloseXY: function(closeEl, tabX, tabY, tabWidth, tabHeight, closeWidth, closeHeight, direction) {
+        var closeXY = closeEl.getXY(),
+            closeX, closeY;
+
+        if (direction === 'right') {
+            closeX = tabX + tabWidth - ((closeXY[1] - tabY) + closeHeight); 
+            closeY = tabY + (closeXY[0] - tabX); 
+        } else {
+            closeX = tabX + (closeXY[1] - tabY);
+            closeY = tabY + tabX + tabHeight - closeXY[0] - closeWidth;
+        }
+
+        return [closeX, closeY];
     },
 
     /**

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Provides a convenient wrapper for TextFields that adds a clickable trigger button (looks like a combobox by default).
@@ -163,10 +160,21 @@ Ext.define('Ext.form.field.Trigger', {
             childElCls = values.childElCls, // either '' or ' x-foo'
             field = me.callParent(arguments);
 
-        return '<table id="' + me.id + '-triggerWrap" class="' + Ext.baseCSSPrefix + 'form-trigger-wrap' + childElCls + '" cellpadding="0" cellspacing="0"><tbody><tr>' +
-            '<td id="' + me.id + '-inputCell" class="' + Ext.baseCSSPrefix + 'form-trigger-input-cell' + childElCls + '">' + field + '</td>' +
-            me.getTriggerMarkup() +
-            '</tr></tbody></table>';
+        return [
+            '<table id="', me.id, '-triggerWrap" class="', Ext.baseCSSPrefix,
+                'form-trigger-wrap', childElCls,
+                '" cellpadding="0" cellspacing="0" role="presentation">',
+                '<tbody role="presentation">',
+                    '<tr role="presentation">',
+                        '<td id="', me.id, '-inputCell" class="', Ext.baseCSSPrefix,
+                            'form-trigger-input-cell', childElCls, '" role="presentation">',
+                            field,
+                        '</td>',
+                            me.getTriggerMarkup(),
+                    '</tr>',
+                '</tbody>',
+            '</table>'
+        ].join('');
     },
     
     getSubTplData: function(){
@@ -215,12 +223,13 @@ Ext.define('Ext.form.field.Trigger', {
         for (i = 0; (triggerCls = me['trigger' + (i + 1) + 'Cls']) || i < 1; i++) {
             triggerConfigs.push({
                 tag: 'td',
+                role: 'presentation',
                 valign: 'top',
                 cls: cls,
                 style: style,
                 cn: {
                     cls: [Ext.baseCSSPrefix + 'trigger-index-' + i, triggerBaseCls, triggerCls].join(' '),
-                    role: 'button'
+                    role: 'presentation'
                 }
             });
         }
@@ -248,6 +257,7 @@ Ext.define('Ext.form.field.Trigger', {
          */
         if (!me.triggerWidth) {
             tempEl = Ext.getBody().createChild({
+                role: 'presentation',
                 style: 'position: absolute;', 
                 cls: Ext.baseCSSPrefix + 'form-trigger'
             });
@@ -334,7 +344,7 @@ Ext.define('Ext.form.field.Trigger', {
             triggerWrap = me.triggerWrap,
             triggerEl = me.triggerEl,
             disableCheck = me.disableCheck,
-            els, eLen, el, e, idx;
+            els, len, el, i, idx, cls;
 
         if (me.repeatTriggerClick) {
             me.triggerRepeater = new Ext.util.ClickRepeater(triggerWrap, {
@@ -358,13 +368,16 @@ Ext.define('Ext.form.field.Trigger', {
         triggerEl.addClsOnOver(me.triggerBaseCls + '-over', disableCheck, me);
 
         els  = triggerEl.elements;
-        eLen = els.length;
+        len = els.length;
 
-        for (e = 0; e < eLen; e++) {
-            el = els[e];
-            idx = e+1;
-            el.addClsOnOver(me['trigger' + (idx) + 'Cls'] + '-over', disableCheck, me);
-            el.addClsOnClick(me['trigger' + (idx) + 'Cls'] + '-click', disableCheck, me);
+        for (i = 0; i < len; i++) {
+            el = els[i];
+            idx = i + 1;
+            cls = me['trigger' + (idx) + 'Cls'];
+            if (cls) {
+                el.addClsOnOver(cls + '-over', disableCheck, me);
+                el.addClsOnClick(cls + '-click', disableCheck, me);
+            }
         }
 
         triggerEl.addClsOnClick(me.triggerBaseCls + '-click', disableCheck, me);
@@ -425,10 +438,18 @@ Ext.define('Ext.form.field.Trigger', {
 
     /**
      * @private
-     * The default blur handling must not occur for a TriggerField, implementing this template method as emptyFn disables that.
+     * The default blur handling must not occur for a TriggerField, implementing this template method disables that.
      * Instead the tab key is monitored, and the superclass's onBlur is called when tab is detected
      */
-    onBlur: Ext.emptyFn,
+    onBlur: function() {
+        var me = this,
+            blurTask = me.blurTask;
+            
+        // Only trigger a blur if called programmatically
+        if (me.blurring) {
+            me.triggerBlur();
+        }
+    },
 
     // @private
     mimicBlur: function(e) {

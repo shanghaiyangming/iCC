@@ -9,7 +9,7 @@
     background-color: #fff;
 
     // Rounded corners if the  theme specifies them
-    @if $resizer-handle-border-radius != null {
+    @if not is-null($resizer-handle-border-radius) and $resizer-handle-border-radius != 0 {
         @include border-radius($resizer-handle-border-radius);
     }
 }
@@ -107,13 +107,15 @@
 }
 
 /*IE rounding error*/
-.#{$prefix}ie {
-    .#{$prefix}resizable-handle-east {
-        margin-right: -1px; /*IE rounding error*/
-    }
+@if $include-ie {
+    .#{$prefix}ie {
+        .#{$prefix}resizable-handle-east {
+            margin-right: -1px; /*IE rounding error*/
+        }
 
-    .#{$prefix}resizable-handle-south {
-        margin-bottom: -1px;
+        .#{$prefix}resizable-handle-south {
+            margin-bottom: -1px;
+        }
     }
 }
 

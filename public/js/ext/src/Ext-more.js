@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 // @tag extras,core
 // @require misc/JSON.js
@@ -291,7 +288,7 @@ Ext.apply(Ext, {
 
         return ret;
     },
-    
+
     /**
      * @private
      */
@@ -299,13 +296,13 @@ Ext.apply(Ext, {
         if (Ext.isFunction(fn)) {
             return fn;
         }
-        
+
         //<debug>
         if (!Ext.isObject(scope) || !Ext.isFunction(scope[fn])) {
             Ext.Error.raise('No method named "' + fn + '"');
         }
         //</debug>
-        
+
         return scope[fn];
     },
 
@@ -383,13 +380,14 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
         isSafari4 = isSafari && check(/version\/4/),
         isSafari5_0 = isSafari && check(/version\/5\.0/),
         isSafari5 = isSafari && check(/version\/5/),
-        isIE = !isOpera && check(/msie/),
+        isIE = !isOpera && (check(/msie/) || check(/trident/)),
         isIE7 = isIE && ((check(/msie 7/) && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 7),
         isIE8 = isIE && ((check(/msie 8/) && docMode != 7 && docMode != 9 && docMode != 10) || docMode == 8),
         isIE9 = isIE && ((check(/msie 9/) && docMode != 7 && docMode != 8 && docMode != 10) || docMode == 9),
         isIE10 = isIE && ((check(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9) || docMode == 10),
+        isIE11 = isIE && ((check(/trident\/7\.0/) && docMode != 7 && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 11),
         isIE6 = isIE && check(/msie 6/),
-        isGecko = !isWebKit && check(/gecko/),
+        isGecko = !isWebKit && !isIE && check(/gecko/), // IE11 adds "like gecko" into the user agent string
         isGecko3 = isGecko && check(/rv:1\.9/),
         isGecko4 = isGecko && check(/rv:2\.0/),
         isGecko5 = isGecko && check(/rv:5\./),
@@ -409,7 +407,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
         webKitVersion = version(isWebKit, /webkit\/(\d+\.\d+)/),
         isSecure = /^https/i.test(window.location.protocol),
         nullLog;
-
+        
     // remove css image flicker
     try {
         document.execCommand("BackgroundImageCache", false, true);
@@ -582,7 +580,8 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
     // also update Version.js
-    Ext.setVersion('extjs', '4.2.1.883');
+    Ext.setVersion('ext', '4.2.2.1144');
+    Ext.setVersion('extjs', '4.2.2.1144');
     Ext.apply(Ext, {
         /**
          * @property {String} SSL_SECURE_URL
@@ -597,9 +596,9 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          * True if the {@link Ext.fx.Anim} Class is available.
          */
 
-        plainTableCls: Ext.buildSettings.baseCSSPrefix + 'table-plain', 
+        plainTableCls: Ext.buildSettings.baseCSSPrefix + 'table-plain',
 
-        plainListCls: Ext.buildSettings.baseCSSPrefix + 'list-plain', 
+        plainListCls: Ext.buildSettings.baseCSSPrefix + 'list-plain',
 
         /**
          * @property {Boolean} enableNestedListenerRemoval
@@ -722,7 +721,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
 
         isStrict: isStrict,
 
-        // IE10 quirks behaves like Gecko/WebKit quirks, so don't include it here
+        // IE10+ quirks behaves like Gecko/WebKit quirks, so don't include it here
         isIEQuirks: isIE && (!isStrict && (isIE6 || isIE7 || isIE8 || isIE9)),
 
         /**
@@ -851,24 +850,42 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          * @type Boolean
          */
         isIE9p : isIE && !(isIE6 || isIE7 || isIE8),
-        
-        /**  
+
+        /**
          * True if the detected browser is Internet Explorer 10.x.
          * @type Boolean
          */
-        isIE10 : isIE10, 
- 
+        isIE10 : isIE10,
+
         /**
          * True if the detected browser is Internet Explorer 10.x or lower.
          * @type Boolean
          */
         isIE10m : isIE6 || isIE7 || isIE8 || isIE9 || isIE10,
- 
+
         /**
          * True if the detected browser is Internet Explorer 10.x or higher.
          * @type Boolean
          */
         isIE10p : isIE && !(isIE6 || isIE7 || isIE8 || isIE9),
+        
+        /**  
+         * True if the detected browser is Internet Explorer 11.x.
+         * @type Boolean
+         */
+        isIE11: isIE11, 
+        
+        /**
+         * True if the detected browser is Internet Explorer 11.x or lower.
+         * @type Boolean
+         */
+        isIE11m : isIE6 || isIE7 || isIE8 || isIE9 || isIE10 || isIE11,
+ 
+        /**
+         * True if the detected browser is Internet Explorer 11.x or higher.
+         * @type Boolean
+         */
+        isIE11p : isIE && !(isIE6 || isIE7 || isIE8 || isIE9 || isIE10),
 
         /**
          * True if the detected browser uses the Gecko layout engine (e.g. Mozilla, Firefox).
@@ -1403,18 +1420,25 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
  * @param {Object/String} config Application config object or name of a class derived from Ext.app.Application.
  */
 Ext.application = function(config) {
-    var App, paths, ns;
-    
+    var App, paths, ns,
+        // this won't be called until App class has been created.
+        createApp = function() {
+            Ext.onReady(function() {
+                Ext.app.Application.instance = new App();
+            });
+        };
+
     if (typeof config === "string") {
-        Ext.require(config, function(){
+        Ext.require(config, function() {
             App = Ext.ClassManager.get(config);
+            createApp();
         });
     }
     else {
         // We have to process `paths` before creating Application class,
         // or `requires` won't work.
         Ext.Loader.setPath(config.name, config.appFolder || 'app');
-        
+
         if (paths = config.paths) {
             for (ns in paths) {
                 if (paths.hasOwnProperty(ns)) {
@@ -1422,23 +1446,17 @@ Ext.application = function(config) {
                 }
             }
         }
-        
-        config['paths processed'] = true;
-        
-        // Let Ext.define do the hard work but don't assign a class name.
-        //
-        Ext.define(config.name + ".$application", Ext.apply({
-                extend: 'Ext.app.Application' // can be replaced by config!
-            }, config),
-            // call here when the App class gets full defined
-            function () {
-                App = this;
-            });
-    }
 
-    Ext.onReady(function() {
-        // this won't be called until App has been created and its requires have been
-        // met...
-        Ext.app.Application.instance = new App();
-    });
+        config['paths processed'] = true;
+
+        // Let Ext.define do the hard work but don't assign a class name.
+        Ext.define(config.name + ".$application", Ext.apply({
+            extend: 'Ext.app.Application' // can be replaced by config!
+        }, config),
+        // call here when the App class gets full defined
+        function () {
+            App = this;
+            createApp();
+        });
+    }
 };

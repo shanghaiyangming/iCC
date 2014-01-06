@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 // Currently has the following issues:
 // - Does not handle postEditValue
@@ -37,7 +34,6 @@ Ext.define('Ext.grid.RowEditor', {
     alias: 'widget.roweditor',
     requires: [
         'Ext.tip.ToolTip',
-        'Ext.util.HashMap',
         'Ext.util.KeyNav',
         'Ext.grid.RowEditorButtons'
     ],
@@ -60,6 +56,7 @@ Ext.define('Ext.grid.RowEditor', {
 
     border: false,
 
+    errorCls: Ext.baseCSSPrefix + 'grid-row-editor-errors-item',
     buttonUI: 'default',
 
     // Change the hideMode to offsets so that we get accurate measurements when
@@ -69,7 +66,8 @@ Ext.define('Ext.grid.RowEditor', {
     initComponent: function() {
         var me = this,
             grid = me.editingPlugin.grid,
-            Container = Ext.container.Container;
+            Container = Ext.container.Container,
+            form;
 
         me.cls = Ext.baseCSSPrefix + 'grid-editor ' + Ext.baseCSSPrefix + 'grid-row-editor';
 
@@ -120,7 +118,10 @@ Ext.define('Ext.grid.RowEditor', {
             scope: me,
             show: me.repositionIfVisible
         });
-        me.getForm().trackResetOnLoad = true;
+        
+        form = me.getForm();
+        form.trackResetOnLoad = true;
+        form.on('validitychange', me.onValidityChange, me);
     },
 
     //
@@ -139,20 +140,16 @@ Ext.define('Ext.grid.RowEditor', {
         me.setWidth(clientWidth);
         btns.setLocalX((clientWidth - btns.getWidth()) / 2);
     },
-
-    onFieldRender: function(field){
-        var me = this,
-            column = field.column;
-
-        if (column.isVisible()) {
-            me.syncFieldWidth(column);
-        } else if (!column.rendered) {
-            // column is pending a layout, so we can't set the width until it does
-            me.view.headerCt.on({
-                afterlayout: Ext.Function.bind(me.syncFieldWidth, me, [column]),
-                single: true
-            });
-        }
+    
+    syncAllFieldWidths: function() {
+        var me = this;
+        // In a locked grid, a RowEditor uses 2 inner containers, so need to use CQ to retrieve
+        // configured editors which were stamped with the isEditorComponent property in Editing.createColumnField
+        Ext.Array.each(me.query('[isEditorComponent]'), function(editorComponent) {
+            if (editorComponent.column.isVisible()) {
+                me.onColumnShow(editorComponent.column);
+            }
+        }, me);    
     },
 
     syncFieldWidth: function(column) {
@@ -167,10 +164,9 @@ Ext.define('Ext.grid.RowEditor', {
         }
     },
 
-    onFieldChange: function() {
-        var me = this,
-            form = me.getForm(),
-            valid = form.isValid();
+    onValidityChange: function(form, valid) {
+        var me = this;
+            
         if (me.errorSummary && me.isVisible()) {
             me[valid ? 'hideToolTip' : 'showToolTip']();
         }
@@ -192,8 +188,7 @@ Ext.define('Ext.grid.RowEditor', {
         var me = this,
             plugin = me.editingPlugin,
             grid = plugin.grid,
-            view = grid.lockable ? grid.normalGrid.view : grid.view,
-            field;
+            view = grid.lockable ? grid.normalGrid.view : grid.view;
 
         me.callParent(arguments);
 
@@ -225,12 +220,8 @@ Ext.define('Ext.grid.RowEditor', {
             scroll: me.onFieldContainerScroll,
             scope: me
         });
-
-        me.keyNav = new Ext.util.KeyNav(me.el, {
-            enter: plugin.completeEdit,
-            esc: plugin.onEscKey,
-            scope: plugin
-        });
+        
+        me.initKeyNav();
 
         me.mon(plugin.view, {
             beforerefresh: me.onBeforeViewRefresh,
@@ -241,12 +232,19 @@ Ext.define('Ext.grid.RowEditor', {
 
         // Prevent trying to reposition while we set everything up
         me.preventReposition = true;
-        Ext.Array.each(me.query('[isFormField]'), function(field) {
-            if (field.column.isVisible()) {
-                me.onColumnShow(field.column);
-            }
-        }, me);
+        me.syncAllFieldWidths();
         delete me.preventReposition;    
+    },
+    
+    initKeyNav: function() {
+        var me = this,
+            plugin = me.editingPlugin;
+        
+        me.keyNav = new Ext.util.KeyNav(me.el, {
+            enter: plugin.onEnterKey,
+            esc: plugin.onEscKey,
+            scope: plugin
+        });
     },
 
     onBeforeViewRefresh: function(view) {
@@ -338,7 +336,7 @@ Ext.define('Ext.grid.RowEditor', {
     onColumnResize: function(column, width) {
         var me = this;
 
-        if (me.rendered) {
+        if (me.rendered && !me.editingPlugin.reconfiguring) {
             // Need to ensure our lockable/normal horizontal scrollrange is set
             me.onGridResize();
             me.onViewScroll();
@@ -350,7 +348,7 @@ Ext.define('Ext.grid.RowEditor', {
     },
 
     onColumnHide: function(column) {
-        if (!column.isGroupHeader) {
+        if (!this.editingPlugin.reconfiguring && !column.isGroupHeader) {
             column.getEditor().hide();
             this.repositionIfVisible();
         }
@@ -359,7 +357,7 @@ Ext.define('Ext.grid.RowEditor', {
     onColumnShow: function(column) {
         var me = this;
 
-        if (me.rendered && !column.isGroupHeader) {
+        if (me.rendered && !me.editingPlugin.reconfiguring && !column.isGroupHeader && column.getEditor) {
             column.getEditor().show();
             me.syncFieldWidth(column);
             if (!me.preventReposition) {
@@ -430,6 +428,9 @@ Ext.define('Ext.grid.RowEditor', {
 
     insertColumnEditor: function(column) {
         var me = this,
+            plugin = me.editingPlugin,
+            grid = plugin.grid,
+            lockable = grid.lockable,
             fieldContainer,
             len, i;
 
@@ -444,10 +445,18 @@ Ext.define('Ext.grid.RowEditor', {
             return;
         }
 
-        fieldContainer = column.isLocked() ? me.lockedColumnContainer : me.normalColumnContainer;
-        
+        if (column.isLocked()) {
+            fieldContainer = me.lockedColumnContainer; 
+            grid = grid.lockedGrid;
+        } else {
+            fieldContainer = me.normalColumnContainer;
+            if (lockable) {
+                grid = grid.normalGrid;
+            }
+        }
+
         // Insert the column's field into the editor panel.
-        fieldContainer.insert(column.getVisibleIndex(), column.getEditor());
+        fieldContainer.insert(grid.getColumnManager().getHeaderIndex(column), column.getEditor());
     },
 
     onColumnRemove: function(ct, column) {
@@ -455,7 +464,7 @@ Ext.define('Ext.grid.RowEditor', {
         this.removeColumnEditor(column);
     },
 
-    removeColumnEditor: function(column) {
+    removeColumnEditor: function(column, destroy) {
         var me = this,
             field,
             len, i;
@@ -467,10 +476,18 @@ Ext.define('Ext.grid.RowEditor', {
             return;
         }
 
-        if (column.hasEditor()) {
+        if (column.hasEditor() && column.field.isComponent) {
             field = column.getEditor();
-            if (field && field.ownerCt) {
-                field.ownerCt.remove(field, false);
+            if (field) {
+
+                // If the column is removed and destroyed (or we are being told to destroy), destroy the field.
+                if (destroy || column.isDestroyed) {
+                    field.destroy();
+                }
+                // Otherwise, just remove the field but preserve it for use when the column is reinserted.
+                else if (field.ownerCt) {
+                    field.ownerCt.remove(field, false);
+                }
             }
         }
     },
@@ -513,17 +530,17 @@ Ext.define('Ext.grid.RowEditor', {
     // Lie to the CQ system about our nesting structure.
     // Pretend all the fields are always immediate children.
     // Include the two buttons.
-    getRefItems: function() {
+    getRefItems: function(deep) {
         var me = this,
             result;
 
         if (me.lockable) {
-            result = me.lockedColumnContainer.getRefItems();
-            result.push.apply(result, me.normalColumnContainer.getRefItems());
+            result = me.lockedColumnContainer.getRefItems(deep);
+            result.push.apply(result, me.normalColumnContainer.getRefItems(deep));
         } else {
-            result = me.callParent();
+            result = me.callParent(arguments);
         }
-        result.push.apply(result, me.getFloatingButtons().getRefItems());
+        result.push.apply(result, me.getFloatingButtons().getRefItems(deep));
         return result;
     },
 
@@ -547,7 +564,7 @@ Ext.define('Ext.grid.RowEditor', {
                 // row when the row is focused, but subtract the border width from the 
                 // top padding to keep the row from changing size.  This adjusts the top offset
                 // of the cell edtor to account for the added border.
-                yOffset = -parseInt(row.first().getStyle('border-bottom-width'));
+                yOffset = -parseInt(row.first().getStyle('border-bottom-width'), 10);
             }
             rowTop = me.calculateLocalRowTop(row);
             localY = me.calculateEditorTop(rowTop) + yOffset;
@@ -646,14 +663,13 @@ Ext.define('Ext.grid.RowEditor', {
         var me = this;
 
         if (Ext.isNumber(fieldInfo)) {
-            // Query only form fields. This just future-proofs us in case we add
-            // other components to RowEditor later on.  Don't want to mess with
-            // indices.
-            return me.query('[isFormField]')[fieldInfo];
+            // In a locked grid, a RowEditor uses 2 inner containers, so need to use CQ to retrieve
+            // configured editors which were stamped with the isEditorComponent property in Editing.createColumnField
+            return me.query('[isEditorComponent]')[fieldInfo];
         } else if (fieldInfo.isHeader && !fieldInfo.isGroupHeader) {
             return fieldInfo.getEditor();
         }
-    },
+    },    
 
     addFieldsForColumn: function(column, initial) {
         var me = this,
@@ -670,14 +686,7 @@ Ext.define('Ext.grid.RowEditor', {
         if (column.getEditor) {
 
             // Get a default display field if necessary
-            field = column.getEditor(null, {
-                xtype: 'displayfield',
-                // Override Field's implementation so that the default display fields will not return values. This is done because
-                // the display field will pick up column renderers from the grid.
-                getModelData: function() {
-                    return null;
-                }
-            });
+            field = column.getEditor(null, me.getDefaultFieldCfg());
             if (column.align === 'right') {
                 field.fieldStyle = 'text-align:right';
             }
@@ -702,6 +711,17 @@ Ext.define('Ext.grid.RowEditor', {
                 me.onColumnShow(column);
             }
         }
+    },
+    
+    getDefaultFieldCfg: function() {
+        return {
+            xtype: 'displayfield',
+            // Override Field's implementation so that the default display fields will not return values. This is done because
+            // the display field will pick up column renderers from the grid.
+            getModelData: function() {
+                return null;
+            }
+        };
     },
 
     loadRecord: function(record) {
@@ -732,7 +752,6 @@ Ext.define('Ext.grid.RowEditor', {
                 me.showToolTip();
             }
         }
-
         me.updateButton(isValid);
 
         // render display fields so they honor the column renderer/template
@@ -798,7 +817,7 @@ Ext.define('Ext.grid.RowEditor', {
     /**
      * Start editing the specified grid at the specified position.
      * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-     * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
+     * @param {Ext.data.Model} columnHeader The Column object defining the column to be focused
      */
     startEdit: function(record, columnHeader) {
         var me = this,
@@ -815,6 +834,10 @@ Ext.define('Ext.grid.RowEditor', {
         } else {
             me.syncFieldsHorizontalScroll();
         }
+        
+        // Select the record before showing the editor, since
+        // selecting will steal focus
+        context.grid.getSelectionModel().select(record);
 
         if (me.isVisible()) {
             me.reposition(true);
@@ -824,9 +847,6 @@ Ext.define('Ext.grid.RowEditor', {
 
         // Make sure the container el is correctly sized.
         me.onGridResize();
-
-        // make sure our row is selected before editing
-        context.grid.getSelectionModel().select(record);
 
         // Reload the record data
         me.loadRecord(record);
@@ -849,7 +869,7 @@ Ext.define('Ext.grid.RowEditor', {
                 me._buttonsOnTop = true;
             }
             scrollDelta = 0;
-        } else if (me._buttonsOnTop) {
+        } else if (me._buttonsOnTop !== false) {
             floatingButtons.setButtonPosition('bottom');
             me._buttonsOnTop = false;
         }
@@ -885,9 +905,14 @@ Ext.define('Ext.grid.RowEditor', {
 
     // Focus the cell on start edit based upon the current context
     focusContextCell: function() {
-        var field = this.getEditor(this.context.column);
-        if (field && field.focus) {
-            field.focus();
+        var column = this.context.column,
+            field;
+        
+        if (!column.isDestroyed) {   
+            field = this.getEditor(column);
+            if (field && field.focus) {
+                field.focus();
+            }
         }
     },
 
@@ -929,8 +954,15 @@ Ext.define('Ext.grid.RowEditor', {
 
     onShow: function() {
         var me = this;
-
+        
         me.callParent(arguments);
+        if (me.needsSyncFieldWidths) {
+            me.suspendLayouts();
+            me.syncAllFieldWidths();
+            me.resumeLayouts(true);
+        }
+        delete me.needsSyncFieldWidths;
+
         me.reposition();
     },
 
@@ -1028,7 +1060,7 @@ Ext.define('Ext.grid.RowEditor', {
     },
 
     createErrorListItem: function(e) {
-        return '<li class="' + Ext.baseCSSPrefix + 'grid-row-editor-errors-item">' + e + '</li>';
+        return '<li class="' + this.errorCls + '">' + e + '</li>';
     },
 
     beforeDestroy: function(){

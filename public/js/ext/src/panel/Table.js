@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @author Nicolas Ferrero
@@ -37,6 +34,10 @@ Ext.define('Ext.panel.Table', {
     extend: 'Ext.panel.Panel',
 
     alias: 'widget.tablepanel',
+    
+    requires: [
+        'Ext.layout.container.Fit'
+    ],
 
     uses: [
         'Ext.selection.RowModel',
@@ -314,11 +315,13 @@ Ext.define('Ext.panel.Table', {
             store       = me.store = Ext.data.StoreManager.lookup(me.store || 'ext-empty-store'),
             columns;
 
+        // Add the row/column line classes to the body element so that the settings are not inherited by docked grids (https://sencha.jira.com/browse/EXTJSIV-9263).
         if (me.columnLines) {
-            me.addCls(me.colLinesCls);
+            me.addBodyCls(me.colLinesCls);
         }
 
-        me.addCls(me.rowLines ? me.rowLinesCls : me.noRowLinesCls);
+        me.addBodyCls(me.rowLines ? me.rowLinesCls : me.noRowLinesCls);
+        me.addBodyCls(me.extraBodyCls);
 
         //<debug>
         if (!headerCtCfg) {
@@ -328,9 +331,14 @@ Ext.define('Ext.panel.Table', {
 
         // The columns/colModel config may be either a fully instantiated HeaderContainer, or an array of Column definitions, or a config object of a HeaderContainer
         // Either way, we extract a columns property referencing an array of Column definitions.
-        if (headerCtCfg instanceof Ext.grid.header.Container) {
-            headerCtCfg.isRootHeader = true;
+        if (headerCtCfg.isRootHeader) {
             me.headerCt = headerCtCfg;
+
+            me.headerCt.forceFit = !!me.forceFit;
+
+            // If it's an instance then the column managers were already created and bound to the headerCt.
+            me.columnManager = headerCtCfg.columnManager;
+            me.visibleColumnManager = headerCtCfg.visibleColumnManager;
         } else {
 
             // If any of the Column objects contain a locked property, and are not processed, this is a lockable TablePanel, a
@@ -352,8 +360,7 @@ Ext.define('Ext.panel.Table', {
                     sortable: me.sortableColumns,
                     enableColumnMove: me.enableColumnMove,
                     enableColumnResize: me.enableColumnResize,
-                    sealed: me.sealedColumns,
-                    isRootHeader: true
+                    sealed: me.sealedColumns
                 });
 
                 if (Ext.isDefined(me.enableColumnHide)) {
@@ -367,8 +374,8 @@ Ext.define('Ext.panel.Table', {
             }
         }
 
-        // Maintain backward compatibiliy by providing the initial column set as a property.
-        me.columns = me.headerCt.getGridColumns();
+        // Maintain backward compatibiliy by providing the initial leaf column set as a property.
+        me.columns = columns = me.headerCt.getGridColumns();
 
         me.scrollTask = new Ext.util.DelayedTask(me.syncHorizontalScroll, me);
 
@@ -383,11 +390,7 @@ Ext.define('Ext.panel.Table', {
             'viewready'
         );
 
-        me.bodyCls = me.bodyCls || '';
-        me.bodyCls += (' ' + me.extraBodyCls);
-        
-        me.cls = me.cls || '';
-        me.cls += (' ' + me.extraBaseCls);
+        me.cls = me.cls || '' + (' ' + me.extraBaseCls);
 
         // autoScroll is not a valid configuration
         delete me.autoScroll;
@@ -395,9 +398,6 @@ Ext.define('Ext.panel.Table', {
         // If this TablePanel is lockable (Either configured lockable, or any of the defined columns has a 'locked' property)
         // then a special lockable view containing 2 side-by-side grids will have been injected so we do not need to set up any UI.
         if (!me.hasView) {
-
-            // Extract the array of leaf Column objects
-            columns = me.headerCt.getGridColumns();
 
             // If the Store is paging blocks of the dataset in, then it can only be sorted remotely.
             if (store.buffered && !store.remoteSort) {
@@ -592,6 +592,16 @@ Ext.define('Ext.panel.Table', {
              */
             'cellkeydown',
             /**
+             * @event beforeitemkeydown
+             * @inheritdoc Ext.view.Table#beforeitemkeydown
+             */
+            'beforeitemkeydown',
+            /**
+             * @event itemkeydown
+             * @inheritdoc Ext.view.Table#itemkeydown
+             */
+            'itemkeydown',
+            /**
              * @event beforecontainermousedown
              * @inheritdoc Ext.view.View#beforecontainermousedown
              */
@@ -601,6 +611,11 @@ Ext.define('Ext.panel.Table', {
              * @inheritdoc Ext.view.View#beforecontainermouseup
              */
             'beforecontainermouseup',
+            /**
+             * @event beforecontainermousedown
+             * @inheritdoc Ext.view.View#beforecontainermousedown
+             */
+            'beforecontainermousedown',
             /**
              * @event beforecontainermouseover
              * @inheritdoc Ext.view.View#beforecontainermouseover
@@ -627,10 +642,20 @@ Ext.define('Ext.panel.Table', {
              */
             'beforecontainercontextmenu',
             /**
+             * @event beforecontainerkeydown
+             * @inheritdoc Ext.view.View#beforecontainerkeydown
+             */
+            'beforecontainerkeydown',
+            /**
              * @event containermouseup
              * @inheritdoc Ext.view.View#containermouseup
              */
             'containermouseup',
+            /**
+             * @event containermousedown
+             * @inheritdoc Ext.view.View#containermousedown
+             */
+            'containermousedown',
             /**
              * @event containermouseover
              * @inheritdoc Ext.view.View#containermouseover
@@ -656,6 +681,11 @@ Ext.define('Ext.panel.Table', {
              * @inheritdoc Ext.view.View#containercontextmenu
              */
             'containercontextmenu',
+            /**
+             * @event containerkeydown
+             * @inheritdoc Ext.view.View#containerkeydown
+             */
+            'containerkeydown',
             /**
              * @event selectionchange
              * @inheritdoc Ext.selection.Model#selectionchange
@@ -684,7 +714,7 @@ Ext.define('Ext.panel.Table', {
         ]);
 
         me.callParent(arguments);
-        me.addStateEvents(['columnresize', 'columnmove', 'columnhide', 'columnshow', 'sortchange', 'filterchange']);
+        me.addStateEvents(['columnresize', 'columnmove', 'columnhide', 'columnshow', 'sortchange', 'filterchange', 'groupchange']);
 
         // If lockable, the headerCt is just a collection of Columns, not a Container
         if (!me.lockable && me.headerCt) {
@@ -867,6 +897,24 @@ Ext.define('Ext.panel.Table', {
         }
         return me.view;
     },
+    
+    getColumnManager: function(){
+        return this.columnManager;
+    },
+    
+    getVisibleColumnManager: function(){
+        return this.visibleColumnManager;
+    },
+    
+    getTopLevelColumnManager: function(){
+        var ownerLock = this.ownerLockable;
+        return ownerLock ? ownerLock.getColumnManager() : this.getColumnManager();    
+    },
+    
+    getTopLevelVisibleColumnManager: function(){
+        var ownerLock = this.ownerLockable;
+        return ownerLock ? ownerLock.getVisibleColumnManager() : this.getVisibleColumnManager();    
+    },
 
     /**
      * @private
@@ -889,7 +937,7 @@ Ext.define('Ext.panel.Table', {
             header;
 
         if (cellIndex !== -1) {
-            header = me.columnManager.getColumns()[cellIndex];
+            header = me.getColumnManager().getHeaderAtIndex(cellIndex);
             return header.processEvent.apply(header, arguments);
         }
     },
@@ -927,17 +975,13 @@ Ext.define('Ext.panel.Table', {
     },
 
     afterCollapse: function() {
-        var me = this;
-        me.saveScrollPos();
-        me.saveScrollPos();
-        me.callParent(arguments);
+        this.saveScrollPos();
+        this.callParent(arguments);
     },
 
     afterExpand: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.restoreScrollPos();
-        me.restoreScrollPos();
+        this.callParent(arguments);
+        this.restoreScrollPos();
     },
 
     saveScrollPos: Ext.emptyFn,
@@ -974,6 +1018,15 @@ Ext.define('Ext.panel.Table', {
     onHeaderShow: function(headerCt, header) {
         this.view.refresh();
         this.delayScroll();
+    },
+    
+    // To be triggered on add/remove/move for a leaf header
+    onHeadersChanged: function(headerCt, header) {
+        var me = this;
+        if (me.rendered && !me.reconfiguring) {
+            me.view.refresh();
+            me.delayScroll();
+        }
     },
 
     delayScroll: function(){
@@ -1018,6 +1071,7 @@ Ext.define('Ext.panel.Table', {
     getLhsMarker: function() {
         var me = this;
         return me.lhsMarker || (me.lhsMarker = Ext.DomHelper.append(me.el, {
+            role: 'presentation',
             cls: me.resizeMarkerCls
         }, true));
     },
@@ -1030,6 +1084,7 @@ Ext.define('Ext.panel.Table', {
         var me = this;
 
         return me.rhsMarker || (me.rhsMarker = Ext.DomHelper.append(me.el, {
+            role: 'presentation',
             cls: me.resizeMarkerCls
         }, true));
     },
@@ -1149,14 +1204,12 @@ Ext.define('Ext.panel.Table', {
         }
 
         if (view.store !== store) {
-            if (initial) {
-                // The initially created View will already be bound to the configured Store
-                view.bindStore(store, false, 'dataSource');
-            } else {
-                // Otherwise, we're coming from a reconfigure, so we need to set the actual
-                // store property on the view. It will set the data source
-                view.bindStore(store, false);
-            }
+            // If coming from a reconfigure, we need to set the actual store property on the view. Setting the
+            // store will then also set the dataSource.
+            // 
+            // Note that if it's a grid feature then this is sorted out in view.bindStore(), and it's own
+            // implementation of .bindStore() will be called.
+            view.bindStore(store, false);
         }
 
         me.mon(store, {
@@ -1168,7 +1221,12 @@ Ext.define('Ext.panel.Table', {
              * @event filterchange
              * @inheritdoc Ext.data.Store#filterchange
              */
-            'filterchange'
+            'filterchange',
+            /**
+             * @event groupchange
+             * @inheritdoc Ext.data.Store#groupchange
+             */
+            'groupchange'
         ]);
 
         // If buffered rendering is being used, scroll position must be preserved across refreshes
@@ -1209,6 +1267,7 @@ Ext.define('Ext.panel.Table', {
             columns = Ext.Array.slice(columns);
         }
 
+        me.reconfiguring = true;
         me.fireEvent('beforereconfigure', me, store, columns, oldStore, oldColumns);
         if (me.lockable) {
             me.reconfigureLockable(store, columns);
@@ -1240,8 +1299,9 @@ Ext.define('Ext.panel.Table', {
             Ext.resumeLayouts(true);
         }
         me.fireEvent('reconfigure', me, store, columns, oldStore, oldColumns);
+        delete me.reconfiguring;
     },
-    
+
     beforeDestroy: function(){
         var task = this.scrollTask;
         if (task) {
@@ -1250,12 +1310,22 @@ Ext.define('Ext.panel.Table', {
         }
         this.callParent();
     },
-    
+
     onDestroy: function(){
-        if (this.lockable) {
-            this.destroyLockable();
+        var me = this;
+        if (me.lockable) {
+            me.destroyLockable();
         }
-        this.callParent();
-        
+        me.callParent();
+        me.columns = me.storeRelayers = me.columnManager = me.visibleColumnManager = null;
+    },
+    
+    destroy: function() {
+        // Clear out references here because other things (plugins/features) may need to know about them during destruction
+        var me = this;
+        me.callParent();
+        if (me.isDestroyed) {
+            me.view = me.selModel = me.headerCt = null;
+        }
     }
 });

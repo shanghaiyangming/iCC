@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @author Ed Spencer
@@ -223,7 +220,7 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
  * If an options parameter is passed, the singleton {@link Ext.Ajax} object will be used to make the request.
  */
 Ext.define('Ext.data.proxy.Ajax', {
-    requires: ['Ext.util.MixedCollection', 'Ext.Ajax'],
+    requires: ['Ext.Ajax'],
     extend: 'Ext.data.proxy.Server',
     alias: 'proxy.ajax',
     alternateClassName: ['Ext.data.HttpProxy', 'Ext.data.AjaxProxy'],
@@ -240,6 +237,17 @@ Ext.define('Ext.data.proxy.Ajax', {
         update : 'POST',
         destroy: 'POST'
     },
+    
+    // Keep a default copy of the action methods here. Ideally could just null
+    // out actionMethods and just check if it exists & has a property, otherwise
+    // fallback to the default. But at the moment it's defined as a public property,
+    // so we need to be able to maintain the ability to modify/access it. 
+    defaultActionMethods: {
+        create : 'POST',
+        read   : 'GET',
+        update : 'POST',
+        destroy: 'POST'    
+    },
 
     /**
      * @cfg {Boolean} binary
@@ -253,23 +261,44 @@ Ext.define('Ext.data.proxy.Ajax', {
      * Any headers to add to the Ajax request. Defaults to undefined.
      */
     
+    /**
+     * @cfg {Boolean} paramsAsJson `true` to have any request parameters sent as {@link Ext.data.Connection#jsonData} 
+     * where they can be parsed from the raw request. By default, parameters are sent via the 
+     * {@link Ext.data.Connection#params} property. **Note**: This setting does not apply when the
+     * request is sent as a 'GET' request. See {@link #actionMethods} for controlling the HTTP verb
+     * that is used when sending requests.
+     */
+    paramsAsJson: false,
+    
     doRequest: function(operation, callback, scope) {
-        var writer  = this.getWriter(),
-            request = this.buildRequest(operation);
+        var me = this,
+            writer  = me.getWriter(),
+            request = me.buildRequest(operation),
+            method  = me.getMethod(request);
             
         if (operation.allowWrite()) {
             request = writer.write(request);
         }
         
         Ext.apply(request, {
-            binary        : this.binary,
-            headers       : this.headers,
-            timeout       : this.timeout,
-            scope         : this,
-            callback      : this.createRequestCallback(request, operation, callback, scope),
-            method        : this.getMethod(request),
+            binary        : me.binary,
+            headers       : me.headers,
+            timeout       : me.timeout,
+            scope         : me,
+            callback      : me.createRequestCallback(request, operation, callback, scope),
+            method        : method,
             disableCaching: false // explicitly set it to false, ServerProxy handles caching
         });
+        
+        if (method.toUpperCase() !== 'GET' && me.paramsAsJson) {
+            // We need to copy the request here, because the params object is attached to
+            // the request and may be accessed by other callers, since it doesn't really care how the
+            // information is encoded, so we can't mutate it here.
+            request = Ext.apply({
+                jsonData: request.params
+            }, request);
+            delete request.params;
+        }
         
         Ext.Ajax.request(request);
         
@@ -283,7 +312,14 @@ Ext.define('Ext.data.proxy.Ajax', {
      * @return {String} The HTTP method to use (should be one of 'GET', 'POST', 'PUT' or 'DELETE')
      */
     getMethod: function(request) {
-        return this.actionMethods[request.action];
+        var actions = this.actionMethods,
+            action = request.action,
+            method;
+            
+        if (actions) {
+            method = actions[action];
+        }
+        return method || this.defaultActionMethods[action];
     },
     
     /**
@@ -304,7 +340,4 @@ Ext.define('Ext.data.proxy.Ajax', {
             me.processResponse(success, operation, request, response, callback, scope);
         };
     }
-}, function() {
-    //backwards compatibility, remove in Ext JS 5.0
-    Ext.data.HttpProxy = this;
 });

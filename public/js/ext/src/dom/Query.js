@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 // @tag dom,core
 // @require Helper.js
@@ -42,6 +39,24 @@ Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
  * All selectors, attribute filters and pseudos below can be combined infinitely in any order. For example
  * `div.foo:nth-child(odd)[@foo=bar].bar:first` would be a perfectly valid selector. Node filters are processed
  * in the order in which they appear, which allows you to optimize your queries for your document structure.
+ * 
+ * ## Simple Selectors
+ * 
+ * For performance reasons, some query methods accept selectors that are termed as **simple selectors**. A simple
+ * selector is a selector that does not include contextual information about any parent/sibling elements.
+ * 
+ * Some examples of valid simple selectors:
+ * 
+ *     var simple = '.foo'; // Only asking for the class name on the element
+ *     var simple = 'div.bar'; // Only asking for the tag/class name on the element
+ *     var simple = '[href];' // Asking for an attribute on the element.
+ *     var simple = ':not(.foo)'; // Only asking for the non-matches against the class name
+ *     var simple = 'span:first-child'; // Doesn't require any contextual information about the parent node
+ * 
+ * Simple examples of invalid simple selectors:
+ * 
+ *     var notSimple = 'div.foo div.bar'; // Requires matching a parent node by class name
+ *     var notSimple = 'span + div'; //  Requires matching a sibling by tag name
  *
  * ## Element Selectors:
  *
@@ -857,7 +872,6 @@ Ext.dom.Query = Ext.core.DomQuery = Ext.DomQuery = (function() {
 
         /**
          * Returns true if the passed element(s) match the passed simple selector
-         * (e.g. `div.some-class` or `span:first-child`)
          * @param {String/HTMLElement/HTMLElement[]} el An element id, element or array of elements
          * @param {String} selector The simple selector to test
          * @return {Boolean}
@@ -873,7 +887,6 @@ Ext.dom.Query = Ext.core.DomQuery = Ext.DomQuery = (function() {
 
         /**
          * Filters an array of elements to only include matches of a simple selector
-         * (e.g. `div.some-class` or `span:first-child`)
          * @param {HTMLElement[]} el An array of elements to filter
          * @param {String} selector The simple selector to test
          * @param {Boolean} nonMatches If true, it returns the elements that DON'T match the selector instead of the

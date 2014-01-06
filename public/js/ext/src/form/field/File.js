@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
@@ -144,6 +141,8 @@ Ext.define('Ext.form.field.File', {
      */
     readOnly: true,
 
+    submitValue: false,
+
     /**
      * Do not show hand pointer over text field since file choose dialog is only shown when clicking in the button
      * @private
@@ -202,15 +201,24 @@ Ext.define('Ext.form.field.File', {
      * Gets the markup to be inserted into the subTplMarkup.
      */
     getTriggerMarkup: function() {
-        return '<td id="' + this.id + '-browseButtonWrap"></td>';
+        return '<td id="' + this.id + '-browseButtonWrap" role="presentation"></td>';
     },
 
     /**
      * @private Event handler fired when the user selects a file.
      */
     onFileChange: function(button, e, value) {
-        this.lastValue = null; // force change event to get fired even if the user selects a file with the same name
+        this.duringFileSelect = true;
         Ext.form.field.File.superclass.setValue.call(this, value);
+        delete this.duringFileSelect;
+    },
+    
+    didValueChange: function(){
+        // In the case of the file field, the change event will only ever fire 
+        // if the value actually changes, so we always want to fire the change event
+        // This affects Chrome specifically, because hitting the cancel button will
+        // reset the file upload.
+        return !!this.duringFileSelect;
     },
 
     /**
@@ -227,6 +235,8 @@ Ext.define('Ext.form.field.File', {
             me.fileInputEl = me.button.fileInputEl;
             if (clear) {
                 me.inputEl.dom.value = '';
+                // Reset the underlying value if we're clearing it
+                Ext.form.field.File.superclass.setValue.call(this, null);
             }
         }
         me.callParent();
@@ -254,15 +264,31 @@ Ext.define('Ext.form.field.File', {
     },
 
     extractFileInput: function() {
-        var fileInput = this.button.fileInputEl.dom;
-        this.reset();
+        var me = this,
+            fileInput;
+            
+        if (me.rendered) {
+            fileInput = me.button.fileInputEl.dom;
+            me.reset();
+        } else {
+            // Create a fake empty field here so it will still be submitted.
+            // All other unrendered fields provide a value.
+            fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.className = Ext.baseCSSPrefix + 'hide-display';
+            fileInput.name = me.getName();
+        }
         return fileInput;
     },
     
     restoreInput: function(el) {
-        var button = this.button;
-        button.restoreInput(el);
-        this.fileInputEl = button.fileInputEl;
+        // If we're not rendered we don't need to do anything, it will be created
+        // when we get flushed to the DOM.
+        if (this.rendered) {
+            var button = this.button;
+            button.restoreInput(el);
+            this.fileInputEl = button.fileInputEl;
+        }
     },
 
     onDestroy: function(){

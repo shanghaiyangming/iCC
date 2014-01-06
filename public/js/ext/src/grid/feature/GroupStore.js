@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Private record store class which takes the place of the view's data store to provide a grouped
@@ -33,14 +30,19 @@ Ext.define('Ext.grid.feature.GroupStore', {
 
     isStore: true,
 
+    // Number of records to load into a buffered grid before it has been bound to a view of known size
+    defaultViewSize: 100,
+
+    // Use this property moving forward for all feature stores. It will be used to ensure
+    // that the correct object is used to call various APIs. See EXTJSIV-10022.
+    isFeatureStore: true,
+
     constructor: function(groupingFeature, store) {
         var me = this;
 
-        me.superclass.constructor.apply(me, arguments);
+        me.callParent();
         me.groupingFeature = groupingFeature;
         me.bindStore(store);
-        me.processStore(store);
-        me.view.dataSource = me;
     },
 
     bindStore: function(store) {
@@ -61,6 +63,7 @@ Ext.define('Ext.grid.feature.GroupStore', {
                 destroyable: true
             });
             me.store = store;
+            me.processStore(store);
         }
     },
 
@@ -101,7 +104,7 @@ Ext.define('Ext.grid.feature.GroupStore', {
                 // as a start and end group trigger.
                 if (group.isCollapsed) {
                     group.placeholder = groupPlaceholder = new store.model(null, 'group-' + group.name + '-placeholder');
-                    groupPlaceholder.set(me.getGroupField(), group.name);
+                    groupPlaceholder.set(store.getGroupField(), group.name);
                     groupPlaceholder.rows = groupPlaceholder.children = group.children;
                     groupPlaceholder.isCollapsedPlaceholder = true;
                     data.add(groupPlaceholder);
@@ -120,9 +123,10 @@ Ext.define('Ext.grid.feature.GroupStore', {
     },
 
     isInCollapsedGroup: function(record) {
-        var groupData;
+        var store = this.store,
+            groupData;
 
-        if (this.store.isGrouped() && (groupData = this.groupingFeature.groupCache[record.get(this.getGroupField())])) {
+        if (store.isGrouped() && (groupData = this.groupingFeature.groupCache[record.get(store.getGroupField())])) {
             return groupData.isCollapsed || false;
         }
         return false;
@@ -224,7 +228,7 @@ Ext.define('Ext.grid.feature.GroupStore', {
     getGroupPlaceholder: function(group) {
         if (!group.placeholder) {
             var groupPlaceholder = group.placeholder = new this.store.model(null, 'group-' + group.name + '-placeholder');
-            groupPlaceholder.set(this.getGroupField(), group.name);
+            groupPlaceholder.set(this.store.getGroupField(), group.name);
             groupPlaceholder.rows = groupPlaceholder.children = group.children;
             groupPlaceholder.isCollapsedPlaceholder = true;
         }
@@ -271,11 +275,7 @@ Ext.define('Ext.grid.feature.GroupStore', {
      * @return {Number} The index of the passed Record. Returns -1 if not found.
      */
     indexOfTotal: function(record) {
-        var index = record.index;
-        if (index || index === 0) {
-            return index;
-        }
-        return this.istore.ndexOf(record);
+        return this.store.indexOf(record);
     },
 
     onRefresh: function(store) {
@@ -300,13 +300,16 @@ Ext.define('Ext.grid.feature.GroupStore', {
 
     onUpdate: function(store, record, operation, modifiedFieldNames) {
         var me = this,
-            groupInfo = me.groupingFeature.getRecordGroup(record),
+            groupInfo,
             firstRec, lastRec;
 
         // The grouping field value has been modified.
         // This could either move a record from one group to another, or introduce a new group.
         // Either way, we have to refresh the grid
         if (store.isGrouped()) {
+            // Updating a single record, attach the group to the record for Grouping.setupRowData to use.
+            groupInfo = record.group = me.groupingFeature.getRecordGroup(record);
+
             if (modifiedFieldNames && Ext.Array.contains(modifiedFieldNames, me.groupingFeature.getGroupField())) {
                 return me.onRefresh(me.store);
             }
@@ -331,13 +334,19 @@ Ext.define('Ext.grid.feature.GroupStore', {
 
                 // Do not pass modifiedFieldNames so that the TableView's shouldUpdateCell call always returns true.
                 if (firstRec !== record) {
+                    firstRec.group = groupInfo;
                     me.fireEvent('update', me, firstRec, 'edit');
+                    delete firstRec.group;
                 }
-                if (lastRec !== record && lastRec !== firstRec) {
+                if (lastRec !== record && lastRec !== firstRec && me.groupingFeature.showSummaryRow) {
+                    lastRec.group = groupInfo;
                     me.fireEvent('update', me, lastRec, 'edit');
+                    delete lastRec.group;
                 }
                 Ext.resumeLayouts(true);
             }
+
+            delete record.group;
         } else {
             // Propagate the record's update event
             me.fireEvent('update', me, record, operation, modifiedFieldNames);

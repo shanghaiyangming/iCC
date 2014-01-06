@@ -56,17 +56,17 @@
             @if $scroller-opacity-disabled != 1 {
                 @include opacity($scroller-opacity-disabled);
             }
-            @if $scroller-cursor-disabled != null {
+            @if not is-null($scroller-cursor-disabled) {
                 cursor: $scroller-cursor-disabled;
             }
         }
 
         @if $include-ext-panel-tool {
             .#{$prefix}tool-img {
-                @if $toolbar-tool-background-image != null {
+                @if not is-null($toolbar-tool-background-image) {
                     background-image: theme-background-image($toolbar-tool-background-image);
                 }
-                @if $background-gradient == null {
+                @if is-null($background-gradient) {
                     // EXTJSIV-8846: partially transparent png images do not display correctly
                     // in winXP/IE8m when the image element has a transparent background.
                     // to fix this, we give the element the same background-color as the toolbar.
@@ -76,16 +76,14 @@
         }
     }
 
-    @if not $supports-gradients or $compile-all {
-        @if $background-gradient != null {
-            .#{$prefix}nlg {
-                .#{$prefix}toolbar-#{$ui} {
-                    background-image: slicer-background-image(toolbar-#{$ui}, 'toolbar/toolbar-#{$ui}-bg') !important;
-                    background-repeat: repeat-x;
-                }
+    @if $include-slicer-gradient and not is-null($background-gradient) {
+        .#{$prefix}nlg {
+            .#{$prefix}toolbar-#{$ui} {
+                background-image: slicer-background-image(toolbar-#{$ui}, 'toolbar/toolbar-#{$ui}-bg') !important;
+                background-repeat: repeat-x;
             }
-            $stretch: slicer-background-stretch(toolbar-#{$ui}, bottom);
         }
+        $stretch: slicer-background-stretch(toolbar-#{$ui}, bottom);
     }
 
     @include x-slicer(toolbar-#{$ui});
@@ -102,8 +100,12 @@
     margin: 0 $toolbar-horizontal-spacing 0 0;
 }
 
-// RTL - skew item margin the opposite way
+
 @if $include-rtl {
+    .#{$prefix}rtl.#{$prefix}toolbar {
+        padding: $toolbar-vertical-spacing $toolbar-horizontal-spacing $toolbar-vertical-spacing 0;
+    }
+    
     .#{$prefix}rtl.#{$prefix}toolbar-item {
         margin: 0 0 0 $toolbar-horizontal-spacing;
     }
@@ -125,13 +127,6 @@
     border-width: $toolbar-separator-horizontal-border-width;
     border-left-color: $toolbar-separator-color;
     border-right-color: $toolbar-separator-highlight-color;
-}
-
-// RTL - skew toolbar padding the opposite way
-@if $include-rtl {
-    .#{$prefix}rtl.#{$prefix}toolbar {
-        padding: $toolbar-vertical-spacing $toolbar-horizontal-spacing $toolbar-vertical-spacing 0;
-    }
 }
 
 .#{$prefix}toolbar-footer {
@@ -193,7 +188,7 @@
 }
 
 .#{$prefix}toolbar .#{$prefix}box-menu-after {
-    margin: 0 $toolbar-horizontal-spacing 0 $toolbar-horizontal-spacing;
+    margin: 0 $toolbar-horizontal-spacing;
 }
 
 .#{$prefix}toolbar-vertical {
@@ -215,10 +210,13 @@
         border-bottom-color: $toolbar-separator-highlight-color;
     }
 
-    .#{$prefix}box-menu-after,
-    .#{$prefix}rtl.#{$prefix}box-menu-after {
-        margin: $toolbar-vertical-spacing 0 $toolbar-vertical-spacing 0;
-        display: block;
-        float: none;
+    .#{$prefix}box-menu-after {
+        margin: $toolbar-vertical-spacing 0;
+    }
+}
+
+@if $include-rtl {
+    .#{$prefix}rtl.#{$prefix}toolbar-vertical {
+        padding: $toolbar-vertical-spacing $toolbar-horizontal-spacing 0 $toolbar-horizontal-spacing;
     }
 }

@@ -1,6 +1,6 @@
 @if $include-panel-light-ui {
     @include extjs-panel-ui(
-        $ui-label: 'light',
+        $ui: 'light',
 
         $ui-header-font-family: $panel-light-header-font-family,
         $ui-header-font-size: $panel-light-header-font-size,
@@ -15,7 +15,7 @@
 
 @if $include-panel-light-framed-ui {
     @include extjs-panel-ui(
-        $ui-label: 'light-framed',
+        $ui: 'light-framed',
 
         $ui-border-color: $panel-light-frame-border-color,
         $ui-border-width: $panel-frame-border-width,

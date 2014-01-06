@@ -5,10 +5,12 @@
             padding-left: $horizontal-padding;
             padding-right: $horizontal-padding;
 
-            .#{$prefix}gecko & {
-                // firefox adds an additional px of horizontal space inside text inputs
-                padding-left: max(($horizontal-padding - 1), 0);
-                padding-right: max(($horizontal-padding - 1), 0);
+            @if $include-ff {
+                .#{$prefix}gecko & {
+                    // firefox adds an additional px of horizontal space inside text inputs
+                    padding-left: max(($horizontal-padding - 1), 0);
+                    padding-right: max(($horizontal-padding - 1), 0);
+                }
             }
         }
     }

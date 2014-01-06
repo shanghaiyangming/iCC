@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * @private
@@ -184,6 +181,7 @@ Ext.define('Ext.grid.locking.Lockable', {
             lockedView,
             normalView,
             listeners,
+            loadMask = me.viewConfig && me.viewConfig.loadMask,
             bufferedRenderer = me.findPlugin('bufferedrenderer');
 
         allFeatures = me.constructLockableFeatures();
@@ -341,7 +339,8 @@ Ext.define('Ext.grid.locking.Lockable', {
             loadingText: normalView.loadingText,
             loadingCls: normalView.loadingCls,
             loadingUseMsg: normalView.loadingUseMsg,
-            loadMask: me.loadMask !== false,
+            // viewConfig.loadMask === false takes priority over me.loadMask
+            loadMask: loadMask === undefined ? me.loadMask : loadMask,
             locked: me.lockedGrid,
             normal: me.normalGrid,
             panel: me
@@ -438,7 +437,12 @@ Ext.define('Ext.grid.locking.Lockable', {
              * @event filterchange
              * @inheritdoc Ext.data.Store#filterchange
              */
-            'filterchange'
+            'filterchange',
+            /**
+             * @event groupchange
+             * @inheritdoc Ext.data.Store#groupchange
+             */
+            'groupchange'
         ]);
 
         me.layout = {
@@ -461,7 +465,7 @@ Ext.define('Ext.grid.locking.Lockable', {
         var i,
             len,
             column,
-            cp = this.dummyHdrCtr || (this.self.prototype.dummyHdrCtr = new Ext.grid.header.Container()),
+            cp = new Ext.grid.header.Container(),
             lockedHeaders = [],
             normalHeaders = [],
             lockedHeaderCt = {
@@ -514,6 +518,7 @@ Ext.define('Ext.grid.locking.Lockable', {
             }
         }
         this.fireEvent('processcolumns', this, lockedHeaders, normalHeaders);
+        cp.destroy();
         return result;
     },
 
@@ -736,14 +741,14 @@ Ext.define('Ext.grid.locking.Lockable', {
             var o = getMenuItems.call(this);
             o.push('-', {
                 itemId: 'unlockItem',
-                cls: unlockCls,
+                iconCls: unlockCls,
                 text: unlockText,
                 handler: unlockHandler,
                 disabled: !locked
             });
             o.push({
                 itemId: 'lockItem',
-                cls: lockCls,
+                iconCls: lockCls,
                 text: lockText,
                 handler: lockHandler,
                 disabled: locked
@@ -877,16 +882,16 @@ Ext.define('Ext.grid.locking.Lockable', {
      * Defaults to appending as the last item.
      * @private
      */
-    lock: function(activeHd, toIdx) {
+    lock: function(activeHd, toIdx, toCt) {
         var me         = this,
             normalGrid = me.normalGrid,
             lockedGrid = me.lockedGrid,
             normalHCt  = normalGrid.headerCt,
-            lockedHCt  = lockedGrid.headerCt,
             refreshFlags,
             ownerCt;
 
         activeHd = activeHd || normalHCt.getMenu().activeHeader;
+        toCt = toCt || lockedGrid.headerCt,
         ownerCt = activeHd.ownerCt;
 
         // isLockable will test for making the locked side too wide
@@ -908,9 +913,9 @@ Ext.define('Ext.grid.locking.Lockable', {
         // Flag to the locked column add listener to do nothing
         me.ignoreAddLockedColumn = true;
         if (Ext.isDefined(toIdx)) {
-            lockedHCt.insert(toIdx, activeHd);
+            toCt.insert(toIdx, activeHd);
         } else {
-            lockedHCt.add(activeHd);
+            toCt.add(activeHd);
         }
         me.ignoreAddLockedColumn = false;
 
@@ -935,11 +940,10 @@ Ext.define('Ext.grid.locking.Lockable', {
      * @param {Number} [toIdx=0] The index to move the unlocked header to.
      * @private
      */
-    unlock: function(activeHd, toIdx) {
+    unlock: function(activeHd, toIdx, toCt) {
         var me         = this,
             normalGrid = me.normalGrid,
             lockedGrid = me.lockedGrid,
-            normalHCt  = normalGrid.headerCt,
             lockedHCt  = lockedGrid.headerCt,
             refreshFlags;
 
@@ -948,11 +952,12 @@ Ext.define('Ext.grid.locking.Lockable', {
             toIdx = 0;
         }
         activeHd = activeHd || lockedHCt.getMenu().activeHeader;
+        toCt = toCt || normalGrid.headerCt;
 
         Ext.suspendLayouts();
         activeHd.ownerCt.remove(activeHd, false);
         activeHd.locked = false;
-        normalHCt.insert(toIdx, activeHd);
+        toCt.insert(toIdx, activeHd);
 
         // syncLockedWidth returns visible column counts for both grids.
         // only refresh what needs refreshing
@@ -1013,8 +1018,11 @@ Ext.define('Ext.grid.locking.Lockable', {
             lockedFeatures,
             normalFeatures,
             i = 0, len;
-        
+
         if (features) {
+            if (!Ext.isArray(features)) {
+                features = [ features ];
+            }
             lockedFeatures = [];
             normalFeatures = [];
             len = features.length;
@@ -1055,18 +1063,34 @@ Ext.define('Ext.grid.locking.Lockable', {
             topPlugins,
             lockedPlugins,
             normalPlugins,
-            i = 0, len;
+            i = 0, len,
+            lockableScope,
+            pluginCls;
 
         if (plugins) {
+            if (!Ext.isArray(plugins)) {
+                plugins = [ plugins ];
+            }
             topPlugins = [];
             lockedPlugins = [];
             normalPlugins = [];
             len = plugins.length;
             for (; i < len; i++) {
-                // Plugin will already have been instantiated by the AbstractComponent constructor
+
                 plugin = plugins[i];
 
-                switch (plugin.lockableScope) {
+                // Plugin will most likely already have been instantiated by the AbstractComponent constructor
+                if (plugin.init) {
+                    lockableScope = plugin.lockableScope;
+                }
+                // If not, it's because of late addition through a subclass's initComponent implementation, so we
+                // must ascertain the lockableScope directly from the class.
+                else {
+                    pluginCls = plugin.ptype ? Ext.ClassManager.getByAlias(('plugin.' + plugin.ptype)) : Ext.ClassManager.get(plugin.xclass);
+                    lockableScope = pluginCls.prototype.lockableScope;
+                }
+
+                switch (lockableScope) {
                     case 'both':
                         lockedPlugins.push(lockedPlugin = plugin.clonePlugin());
                         normalPlugins.push(normalPlugin = plugin.clonePlugin());
@@ -1099,7 +1123,7 @@ Ext.define('Ext.grid.locking.Lockable', {
     
     destroyLockable: function(){
         // The locking view isn't a "real" view, so we need to destroy it manually
-        Ext.destroy(this.view);
+        Ext.destroy(this.view, this.headerCt);
     }
 }, function() {
     this.borrow(Ext.AbstractComponent, ['constructPlugin']);

@@ -20,7 +20,7 @@
 .#{$prefix}form-type-tel {
     textarea.#{$prefix}form-invalid-field, input.#{$prefix}form-invalid-field {
         background-color: $form-field-invalid-background-color;
-        @if $form-field-invalid-background-image != null {
+        @if not is-null($form-field-invalid-background-image) {
             background-image: theme-background-image($form-field-invalid-background-image);
             background-repeat: $form-field-invalid-background-repeat;
             background-position: $form-field-invalid-background-position;

@@ -5,18 +5,15 @@ Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
+Build date: 2013-09-18 17:18:59 (940c324ac822b840618a3a8b2b4b873f83a1a9b1)
 */
 /**
  * Container which holds headers and is docked at the top or bottom of a TablePanel.
@@ -153,12 +150,14 @@ Ext.define('Ext.grid.header.Container', {
 
         // If this is a leaf column header, and is NOT functioning as a container,
         // use Container layout with a no-op calculate method.
-        if (me.isColumn && (!me.items || me.items.length === 0)) {
-            me.isContainer = false;
-            me.layout = {
-                type: 'container',
-                calculate: Ext.emptyFn
-            };
+        if (me.isColumn && !me.isGroupHeader) {
+            if (!me.items || me.items.length === 0) {
+                me.isContainer = false;
+                me.layout = {
+                    type: 'container',
+                    calculate: Ext.emptyFn
+                };
+            }
         }
 
         // HeaderContainer and Group header needs a gridcolumn layout.
@@ -167,10 +166,29 @@ Ext.define('Ext.grid.header.Container', {
                 type: 'gridcolumn',
                 align: 'stretch'
             }, me.initialConfig.layout);
-        
-            // Create the owning grid's ColumnManager
-            if (me.isRootHeader) {
-                me.grid.columnManager = me.columnManager = new Ext.grid.ColumnManager(me);
+
+            // If the header isn't a column ([isColumn] or [isGroupHeader]), then it's the root header.
+            if (!me.isGroupHeader) {
+                me.isRootHeader = true;
+
+                // Create column managers for the root header.
+                me.columnManager = new Ext.grid.ColumnManager(false, me);
+                me.visibleColumnManager = new Ext.grid.ColumnManager(true, me);
+
+                // In the grid config, if grid.columns is a header container instance and not a columns
+                // config, then it currently has no knowledge of a containing grid. Create the column
+                // manager now and bind it to the grid later in Ext.panel.Table:initComponent().
+                //
+                // In most cases, though, grid.columns will be a config, so the grid is already known
+                // and the column manager can be bound to it.
+                if (me.grid) {
+                    me.grid.columnManager = me.columnManager;
+                    me.grid.visibleColumnManager = me.visibleColumnManager;
+                }
+            } else {
+                // Is a group header, also create column managers.
+                me.visibleColumnManager = new Ext.grid.ColumnManager(true, me);
+                me.columnManager = new Ext.grid.ColumnManager(false, me);
             }
         }
 
@@ -287,8 +305,9 @@ Ext.define('Ext.grid.header.Container', {
             me.menu.un('hide', me.onMenuHide, me);
         }
         me.menuTask.cancel();
-        Ext.destroy(me.resizer, me.reorderer);
         me.callParent();
+        Ext.destroy(me.resizer, me.reorderer, me.visibleColumnManager, me.columnManager, me.menu);
+        me.columnManager = me.visibleColumnManager = null;
     },
 
     applyColumnsState: function(columns) {
@@ -374,38 +393,21 @@ Ext.define('Ext.grid.header.Container', {
         //</debug>
         me.callParent(arguments);
         me.onColumnsChanged();
+        me.checkMoveNotify(c);
     },
 
-    onMove: function() {
-        this.callParent(arguments);
-        this.onColumnsChanged();
-    },
-
-    onShow: function() {
-        this.callParent(arguments);
-        this.onColumnsChanged();
-    },
-
-    // Private
-    // Called whenever a column is added or removed or moved.
-    // Ensures that the gridColumns caches are cleared.
-    onColumnsChanged: function() {
-        var headerCt = this;
-
-        // Each HeaderContainer up the chain must have its cache purged so that its getGridColumns method will return correct results.
-        while (headerCt) {
-            headerCt.purgeCache();
-            if (headerCt.isRootHeader) {
-                break;
-            }
-            headerCt = headerCt.ownerCt;
-        }
-
-        if (headerCt && headerCt.rendered) {
-            headerCt.fireEvent('columnschanged', headerCt);
+    onMove: function(c, fromIdx, toIdx) {
+        var me = this;
+        
+        me.callParent(arguments);
+        me.onColumnsChanged();
+        if (!c.dropMoving) {
+            // The drop code will take care of updating the view
+            me.checkMoveNotify(c);
+            me.fireEvent('columnmove', me, c, fromIdx, toIdx);
         }
     },
-
+    
     // Invalidate column cache on remove
     // We cannot refresh the View on every remove because this method is called
     // when the HeaderDropZone moves Headers around, that will also refresh the view
@@ -424,6 +426,7 @@ Ext.define('Ext.grid.header.Container', {
 
         if (!me.destroying) {
             me.onColumnsChanged();
+            me.checkMoveNotify(c);
             if (me.isGroupHeader && !me.items.getCount() && ownerCt) {
                 // Detach the header from the DOM here. Since we're removing and destroying the container,
                 // the inner DOM may get overwritten, since Container::deatchOnRemove gets processed after
@@ -437,7 +440,41 @@ Ext.define('Ext.grid.header.Container', {
             }
         }
     },
+    
+    checkMoveNotify: function(c) {
+        var owner, root;
+        if (!c.isGroupHeader) {
+            // Get the root header
+            root = this.getOwnerHeaderCt();
+            if (root) {
+                // Reference the panel.Table
+                owner = root.ownerCt;
+                if (owner) {
+                    owner.onHeadersChanged(root, c);
+                }
+            }
+        }
+    },
 
+    onShow: function() {
+        this.callParent(arguments);
+        this.onColumnsChanged();
+    },
+
+    // Private
+    // Called whenever a column is added or removed or moved.
+    // Ensures that the gridColumns caches are cleared.
+    onColumnsChanged: function() {
+        var headerCt = this;
+
+        // Each HeaderContainer up the chain must have its cache purged so that its getGridColumns method will return correct results.
+        this.purgeHeaderCtCache(headerCt);
+
+        if (headerCt && headerCt.rendered) {
+            headerCt.fireEvent('columnschanged', headerCt);
+        }
+    },
+    
     // @private
     applyDefaults: function(config) {
         var ret;
@@ -497,7 +534,7 @@ Ext.define('Ext.grid.header.Container', {
             item;
 
         // Invalidate column collections upon column hide/show
-        me.purgeCache();
+        me.purgeHeaderCtCache(header.ownerCt);
 
         if (menu) {
             // If the header was hidden programmatically, sync the Menu state
@@ -663,16 +700,29 @@ Ext.define('Ext.grid.header.Container', {
         this.onHeaderMoved(this.move(fromIdx, toIdx), 1, fromIdx, toIdx);
     },
 
+    purgeHeaderCtCache: function (headerCt) {
+        while (headerCt) {
+            headerCt.purgeCache();
+            if (headerCt.isRootHeader) {
+                return;
+            }
+            headerCt = headerCt.ownerCt;
+        }
+    },
+
     purgeCache: function() {
         var me = this,
-            menu = me.menu;
+            menu = me.menu,
+            visibleColumnManager = me.visibleColumnManager,
+            columnManager = me.columnManager;
             
         // Delete column cache - column order has changed.
-        me.gridDataColumns = me.hideableColumns = null;
+        me.gridVisibleColumns = me.gridDataColumns = me.hideableColumns = null;
 
         // ColumnManager. Only the top
-        if (me.columnManager) {
-            me.columnManager.invalidate();
+        if (visibleColumnManager) {
+            visibleColumnManager.invalidate();
+            columnManager.invalidate();
         }
 
         // Menu changes when columns are moved. It will be recreated.
@@ -685,14 +735,16 @@ Ext.define('Ext.grid.header.Container', {
         }
     },
 
-    onHeaderMoved: function(header, colsToMove, fromIdx, toIdx) {
+    onHeaderMoved: function (header, colsToMove, fromIdx, toIdx) {
         var me = this,
             gridSection = me.ownerCt;
 
-        if (gridSection && gridSection.onHeaderMove) {
-            gridSection.onHeaderMove(me, header, colsToMove, fromIdx, toIdx);
+        if (me.rendered) {
+            if (gridSection && gridSection.onHeaderMove) {
+                gridSection.onHeaderMove(me, header, colsToMove, fromIdx, toIdx);
+            }
+            me.fireEvent('columnmove', me, header, fromIdx, toIdx);
         }
-        me.fireEvent("columnmove", me, header, fromIdx, toIdx);
     },
 
     /**
@@ -731,13 +783,13 @@ Ext.define('Ext.grid.header.Container', {
             menuItems = [{
                 itemId: 'ascItem',
                 text: me.sortAscText,
-                cls: me.menuSortAscCls,
+                iconCls: me.menuSortAscCls,
                 handler: me.onSortAscClick,
                 scope: me
             },{
                 itemId: 'descItem',
                 text: me.sortDescText,
-                cls: me.menuSortDescCls,
+                iconCls: me.menuSortDescCls,
                 handler: me.onSortDescClick,
                 scope: me
             }];
@@ -749,7 +801,7 @@ Ext.define('Ext.grid.header.Container', {
             menuItems.push({
                 itemId: 'columnItem',
                 text: me.columnsText,
-                cls: me.menuColsIcon,
+                iconCls: me.menuColsIcon,
                 menu: hideableColumns,
                 hideOnClick: false
             });
@@ -864,6 +916,10 @@ Ext.define('Ext.grid.header.Container', {
      * @returns {Array}
      */
     getVisibleGridColumns: function() {
+        if (this.gridVisibleColumns) {
+            return this.gridVisibleColumns;
+        }
+        
         var allColumns = this.getGridColumns(),
             result = [],
             len = allColumns.length, i;
@@ -875,6 +931,7 @@ Ext.define('Ext.grid.header.Container', {
                 result[result.length] = allColumns[i];
             }
         }
+        this.gridVisibleColumns = result;
         return result;
     }, 
 
@@ -961,32 +1018,150 @@ Ext.define('Ext.grid.header.Container', {
      * @param {Ext.grid.column.Column} header The header to find the index of
      * @return {Number} The index of the specified column header
      */
-    getHeaderIndex: function(header) {
+    getHeaderIndex: function (header) {
+        // Binding the columnManager to a column makes it backwards-compatible with versions
+        // that only bind the columnManager to a root header.
+        if (!this.columnManager) {
+            this.columnManager = this.getOwnerHeaderCt().columnManager;
+        }
+
         return this.columnManager.getHeaderIndex(header);
     },
 
     /**
      * Get a leaf level header by index regardless of what the nesting
      * structure is.
+     *
      * @param {Number} index The column index for which to retrieve the column.
      */
-    getHeaderAtIndex: function(index) {
+    getHeaderAtIndex: function (index) {
+        // Binding the columnManager to a column makes it backwards-compatible with versions
+        // that only bind the columnManager to a root header.
+        if (!this.columnManager) {
+            this.columnManager = this.getOwnerHeaderCt().columnManager;
+        }
+
         return this.columnManager.getHeaderAtIndex(index);
     },
 
     /**
      * When passed a column index, returns the closet *visible* column to that. If the column at the passed index is visible,
      * that is returned. If it is hidden, either the next visible, or the previous visible column is returned.
+     *
      * @param {Number} index Position at which to find the closest visible column.
      */
-    getVisibleHeaderClosestToIndex: function(index) {
-        return this.columnManager.getVisibleHeaderClosestToIndex(index);
+    getVisibleHeaderClosestToIndex: function (index) {
+        // Binding the columnManager to a column makes it backwards-compatible with versions
+        // that only bind the columnManager to a root header.
+        if (!this.visibleColumnManager) {
+            this.visibleColumnManager = this.getOwnerHeaderCt().visibleColumnManager;
+        }
+
+        return this.visibleColumnManager.getVisibleHeaderClosestToIndex(index);
     },
 
-    autoSizeColumn : function(header) {
+    applyForceFit: function (header) {
+        var me = this,
+            view = me.view,
+            minWidth = Ext.grid.plugin.HeaderResizer.prototype.minColWidth,
+            // Used when a column's max contents are larger than the available view width.
+            useMinWidthForFlex = false,
+            defaultWidth = Ext.grid.header.Container.prototype.defaultWidth,
+            availFlex = me.el.getViewSize().width - (view.el.dom.scrollHeight > view.el.dom.clientHeight ? Ext.getScrollbarSize().width : 0),
+            totalFlex = 0,
+            items = me.getVisibleGridColumns(),
+            hidden = header.hidden,
+            len, i,
+            item,
+            maxAvailFlexOneColumn,
+            myWidth;
+
+        function getTotalFlex() {
+            for (i = 0, len = items.length; i < len; i++) {
+                item = items[i];
+
+                // Skip the current header.
+                if (item === header) {
+                    continue;
+                }
+
+                item.flex = item.flex || item.width || item.getWidth();
+                totalFlex += item.flex;
+                item.width = null;
+            }
+        }
+
+        function applyWidth() {
+            // The currently-sized column (whether resized or reshown) will already
+            // have a width, so all other columns will need to be flexed.
+            var isCurrentHeader;
+
+            for (i = 0, len = items.length; i < len; i++) {
+                item = items[i];
+                isCurrentHeader = (item === header);
+
+                if (useMinWidthForFlex && !isCurrentHeader) {
+                    // The selected column is extremely large so set all the others as flex minWidth.
+                    item.flex = minWidth;
+                    item.width = null;
+                } else if (!isCurrentHeader) {
+                    // Note that any widths MUST be converted to flex. Imagine that all but one columns
+                    // are hidden.  The widths of each column very easily could be greater than the total
+                    // available width (think about the how visible header widths increase as sibling
+                    // columns are hidden), so they cannot be reliably used to size the header, and the only
+                    // safe approach is to convert any all widths to flex (except for the current header).
+                    myWidth = item.flex || defaultWidth;
+                    item.flex = Math.max(Math.ceil((myWidth / totalFlex) * availFlex), minWidth);
+                    item.width = null;
+                }
+
+                item.setWidth(item.width || item.flex);
+            }
+        }
+
+        Ext.suspendLayouts();
+
+        // Determine the max amount of flex that a single column can have.
+        maxAvailFlexOneColumn = (availFlex - ((items.length + 1) * minWidth));
+
+        // First, remove the header's flex as it should always receive a set width
+        // since it is the header being operated on.
+        header.flex = null;
+
+        if (hidden) {
+            myWidth = header.width || header.savedWidth;
+            header.savedWidth = null;
+        } else {
+            myWidth = view.getMaxContentWidth(header);
+        }
+
+        // We need to know if the max content width of the selected column would blow out the
+        // grid. If so, all the other visible columns will be flexed to minWidth.
+        if (myWidth >  maxAvailFlexOneColumn) {
+            header.width = maxAvailFlexOneColumn;
+            useMinWidthForFlex = true;
+        } else {
+            header.width = myWidth;
+
+            // Substract the current header's width from the available flex + some padding
+            // to ensure that the last column doesn't get nudged out of the view.
+            availFlex -= myWidth + defaultWidth;
+            getTotalFlex();
+        }
+
+        applyWidth();
+
+        Ext.resumeLayouts(true);
+    },
+
+    autoSizeColumn: function (header) {
         var view = this.view;
+
         if (view) {
             view.autoSizeColumn(header);
+            if (this.forceFit) {
+                this.applyForceFit(header);
+            }
         }
     }
 });
