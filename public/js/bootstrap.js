@@ -858,6 +858,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.idatabase.Data": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
+  "icc.controller.idatabase.Mapping": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
   "icc.controller.idatabase.Project": [],
@@ -918,6 +919,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Key.Edit": [],
   "icc.view.idatabase.Key.Grid": [],
   "icc.view.idatabase.Key.Window": [],
+  "icc.view.idatabase.Mapping.Window": [],
   "icc.view.idatabase.Plugin.Add": [],
   "icc.view.idatabase.Plugin.Combobox": [],
   "icc.view.idatabase.Plugin.Edit": [],
@@ -1961,6 +1963,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.idatabase.Data": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
+  "icc.controller.idatabase.Mapping": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
   "icc.controller.idatabase.Project": [],
@@ -2084,6 +2087,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Key.Window": [
     "widget.idatabaseKeyWindow"
+  ],
+  "icc.view.idatabase.Mapping.Window": [
+    "widget.idatabaseMappingWindow"
   ],
   "icc.view.idatabase.Plugin.Add": [
     "widget.idatabasePluginAdd"
