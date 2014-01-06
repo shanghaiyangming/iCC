@@ -99,6 +99,8 @@ class CollectionController extends BaseActionController
             $isTree = filter_var($this->params()->fromPost('isTree', false), FILTER_VALIDATE_BOOLEAN);
             $desc = $this->params()->fromPost('desc', null);
             $orderBy = $this->params()->fromPost('orderBy', 0);
+            $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
+            $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
             $plugin_id = $this->params()->fromPost('plugin_id', '');
             
@@ -146,7 +148,8 @@ class CollectionController extends BaseActionController
             $datas['plugin'] = $plugin;
             $datas['plugin_id'] = $plugin_id;
             $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
-            
+            $datas['isRowExpander'] = $isRowExpander;
+            $datas['rowExpanderTpl'] = $rowExpanderTpl;
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加集合成功');
@@ -186,6 +189,8 @@ class CollectionController extends BaseActionController
         $isTree = filter_var($this->params()->fromPost('isTree', false), FILTER_VALIDATE_BOOLEAN);
         $desc = $this->params()->fromPost('desc', null);
         $orderBy = $this->params()->fromPost('orderBy', 0);
+        $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
+        $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
         $plugin_id = $this->params()->fromPost('plugin_id', '');
         
@@ -245,6 +250,8 @@ class CollectionController extends BaseActionController
         $datas['plugin'] = $plugin;
         $datas['plugin_id'] = $plugin_id;
         $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
+        $datas['isRowExpander'] = $isRowExpander;
+        $datas['rowExpanderTpl'] = $rowExpanderTpl;
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)

@@ -1,6 +1,7 @@
 Ext.define('icc.view.idatabase.Data.Grid', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.idatabaseDataGrid',
+	requires : [ 'Ext.selection.CellModel', 'Ext.grid.plugin.RowExpander'],
 	region : 'center',
 	border : false,
 	collapsible : false,
@@ -9,31 +10,24 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	multiSelect : true,
 	disableSelection : false,
 	sortableColumns : false,
-	columns : [ {
-		text : '_id',
-		dataIndex : '_id',
-		flex : 1,
-		hidden : true
-	}, {
-		xtype : 'datecolumn',
-		text : '创建时间',
-		dataIndex : '__CREATE_TIME__',
-		flex : 1,
-		format : 'Y-m-d H:i:s'
-	}, {
-		xtype : 'datecolumn',
-		text : '最后修改时间',
-		dataIndex : '__MODIFY_TIME__',
-		flex : 1,
-		format : 'Y-m-d H:i:s',
-		hidden : true
-	} ],
 	initComponent : function() {
+		var installPlugin = [ Ext.create('Ext.grid.plugin.CellEditing', {
+			clicksToEdit : 2
+		}) ];
+
+		if (this.isRowExpander) {
+			installPlugin.push(this.pluginsRowExpander);
+		}
+		delete this.pluginsRowExpander;
+		
+		installPlugin = [{ptype: 'cellediting', clicksToEdit: 2},{ptype: 'rowexpander',
+		                 rowBodyTpl : new Ext.XTemplate(
+		                         '<p><b>Company:</b>123</p>',
+		                         '<p><b>Change:</b>123 </p><br>',
+		                         '<p><b>Summary:</b>123 </p>')}];
+
 		Ext.apply(this, {
-			selType : 'rowmodel',
-			plugins : [ Ext.create('Ext.grid.plugin.CellEditing', {
-				clicksToEdit : 2
-			}) ],
+			plugins : installPlugin,
 			dockedItems : [ {
 				xtype : 'toolbar',
 				dock : 'top',

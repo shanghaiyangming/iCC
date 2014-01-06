@@ -582,6 +582,7 @@ class MongoCollection extends \MongoCollection
                 )
             ), $options);
         }
+
         return parent::update($criteria, $object, $options);
     }
 

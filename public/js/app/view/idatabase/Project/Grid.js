@@ -24,6 +24,7 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 	initComponent : function() {
 		var me = this;
 		var store = Ext.data.StoreManager.lookup('idatabase.Project');
+		console.info(store);
 		Ext.apply(this, {
 			store : store,
 			bbar : {
@@ -98,6 +99,6 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 			} ]
 		});
 
-		this.callParent();
+		this.callParent(arguments);
 	}
 });
