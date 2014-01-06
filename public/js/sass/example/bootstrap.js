@@ -169,6 +169,13 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.Types": [],
   "Ext.data.UuidGenerator": [],
   "Ext.data.XmlStore": [],
+  "Ext.data.amf.Encoder": [],
+  "Ext.data.amf.Packet": [],
+  "Ext.data.amf.Proxy": [],
+  "Ext.data.amf.Reader": [],
+  "Ext.data.amf.RemotingMessage": [],
+  "Ext.data.amf.XmlDecoder": [],
+  "Ext.data.amf.XmlEncoder": [],
   "Ext.data.association.Association": [
     "Ext.data.Association"
   ],
@@ -230,6 +237,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.reader.Xml": [
     "Ext.data.XmlReader"
   ],
+  "Ext.data.soap.Proxy": [],
+  "Ext.data.soap.Reader": [],
   "Ext.data.validations": [],
   "Ext.data.writer.Json": [
     "Ext.data.JsonWriter"
@@ -259,6 +268,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dd.StatusProxy": [],
   "Ext.diag.layout.Context": [],
   "Ext.diag.layout.ContextItem": [],
+  "Ext.direct.AmfRemotingProvider": [],
   "Ext.direct.Event": [],
   "Ext.direct.ExceptionEvent": [],
   "Ext.direct.JsonProvider": [],
@@ -421,6 +431,10 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "Ext.grid.column.Boolean": [
     "Ext.grid.BooleanColumn"
+  ],
+  "Ext.grid.column.Check": [
+    "Ext.ux.CheckColumn",
+    "Ext.grid.column.CheckColumn"
   ],
   "Ext.grid.column.CheckColumn": [
     "Ext.ux.CheckColumn"
@@ -602,6 +616,13 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.rtl.AbstractComponent": [],
   "Ext.rtl.EventObjectImpl": [],
   "Ext.rtl.button.Button": [],
+  "Ext.rtl.chart.Chart": [],
+  "Ext.rtl.chart.Legend": [],
+  "Ext.rtl.chart.LegendItem": [],
+  "Ext.rtl.chart.axis.Axis": [],
+  "Ext.rtl.chart.axis.Gauge": [],
+  "Ext.rtl.chart.series.Cartesian": [],
+  "Ext.rtl.chart.series.Gauge": [],
   "Ext.rtl.dd.DD": [],
   "Ext.rtl.dom.Element_anim": [],
   "Ext.rtl.dom.Element_insertion": [],
@@ -609,6 +630,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.rtl.dom.Element_scroll": [],
   "Ext.rtl.dom.Element_static": [],
   "Ext.rtl.dom.Layer": [],
+  "Ext.rtl.draw.Component": [],
+  "Ext.rtl.draw.Sprite": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
   "Ext.rtl.form.field.Spinner": [],
@@ -616,6 +639,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.rtl.grid.CellEditor": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
+  "Ext.rtl.grid.feature.Summary": [],
   "Ext.rtl.grid.plugin.HeaderResizer": [],
   "Ext.rtl.grid.plugin.RowEditing": [],
   "Ext.rtl.layout.ContextItem": [],
@@ -738,6 +762,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.util.KeyNav": [
     "Ext.KeyNav"
   ],
+  "Ext.util.LocalStorage": [],
   "Ext.util.LruCache": [],
   "Ext.util.Memento": [],
   "Ext.util.MixedCollection": [],
@@ -1121,6 +1146,25 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.data.XmlStore": [
     "store.xml"
   ],
+  "Ext.data.amf.Encoder": [
+    "data.amf.Encoder"
+  ],
+  "Ext.data.amf.Packet": [],
+  "Ext.data.amf.Proxy": [
+    "proxy.amf"
+  ],
+  "Ext.data.amf.Reader": [
+    "reader.amf"
+  ],
+  "Ext.data.amf.RemotingMessage": [
+    "data.amf.remotingmessage"
+  ],
+  "Ext.data.amf.XmlDecoder": [
+    "data.amf.xmldecoder"
+  ],
+  "Ext.data.amf.XmlEncoder": [
+    "data.amf.xmlencoder"
+  ],
   "Ext.data.association.Association": [],
   "Ext.data.association.BelongsTo": [
     "association.belongsto"
@@ -1172,6 +1216,12 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.data.reader.Xml": [
     "reader.xml"
   ],
+  "Ext.data.soap.Proxy": [
+    "proxy.soap"
+  ],
+  "Ext.data.soap.Reader": [
+    "reader.soap"
+  ],
   "Ext.data.validations": [],
   "Ext.data.writer.Json": [
     "writer.json"
@@ -1197,6 +1247,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.dd.StatusProxy": [],
   "Ext.diag.layout.Context": [],
   "Ext.diag.layout.ContextItem": [],
+  "Ext.direct.AmfRemotingProvider": [
+    "direct.amfremotingprovider"
+  ],
   "Ext.direct.Event": [
     "direct.event"
   ],
@@ -1386,6 +1439,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.grid.column.Boolean": [
     "widget.booleancolumn"
+  ],
+  "Ext.grid.column.Check": [
+    "widget.checkcolumn"
   ],
   "Ext.grid.column.CheckColumn": [
     "widget.checkcolumn"
@@ -1638,6 +1694,13 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.rtl.AbstractComponent": [],
   "Ext.rtl.EventObjectImpl": [],
   "Ext.rtl.button.Button": [],
+  "Ext.rtl.chart.Chart": [],
+  "Ext.rtl.chart.Legend": [],
+  "Ext.rtl.chart.LegendItem": [],
+  "Ext.rtl.chart.axis.Axis": [],
+  "Ext.rtl.chart.axis.Gauge": [],
+  "Ext.rtl.chart.series.Cartesian": [],
+  "Ext.rtl.chart.series.Gauge": [],
   "Ext.rtl.dd.DD": [],
   "Ext.rtl.dom.Element_anim": [],
   "Ext.rtl.dom.Element_insertion": [],
@@ -1645,6 +1708,8 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.rtl.dom.Element_scroll": [],
   "Ext.rtl.dom.Element_static": [],
   "Ext.rtl.dom.Layer": [],
+  "Ext.rtl.draw.Component": [],
+  "Ext.rtl.draw.Sprite": [],
   "Ext.rtl.form.field.Checkbox": [],
   "Ext.rtl.form.field.File": [],
   "Ext.rtl.form.field.Spinner": [],
@@ -1652,6 +1717,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.rtl.grid.CellEditor": [],
   "Ext.rtl.grid.RowEditor": [],
   "Ext.rtl.grid.column.Column": [],
+  "Ext.rtl.grid.feature.Summary": [],
   "Ext.rtl.grid.plugin.HeaderResizer": [],
   "Ext.rtl.grid.plugin.RowEditing": [],
   "Ext.rtl.layout.ContextItem": [],
@@ -1781,6 +1847,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.util.Inflector": [],
   "Ext.util.KeyMap": [],
   "Ext.util.KeyNav": [],
+  "Ext.util.LocalStorage": [],
   "Ext.util.LruCache": [],
   "Ext.util.Memento": [],
   "Ext.util.MixedCollection": [],
@@ -2152,9 +2219,9 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.idatabaseStructureWindow"
   ]
 });
-Ext.setVersion("ext-theme-base", "4.2.1");
-Ext.setVersion("ext-theme-neptune", "4.2.1");
-Ext.setVersion("ext-theme-neutral", "4.2.1");
+Ext.setVersion("ext-theme-base", "4.2.2");
+Ext.setVersion("ext-theme-neptune", "4.2.2");
+Ext.setVersion("ext-theme-neutral", "4.2.2");
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/Component.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/panel/Panel.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/toolbar/Toolbar.js");;
