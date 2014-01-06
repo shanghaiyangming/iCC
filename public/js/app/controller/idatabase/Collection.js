@@ -508,13 +508,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 								}
 							}
 						});
-						
-						comboboxStore.addListener('load', function() {
-							var insertRecord = {};
-							insertRecord[record.get('rshCollectionDisplayField')] = '无';
-							insertRecord[record.get('rshCollectionValueField')] = '';
-							comboboxStore.insert(0, Ext.create(rshCollectionModel, insertRecord));
-						})
 
 						addOrEditField.xtype = 'combobox';
 						addOrEditField.name = recordField;

@@ -19,12 +19,6 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 			installPlugin.push(this.pluginsRowExpander);
 		}
 		delete this.pluginsRowExpander;
-		
-		installPlugin = [{ptype: 'cellediting', clicksToEdit: 2},{ptype: 'rowexpander',
-		                 rowBodyTpl : new Ext.XTemplate(
-		                         '<p><b>Company:</b>123</p>',
-		                         '<p><b>Change:</b>123 </p><br>',
-		                         '<p><b>Summary:</b>123 </p>')}];
 
 		Ext.apply(this, {
 			plugins : installPlugin,
