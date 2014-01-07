@@ -209,7 +209,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				var record = selected[0];
 				if (record) {
-					if(record.get('locked')) {
+					var panel = this.collectionTabPanel().getComponent(record.get('_id'));
+					if(record.get('locked') && panel==null) {
 						var win = Ext.widget(controllerName + 'Password', {
 							project_id : grid.project_id,
 							collection_id : record.get('_id'),
