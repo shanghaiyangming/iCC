@@ -151,26 +151,26 @@ class ImportController extends BaseActionController
                     return $this->msg(false, '请确认表格中未包含有效数据，请复核');
                 }
                 
-                
                 $firstRow = array_shift($sheetData);
-                if(count($firstRow)==0) {
+                if (count($firstRow) == 0) {
                     return $this->msg(false, '标题行数据为空');
                 }
                 
                 $titles = array();
-                foreach($firstRow as $col=>$value) {
-                    if(in_array($value,array_keys($this->_schema),true)) {
+                foreach ($firstRow as $col => $value) {
+                    $value = trim($value);
+                    if (in_array($value, array_keys($this->_schema), true)) {
                         $titles[$col] = $this->_schema[$value];
-                    }
-                    else if(in_array($value,array_values($this->_schema),true)) {
-                        $titles[$col] = $value;
-                    }
+                    } else 
+                        if (in_array($value, array_values($this->_schema), true)) {
+                            $titles[$col] = $value;
+                        }
                 }
                 
                 if (count($titles) == 0) {
                     return $this->msg(false, '无匹配的标题或者标题字段，请检查导入数据的格式是否正确');
                 }
-
+                
                 array_walk($sheetData, function ($row, $rowNumber) use($titles)
                 {
                     $insertData = array();
@@ -243,6 +243,19 @@ class ImportController extends BaseActionController
             case 'sha1field':
                 $value = trim($value);
                 $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
+                break;
+            case 'boolfield':
+                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                break;
+            case 'documentfield':
+                $value = trim($value);
+                if (! empty($value)) {
+                    if (isJson($value)) {
+                        try {
+                            $value = Json::decode($value, Json::TYPE_ARRAY);
+                        } catch (\Exception $e) {}
+                    }
+                }
                 break;
             default:
                 $value = trim($value);
