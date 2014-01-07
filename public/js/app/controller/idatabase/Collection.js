@@ -349,7 +349,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 					record = selections[0];
 					var win = Ext.widget('idatabaseImportWindow', {
 						project_id: grid.project_id,
-						collection_id: record.get('_id')
+						collection_id: record.get('_id'),
+						width : 480,
+						height : 320
 					});
 					win.show();
 				}
