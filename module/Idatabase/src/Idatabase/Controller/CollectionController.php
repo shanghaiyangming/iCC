@@ -80,19 +80,21 @@ class CollectionController extends BaseActionController
             );
         }
         
+        $datas = array();
         $cursor = $this->_collection->find($query);
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
             $row['locked'] = false;
             $lockInfo = $this->_lock->count(array(
-                'project_id' => $row['project_id'],
-                'collection_id' => $row['collection_id'],
+                'project_id' => $this->_project_id,
+                'collection_id' => myMongoId($row['_id']),
                 'active' => true
             ));
             if ($lockInfo > 0) {
                 $row['locked'] = true;
             }
+            $datas[] = $row;
         }
         return $this->rst($datas, $cursor->count(), true);
     }

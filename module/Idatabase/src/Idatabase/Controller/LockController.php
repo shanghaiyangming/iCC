@@ -96,16 +96,21 @@ class LockController extends BaseActionController
             'active' => $active
         );
         
-        $rst = $this->_lock->update($criteria, array(
-            '$set' => $datas
-        ), array(
-            'upsert' => true
-        ));
-        
-        if ($rst['ok']) {
-            return $this->msg(true, '设定集合访问密钥成功');
+        if ($active) {
+            $rst = $this->_lock->update($criteria, array(
+                '$set' => $datas
+            ), array(
+                'upsert' => true
+            ));
+            
+            if ($rst['ok']) {
+                return $this->msg(true, '设定集合访问密钥成功');
+            } else {
+                return $this->msg(false, Json::encode($rst));
+            }
         } else {
-            return $this->msg(false, Json::encode($rst));
+            $this->_lock->remove($criteria);
+            return $this->msg(true, '清除安全密钥成功');
         }
     }
 
@@ -125,7 +130,7 @@ class LockController extends BaseActionController
             'active' => true
         ));
         
-        if($lockInfo['password']!==sha1($password)) {
+        if ($lockInfo['password'] !== sha1($password)) {
             return $this->msg(false, '验证失败');
         }
         

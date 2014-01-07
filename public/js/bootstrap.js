@@ -928,6 +928,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Collection.Order.Edit": [],
   "icc.view.idatabase.Collection.Order.Grid": [],
   "icc.view.idatabase.Collection.Order.Window": [],
+  "icc.view.idatabase.Collection.Password": [],
   "icc.view.idatabase.Collection.TabPanel": [],
   "icc.view.idatabase.Collection.TypeCombobox": [],
   "icc.view.idatabase.Data.Add": [],
@@ -2108,6 +2109,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Collection.Order.Window": [
     "widget.idatabaseCollectionOrderWindow"
+  ],
+  "icc.view.idatabase.Collection.Password": [
+    "widget.idatabaseCollectionPassword"
   ],
   "icc.view.idatabase.Collection.TabPanel": [
     "widget.idatabaseCollectionTabPanel"

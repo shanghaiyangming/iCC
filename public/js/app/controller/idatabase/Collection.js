@@ -212,7 +212,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					if(record.get('locked')) {
 						var win = Ext.widget(controllerName + 'Password', {
 							project_id : grid.project_id,
-							collection_id : grid.collection_id,
+							collection_id : record.get('_id'),
 							width : 320,
 							height: 240,
 							selectedRecord : record
@@ -231,12 +231,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 			click: function(button) {	
 				var grid = this.getExpandedAccordion();
 				var form = button.up('form').getForm();
+				var win = button.up('window');
 				if (form.isValid()) {
 					form.submit({
 						waitTitle : '系统提示',
 						waitMsg : '系统处理中，请稍后……',
 						success : function(form, action) {
-							me.buildDataPanel(grid.project_id, me.collectionTabPanel(), form.selectedRecord);
+							win.close();
+							me.buildDataPanel(grid.project_id, me.collectionTabPanel(), grid.getSelectionModel().getSelection()[0]);
 						},
 						failure : function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
@@ -377,22 +379,22 @@ Ext.define('icc.controller.idatabase.Collection', {
 		};
 		
 		listeners[controllerName + 'Grid button[action=lock]'] = {
-				click: function(button) {
-					var grid = button.up('gridpanel');
-					var selections = grid.getSelectionModel().getSelection();
-					if (selections.length == 1) {
-						var record = selections[0];
-						var win = Ext.widget('idatabaseLockWindow', {
-							project_id: grid.project_id,
-							collection_id: record.get('_id')
-						});
-						win.show();
-					} else {
-						Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
-					}
-					return true;
+			click: function(button) {
+				var grid = button.up('gridpanel');
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseLockWindow', {
+						project_id: grid.project_id,
+						collection_id: record.get('_id')
+					});
+					win.show();
+				} else {
+					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
 				}
-			};
+				return true;
+			}
+		};
 		
 		listeners[controllerName + 'Grid button[action=dbimport]'] = {
 			click: function(button) {
