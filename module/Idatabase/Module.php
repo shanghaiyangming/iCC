@@ -4,10 +4,7 @@ namespace Idatabase;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\EventManager;
-use My\Common\CacheListenerAggregate;
 use Zend\EventManager\GlobalEventManager;
-use Monolog\Logger;
-use Monolog\Handler\MongoDBHandler;
 
 class Module
 {
@@ -40,6 +37,15 @@ class Module
         );
     }
 
+    public function getServiceConfig()
+    {
+        return array(
+            'abstract_factories' => array(
+                'My\Common\AbstractFactory\Controller'
+            )
+        );
+    }
+
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
@@ -47,7 +53,5 @@ class Module
         $serviceLocator = $app->getServiceManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        
-        
     }
 }

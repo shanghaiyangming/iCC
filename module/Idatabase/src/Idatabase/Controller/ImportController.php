@@ -16,7 +16,7 @@ use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
 
-class DataController extends BaseActionController
+class ImportController extends BaseActionController
 {
 
     /**

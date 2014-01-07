@@ -334,6 +334,18 @@ Ext.define('icc.controller.idatabase.Collection', {
 				win.show();
 			}
 		};
+		
+		listeners[controllerName + 'Grid button[action=import]'] = {
+			click: function(button) {
+				var grid = button.up('gridpanel');
+				var win = Ext.widget('idatabaseImportWindow', {
+					project_id: grid.project_id,
+					collection_id: record.get('_id')
+				});
+				win.show();
+			}
+		};
+		
 		me.control(listeners);
 	},
 	reBuildDataPanel: function(collection_id) {
