@@ -19,7 +19,8 @@ Ext.define('icc.Application', {
         'idatabase.Index',
         'idatabase.Key',
         'idatabase.Mapping',
-        'idatabase.Import'
+        'idatabase.Import',
+        'idatabase.Lock'
     ],
 
     stores: [

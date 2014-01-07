@@ -30,7 +30,7 @@ defined('IDATABASE_PROMISSION') || define('IDATABASE_PROMISSION', 'idatabase_pro
 defined('IDATABASE_KEYS') || define('IDATABASE_KEYS', 'idatabase_keys');
 defined('IDATABASE_COLLECTION_ORDERBY') || define('IDATABASE_COLLECTION_ORDERBY', 'idatabase_collection_orderby');
 defined('IDATABASE_MAPPING') || define('IDATABASE_MAPPING', 'idatabase_mapping');
-
+defined('IDATABASE_LOCK') || define('IDATABASE_LOCK', 'idatabase_lock');
 /**
  * 自定义事件
  */

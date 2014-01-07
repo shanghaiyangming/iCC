@@ -322,7 +322,7 @@ function setHeaderExpires($expireTime = 31536000)
  */
 function isJson($string)
 {
-    //过滤掉纯数字类型的符合json格式的字符串，如果单纯为数字，请使用其他数据类型
+    // 过滤掉纯数字类型的符合json格式的字符串，如果单纯为数字，请使用其他数据类型
     if (strpos($string, "{") === false && strpos($string, "[") === false) {
         return false;
     }
@@ -451,8 +451,19 @@ function doGet($url, $params = array())
         $client->setUri($url);
         $client->setParameterGet($params);
         $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
-        $client->setConfig(array(
-            'maxredirects' => 5
+        $client->setOptions(array(
+            'maxredirects' => 5,
+            'strictredirects' => false,
+            'useragent' => 'Zend\Http\Client',
+            'timeout' => 10,
+            'adapter' => 'Zend\Http\Client\Adapter\Socket',
+            'httpversion' => Request::VERSION_11,
+            'storeresponse' => true,
+            'keepalive' => false,
+            'outputstream' => false,
+            'encodecookies' => true,
+            'argseparator' => null,
+            'rfc3986strict' => false
         ));
         $response = $client->request('GET');
         return $response->getBody();
@@ -482,8 +493,19 @@ function doPost($url, $params = array())
         $client->setUri($url);
         $client->setParameterPost($params);
         $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
-        $client->setConfig(array(
-            'maxredirects' => 5
+        $client->setOptions(array(
+            'maxredirects' => 5,
+            'strictredirects' => false,
+            'useragent' => 'Zend\Http\Client',
+            'timeout' => 10,
+            'adapter' => 'Zend\Http\Client\Adapter\Socket',
+            'httpversion' => Request::VERSION_11,
+            'storeresponse' => true,
+            'keepalive' => false,
+            'outputstream' => false,
+            'encodecookies' => true,
+            'argseparator' => null,
+            'rfc3986strict' => false
         ));
         $response = $client->request('POST');
         return $response->getBody();
@@ -519,8 +541,19 @@ function doRequest($url, $get = array(), $post = array())
             $client->setParameterPost($post);
         
         $client->setEncType(Zend\Http\Client::ENC_URLENCODED);
-        $client->setConfig(array(
-            'maxredirects' => 5
+        $client->setOptions(array(
+            'maxredirects' => 5,
+            'strictredirects' => false,
+            'useragent' => 'Zend\Http\Client',
+            'timeout' => 10,
+            'adapter' => 'Zend\Http\Client\Adapter\Socket',
+            'httpversion' => Request::VERSION_11,
+            'storeresponse' => true,
+            'keepalive' => false,
+            'outputstream' => false,
+            'encodecookies' => true,
+            'argseparator' => null,
+            'rfc3986strict' => false
         ));
         if (! empty($post))
             $response = $client->request('POST');
@@ -771,14 +804,14 @@ function myMongoRegex($text)
 /**
  * 特别处理变量中的点
  * 莫名的现象array_walk会个别键丢失的问题，例如：sub1__DOT__document
- * 
+ *
  * @param array $_POST            
  * @return null
  */
 function convertVarNameWithDot(&$array)
 {
     if (! empty($array)) {
-        foreach($array as $key=>$value) {
+        foreach ($array as $key => $value) {
             if (strpos($key, '__DOT__') !== false) {
                 $newKey = str_replace('__DOT__', '.', $key);
                 $array[$newKey] = $value;

@@ -884,6 +884,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.idatabase.Import": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
+  "icc.controller.idatabase.Lock": [],
   "icc.controller.idatabase.Mapping": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
@@ -897,6 +898,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
+  "icc.model.idatabase.Static": [],
   "icc.model.idatabase.Structure": [],
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
@@ -908,6 +910,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
   "icc.store.idatabase.Project": [],
+  "icc.store.idatabase.Static": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -946,6 +949,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Key.Edit": [],
   "icc.view.idatabase.Key.Grid": [],
   "icc.view.idatabase.Key.Window": [],
+  "icc.view.idatabase.Lock.Window": [],
   "icc.view.idatabase.Mapping.Window": [],
   "icc.view.idatabase.Plugin.Add": [],
   "icc.view.idatabase.Plugin.Combobox": [],
@@ -961,6 +965,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Project.Edit": [],
   "icc.view.idatabase.Project.Grid": [],
   "icc.view.idatabase.Project.TabPanel": [],
+  "icc.view.idatabase.Static.Add": [],
+  "icc.view.idatabase.Static.Edit": [],
+  "icc.view.idatabase.Static.Grid": [],
+  "icc.view.idatabase.Static.Window": [],
   "icc.view.idatabase.Structure.Add": [],
   "icc.view.idatabase.Structure.Edit": [],
   "icc.view.idatabase.Structure.FieldCombobox": [],
@@ -2033,6 +2041,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.idatabase.Import": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
+  "icc.controller.idatabase.Lock": [],
   "icc.controller.idatabase.Mapping": [],
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
@@ -2046,6 +2055,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
+  "icc.model.idatabase.Static": [],
   "icc.model.idatabase.Structure": [],
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
@@ -2057,6 +2067,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
   "icc.store.idatabase.Project": [],
+  "icc.store.idatabase.Static": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -2161,6 +2172,9 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.view.idatabase.Key.Window": [
     "widget.idatabaseKeyWindow"
   ],
+  "icc.view.idatabase.Lock.Window": [
+    "widget.idatabaseLockWindow"
+  ],
   "icc.view.idatabase.Mapping.Window": [
     "widget.idatabaseMappingWindow"
   ],
@@ -2205,6 +2219,18 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Project.TabPanel": [
     "widget.idatabaseProjectTabPanel"
+  ],
+  "icc.view.idatabase.Static.Add": [
+    "widget.idatabaseStaticAdd"
+  ],
+  "icc.view.idatabase.Static.Edit": [
+    "widget.idatabaseStaticEdit"
+  ],
+  "icc.view.idatabase.Static.Grid": [
+    "widget.idatabaseStaticGrid"
+  ],
+  "icc.view.idatabase.Static.Window": [
+    "widget.idatabaseStaticWindow"
   ],
   "icc.view.idatabase.Structure.Add": [
     "widget.idatabaseStructureAdd"

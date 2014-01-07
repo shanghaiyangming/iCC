@@ -38,10 +38,10 @@ class LockController extends BaseActionController
     }
 
     /**
-     * 读取映射关系
+     * 读取安全密码
      *
      * @author young
-     * @name 读取映射关系
+     * @name 读取安全密码
      * @version 2013.01.04 young
      */
     public function indexAction()
@@ -50,14 +50,14 @@ class LockController extends BaseActionController
             'project_id' => $this->_project_id,
             'collection_id' => $this->_collection_id
         );
-        return $this->findAll(IDATABASE_MAPPING, $query);
+        return $this->findAll(IDATABASE_LOCK, $query);
     }
 
     /**
-     * 更新映射关系
+     * 更新安全密码
      *
      * @author young
-     * @name 更新映射关系
+     * @name 更新安全密码
      * @version 2014.01.02 young
      * @return JsonModel
      */
@@ -72,6 +72,24 @@ class LockController extends BaseActionController
             'project_id' => $this->_project_id,
             'collection_id' => $this->_collection_id
         );
+        
+        $lockInfo = $this->_lock->findOne($criteria);
+        if ($lockInfo != null) {
+            if (empty($oldPassword)) {
+                return $this->msg(true, '请输入原密码');
+            }
+            if (sha1($oldPassword) !== $lockInfo['password']) {
+                return $this->msg(true, '身份验证未通过');
+            }
+        }
+        
+        if (empty($password) || empty($repeatPassword)) {
+            return $this->msg(true, '请输入新密码或者确认密码');
+        }
+        
+        if ($password !== $repeatPassword) {
+            return $this->msg(true, '两次密码输入不一致');
+        }
         
         $datas = array(
             'password' => sha1($password),
@@ -89,5 +107,28 @@ class LockController extends BaseActionController
         } else {
             return $this->msg(false, Json::encode($rst));
         }
+    }
+
+    /**
+     * 验证密码
+     */
+    public function verifyAction()
+    {
+        $password = trim($this->params()->fromPost('password', ''));
+        if (empty($password)) {
+            return $this->msg(false, '请输入安全密码');
+        }
+        
+        $lockInfo = $this->_lock->findOne(array(
+            'project_id' => $this->_project_id,
+            'collection_id' => $this->_collection_id,
+            'active' => true
+        ));
+        
+        if($lockInfo['password']!==sha1($password)) {
+            return $this->msg(false, '验证失败');
+        }
+        
+        return $this->msg(true, '通过安全验证');
     }
 }

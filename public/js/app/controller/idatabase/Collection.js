@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 	extend: 'Ext.app.Controller',
 	models: ['idatabase.Collection', 'idatabase.Structure'],
 	stores: ['idatabase.Collection', 'idatabase.Collection.Type', 'idatabase.Structure'],
-	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.TypeCombobox'],
+	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.TypeCombobox','idatabase.Collection.Password'],
 	controllerName: 'idatabaseCollection',
 	plugin: false,
 	plugin_id: '',
@@ -209,9 +209,40 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				var record = selected[0];
 				if (record) {
-					this.buildDataPanel(grid.project_id, this.collectionTabPanel(), record);
+					if(record.get('locked')) {
+						var win = Ext.widget(controllerName + 'Password', {
+							project_id : grid.project_id,
+							collection_id : grid.collection_id,
+							width : 320,
+							height: 240,
+							selectedRecord : record
+						});
+						win.show();
+					}
+					else {
+						this.buildDataPanel(grid.project_id, this.collectionTabPanel(), record);
+					}
 				}
 				return true;
+			}
+		};
+		
+		listeners['idatabaseCollectionPassword button[action=submit]'] = {
+			click: function(button) {	
+				var grid = this.getExpandedAccordion();
+				var form = button.up('form').getForm();
+				if (form.isValid()) {
+					form.submit({
+						waitTitle : '系统提示',
+						waitMsg : '系统处理中，请稍后……',
+						success : function(form, action) {
+							me.buildDataPanel(grid.project_id, me.collectionTabPanel(), form.selectedRecord);
+						},
+						failure : function(form, action) {
+							Ext.Msg.alert('失败提示', action.result.msg);
+						}
+					});
+				}
 			}
 		};
 
@@ -330,23 +361,45 @@ Ext.define('icc.controller.idatabase.Collection', {
 		listeners[controllerName + 'Grid button[action=static]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
-				var win = Ext.widget('idatabaseStaticWindow', {
-					project_id: grid.project_id,
-					collection_id: record.get('_id'),
-					plugin: me.plugin,
-					plugin_id: me.plugin_id,
-					plugin_collection_id: record.get('plugin_collection_id')
-				});
-				win.show();
+				var selections = grid.getSelectionModel().getSelection();
+				if (selections.length == 1) {
+					var record = selections[0];
+					var win = Ext.widget('idatabaseStaticWindow', {
+						project_id: grid.project_id,
+						collection_id: record.get('_id')
+					});
+					win.show();
+				} else {
+					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+				}
+				return true;
 			}
 		};
+		
+		listeners[controllerName + 'Grid button[action=lock]'] = {
+				click: function(button) {
+					var grid = button.up('gridpanel');
+					var selections = grid.getSelectionModel().getSelection();
+					if (selections.length == 1) {
+						var record = selections[0];
+						var win = Ext.widget('idatabaseLockWindow', {
+							project_id: grid.project_id,
+							collection_id: record.get('_id')
+						});
+						win.show();
+					} else {
+						Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+					}
+					return true;
+				}
+			};
 		
 		listeners[controllerName + 'Grid button[action=dbimport]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length == 1) {
-					record = selections[0];
+					var record = selections[0];
 					var win = Ext.widget('idatabaseImportWindow', {
 						project_id: grid.project_id,
 						collection_id: record.get('_id'),

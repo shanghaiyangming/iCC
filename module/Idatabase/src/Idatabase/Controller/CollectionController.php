@@ -24,6 +24,8 @@ class CollectionController extends BaseActionController
 
     private $_project_id;
 
+    private $_lock;
+
     public function init()
     {
         $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
@@ -33,6 +35,7 @@ class CollectionController extends BaseActionController
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
+        $this->_lock = $this->model(IDATABASE_LOCK);
     }
 
     /**
@@ -77,7 +80,21 @@ class CollectionController extends BaseActionController
             );
         }
         
-        return $this->findAll(IDATABASE_COLLECTIONS, $query, $sort);
+        $cursor = $this->_collection->find($query);
+        $cursor->sort($sort);
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['locked'] = false;
+            $lockInfo = $this->_lock->count(array(
+                'project_id' => $row['project_id'],
+                'collection_id' => $row['collection_id'],
+                'active' => true
+            ));
+            if ($lockInfo > 0) {
+                $row['locked'] = true;
+            }
+        }
+        return $this->rst($datas, $cursor->count(), true);
     }
 
     /**
