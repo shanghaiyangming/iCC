@@ -1,11 +1,8 @@
 <?php
 return array(
     'Logs' => array(
-        // Logger name
         'LogMongodbService' => array(
-            // name of
             'name' => 'default',
-            // Handlers, it can be service manager alias(string) or config(array)
             'handlers' => array(
                 'default' => array(
                     'name' => 'Monolog\Handler\MongoDBHandler',

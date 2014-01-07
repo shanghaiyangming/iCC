@@ -6,8 +6,10 @@ use My\Common\Model\Mongo;
 
 class Common extends Mongo
 {
-    public function __construct() {
-        $config = 
+
+    public function __construct(Config $config)
+    {
         parent::__construct($config);
     }
+
 }

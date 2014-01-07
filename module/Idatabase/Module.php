@@ -47,5 +47,7 @@ class Module
         $serviceLocator = $app->getServiceManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        
+        
     }
 }
