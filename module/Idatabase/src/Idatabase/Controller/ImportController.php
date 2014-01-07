@@ -99,7 +99,7 @@ class ImportController extends BaseActionController
         $this->_data = $this->model($this->_collection_name);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
         
-        $this->_schema = $this->getSchema();
+        $this->getSchema();
     }
 
     /**
@@ -119,7 +119,7 @@ class ImportController extends BaseActionController
                 return $this->msg(false, '请上传Excel数据表格文件');
             }
             
-            if ($file['error'] == UPLOAD_ERR_OK) {
+            if ($file['error'] === UPLOAD_ERR_OK) {
                 $fileName = $file['name'];
                 $filePath = $file['tmp_name'];
                 
@@ -132,7 +132,7 @@ class ImportController extends BaseActionController
                         return $this->msg(false, '很抱歉，您上传的文件格式无法识别,格式要求：*.xlsx');
                 }
                 
-                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
                 $objReader->setReadDataOnly(true);
                 $objReader->setLoadSheetsOnly($importSheetName);
                 
@@ -151,26 +151,31 @@ class ImportController extends BaseActionController
                     return $this->msg(false, '请确认表格中未包含有效数据，请复核');
                 }
                 
+                
                 $firstRow = array_shift($sheetData);
-                $titleByName = true;
-                $titles = array_intersect($firstRow, array_keys($this->_schema));
-                if (count($titles) == 0) {
-                    $titleByName = false;
-                    $titles = array_intersect($firstRow, array_values($this->_schema));
+                if(count($firstRow)==0) {
+                    return $this->msg(false, '标题行数据为空');
                 }
+                
+                $titles = array();
+                foreach($firstRow as $col=>$value) {
+                    if(in_array($value,array_keys($this->_schema),true)) {
+                        $titles[$col] = $this->_schema[$value];
+                    }
+                    else if(in_array($value,array_values($this->_schema),true)) {
+                        $titles[$col] = $value;
+                    }
+                }
+                
                 if (count($titles) == 0) {
                     return $this->msg(false, '无匹配的标题或者标题字段，请检查导入数据的格式是否正确');
                 }
-                
-                array_walk($sheetData, function ($row, $rowNumber) use($titles, $titleByName)
+
+                array_walk($sheetData, function ($row, $rowNumber) use($titles)
                 {
                     $insertData = array();
                     foreach ($titles as $col => $colName) {
-                        if ($titleByName) {
-                            $insertData[$this->_fields[$colName]] = $row[$col];
-                        } else {
-                            $insertData[$colName] = $row[$col];
-                        }
+                        $insertData[$colName] = $row[$col];
                     }
                     $this->_data->insertByFindAndModify($insertData);
                     unset($insertData);

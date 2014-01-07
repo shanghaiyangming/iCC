@@ -881,6 +881,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.idatabase.Collection": [],
   "icc.controller.idatabase.Collection.Order": [],
   "icc.controller.idatabase.Data": [],
+  "icc.controller.idatabase.Import": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
   "icc.controller.idatabase.Mapping": [],
@@ -937,6 +938,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Data.Password": [],
   "icc.view.idatabase.Data.Search": [],
   "icc.view.idatabase.Data.TreeGrid": [],
+  "icc.view.idatabase.Import.Window": [],
   "icc.view.idatabase.Index.Add": [],
   "icc.view.idatabase.Index.Grid": [],
   "icc.view.idatabase.Index.Window": [],
@@ -2028,6 +2030,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.idatabase.Collection": [],
   "icc.controller.idatabase.Collection.Order": [],
   "icc.controller.idatabase.Data": [],
+  "icc.controller.idatabase.Import": [],
   "icc.controller.idatabase.Index": [],
   "icc.controller.idatabase.Key": [],
   "icc.controller.idatabase.Mapping": [],
@@ -2133,6 +2136,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Data.TreeGrid": [
     "widget.idatabaseDataTreeGrid"
+  ],
+  "icc.view.idatabase.Import.Window": [
+    "widget.idatabaseImportWindow"
   ],
   "icc.view.idatabase.Index.Add": [
     "widget.idatabaseIndexAdd"
