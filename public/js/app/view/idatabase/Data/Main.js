@@ -13,7 +13,9 @@ Ext.define('icc.view.idatabase.Data.Main', {
 		
 		if(this.isRowExpander) {
 			plugins.push(Ext.create('Ext.grid.plugin.RowExpander', {
-				rowBodyTpl: new Ext.XTemplate(this.rowBodyTpl)
+				rowBodyTpl: new Ext.XTemplate(this.rowBodyTpl),
+				expandOnEnter: false,
+				expandOnDblClick : false
 			}));
 		}
 		

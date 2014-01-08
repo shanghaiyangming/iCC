@@ -69,6 +69,8 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 				}, {
 					xtype : 'fieldset',
 					title : '行展开模式设定（选填）',
+					collapsed : true,
+					collapsible : true,
 					items : [{
 						xtype : 'radiogroup',
 						fieldLabel : '是否行展开显示',
