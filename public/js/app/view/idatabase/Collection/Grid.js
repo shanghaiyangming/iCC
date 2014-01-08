@@ -58,9 +58,6 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 						xtype: 'menu',
 						plain: true,
 						items: [{
-							xtype: 'searchBar',
-							store: store
-						}, {
 							xtype: 'button',
 							text: '新增',
 							iconCls: 'add',
@@ -137,6 +134,9 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							action: 'dbimport'
 						}]
 					}
+				},'-',{
+					xtype: 'searchBar',
+					store: store
 				}]
 			}]
 		});
