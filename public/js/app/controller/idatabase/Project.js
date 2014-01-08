@@ -16,7 +16,13 @@ Ext.define('icc.controller.idatabase.Project', {
 	}, {
 		ref: 'projectGrid',
 		selector: 'idatabaseProjectGrid'
+	}, {
+		ref: 'projectAccordion',
+		selector: 'idatabaseProjectAccordion'
 	}],
+	getExpandedAccordion: function() {
+		return this.getProjectAccordion().child("[collapsed=false]");
+	},
 	init: function() {
 		var me = this;
 		var controllerName = me.controllerName;
@@ -217,7 +223,7 @@ Ext.define('icc.controller.idatabase.Project', {
 						});
 
 					}
-					this.getProjectGrid().toggleCollapse();
+					this.getProjectAccordion().toggleCollapse();
 					this.getTabPanel().setActiveTab(id);
 				}
 				return true;
