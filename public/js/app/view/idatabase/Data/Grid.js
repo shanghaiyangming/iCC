@@ -12,7 +12,6 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	sortableColumns: false,
 	initComponent: function() {
 		Ext.apply(this, {
-			//plugins: installPlugin,
 			columns : this.columns,
 			dockedItems: [{
 				xtype: 'toolbar',

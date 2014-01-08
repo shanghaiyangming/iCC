@@ -25,7 +25,7 @@ Ext.define('icc.view.Main', {
     },
 
     items: [{
-    	xtype : 'idatabaseProjectGrid'
+    	xtype : 'idatabaseProjectAccordion'
     },{
         xtype : 'idatabaseProjectTabPanel'
     }]

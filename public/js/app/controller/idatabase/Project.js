@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Project', {
 	extend: 'Ext.app.Controller',
 	models: ['idatabase.Project', 'idatabase.Collection'],
 	stores: ['idatabase.Project', 'idatabase.Collection', 'idatabase.Collection.Type', 'idatabase.Plugin'],
-	views: ['idatabase.Project.Grid', 'idatabase.Project.Add', 'idatabase.Project.Edit', 'idatabase.Project.TabPanel', 'idatabase.Collection.Main', 'icc.common.SearchBar'],
+	views: ['idatabase.Project.Grid', 'idatabase.Project.Add', 'idatabase.Project.Edit', 'idatabase.Project.TabPanel', 'idatabase.Collection.Main', 'icc.common.SearchBar', 'idatabase.Project.Accordion'],
 	controllerName: 'idatabaseProject',
 	actions: {
 		add: '/idatabase/project/add',
@@ -215,7 +215,7 @@ Ext.define('icc.controller.idatabase.Project', {
 								Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');
 							}
 						});
-						
+
 					}
 					this.getProjectGrid().toggleCollapse();
 					this.getTabPanel().setActiveTab(id);

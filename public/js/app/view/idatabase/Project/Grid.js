@@ -24,6 +24,9 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 	initComponent : function() {
 		var me = this;
 		var store = Ext.data.StoreManager.lookup('idatabase.Project');
+		store['proxy']['extraParams']['root'] = this.isRoot;
+		store.load();
+		
 		Ext.apply(this, {
 			store : store,
 			bbar : {

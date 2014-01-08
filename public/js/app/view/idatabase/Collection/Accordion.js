@@ -6,10 +6,6 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	width : 400,
 	resizable : true,
 	collapsible : false,
-	defaults : {
-		bodyPadding : 0
-	},
-	pluginItems : [],
 	initComponent : function() {
 		var items = [ {
 			xtype : 'idatabaseCollectionGrid',

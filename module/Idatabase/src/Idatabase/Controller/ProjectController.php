@@ -35,10 +35,11 @@ class ProjectController extends BaseActionController
     public function indexAction()
     {
         $query = array();
+        $isSystem = filter_var($this->params()->fromQuery('isSystem', ''), FILTER_VALIDATE_BOOLEAN);;
         $search = $this->params()->fromQuery('query', null);
         if ($search != null) {
             $search = myMongoRegex($search);
-            $query = array(
+            $searchQuery = array(
                 '$or' => array(
                     array(
                         'name' => $search
@@ -51,7 +52,10 @@ class ProjectController extends BaseActionController
                     )
                 )
             );
+            $query['$and'][] = $searchQuery;
         }
+        
+        $query['$and'][] = array('isSystem'=>$isSystem);
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 
