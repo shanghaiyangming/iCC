@@ -11,23 +11,9 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	disableSelection: false,
 	sortableColumns: false,
 	initComponent: function() {
-		var installPlugin = [];
-
-		if (this.isRowExpander) {
-			installPlugin.push(this.pluginsRowExpander);
-		}
-		delete this.pluginsRowExpander;
-		installPlugin.push(Ext.create('Ext.grid.plugin.CellEditing', {
-			clicksToEdit: 2
-		}));
 		Ext.apply(this, {
 			//plugins: installPlugin,
-			plugins: [
-			Ext.create('Ext.grid.plugin.CellEditing', {
-				clicksToEdit: 2
-			}), Ext.create('Ext.grid.plugin.RowExpander', {
-				rowBodyTpl: new Ext.XTemplate('<p><b>aaa:</b> {aaa}</p>')
-			})],
+			columns : this.columns,
 			dockedItems: [{
 				xtype: 'toolbar',
 				dock: 'top',

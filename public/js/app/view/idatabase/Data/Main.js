@@ -7,6 +7,16 @@ Ext.define('icc.view.idatabase.Data.Main', {
 		type : 'border'
 	},
 	initComponent : function() {
+		var plugins = [Ext.create('Ext.grid.plugin.CellEditing', {
+			clicksToEdit: 2
+		})];
+		
+		if(this.isRowExpander) {
+			plugins.push(Ext.create('Ext.grid.plugin.RowExpander', {
+				rowBodyTpl: new Ext.XTemplate(this.rowBodyTpl)
+			}));
+		}
+		
 		if (this.isTree) {
 			Ext.apply(this, {
 				items : [ {
@@ -15,7 +25,8 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					collection_id : this.collection_id,
 					columns : this.gridColumns,
 					store : this.gridStore,
-					addOrEditFields : this.addOrEditFields
+					addOrEditFields : this.addOrEditFields,
+					plugins : plugins
 				} ]
 			});
 		} else {
@@ -27,8 +38,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					columns : this.gridColumns,
 					store : this.gridStore,
 					addOrEditFields : this.addOrEditFields,
-					isRowExpander : this.isRowExpander,
-					pluginsRowExpander : this.pluginsRowExpander
+					plugins : plugins
 				}, {
 					xtype : 'idatabaseDataSearch',
 					project_id : this.project_id,

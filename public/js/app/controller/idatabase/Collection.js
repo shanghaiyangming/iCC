@@ -431,21 +431,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 		var isTree = record.get('isTree');
 		var isRowExpander = record.get('isRowExpander');
 		var rowBodyTpl = record.get('rowExpanderTpl');
-		if (rowBodyTpl == undefined) {
-			rowBodyTpl = '';
-		}
-		var pluginsRowExpander = {};
-
-		if (isRowExpander && rowBodyTpl != '') {
-			var pluginsRowExpander = {
-				ptype: 'rowexpander',
-				expandOnDblClick: false,
-				expandOnEnter: false,
-				rowBodyTpl: new Ext.XTemplate(rowBodyTpl)
-			};
-		} else {
-			isRowExpander = false;
-		}
 
 		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
@@ -996,7 +981,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					searchFields: searchFields,
 					addOrEditFields: addOrEditFields,
 					isRowExpander: isRowExpander,
-					pluginsRowExpander: pluginsRowExpander
+					rowBodyTpl: rowBodyTpl
 				});
 
 				panel.on({
@@ -1017,18 +1002,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 											loop -= 1;
 											if (loop == 0) {
 												grid.getView().refresh();
-												if (isRowExpander) {
-													/*
-													var pluginsRowExpander = Ext.create('Ext.grid.plugin.RowExpander', {
-														expandOnDblClick: false,
-														expandOnEnter: false,
-														rowBodyTpl: new Ext.XTemplate(rowBodyTpl)
-													});
-													pluginsRowExpander.init(grid);
-													*/
-													console.info(grid);
-													console.info(grid.findPlugin(rowexpander));
-												}
 											}
 										});
 									});
