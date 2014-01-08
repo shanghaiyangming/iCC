@@ -76,7 +76,7 @@ Ext.onReady(function() {
 		Ext.Ajax.on('requestexception', function(ajax, response, options, eOpts) {
 			Ext.Msg.alert('提示信息', '网络连接异常，请检查您的网络状况是否正常');
 		});
-
+/*
 		Ext.override(Ext.grid.plugin.RowExpander, {
 			getRowBodyFeatureData: function(record, idx, rowValues) {
 				var me = this
@@ -89,6 +89,7 @@ Ext.onReady(function() {
 				rowValues.rowBodyCls = me.recordsExpanded[record.internalId] ? '' : me.rowBodyHiddenCls;
 			}
 		});
+*/
 	});
 
 });

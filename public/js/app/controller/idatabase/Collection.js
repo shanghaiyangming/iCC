@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 	extend: 'Ext.app.Controller',
 	models: ['idatabase.Collection', 'idatabase.Structure'],
 	stores: ['idatabase.Collection', 'idatabase.Collection.Type', 'idatabase.Structure'],
-	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.TypeCombobox','idatabase.Collection.Password'],
+	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.TypeCombobox', 'idatabase.Collection.Password'],
 	controllerName: 'idatabaseCollection',
 	plugin: false,
 	plugin_id: '',
@@ -210,38 +210,37 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var record = selected[0];
 				if (record) {
 					var panel = this.collectionTabPanel().getComponent(record.get('_id'));
-					if(record.get('locked') && panel==null) {
+					if (record.get('locked') && panel == null) {
 						var win = Ext.widget(controllerName + 'Password', {
-							project_id : grid.project_id,
-							collection_id : record.get('_id'),
-							width : 320,
+							project_id: grid.project_id,
+							collection_id: record.get('_id'),
+							width: 320,
 							height: 240,
-							selectedRecord : record
+							selectedRecord: record
 						});
 						win.show();
-					}
-					else {
+					} else {
 						this.buildDataPanel(grid.project_id, this.collectionTabPanel(), record);
 					}
 				}
 				return true;
 			}
 		};
-		
+
 		listeners['idatabaseCollectionPassword button[action=submit]'] = {
-			click: function(button) {	
+			click: function(button) {
 				var grid = this.getExpandedAccordion();
 				var form = button.up('form').getForm();
 				var win = button.up('window');
 				if (form.isValid()) {
 					form.submit({
-						waitTitle : '系统提示',
-						waitMsg : '系统处理中，请稍后……',
-						success : function(form, action) {
+						waitTitle: '系统提示',
+						waitMsg: '系统处理中，请稍后……',
+						success: function(form, action) {
 							win.close();
 							me.buildDataPanel(grid.project_id, me.collectionTabPanel(), grid.getSelectionModel().getSelection()[0]);
 						},
-						failure : function(form, action) {
+						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
 						}
 					});
@@ -305,8 +304,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
-				}
-				else {
+				} else {
 					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
 				}
 				return true;
@@ -378,7 +376,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				return true;
 			}
 		};
-		
+
 		listeners[controllerName + 'Grid button[action=lock]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
@@ -396,7 +394,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				return true;
 			}
 		};
-		
+
 		listeners[controllerName + 'Grid button[action=dbimport]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
@@ -406,18 +404,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseImportWindow', {
 						project_id: grid.project_id,
 						collection_id: record.get('_id'),
-						width : 480,
-						height : 320
+						width: 480,
+						height: 320
 					});
 					win.show();
-				}
-				else {
+				} else {
 					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
 				}
 				return true;
 			}
 		};
-		
+
 		me.control(listeners);
 	},
 	reBuildDataPanel: function(collection_id) {
@@ -470,7 +467,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 			var gridColumns = [];
 
 			var structureStore = Ext.create('icc.store.idatabase.Structure');
-			console.info(structureStore);
 			structureStore['proxy']['extraParams']['project_id'] = project_id;
 			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
 
@@ -1021,6 +1017,18 @@ Ext.define('icc.controller.idatabase.Collection', {
 											loop -= 1;
 											if (loop == 0) {
 												grid.getView().refresh();
+												if (isRowExpander) {
+													/*
+													var pluginsRowExpander = Ext.create('Ext.grid.plugin.RowExpander', {
+														expandOnDblClick: false,
+														expandOnEnter: false,
+														rowBodyTpl: new Ext.XTemplate(rowBodyTpl)
+													});
+													pluginsRowExpander.init(grid);
+													*/
+													console.info(grid);
+													console.info(grid.findPlugin(rowexpander));
+												}
 											}
 										});
 									});

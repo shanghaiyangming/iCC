@@ -14,12 +14,15 @@ class Mongo
     
     protected $cluster = 'default';
     
-    public function __construct($config)
+    public function __construct(Config $config,$collection,$database='ICCv1',$cluster='default')
     {
         if($collection==null) {
             throw new \Exception('请设定你要操作的集合');
         }
         
+        $this->collection = $collection;
+        $this->database = $database;
+        $this->cluster = $cluster;
         $this->model = new MongoCollection($config,$this->collection,$this->database,$this->cluster);
     }
 }

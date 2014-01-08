@@ -1,23 +1,23 @@
 Ext.define('icc.controller.idatabase.Project', {
-	extend : 'Ext.app.Controller',
-	models : [ 'idatabase.Project', 'idatabase.Collection' ],
-	stores : [ 'idatabase.Project', 'idatabase.Collection',
-			'idatabase.Collection.Type','idatabase.Plugin' ],
-	views : [ 'idatabase.Project.Grid', 'idatabase.Project.Add',
-			'idatabase.Project.Edit', 'idatabase.Project.TabPanel',
-			'idatabase.Collection.Main', 'icc.common.SearchBar' ],
-	controllerName : 'idatabaseProject',
-	actions : {
-		add : '/idatabase/project/add',
-		edit : '/idatabase/project/edit',
-		remove : '/idatabase/project/remove',
-		save : '/idatabase/project/save'
+	extend: 'Ext.app.Controller',
+	models: ['idatabase.Project', 'idatabase.Collection'],
+	stores: ['idatabase.Project', 'idatabase.Collection', 'idatabase.Collection.Type', 'idatabase.Plugin'],
+	views: ['idatabase.Project.Grid', 'idatabase.Project.Add', 'idatabase.Project.Edit', 'idatabase.Project.TabPanel', 'idatabase.Collection.Main', 'icc.common.SearchBar'],
+	controllerName: 'idatabaseProject',
+	actions: {
+		add: '/idatabase/project/add',
+		edit: '/idatabase/project/edit',
+		remove: '/idatabase/project/remove',
+		save: '/idatabase/project/save'
 	},
-	refs : [ {
-		ref : 'tabPanel',
-		selector : 'idatabaseProjectTabPanel'
-	} ],
-	init : function() {
+	refs: [{
+		ref: 'tabPanel',
+		selector: 'idatabaseProjectTabPanel'
+	}, {
+		ref: 'projectGrid',
+		selector: 'idatabaseProjectGrid'
+	}],
+	init: function() {
 		var me = this;
 		var controllerName = me.controllerName;
 
@@ -26,33 +26,33 @@ Ext.define('icc.controller.idatabase.Project', {
 			return false;
 		}
 
-		me.addRef([ {
-			ref : 'list',
-			selector : me.controllerName + 'Grid'
+		me.addRef([{
+			ref: 'list',
+			selector: me.controllerName + 'Grid'
 		}, {
-			ref : 'add',
-			selector : me.controllerName + 'Add'
+			ref: 'add',
+			selector: me.controllerName + 'Add'
 		}, {
-			ref : 'edit',
-			selector : me.controllerName + 'Edit'
-		} ]);
+			ref: 'edit',
+			selector: me.controllerName + 'Edit'
+		}]);
 
 		var listeners = {};
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
-			click : function(button) {
+			click: function(button) {
 				var store = me.getList().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
-						waitTitle : '系统提示',
-						waitMsg : '系统处理中，请稍后……',
-						success : function(form, action) {
+						waitTitle: '系统提示',
+						waitMsg: '系统处理中，请稍后……',
+						success: function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							form.reset();
 							store.load();
 						},
-						failure : function(form, action) {
+						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
 						}
 					});
@@ -63,18 +63,18 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
-			click : function(button) {
+			click: function(button) {
 				var store = me.getList().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
-						waitTitle : '系统提示',
-						waitMsg : '系统处理中，请稍后……',
-						success : function(form, action) {
+						waitTitle: '系统提示',
+						waitMsg: '系统处理中，请稍后……',
+						success: function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							store.load();
 						},
-						failure : function(form, action) {
+						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
 						}
 					});
@@ -83,14 +83,14 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid button[action=add]'] = {
-			click : function(button) {
+			click: function(button) {
 				var win = Ext.widget(controllerName + 'Add');
 				win.show();
 			}
 		};
 
 		listeners[controllerName + 'Grid button[action=edit]'] = {
-			click : function(button) {
+			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
@@ -105,25 +105,25 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid button[action=save]'] = {
-			click : function(button) {
+			click: function(button) {
 				var records = me.getList().store.getUpdatedRecords();
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
 				}
 				var updateList = [];
-				for ( var i = 0; i < recordsNumber; i++) {
+				for (var i = 0; i < recordsNumber; i++) {
 					record = records[i];
 					updateList.push(record.data);
 				}
 
 				Ext.Ajax.request({
-					url : me.actions.save,
-					params : {
-						updateInfos : Ext.encode(updateList)
+					url: me.actions.save,
+					params: {
+						updateInfos: Ext.encode(updateList)
 					},
-					scope : me,
-					success : function(response) {
+					scope: me,
+					success: function(response) {
 						var text = response.responseText;
 						var json = Ext.decode(text);
 						Ext.Msg.alert('提示信息', json.msg);
@@ -137,26 +137,26 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid button[action=remove]'] = {
-			click : function(button) {
+			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					Ext.Msg.confirm('提示信息', '请确认是否要删除您选择的信息?', function(btn) {
 						if (btn == 'yes') {
 							var _id = [];
-							for ( var i = 0; i < selections.length; i++) {
+							for (var i = 0; i < selections.length; i++) {
 								selection = selections[i];
 								grid.store.remove(selection);
 								_id.push(selection.get('_id'));
 							}
 
 							Ext.Ajax.request({
-								url : me.actions.remove,
-								params : {
-									_id : Ext.encode(_id)
+								url: me.actions.remove,
+								params: {
+									_id: Ext.encode(_id)
 								},
-								scope : me,
-								success : function(response) {
+								scope: me,
+								success: function(response) {
 									var text = response.responseText;
 									var json = Ext.decode(text);
 									Ext.Msg.alert('提示信息', json.msg);
@@ -174,7 +174,7 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid'] = {
-			selectionchange : function(selectionModel, selected, eOpts) {
+			selectionchange: function(selectionModel, selected, eOpts) {
 
 				if (selected.length > 1) {
 					Ext.Msg.alert('提示信息', '请勿选择多项');
@@ -189,43 +189,43 @@ Ext.define('icc.controller.idatabase.Project', {
 					if (panel == null) {
 						//读取插件列表，构建插件体系
 						var pluginStore = Ext.create('icc.store.idatabase.Plugin');
-						console.info(pluginStore);
 						pluginStore['proxy']['extraParams']['project_id'] = id;
-						pluginStore.load(function(records, operation, success){
-							if(success) {
+						pluginStore.load(function(records, operation, success) {
+							if (success) {
 								var pluginItems = [];
-								Ext.Array.forEach(records,function(item,index) {
+								Ext.Array.forEach(records, function(item, index) {
 									pluginItems.push({
-										xtype : 'idatabaseCollectionGrid',
-										title : item.get('name'),
-										project_id : id,
-										plugin : true,
-										plugin_id : item.get('_id')
+										xtype: 'idatabaseCollectionGrid',
+										title: item.get('name'),
+										project_id: id,
+										plugin: true,
+										plugin_id: item.get('_id')
 									});
 								});
 								panel = Ext.widget('idatabaseCollectionMain', {
-									id : id,
-									title : name,
-									project_id : id,
-									pluginItems : pluginItems
+									id: id,
+									title: name,
+									project_id: id,
+									pluginItems: pluginItems
 								});
 								me.getTabPanel().add(panel);
 								me.getTabPanel().setActiveTab(id);
-							}
-							else {
+							} else {
 								selectionModel.deselectAll();
-								Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');								
+								Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');
 							}
 						});
-						return true;
+						
 					}
+					this.getProjectGrid().toggleCollapse();
 					this.getTabPanel().setActiveTab(id);
 				}
+				return true;
 			}
 		};
 
 		listeners[controllerName + 'Grid button[action=plugin]'] = {
-			click : function(button) {
+			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 
@@ -239,7 +239,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabasePluginWindow', {
-						project_id : id
+						project_id: id
 					});
 					win.show();
 				}
@@ -247,7 +247,7 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid button[action=user]'] = {
-			click : function(button) {
+			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 
@@ -261,7 +261,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabaseUserWindow', {
-						project_id : id
+						project_id: id
 					});
 					win.show();
 				}
@@ -270,7 +270,7 @@ Ext.define('icc.controller.idatabase.Project', {
 		};
 
 		listeners[controllerName + 'Grid button[action=key]'] = {
-			click : function(button) {
+			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 
@@ -284,7 +284,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabaseKeyWindow', {
-						project_id : id
+						project_id: id
 					});
 					win.show();
 				}

@@ -98,6 +98,10 @@ class CollectionController extends BaseActionController
         }
         return $this->rst($datas, $cursor->count(), true);
     }
+    
+    private function lock() {
+        
+    }
 
     /**
      * 添加新的集合
