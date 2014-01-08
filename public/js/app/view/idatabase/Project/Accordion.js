@@ -10,7 +10,6 @@ Ext.define('icc.view.idatabase.Project.Accordion', {
     initComponent: function() {
         var items = [{
             xtype: 'idatabaseProjectGrid',
-            project_id: this.project_id,
             title: '项目管理',
             isSystem : false
         }];
@@ -18,12 +17,10 @@ Ext.define('icc.view.idatabase.Project.Accordion', {
         if (typeof(isSystem) !== 'undefined') {
             items.push({
                 xtype: 'idatabaseProjectGrid',
-                project_id: this.project_id,
                 title: '系统管理',
                 isSystem: true
             });
         }
-
 
         items = Ext.Array.merge(items, this.pluginItems);
         Ext.apply(this, {

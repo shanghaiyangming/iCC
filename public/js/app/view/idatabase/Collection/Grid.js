@@ -32,7 +32,7 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 	}],
 	initComponent: function() {
 		var me = this;
-
+		
 		var store = Ext.create('icc.store.idatabase.Collection');
 		store.proxy.extraParams = {
 			'project_id': me.project_id,

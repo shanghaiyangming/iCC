@@ -47,7 +47,7 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click: function(button) {
-				var store = me.getList().store;
+				var store = me.getExpandedAccordion().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -70,7 +70,7 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click: function(button) {
-				var store = me.getList().store;
+				var store = me.getExpandedAccordion().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -112,7 +112,7 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Grid button[action=save]'] = {
 			click: function(button) {
-				var records = me.getList().store.getUpdatedRecords();
+				var records = me.getExpandedAccordion().store.getUpdatedRecords();
 				var recordsNumber = records.length;
 				if (recordsNumber == 0) {
 					Ext.Msg.alert('提示信息', '很遗憾，未发现任何被修改的信息需要保存');
@@ -134,7 +134,7 @@ Ext.define('icc.controller.idatabase.Project', {
 						var json = Ext.decode(text);
 						Ext.Msg.alert('提示信息', json.msg);
 						if (json.success) {
-							me.getList().store.load();
+							me.getExpandedAccordion().store.load();
 						}
 					}
 				});
