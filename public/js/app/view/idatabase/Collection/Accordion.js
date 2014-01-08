@@ -3,7 +3,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	xtype : 'idatabaseCollectionAccordion',
 	region : 'west',
 	layout : 'accordion',
-	width : 300,
+	width : 400,
 	resizable : true,
 	collapsible : false,
 	defaults : {
