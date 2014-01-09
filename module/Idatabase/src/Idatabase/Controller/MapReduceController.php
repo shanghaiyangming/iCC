@@ -1,6 +1,6 @@
 <?php
 /**
- * iDatabase项目内数据集合管理
+ * iDatabase内数据MapReduce操作
  *
  * @author young 
  * @version 2013.11.19
@@ -15,14 +15,14 @@ use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
 
-class CollectionController extends BaseActionController
+class MapReduceController extends BaseActionController
 {
 
-    private $_collection;
-
-    private $_plugin_collection;
+    private $_mr;
 
     private $_project_id;
+
+    private $_collection_id;
 
     private $_lock;
 
@@ -56,29 +56,27 @@ class CollectionController extends BaseActionController
             '_id' => - 1
         );
         
-        $query = array();
-        $query['$and'][] = array(
+        $query = array(
             'plugin_id' => $plugin_id,
             'project_id' => $this->_project_id
         );
         
         if ($search != '') {
             $search = myMongoRegex($search);
-            $query['$and'][] = array(
-                '$or' => array(
+            $query = array(
+                '$and' => array(
+                    $query,
                     array(
-                        'name' => $search
-                    ),
-                    array(
-                        'alias' => $search
+                        '$or' => array(
+                            array(
+                                'name' => $search
+                            ),
+                            array(
+                                'alias' => $search
+                            )
+                        )
                     )
                 )
-            );
-        }
-        
-        if (isset($_SESSION['account']['isProfessional']) && $_SESSION['account']['isProfessional']===false) {
-            $query['$and'][] = array(
-                'isProfessional' => false
             );
         }
         
@@ -115,7 +113,7 @@ class CollectionController extends BaseActionController
             $project_id = $this->_project_id;
             $name = $this->params()->fromPost('name', null);
             $alias = $this->params()->fromPost('alias', null);
-            $isProfessional = filter_var($this->params()->fromPost('isProfessional', false), FILTER_VALIDATE_BOOLEAN);
+            $type = $this->params()->fromPost('type', null);
             $isTree = filter_var($this->params()->fromPost('isTree', false), FILTER_VALIDATE_BOOLEAN);
             $desc = $this->params()->fromPost('desc', null);
             $orderBy = $this->params()->fromPost('orderBy', 0);
@@ -136,6 +134,13 @@ class CollectionController extends BaseActionController
                 return $this->msg(false, '请填写集合别名，只接受英文与字母');
             }
             
+            if (! in_array($type, array(
+                'common',
+                'professional'
+            ))) {
+                return $this->msg(false, '无效的结合类型');
+            }
+            
             if ($desc == null) {
                 return $this->msg(false, '请填写集合描述');
             }
@@ -154,7 +159,7 @@ class CollectionController extends BaseActionController
             );
             $datas['name'] = $name;
             $datas['alias'] = $alias;
-            $datas['isProfessional'] = $isProfessional;
+            $datas['type'] = $type;
             $datas['isTree'] = $isTree;
             $datas['desc'] = $desc;
             $datas['orderBy'] = $orderBy;
@@ -198,7 +203,7 @@ class CollectionController extends BaseActionController
         $project_id = $this->_project_id;
         $name = $this->params()->fromPost('name', null);
         $alias = $this->params()->fromPost('alias', null);
-        $isProfessional = filter_var($this->params()->fromPost('isProfessional', false), FILTER_VALIDATE_BOOLEAN);
+        $type = $this->params()->fromPost('type', null);
         $isTree = filter_var($this->params()->fromPost('isTree', false), FILTER_VALIDATE_BOOLEAN);
         $desc = $this->params()->fromPost('desc', null);
         $orderBy = $this->params()->fromPost('orderBy', 0);
@@ -221,6 +226,13 @@ class CollectionController extends BaseActionController
         
         if ($alias == null || ! preg_match("/[a-z0-9]/i", $alias)) {
             return $this->msg(false, '请填写集合别名，只接受英文与字母');
+        }
+        
+        if (! in_array($type, array(
+            'common',
+            'professional'
+        ))) {
+            return $this->msg(false, '无效的结合类型');
         }
         
         if ($desc == null) {
@@ -249,7 +261,7 @@ class CollectionController extends BaseActionController
         );
         $datas['name'] = $name;
         $datas['alias'] = $alias;
-        $datas['isProfessional'] = $isProfessional;
+        $datas['type'] = $type;
         $datas['isTree'] = $isTree;
         $datas['desc'] = $desc;
         $datas['orderBy'] = $orderBy;
@@ -301,99 +313,5 @@ class CollectionController extends BaseActionController
     public function dropAction()
     {}
 
-    /**
-     * 检测一个集合是否存在，根据名称和编号
-     *
-     * @param string $info            
-     * @return boolean
-     */
-    private function checkCollecionNameExist($info)
-    {
-        // 检查当前项目集合中是否包含这些命名
-        $info = $this->_collection->findOne(array(
-            'name' => $info,
-            'project_id' => $this->_project_id
-        ));
-        if ($info == null) {
-            return false;
-        }
-        return true;
-    }
 
-    private function checkCollecionAliasExist($info)
-    {
-        // 检查当前项目集合中是否包含这些命名
-        $info = $this->_collection->findOne(array(
-            'alias' => $info,
-            'project_id' => $this->_project_id
-        ));
-        if ($info == null) {
-            return false;
-        }
-        return true;
-    }
-
-    private function checkPluginNameExist($info)
-    {
-        // 检查插件集合中是否包含这些名称信息
-        $info = $this->_collection->findOne(array(
-            'name' => $info,
-            'plugin' => true
-        ));
-        if ($info == null) {
-            return false;
-        }
-        return true;
-    }
-
-    private function checkPluginAliasExist($info)
-    {
-        // 检查插件集合中是否包含这些名称信息
-        $info = $this->_collection->findOne(array(
-            'alias' => $info,
-            'plugin' => true
-        ));
-        if ($info == null) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 添加集合到插件集合管理
-     *
-     * @param array $datas            
-     * @return string
-     */
-    private function addPluginCollection($datas)
-    {
-        if (empty($datas['plugin_id']))
-            return '';
-        
-        unset($datas['project_id']);
-        $this->_plugin_collection->insertRef($datas);
-        if ($datas['_id'] instanceof \MongoId)
-            return $datas['_id']->__toString();
-        
-        return '';
-    }
-
-    /**
-     * 添加集合到插件集合管理
-     *
-     * @param array $datas            
-     * @return string
-     */
-    private function editPluginCollection($datas)
-    {
-        $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
-        if (empty($plugin_collection_id)) {
-            $this->_plugin_collection->update(array(
-                '_id' => myMongoId($plugin_collection_id)
-            ), array(
-                '$set' => $datas
-            ));
-        }
-        return $plugin_collection_id;
-    }
 }

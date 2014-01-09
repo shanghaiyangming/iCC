@@ -25,7 +25,6 @@ Ext.define('icc.Application', {
 
     stores: [
         // TODO: add stores here
-        'common.Boolean',
-        'idatabase.Project'
+        'common.Boolean'
     ]
 });

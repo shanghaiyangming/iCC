@@ -39,7 +39,20 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 					fieldLabel : '集合名称(中文)',
 					allowBlank : false
 				}, {
-					xtype : 'idatabaseCollectionTypeCombobox'
+					xtype : 'radiogroup',
+					fieldLabel : '是否专家集合',
+					defaultType : 'radiofield',
+					layout : 'hbox',
+					items : [ {
+						boxLabel : '是',
+						name : 'isProfessional',
+						inputValue : true
+					}, {
+						boxLabel : '否',
+						name : 'isProfessional',
+						inputValue : false,
+						checked : true
+					} ]
 				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否树状集合',

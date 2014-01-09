@@ -90,7 +90,10 @@ Ext.define('icc.controller.idatabase.Project', {
 
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click: function(button) {
-				var win = Ext.widget(controllerName + 'Add');
+				var grid = button.up('gridpanel');
+				var win = Ext.widget(controllerName + 'Add',{
+					isSystem : grid.isSystem
+				});
 				win.show();
 			}
 		};
