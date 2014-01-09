@@ -58,7 +58,7 @@ class IndexController extends Action
                 'username' => 'root',
                 'password' => sha1('yangming1983'),
                 'role' => 'root',
-                'isProfessional' => 1,/*[common/professional]*/
+                'isProfessional' => true,
                 'expire' => new \MongoDate(strtotime('2020-12-31 23:59:59')),
                 'active' => true
             ));
@@ -66,11 +66,10 @@ class IndexController extends Action
                 'username' => 'admin',
                 'password' => sha1('yangming1983'),
                 'role' => 'admin',
-                'isProfessional' => 1,/*[common/professional]*/
+                'isProfessional' => true,
                 'expire' => new \MongoDate(strtotime('2020-12-31 23:59:59')),
                 'active' => true
             ));
-            
         }
         return $this->redirect()->toRoute('home');
     }

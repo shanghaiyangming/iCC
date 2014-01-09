@@ -76,7 +76,7 @@ class CollectionController extends BaseActionController
             );
         }
         
-        if (isset($_SESSION['account']['isProfessional']) && $_SESSION['account']['isProfessional']===false) {
+        if (isset($_SESSION['account']['isProfessional']) && $_SESSION['account']['isProfessional'] === false) {
             $query['$and'][] = array(
                 'isProfessional' => false
             );
