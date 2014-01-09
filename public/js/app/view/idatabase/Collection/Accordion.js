@@ -4,6 +4,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	region : 'west',
 	layout : 'accordion',
 	width : 400,
+	title : '数据与插件',
 	resizable : false,
 	collapsible : true,
 	pluginItems : [],

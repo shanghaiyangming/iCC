@@ -135,8 +135,10 @@ return array(
                 ),
                 'dbs' => array(
                     'ICCv1',
-                    'admin' // 用户连接系统
-                                )
+                    'admin',
+                    'mapreduce',
+                    'logs'
+                )
             ),
             'analysis' => array(
                 'servers' => array(
@@ -145,7 +147,9 @@ return array(
                 ),
                 'dbs' => array(
                     'ICCv1',
-                    'admin'
+                    'admin',
+                    'mapreduce',
+                    'logs'
                 )
             )
         )

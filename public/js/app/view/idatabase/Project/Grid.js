@@ -21,15 +21,15 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 		format: 'Y-m-d'
 	}],
 	initComponent: function() {
-		console.info(this);
 		var me = this;
-		var isSystem = me.isSystem;
 		var store = Ext.create('icc.store.idatabase.Project');
-		store['proxy']['extraParams']['isSystem'] = me.isSystem;
+		store.proxy.extraParams = {
+			isSystem: me.isSystem
+		};
 		store.load();
-		
+
 		Ext.apply(me, {
-			isSystem : me.isSystem,
+			isSystem: me.isSystem,
 			store: store,
 			bbar: {
 				xtype: 'paging',

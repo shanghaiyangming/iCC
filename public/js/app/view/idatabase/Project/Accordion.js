@@ -21,7 +21,6 @@ Ext.define('icc.view.idatabase.Project.Accordion', {
                 isSystem: true
             });
         }
-
         Ext.apply(this, {
             items: items
         });
