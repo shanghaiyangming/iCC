@@ -26,7 +26,10 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 		store['proxy']['extraParams']['isSystem'] = me.isSystem;
 		store.load();
 
+		console.info(store);
+		
 		Ext.apply(me, {
+			isSystem : me.isSystem,
 			store: store,
 			bbar: {
 				xtype: 'paging',

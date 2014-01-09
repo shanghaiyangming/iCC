@@ -4,8 +4,9 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	region : 'west',
 	layout : 'accordion',
 	width : 400,
-	resizable : true,
-	collapsible : false,
+	resizable : false,
+	collapsible : true,
+	pluginItems : [],
 	initComponent : function() {
 		var items = [ {
 			xtype : 'idatabaseCollectionGrid',

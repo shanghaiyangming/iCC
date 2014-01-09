@@ -22,7 +22,6 @@ Ext.define('icc.view.idatabase.Project.Accordion', {
             });
         }
 
-        items = Ext.Array.merge(items, this.pluginItems);
         Ext.apply(this, {
             items: items
         });
