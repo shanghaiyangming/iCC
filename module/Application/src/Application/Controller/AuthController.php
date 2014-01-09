@@ -29,9 +29,9 @@ class AuthController extends Action
      */
     public function indexAction()
     {
-        fb($this->params(),'LOG');
+        fb($this->params(), 'LOG');
         $failure = $this->params()->fromRoute('failure', false);
-        fb($failure,'LOG');
+        fb($failure, 'LOG');
         $view = new ViewModel(array(
             'failure' => $failure
         ));
@@ -87,9 +87,7 @@ class AuthController extends Action
      * 保持登录状态
      */
     public function keepAction()
-    {
-    	
-    }
+    {}
 
     /**
      * 生成登录页面的图形验证码

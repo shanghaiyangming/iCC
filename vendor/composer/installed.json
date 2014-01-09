@@ -1007,53 +1007,6 @@
         ]
     },
     {
-        "name": "react/stream",
-        "version": "v0.3.3",
-        "version_normalized": "0.3.3.0",
-        "target-dir": "React/Stream",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/stream.git",
-            "reference": "b72900ab00513b591fb101faecad38f9c8eab8da"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/stream/zipball/b72900ab00513b591fb101faecad38f9c8eab8da",
-            "reference": "b72900ab00513b591fb101faecad38f9c8eab8da",
-            "shasum": ""
-        },
-        "require": {
-            "evenement/evenement": "1.0.*",
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "react/event-loop": "0.3.*",
-            "react/promise": "~1.0"
-        },
-        "time": "2013-07-09 00:44:12",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Stream": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Basic readable and writable stream interfaces that support piping.",
-        "keywords": [
-            "pipe",
-            "stream"
-        ]
-    },
-    {
         "name": "guzzle/parser",
         "version": "v3.7.4",
         "version_normalized": "3.7.4.0",
@@ -1097,95 +1050,6 @@
             "http",
             "message",
             "url"
-        ]
-    },
-    {
-        "name": "react/event-loop",
-        "version": "v0.3.3",
-        "version_normalized": "0.3.3.0",
-        "target-dir": "React/EventLoop",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/event-loop.git",
-            "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/event-loop/zipball/49208fa3a15c9eae4adf8351ee9caa4064fe550d",
-            "reference": "49208fa3a15c9eae4adf8351ee9caa4064fe550d",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "ext-libev": "*",
-            "ext-libevent": ">=0.0.5"
-        },
-        "time": "2013-07-08 22:38:22",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\EventLoop": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Event loop abstraction layer that libraries can use for evented I/O.",
-        "keywords": [
-            "event-loop"
-        ]
-    },
-    {
-        "name": "react/socket",
-        "version": "v0.3.2",
-        "version_normalized": "0.3.2.0",
-        "target-dir": "React/Socket",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/socket.git",
-            "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/socket/zipball/9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
-            "reference": "9cc32838d25a934ce950d2662cce2ff1b9e9f8aa",
-            "shasum": ""
-        },
-        "require": {
-            "evenement/evenement": "1.0.*",
-            "php": ">=5.3.3",
-            "react/event-loop": "0.3.*",
-            "react/stream": "0.3.*"
-        },
-        "time": "2013-04-26 20:23:10",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Socket": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Library for building an evented socket server.",
-        "keywords": [
-            "Socket"
         ]
     },
     {
@@ -1400,54 +1264,6 @@
         ]
     },
     {
-        "name": "react/promise",
-        "version": "v2.0.0",
-        "version_normalized": "2.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/promise.git",
-            "reference": "58129a9cb9da88f2055309a805e2696b06928bb0"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/promise/zipball/58129a9cb9da88f2055309a805e2696b06928bb0",
-            "reference": "58129a9cb9da88f2055309a805e2696b06928bb0",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "time": "2013-12-10 15:40:36",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Promise": "src/"
-            },
-            "files": [
-                "src/React/Promise/functions.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jan Sorgalla",
-                "email": "jsorgalla@googlemail.com",
-                "homepage": "http://sorgalla.com",
-                "role": "maintainer"
-            }
-        ],
-        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
-    },
-    {
         "name": "gregwar/captcha",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -1496,49 +1312,6 @@
             "bot",
             "captcha",
             "spam"
-        ]
-    },
-    {
-        "name": "react/async",
-        "version": "v1.0.0",
-        "version_normalized": "1.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/reactphp/async.git",
-            "reference": "568a29207cfc00b3270c9d0158b0ec0a65a2194f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/reactphp/async/zipball/568a29207cfc00b3270c9d0158b0ec0a65a2194f",
-            "reference": "568a29207cfc00b3270c9d0158b0ec0a65a2194f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2"
-        },
-        "require-dev": {
-            "react/event-loop": "0.2.*"
-        },
-        "time": "2013-02-06 23:27:19",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "React\\Async": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Async utilities for React.",
-        "keywords": [
-            "async"
         ]
     },
     {
@@ -2098,6 +1871,109 @@
             "notification",
             "push",
             "zf2"
+        ]
+    },
+    {
+        "name": "react/promise",
+        "version": "v1.0.4",
+        "version_normalized": "1.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/promise.git",
+            "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/promise/zipball/d6de8cae1dbb4878d909c41cb89aff764504472c",
+            "reference": "d6de8cae1dbb4878d909c41cb89aff764504472c",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "time": "2013-04-03 14:05:55",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "React\\Promise": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jan Sorgalla",
+                "email": "jsorgalla@googlemail.com",
+                "homepage": "http://sorgalla.com",
+                "role": "maintainer"
+            }
+        ],
+        "description": "A lightweight implementation of CommonJS Promises/A for PHP"
+    },
+    {
+        "name": "react/react",
+        "version": "v0.3.3",
+        "version_normalized": "0.3.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/reactphp/react.git",
+            "reference": "210c11a6041cfa2ce1701a4870b69475d9081265"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/reactphp/react/zipball/210c11a6041cfa2ce1701a4870b69475d9081265",
+            "reference": "210c11a6041cfa2ce1701a4870b69475d9081265",
+            "shasum": ""
+        },
+        "require": {
+            "evenement/evenement": "1.0.*",
+            "guzzle/parser": "~3.0",
+            "php": ">=5.3.3",
+            "react/promise": "~1.0"
+        },
+        "replace": {
+            "react/cache": "self.version",
+            "react/dns": "self.version",
+            "react/event-loop": "self.version",
+            "react/http": "self.version",
+            "react/http-client": "self.version",
+            "react/socket": "self.version",
+            "react/socket-client": "self.version",
+            "react/stream": "self.version"
+        },
+        "suggest": {
+            "ext-libev": "*",
+            "ext-libevent": "*"
+        },
+        "time": "2013-07-09 01:55:25",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "React": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Nuclear Reactor written in PHP.",
+        "keywords": [
+            "event-loop",
+            "reactor"
         ]
     }
 ]
