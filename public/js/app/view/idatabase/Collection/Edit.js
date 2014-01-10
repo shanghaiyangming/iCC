@@ -43,36 +43,6 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 					fieldLabel : '集合名称(中文)',
 					allowBlank : false
 				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否专家集合',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'isProfessional',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'isProfessional',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否树状集合',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'isTree',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'isTree',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
 					xtype : 'textareafield',
 					name : 'desc',
 					fieldLabel : '功能描述',
@@ -84,30 +54,66 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 					allowBlank : false
 				}, {
 					xtype : 'fieldset',
-					title : '行展开模式设定（选填）',
+					title : '高级设定',
 					collapsed : true,
 					collapsible : true,
-					items : [{
+					items : [ {
 						xtype : 'radiogroup',
-						fieldLabel : '是否行展开显示',
+						fieldLabel : '是否专家集合',
 						defaultType : 'radiofield',
 						layout : 'hbox',
 						items : [ {
 							boxLabel : '是',
-							name : 'isRowExpander',
+							name : 'isProfessional',
 							inputValue : true
 						}, {
 							boxLabel : '否',
-							name : 'isRowExpander',
+							name : 'isProfessional',
 							inputValue : false,
 							checked : true
 						} ]
 					}, {
-						xtype : 'textareafield',
-						name : 'rowExpanderTpl',
-						fieldLabel : '行展开模板',
-						allowBlank : true
-					}]
+						xtype : 'radiogroup',
+						fieldLabel : '是否树状集合',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'isTree',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'isTree',
+							inputValue : false,
+							checked : true
+						} ]
+					}, {
+						xtype : 'fieldset',
+						title : '行展开模式设定（选填）',
+						collapsed : true,
+						collapsible : true,
+						items : [ {
+							xtype : 'radiogroup',
+							fieldLabel : '是否行展开显示',
+							defaultType : 'radiofield',
+							layout : 'hbox',
+							items : [ {
+								boxLabel : '是',
+								name : 'isRowExpander',
+								inputValue : true
+							}, {
+								boxLabel : '否',
+								name : 'isRowExpander',
+								inputValue : false,
+								checked : true
+							} ]
+						}, {
+							xtype : 'textareafield',
+							name : 'rowExpanderTpl',
+							fieldLabel : '行展开模板',
+							allowBlank : true
+						} ]
+					} ]
 				} ]
 			} ]
 		});

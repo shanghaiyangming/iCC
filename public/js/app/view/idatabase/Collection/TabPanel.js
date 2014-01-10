@@ -7,5 +7,8 @@ Ext.define('icc.view.idatabase.Collection.TabPanel',{
 	minTabwidth : 100,
 	tabwidth : 100,
 	enableTabScroll : true,
-	items:[]
+	items:[{
+		xtype : 'idatabaseCollectionDashBoard',
+		title : '项目总览'
+	}]
 });

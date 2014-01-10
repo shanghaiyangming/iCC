@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 	extend: 'Ext.app.Controller',
 	models: ['idatabase.Collection', 'idatabase.Structure'],
 	stores: ['idatabase.Collection', 'idatabase.Collection.Type', 'idatabase.Structure'],
-	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.Password'],
+	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.Password','idatabase.Collection.Dashboard'],
 	controllerName: 'idatabaseCollection',
 	plugin: false,
 	plugin_id: '',
