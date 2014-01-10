@@ -25,7 +25,6 @@ use Zend\EventManager\GlobalEventManager;
 
 class MongoCollection extends \MongoCollection
 {
-
     private $_collection = '';
 
     private $_database = DEFAULT_DATABASE;
@@ -93,6 +92,10 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('请安装FirePHP');
         }
         
+        if(! class_exists("MongoClient")) {
+            throw new \Exception('请安装MongoClient');
+        }
+        
         if ($collection === null) {
             throw new \Exception('$collection集合为空');
         }
@@ -127,10 +130,21 @@ class MongoCollection extends \MongoCollection
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
         if (APPLICATION_ENV === 'production') {
             $this->shardingCollection();
+            $this->setReadPreference();
         }
         parent::__construct($this->_db, $this->_collection);
+        
+        /**
+         * 设定读取优先级
+         * MongoClient::RP_PRIMARY  只读取主db
+         * MongoClient::RP_PRIMARY_PREFERRED 读取主db优先
+         * MongoClient::RP_SECONDARY 只读从db优先
+         * MongoClient::RP_SECONDARY_PREFERRED 读取从db优先
+         *
+         */
+        $this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
     }
-
+    
     /**
      * 检测是简单查询还是复杂查询，涉及复杂查询采用$and方式进行处理，简单模式采用连接方式进行处理
      *
@@ -168,7 +182,7 @@ class MongoCollection extends \MongoCollection
     {
         $defaultCollectionOptions = array(
             'capped' => false, // 是否开启固定集合
-            'size' => pow(1024, 3), // 如果简单开启capped=>true,单个集合的最大尺寸为1G
+            'size' => pow(1024, 3), // 如果简单开启capped=>true,单个集合的最大尺寸为2G
             'max' => pow(10, 8), // 如果简单开启capped=>true,单个集合的最大条数为1亿条数据
             'autoIndexId' => true
         );
@@ -585,12 +599,20 @@ class MongoCollection extends \MongoCollection
 
         return parent::update($criteria, $object, $options);
     }
+    
+    /**
+     * 执行DB的command操作
+     * @param array $command
+     * @return array
+     */
+    public function command($command) {
+        return $this->db->command($command);
+    }
 
     /**
      * 云存储文件
      *
-     * @param array $file
-     *            $_FILES['name']
+     * @param array $file $_FILES['name']
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
