@@ -130,7 +130,6 @@ class MongoCollection extends \MongoCollection
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
         if (APPLICATION_ENV === 'production') {
             $this->shardingCollection();
-            $this->setReadPreference();
         }
         parent::__construct($this->_db, $this->_collection);
         
