@@ -533,6 +533,11 @@ class MongoCollection extends \MongoCollection
         // 方案一 真实删除
         // return parent::remove($criteria, $options);
         // 方案二 伪删除
+        
+        if(!$options['justOne']) {
+            $options['multiple'] = true;
+        }
+        
         $criteria = $this->appendQuery($criteria);
         return parent::update($criteria, array(
             '$set' => array(
