@@ -100,7 +100,7 @@ class IndexController extends Action
         $scaner->addDirectory(ROOT_PATH . '/module/Application/src/Application/Controller/');
         $scaner->addDirectory(ROOT_PATH . '/module/Idatabase/src/Idatabase/Controller/');
         foreach ($scaner->getClasses(true) as $classScanner) {
-            $controllerName = $classScanner->getName();
+            $className = $classScanner->getName();
             foreach ($classScanner->getMethods(true) as $method) {
                 if ($this->endsWith($method->getName(), 'Action')) {
                     $actionName = $method->getName();
@@ -109,11 +109,13 @@ class IndexController extends Action
                     $docAtName = $this->getDocNameValue($docBlockScanner->getTags());
                     
                     // 写入数据库
+                    $classInfo = $this->parseClassName($className);
                     $this->_resource->insert(array(
                         'name' => $docAtName,
-                        'alias' => $controllerName . '/' . $actionName,
-                        'controller' => $controllerName,
-                        'action' => $actionName
+                        'alias' => $className . '\\' . $actionName,
+                        'namespace' => $classInfo['namespace'],
+                        'controller' => $classInfo['controller'],
+                        'action' => $this->parseMethodName($actionName)
                     ));
                 }
             }
@@ -152,5 +154,24 @@ class IndexController extends Action
             }
         }
         return '';
+    }
+
+    private function parseClassName($className)
+    {
+        $split = explode('\\', $className);
+        return array(
+            'namespace' => $split[0],
+            'controller' => $this->convert(str_replace('Controller', '', $split[2]))
+        );
+    }
+
+    private function parseMethodName($methodName)
+    {
+        return $this->convert(str_replace('Action', '', $methodName));
+    }
+
+    private function convert($name)
+    {
+        return strtolower(preg_replace("/([a-z0-9])([A-Z])/", "$1-$2", $name));
     }
 }

@@ -205,6 +205,7 @@ class DataController extends BaseActionController
         }
         
         $cursor = $this->_data->find($query, $this->_fields);
+        $total = $cursor->count();
         $cursor->sort($sort);
         if ($action !== 'excel') {
             $cursor->skip($start)->limit($limit);
@@ -212,7 +213,6 @@ class DataController extends BaseActionController
         
         $datas = iterator_to_array($cursor, false);
         $datas = $this->comboboxSelectedValues($datas);
-        $total = count($datas);
         
         if ($action == 'excel') {
             // 在导出数据的情况下，将关联数据显示为关联集合的显示字段数据
