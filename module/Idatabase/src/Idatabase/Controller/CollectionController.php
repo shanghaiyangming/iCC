@@ -298,6 +298,9 @@ class CollectionController extends BaseActionController
         return $this->msg(true, '删除信息成功');
     }
 
+    /**
+     * 删除某个集合
+     */
     public function dropAction()
     {}
 

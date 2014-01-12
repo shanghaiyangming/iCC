@@ -13,6 +13,7 @@ defined('DEFAULT_CLUSTER') || define('DEFAULT_CLUSTER', 'default');
  */
 defined('SYSTEM_ACCOUNT') || define('SYSTEM_ACCOUNT', 'system_account');
 defined('SYSTEM_ROLE') || define('SYSTEM_ROLE', 'system_role');
+defined('SYSTEM_RESOURCE') || define('SYSTEM_RESOURCE', 'system_resource');
 
 /**
  * iDatabase常量定义,防止集合命名错误的发生

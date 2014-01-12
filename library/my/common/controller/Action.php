@@ -5,6 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
+use Zend\Permissions\Acl\Acl;
 
 abstract class Action extends AbstractActionController
 {
@@ -26,12 +27,14 @@ abstract class Action extends AbstractActionController
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, function ($event) use($eventManager, $serviceLocator)
         {
             // 权限控制
-            $nameSpace = $this->params('__NAMESPACE__');
-            $controllerName = $this->params('controller');
-            $actionName = $this->params('action');
+            $namespace = $this->params('__NAMESPACE__');
+            $controller = $this->params('controller');
+            $action = $this->params('action');
             
-            if ($nameSpace == 'Idatabase\Controller') {
-                
+            if ($namespace == 'Idatabase\Controller') {
+                if (isset($_SESSION['role']) && $_SESSION['role'] !== 'root') {
+                    $role = $_SESSION['role'];
+                }
                 // 身份验证不通过的情况下，执行以下操作
                 if (! isset($_SESSION['account'])) {
                     $event->stopPropagation(true);
