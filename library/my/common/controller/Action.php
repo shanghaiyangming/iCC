@@ -23,9 +23,24 @@ abstract class Action extends AbstractActionController
         // 添加初始化事件函数
         $eventManager = $this->getEventManager();
         $serviceLocator = $this->getServiceLocator();
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function () use($serviceLocator)
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function ($event) use($eventManager, $serviceLocator)
         {
+            // 权限控制
+            $nameSpace = $this->params('__NAMESPACE__');
+            $controllerName = $this->params('controller');
+            $actionName = $this->params('action');
+            
+            if ($nameSpace == 'Idatabase\Controller') {
+                
+                // 身份验证不通过的情况下，执行以下操作
+                if (! isset($_SESSION['account'])) {
+                    $event->stopPropagation(true);
+                    $event->setViewModel($this->msg(false, '未通过身份验证'));
+                }
+            }
+            
             $this->preDispatch();
+            
             if (method_exists($this, 'init')) {
                 $this->init();
             }
@@ -127,15 +142,24 @@ abstract class Action extends AbstractActionController
      * @param string $jsonModel            
      * @return \Zend\View\Model\JsonModel multitype:unknown <boolean, unknown>
      */
-    public function msg($status, $message, $jsonModel = true)
+    public function msg($status, $message, $jsonModel = true, $jsonpCallback = null)
     {
         $rst = array(
             'success' => is_bool($status) ? $status : false,
             'msg' => $message
         );
         
-        if ($jsonModel)
-            return new JsonModel($rst);
+        if ($jsonModel) {
+            if ($jsonpCallback == null) {
+                header('Content-Type: application/json; charset=utf-8');
+                return new JsonModel($rst);
+            } else {
+                header('Content-Type: application/javascript; charset=utf-8');
+                $obj = new JsonModel($rst);
+                $obj->setJsonpCallback($jsonpCallback);
+                return $obj;
+            }
+        }
         return $rst;
     }
 }

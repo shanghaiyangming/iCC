@@ -35,8 +35,8 @@ class IndexController extends Action
     public function indexAction()
     {
         if ($this->_account->findOne(array(
-            'username' => 'admin'
-        )) == null) {
+            'username' => 'root'
+        )) === null) {
             return $this->redirect()->toRoute('install');
         } else 
             if (! isset($_SESSION['account'])) {
