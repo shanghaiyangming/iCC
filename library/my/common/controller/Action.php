@@ -15,7 +15,7 @@ abstract class Action extends AbstractActionController
 
     public function __construct()
     {
-        //确保输出为UTF-8
+        // 确保输出为UTF-8
         header("Content-type:text/html;charset=utf-8");
         
         // 增加权限控制方法在这里
@@ -52,11 +52,12 @@ abstract class Action extends AbstractActionController
      * @param string $collection            
      * @param array $query            
      * @param array $sort            
-     * @param bool $jsonModel            
+     * @param boolean $jsonModel       
+     * @param string $jsonpCallback     
      * @throws \Exception
      * @return \Zend\View\Model\JsonModel Ambigous multitype:multitype: string >
      */
-    public function findAll($collection, $query = array(), $sort = array('_id'=>-1), $jsonModel = true)
+    public function findAll($collection, $query = array(), $sort = array('_id'=>-1), $jsonModel = true, $jsonpCallback = null)
     {
         $model = $this->model($collection);
         $cursor = $model->find($query);
@@ -74,9 +75,17 @@ abstract class Action extends AbstractActionController
         }
         
         $datas = iterator_to_array($cursor, false);
-        if ($jsonModel)
-            return new JsonModel($this->rst($datas));
-        else
+        if ($jsonModel) {
+            if ($jsonpCallback == null) {
+                header('Content-Type: application/json; charset=utf-8;');
+                return new JsonModel($this->rst($datas));
+            } else {
+                header('Content-Type: application/javascript; charset=utf-8;');
+                $obj = new JsonModel($this->rst($datas));
+                $obj->setJsonpCallback($jsonpCallback);
+                return $obj;
+            }
+        } else
             return $datas;
     }
 
@@ -85,18 +94,28 @@ abstract class Action extends AbstractActionController
      *
      * @param array $datas            
      * @param number $total            
-     * @param string $jsonModel            
+     * @param boolean $jsonModel 
+     * @param string $jsonpCallback       
      * @return \Zend\View\Model\JsonModel multitype:unknown
      */
-    public function rst($datas, $total = 0, $jsonModel = false)
+    public function rst($datas, $total = 0, $jsonModel = false, $jsonpCallback = null)
     {
         $total = intval($total);
         $rst = array(
             'result' => $datas,
             'total' => $total ? $total : count($datas)
         );
-        if ($jsonModel)
-            return new JsonModel($rst);
+        if ($jsonModel) {
+            if ($jsonpCallback == null) {
+                header('Content-Type: application/json; charset=utf-8;');
+                return new JsonModel($rst);
+            } else {
+                header('Content-Type: application/javascript; charset=utf-8;');
+                $obj = new JsonModel($rst);
+                $obj->setJsonpCallback($jsonpCallback);
+                return $obj;
+            }
+        }
         return $rst;
     }
 

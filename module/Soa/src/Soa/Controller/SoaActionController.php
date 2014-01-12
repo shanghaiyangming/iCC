@@ -15,7 +15,7 @@ use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\Mvc\MvcEvent;
 
-abstract class BaseActionController extends Action
+abstract class SoaActionController extends Action
 {
 
     protected $project_id;
