@@ -158,6 +158,10 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
+            if($datas['type']!=='documentfield') {
+                return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+            }
+            
             if ($datas['quickSourceCollection'] === '') {
                 return $this->msg(false, '请选快速录入的数据来源集合');
             }
@@ -247,6 +251,10 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
+            if($datas['type']!=='documentfield') {
+                return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+            }
+            
             if ($datas['quickSourceCollection'] === '') {
                 return $this->msg(false, '请选快速录入的数据来源集合');
             }
@@ -335,6 +343,10 @@ class StructureController extends BaseActionController
             }
             
             if ($row['isQuick'] === true) {
+                if($row['type']!=='documentfield') {
+                    return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+                }
+                
                 if ($row['quickSourceCollection'] === '') {
                     return $this->msg(false, '请选快速录入的数据来源集合');
                 }
