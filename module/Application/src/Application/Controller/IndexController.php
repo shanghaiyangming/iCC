@@ -131,8 +131,7 @@ class IndexController extends Action
      */
     private function endsWith($haystack, $needle)
     {
-        $length = strlen($needle);
-        if ($length == 0) {
+        if (strlen($needle) === 0) {
             return true;
         }
         return (substr($haystack, - $length) === $needle);
@@ -156,6 +155,11 @@ class IndexController extends Action
         return '';
     }
 
+    /**
+     * 解析class名称
+     * @param string $className
+     * @return array
+     */
     private function parseClassName($className)
     {
         $split = explode('\\', $className);
@@ -165,11 +169,21 @@ class IndexController extends Action
         );
     }
 
+    /**
+     * 解析action名称
+     * @param string $methodName
+     * @return string
+     */
     private function parseMethodName($methodName)
     {
         return $this->convert(str_replace('Action', '', $methodName));
     }
 
+    /**
+     * 将方法名转换为router路径
+     * @param string $name
+     * @return string
+     */
     private function convert($name)
     {
         return strtolower(preg_replace("/([a-z0-9])([A-Z])/", "$1-$2", $name));

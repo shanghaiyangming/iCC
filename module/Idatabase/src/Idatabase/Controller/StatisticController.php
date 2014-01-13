@@ -41,12 +41,62 @@ class StatisticController extends BaseActionController
     }
 
     /**
-     * 
+     * 读取某个集合的全部统计
      *
      * @author young
      * @name 读取指定项目内的全部集合列表
      * @version 2014.01.09 young
      */
     public function indexAction()
-    {}
+    {
+        $query = array();
+        $query = $this->_statistic->find(array(
+            'collection_id' => $this->_collection_id
+        ));
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function addAction()
+    {
+        $name = $this->params()->fromPost('name', null);
+        $type = $this->params()->fromPost('type', null);
+        $interval = intval($this->params()->fromPost('interval', 0));
+        
+        if ($name == null) {
+            return $this->msg(false, '请填写统计名称');
+        }
+        
+        if ($type == null) {
+            return $this->msg(false, '请选择统计类型');
+        }
+        
+        if ($interval <=300 ) {
+            return $this->msg(false, '统计间隔不得少于300秒');
+        }
+        
+        $datas = array();
+        $datas['name'] = $name;
+        $datas['type'] = $type;
+        $datas['axes']['left'] = $axes['left'];
+        $datas['axes']['bottom'] = $axes['bottom'];
+        $datas['series'] = $series;
+        $datas['interval'] = $interval;
+        $datas['lastExecuteTime'] = new \MongoDate(0);
+        $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
+        $datas['isRunning'] = false;
+        $this->_statistic->insert($datas);
+        
+        return $this->msg(true, '添加信息成功');
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function editAction() {
+        
+    }
 }
