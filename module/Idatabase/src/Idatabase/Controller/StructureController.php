@@ -75,11 +75,42 @@ class StructureController extends BaseActionController
             if (isset($row['rshCollection']) && $row['rshCollection'] != '') {
                 $row = array_merge($row, $this->getRshCollectionInfo($row['rshCollection']));
             }
+            
+            // 追加读取quick字段
+            if (!empty($row['isQuick']) && !empty($row['quickSourceCollection']) && !empty($row['quickTargetCollection'])) {
+                $row['__QUICK__'] = array(
+                    'drag' => array(
+                        'collectionName' => $row['quickSourceCollection'],
+                        'structure' => $this->getRshCollectionInfo($row['quickSourceCollection']),
+                        'query' => $row['quickSearchCondition']
+                    ),
+                    'drop' => array(
+                        'collectionName' => $row['quickTargetCollection'],
+                        'structure' => $this->getRshCollectionInfo($row['quickTargetCollection']),
+                        'query' => $row['quickSearchCondition']
+                    )
+                );
+            }
+            
             $rst[] = $row;
         }
         
         return $this->rst($rst, $cursor->count(), true);
     }
+
+    /**
+     * 获取指定集合的集合结构
+     *
+     * @param string $collectionName            
+     * @return array
+     */
+//     private function getStructure($collectionName)
+//     {
+//         $cursor = $this->_structure->find(array(
+//             'collection_id' => $this->getCollectionIdByName($collectionName)
+//         ));
+//         return iterator_to_array($cursor, false);
+//     }
 
     /**
      * 获取关联集合的信息
@@ -158,7 +189,7 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
-            if($datas['type']!=='documentfield') {
+            if ($datas['type'] !== 'documentfield') {
                 return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
             }
             
@@ -251,7 +282,7 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
-            if($datas['type']!=='documentfield') {
+            if ($datas['type'] !== 'documentfield') {
                 return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
             }
             
@@ -343,7 +374,7 @@ class StructureController extends BaseActionController
             }
             
             if ($row['isQuick'] === true) {
-                if($row['type']!=='documentfield') {
+                if ($row['type'] !== 'documentfield') {
                     return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
                 }
                 

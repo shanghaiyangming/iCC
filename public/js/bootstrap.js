@@ -873,6 +873,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.Application": [],
   "icc.common.Combobox": [],
   "icc.common.Form": [],
+  "icc.common.GridToGrid": [],
   "icc.common.Paging": [],
   "icc.common.SearchBar": [],
   "icc.common.Tbar": [],
@@ -2026,6 +2027,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.common.Form": [
     "widget.iform"
   ],
+  "icc.common.GridToGrid": [],
   "icc.common.Paging": [
     "widget.paging"
   ],

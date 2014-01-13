@@ -471,10 +471,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 						treeLabel = record.get('label');
 					}
 					
-					if(record.get(isQuick)) {
-						
-					}
-
 					var convertDot = function(name) {
 						return name.replace(/\./g, '__DOT__');
 					};
@@ -497,39 +493,39 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 
 					switch (recordType) {
-					case 'documentfield':
-						addOrEditField.xtype = 'textareafield';
-						addOrEditField.name = recordField;
-						break;
-					case 'boolfield':
-						delete addOrEditField.name;
-						addOrEditField.radioName = recordField;
-						break;
-					case 'filefield':
-						addOrEditField = {
-							xtype: 'filefield',
-							name: recordField,
-							fieldLabel: recordLabel,
-							labelWidth: 100,
-							msgTarget: 'side',
-							allowBlank: true,
-							anchor: '100%',
-							buttonText: '浏览本地文件'
-						};
-						break;
-					case '2dfield':
-						addOrEditField.title = recordLabel;
-						addOrEditField.fieldName = recordField;
-						break;
-					case 'datefield':
-						addOrEditField.format = 'Y-m-d H:i:s';
-						break;
-					case 'numberfield':
-						addOrEditField.decimalPrecision = 8;
-						break;
-					case 'htmleditor':
-						addOrEditField.height = 300;
-						break;
+						case 'documentfield':
+							addOrEditField.xtype = 'textareafield';
+							addOrEditField.name = recordField;
+							break;
+						case 'boolfield':
+							delete addOrEditField.name;
+							addOrEditField.radioName = recordField;
+							break;
+						case 'filefield':
+							addOrEditField = {
+								xtype: 'filefield',
+								name: recordField,
+								fieldLabel: recordLabel,
+								labelWidth: 100,
+								msgTarget: 'side',
+								allowBlank: true,
+								anchor: '100%',
+								buttonText: '浏览本地文件'
+							};
+							break;
+						case '2dfield':
+							addOrEditField.title = recordLabel;
+							addOrEditField.fieldName = recordField;
+							break;
+						case 'datefield':
+							addOrEditField.format = 'Y-m-d H:i:s';
+							break;
+						case 'numberfield':
+							addOrEditField.decimalPrecision = 8;
+							break;
+						case 'htmleditor':
+							addOrEditField.height = 300;
+							break;
 					};
 
 					var rshCollection = record.get('rshCollection');
@@ -593,6 +589,53 @@ Ext.define('icc.controller.idatabase.Collection', {
 						addOrEditField.typeAhead = true;
 						addOrEditField.valueField = record.get('rshCollectionValueField');
 						addOrEditField.displayField = record.get('rshCollectionDisplayField');
+					}
+					
+					if(record.get('isQuick')) {
+						
+						if(Ext.isString(record.get('__QUICK__'))) {
+							var __QUICK__ = Ext.Json.decode(record.get('__QUICK__'),true);
+						}
+						else {
+							var __QUICK__ = record.get('__QUICK__');
+						}
+						
+						if(__QUICK__!=null && __QUICK__=='') {
+							var dragCollectionModel = 'dragCollectionModel'+__QUICK__.drag.collectionName;
+							Ext.define(dragCollectionModel, {
+								extend: 'icc.model.common.Model',
+								fields: [{
+									name: __QUICK__.drag.structure.rshCollectionDisplayField,
+									convert: convert
+								}, {
+									name: __QUICK__.drag.structure.rshCollectionValueField,
+									convert: convert
+								}]
+							});
+							
+							var dropStore = Ext.create('Ext.data.Store', {
+								model: dragCollectionModel,
+								autoLoad: false,
+								pageSize: 20,
+								proxy: {
+									type: 'ajax',
+									url: '/idatabase/data/index',
+									extraParams: {
+										project_id: project_id,
+										collection_id: __QUICK__.drag.collectionName
+									},
+									reader: {
+										type: 'json',
+										root: 'result',
+										totalProperty: 'total'
+									}
+								}
+							});
+							
+							var addOrEditField = Ext.create('icc.common.GridToGrid',{
+								dropStore : dropStore
+							});
+						}
 					}
 					addOrEditFields.push(addOrEditField);
 					//创建添加和编辑的field表单结束
