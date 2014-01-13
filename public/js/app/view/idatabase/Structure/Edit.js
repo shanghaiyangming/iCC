@@ -203,7 +203,7 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 						name : 'quickTargetCollection'
 					}, {
 						xtype : 'textareafield',
-						fieldLabel : '关联表提交字段',
+						fieldLabel : '快速录入查询条件',
 						name : 'quickSearchCondition'
 					} ]
 				}]
