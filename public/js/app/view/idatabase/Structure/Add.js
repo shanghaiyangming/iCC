@@ -128,6 +128,8 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 				}, {
 					xtype : 'fieldset',
 					title : '关联设定（选填）',
+					collapsed : true,
+					collapsible : true,
 					items : [ {
 						xtype : 'idatabaseCollectionCombobox',
 						project_id : this.project_id,
@@ -167,6 +169,8 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 				}, {
 					xtype : 'fieldset',
 					title : '快捷录入（选填）',
+					collapsed : true,
+					collapsible : true,
 					items : [ {
 						xtype : 'radiogroup',
 						fieldLabel : '开启快捷录入',
@@ -182,6 +186,11 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 							inputValue : false,
 							checked : true
 						} ]
+					}, {
+						xtype : 'idatabaseCollectionCombobox',
+						project_id : this.project_id,
+						fieldLabel : '数据来源集合',
+						name : 'quickSourceCollection'
 					}, {
 						xtype : 'idatabaseCollectionCombobox',
 						project_id : this.project_id,

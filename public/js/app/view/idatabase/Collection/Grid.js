@@ -119,11 +119,6 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							action: 'lock'
 						}, {
 							xtype: 'button',
-							text: '快捷输入',
-							iconCls: 'shortcut',
-							action: 'shortcut'
-						}, {
-							xtype: 'button',
 							text: '整合输出',
 							iconCls: 'dbout',
 							action: 'dbout'

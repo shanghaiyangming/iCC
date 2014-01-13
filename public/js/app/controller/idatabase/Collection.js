@@ -452,8 +452,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 			var gridColumns = [];
 
 			var structureStore = Ext.create('icc.store.idatabase.Structure');
-			structureStore['proxy']['extraParams']['project_id'] = project_id;
-			structureStore['proxy']['extraParams']['collection_id'] = collection_id;
+			structureStore.proxy.extraParams = {
+				project_id : project_id,
+				collection_id : collection_id
+			};
 
 			var treeField = '';
 			var treeLabel = '';
@@ -467,6 +469,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 					if (record.get('rshKey')) {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
+					}
+					
+					if(record.get(isQuick)) {
+						
 					}
 
 					var convertDot = function(name) {

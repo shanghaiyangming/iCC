@@ -137,6 +137,7 @@ class StructureController extends BaseActionController
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['quickSourceCollection'] = trim($this->params()->fromPost('quickSourceCollection', ''));
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
         $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
         
@@ -157,6 +158,10 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
+            if ($datas['quickSourceCollection'] === '') {
+                return $this->msg(false, '请选快速录入的数据来源集合');
+            }
+            
             if ($datas['quickTargetCollection'] === '') {
                 return $this->msg(false, '请选快速录入的目标集合');
             }
@@ -221,6 +226,7 @@ class StructureController extends BaseActionController
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['quickSourceCollection'] = trim($this->params()->fromPost('quickSourceCollection', ''));
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
         $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
         
@@ -241,6 +247,10 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
+            if ($datas['quickSourceCollection'] === '') {
+                return $this->msg(false, '请选快速录入的数据来源集合');
+            }
+            
             if ($datas['quickTargetCollection'] === '') {
                 return $this->msg(false, '请选快速录入的目标集合');
             }
@@ -325,6 +335,10 @@ class StructureController extends BaseActionController
             }
             
             if ($row['isQuick'] === true) {
+                if ($row['quickSourceCollection'] === '') {
+                    return $this->msg(false, '请选快速录入的数据来源集合');
+                }
+                
                 if ($row['quickTargetCollection'] === '') {
                     return $this->msg(false, '请选快速录入的目标集合');
                 }
