@@ -84,12 +84,6 @@ class IndexController extends Action
         return $this->redirect()->toRoute('home');
     }
 
-    public function methodsAction()
-    {
-        $this->addResource();
-        return $this->response;
-    }
-
     /**
      * 检索指定目录下的全部资源到数据库中
      */
