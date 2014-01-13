@@ -873,6 +873,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.Application": [],
   "icc.common.Combobox": [],
   "icc.common.Form": [],
+  "icc.common.GridToGrid": [],
   "icc.common.Paging": [],
   "icc.common.SearchBar": [],
   "icc.common.Tbar": [],
@@ -921,6 +922,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Collection.Accordion": [],
   "icc.view.idatabase.Collection.Add": [],
   "icc.view.idatabase.Collection.Combobox": [],
+  "icc.view.idatabase.Collection.Dashboard": [],
   "icc.view.idatabase.Collection.Edit": [],
   "icc.view.idatabase.Collection.Grid": [],
   "icc.view.idatabase.Collection.Main": [],
@@ -2025,6 +2027,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.common.Form": [
     "widget.iform"
   ],
+  "icc.common.GridToGrid": [],
   "icc.common.Paging": [
     "widget.paging"
   ],
@@ -2088,6 +2091,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Collection.Combobox": [
     "widget.idatabaseCollectionCombobox"
+  ],
+  "icc.view.idatabase.Collection.Dashboard": [
+    "widget.idatabaseCollectionDashboard"
   ],
   "icc.view.idatabase.Collection.Edit": [
     "widget.idatabaseCollectionEdit"
