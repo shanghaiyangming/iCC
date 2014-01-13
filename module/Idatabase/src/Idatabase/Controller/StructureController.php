@@ -84,7 +84,7 @@ class StructureController extends BaseActionController
     /**
      * 获取关联集合的信息
      *
-     * @param string $collectionName           
+     * @param string $collectionName            
      * @return array
      */
     private function getRshCollectionInfo($collectionName)
@@ -93,11 +93,11 @@ class StructureController extends BaseActionController
         $cursor = $this->_structure->find(array(
             'collection_id' => $this->getCollectionIdByName($collectionName)
         ));
-
+        
         $rst = array(
             'rshCollectionValueField' => '_id'
         );
-
+        
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
             if ($row['rshKey'])
@@ -136,12 +136,15 @@ class StructureController extends BaseActionController
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
+        $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
+        $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
         }
         
-        if (!$this->checkFieldName($datas['field'])) {
+        if (! $this->checkFieldName($datas['field'])) {
             return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
         }
         
@@ -151,6 +154,24 @@ class StructureController extends BaseActionController
         
         if ($datas['type'] == null) {
             return $this->msg(false, '请选择字段类型');
+        }
+        
+        if ($datas['isQuick'] === true) {
+            if ($datas['quickTargetCollection'] === '') {
+                return $this->msg(false, '请选快速录入的目标集合');
+            }
+            
+            if ($datas['quickSearchCondition'] !== '') {
+                if (isJson($datas['quickSearchCondition'])) {
+                    try {
+                        $datas['quickSearchCondition'] = Json::decode($datas['quickSearchCondition'], Json::TYPE_ARRAY);
+                    } catch (\Exception $e) {
+                        $this->msg(false, '快速录入查询条件的json格式错误');
+                    }
+                } else {
+                    return $this->msg(false, '快速录入查询条件的json格式错误');
+                }
+            }
         }
         
         if ($this->checkExist('field', $datas['field'], array(
@@ -199,12 +220,15 @@ class StructureController extends BaseActionController
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
         $datas['showImage'] = filter_var($this->params()->fromPost('showImage', false), FILTER_VALIDATE_BOOLEAN);
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
+        $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
+        $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
         }
         
-        if (!$this->checkFieldName($datas['field'])) {
+        if (! $this->checkFieldName($datas['field'])) {
             return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
         }
         
@@ -214,6 +238,24 @@ class StructureController extends BaseActionController
         
         if ($datas['type'] == null) {
             return $this->msg(false, '请选择字段类型');
+        }
+        
+        if ($datas['isQuick'] === true) {
+            if ($datas['quickTargetCollection'] === '') {
+                return $this->msg(false, '请选快速录入的目标集合');
+            }
+            
+            if ($datas['quickSearchCondition'] !== '') {
+                if (isJson($datas['quickSearchCondition'])) {
+                    try {
+                        $datas['quickSearchCondition'] = Json::decode($datas['quickSearchCondition'], Json::TYPE_ARRAY);
+                    } catch (\Exception $e) {
+                        $this->msg(false, '快速录入查询条件的json格式错误');
+                    }
+                } else {
+                    return $this->msg(false, '快速录入查询条件的json格式错误');
+                }
+            }
         }
         
         $oldStructureInfo = $this->_structure->findOne(array(
@@ -270,7 +312,7 @@ class StructureController extends BaseActionController
                 return $this->msg(false, '请填写字段名称');
             }
             
-            if (!$this->checkFieldName($row['field'])) {
+            if (! $this->checkFieldName($row['field'])) {
                 return $this->msg(false, '字段名必须为以英文字母开始的“字母、数字、下划线”的组合,“点”标注子属性时，子属性必须以字母开始');
             }
             
@@ -280,6 +322,24 @@ class StructureController extends BaseActionController
             
             if ($row['type'] == null) {
                 return $this->msg(false, '请选择字段类型');
+            }
+            
+            if ($row['isQuick'] === true) {
+                if ($row['quickTargetCollection'] === '') {
+                    return $this->msg(false, '请选快速录入的目标集合');
+                }
+                
+                if ($row['quickSearchCondition'] !== '') {
+                    if (isJson($row['quickSearchCondition'])) {
+                        try {
+                            $row['quickSearchCondition'] = Json::decode($row['quickSearchCondition'], Json::TYPE_ARRAY);
+                        } catch (\Exception $e) {
+                            $this->msg(false, '快速录入查询条件的json格式错误');
+                        }
+                    } else {
+                        return $this->msg(false, '快速录入查询条件的json格式错误');
+                    }
+                }
             }
             
             $row['filter'] = (int) $row['filter'];
@@ -436,18 +496,18 @@ class StructureController extends BaseActionController
         }
         
         if (strpos($name, '.') !== false) {
-            if (!preg_match("/\.[a-z]{1}/i", $name)) {
+            if (! preg_match("/\.[a-z]{1}/i", $name)) {
                 return false;
             }
         }
         
         return true;
     }
-    
+
     /**
      * 根据集合的名称获取集合的_id
      *
-     * @param string $name
+     * @param string $name            
      * @throws \Exception or string
      */
     private function getCollectionIdByName($name)
@@ -456,9 +516,9 @@ class StructureController extends BaseActionController
             new \MongoId($name);
             return $name;
         } catch (\MongoException $ex) {
-        	//fb(exceptionMsg($ex),'LOG');
+            // fb(exceptionMsg($ex),'LOG');
         }
-    
+        
         $collectionInfo = $this->_collection->findOne(array(
             'project_id' => $this->_project_id,
             'name' => $name

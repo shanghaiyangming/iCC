@@ -169,6 +169,34 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 							checked : true
 						} ]
 					} ]
+				}, {
+					xtype : 'fieldset',
+					title : '快捷录入（选填）',
+					items : [ {
+						xtype : 'radiogroup',
+						fieldLabel : '开启快捷录入',
+						defaultType : 'radiofield',
+						layout : 'hbox',
+						items : [ {
+							boxLabel : '是',
+							name : 'isQuick',
+							inputValue : true
+						}, {
+							boxLabel : '否',
+							name : 'isQuick',
+							inputValue : false,
+							checked : true
+						} ]
+					}, {
+						xtype : 'idatabaseCollectionCombobox',
+						project_id : this.project_id,
+						fieldLabel : '目标集合列表',
+						name : 'quickTargetCollection'
+					}, {
+						xtype : 'textareafield',
+						fieldLabel : '关联表提交字段',
+						name : 'quickSearchCondition'
+					} ]
 				}]
 			} ]
 		});

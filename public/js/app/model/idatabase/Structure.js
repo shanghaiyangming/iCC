@@ -54,5 +54,14 @@ Ext.define('icc.model.idatabase.Structure', {
 	},{
 		name : 'orderBy',
 		type : 'int'
+	},{
+		name : 'isQuick',
+		type : 'boolean'
+	},{
+		name : 'quickTargetCollection',
+		type : 'string'
+	},{
+		name : 'quickSearchCondition',
+		type : 'string'
 	}]
 });
