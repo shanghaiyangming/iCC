@@ -74,7 +74,7 @@ class StatisticController extends BaseActionController
         }
         
         if ($interval <=300 ) {
-            return $this->msg(false, '统计间隔不得少于300秒');
+            return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
         $datas = array();
