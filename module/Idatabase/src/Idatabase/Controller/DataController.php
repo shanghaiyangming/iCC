@@ -192,12 +192,24 @@ class DataController extends BaseActionController
         $sort = array();
         
         $action = $this->params()->fromQuery('action', null);
+        $search = $this->params()->fromQuery('search', null);
         $sort = $this->params()->fromQuery('sort', null);
         $start = intval($this->params()->fromQuery('start', 0));
         $limit = intval($this->params()->fromQuery('limit', 10));
         
         if ($action == 'search' || $action == 'excel') {
             $query = $this->searchCondition();
+        }
+        
+        if ($search != null) {
+            if (! isset($this->_schema['combobox']['rshCollectionKeyField'])) {
+                return $this->msg(false, '关系集合的值');
+            }
+            $search = preg_replace("/\s/", '', $search);
+            $explode = explode(',', $search);
+            $query['$and'][] = array(
+                $this->_schema['combobox']['rshCollectionKeyField'] => myMongoRegex(end($explode))
+            );
         }
         
         if (empty($sort)) {
@@ -601,7 +613,7 @@ class DataController extends BaseActionController
             return $this->msg(true, '清空数据成功');
         } else {
             fb($rst, \FirePHP::LOG);
-            return $this->msg(false, '清空数据失败'.Json::encode($rst));
+            return $this->msg(false, '清空数据失败' . Json::encode($rst));
         }
     }
 
@@ -631,22 +643,24 @@ class DataController extends BaseActionController
         
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
+            
             $type = $row['type'] == 'filefield' ? 'file' : 'post';
             $schema[$type][$row['field']] = $row;
             $schema['all'][$row['field']] = $row;
             $this->_fields[$row['field']] = true;
             $this->_title[$row['field']] = $row['label'];
             
-            if ($row['rshKey'])
-                $this->_schema['combobox']['rshCollectionKeyField'] = $row['field'];
+            if ($row['rshKey']) {
+                $schema['combobox']['rshCollectionKeyField'] = $row['field'];
+            }
             
-            if ($row['rshValue'])
-                $this->_schema['combobox']['rshCollectionValueField'] = $row['field'];
+            if ($row['rshValue']) {
+                $schema['combobox']['rshCollectionValueField'] = $row['field'];
+            }
             
             if (isset($row['isFatherField']) && $row['isFatherField']) {
                 $this->_fatherField = $row['field'];
             }
-            
             
             if (! empty($row['rshCollection'])) {
                 $rshCollectionStructures = $this->_structure->findAll(array(
@@ -678,6 +692,7 @@ class DataController extends BaseActionController
         }
         
         ksort($this->_title);
+        $this->_schema = $schema;
         return $schema;
     }
 
@@ -774,8 +789,14 @@ class DataController extends BaseActionController
             if (isset($_REQUEST['exactMatch__' . $field]) && filter_var($_REQUEST['exactMatch__' . $field], FILTER_VALIDATE_BOOLEAN))
                 $exact = true;
             
-            if (! empty($detail['rshCollection']))
+            if (! empty($detail['rshCollection'])) {
                 $exact = true;
+                // $fieldValue = preg_replace("/\s/", '', $_REQUEST[$field]);
+                // if(strpos($fieldValue,',')!==false) {
+                // $_REQUEST[$field] = explode(',', $fieldValue);
+                // unset($fieldValue);
+                // }
+            }
             
             if (isset($_REQUEST[$field])) {
                 if (is_array($_REQUEST[$field]) && trim(join('', $_REQUEST[$field])) == '')

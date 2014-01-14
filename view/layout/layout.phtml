@@ -14,11 +14,13 @@ echo $this->headLink(array(
     'href' => $this->basePath() . '/img/favicon.ico'
 ))
     ->appendStylesheet($this->basePath() . '/css/ext-theme-neptune-all.css')
-    ->appendStylesheet($this->basePath() . '/css/icon.css');
+    ->appendStylesheet($this->basePath() . '/css/icon.css')
+    ->appendStylesheet($this->basePath() . '/css/BoxSelect.css');
 echo $this->headScript()
     ->appendFile($this->basePath() . '/js/build/production/icc/app.js')
     ->appendFile($this->basePath() . '/js/resources/common.js')
-    ->appendFile($this->basePath() . '/js/resources/htmlspecialchars.js');
+    ->appendFile($this->basePath() . '/js/resources/htmlspecialchars.js')
+    ->appendFile($this->basePath() . '/css/BoxSelect.js');
 ?>
 </head>
 <body>
