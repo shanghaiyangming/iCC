@@ -37,6 +37,9 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'rshCollection',
 		type : 'string'
 	}, {
+		name : 'isBoxSelect',
+		type : 'boolean'
+	}, {
 		name : 'rshKey',
 		type : 'boolean'
 	}, {

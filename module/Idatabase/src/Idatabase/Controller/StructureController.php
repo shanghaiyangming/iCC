@@ -77,7 +77,7 @@ class StructureController extends BaseActionController
             }
             
             // 追加读取quick字段
-            if (!empty($row['isQuick']) && !empty($row['quickSourceCollection']) && !empty($row['quickTargetCollection'])) {
+            if (! empty($row['isQuick']) && ! empty($row['quickSourceCollection']) && ! empty($row['quickTargetCollection'])) {
                 $row['__QUICK__'] = array(
                     'drag' => array(
                         'collectionName' => $row['quickSourceCollection'],
@@ -97,20 +97,6 @@ class StructureController extends BaseActionController
         
         return $this->rst($rst, $cursor->count(), true);
     }
-
-    /**
-     * 获取指定集合的集合结构
-     *
-     * @param string $collectionName            
-     * @return array
-     */
-//     private function getStructure($collectionName)
-//     {
-//         $cursor = $this->_structure->find(array(
-//             'collection_id' => $this->getCollectionIdByName($collectionName)
-//         ));
-//         return iterator_to_array($cursor, false);
-//     }
 
     /**
      * 获取关联集合的信息
@@ -162,6 +148,7 @@ class StructureController extends BaseActionController
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['isFatherField'] = filter_var($this->params()->fromPost('isFatherField', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
+        $datas['isBoxSelect'] = filter_var($this->params()->fromPost('isBoxSelect', ''), FILTER_VALIDATE_BOOLEAN);
         $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
@@ -255,6 +242,7 @@ class StructureController extends BaseActionController
         $datas['required'] = filter_var($this->params()->fromPost('required', false), FILTER_VALIDATE_BOOLEAN);
         $datas['isFatherField'] = filter_var($this->params()->fromPost('isFatherField', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshCollection'] = $this->params()->fromPost('rshCollection', '');
+        $datas['isBoxSelect'] = filter_var($this->params()->fromPost('isBoxSelect', ''), FILTER_VALIDATE_BOOLEAN);
         $datas['rshType'] = 'combobox';
         $datas['rshKey'] = filter_var($this->params()->fromPost('rshKey', false), FILTER_VALIDATE_BOOLEAN);
         $datas['rshValue'] = filter_var($this->params()->fromPost('rshValue', false), FILTER_VALIDATE_BOOLEAN);
