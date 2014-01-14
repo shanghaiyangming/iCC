@@ -428,9 +428,10 @@ Ext.define('icc.controller.idatabase.Collection', {
 	buildDataPanel: function(project_id, tabpanel, record) {
 		var collection_id = record.get('_id');
 		var collection_name = record.get('name');
-		var isTree = record.get('isTree');
-		var isRowExpander = record.get('isRowExpander');
+		var isTree = Ext.isBoolean(record.get('isTree')) ? record.get('isTree') : false;
+		var isRowExpander = Ext.isBoolean(record.get('isRowExpander')) ? record.get('isRowExpander') : false;
 		var rowBodyTpl = record.get('rowExpanderTpl');
+		var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
 
 		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
@@ -576,8 +577,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 							}
 						});
 
-						addOrEditField.xtype = 'combobox';
-						addOrEditField.name = recordField;
+						if(isBoxSelect) {
+							addOrEditField.xtype = 'boxselect';
+							addOrEditField.name = recordField+'[]';
+						}
+						else {
+							addOrEditField.xtype = 'combobox';
+							addOrEditField.name = recordField;
+						}
 						addOrEditField.fieldLabel = recordLabel;
 						addOrEditField.store = comboboxStore;
 						addOrEditField.queryMode = 'remote';
@@ -587,7 +594,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						addOrEditField.minChars = 1;
 						addOrEditField.pageSize = 20;
 						addOrEditField.queryParam = 'search';
-						addOrEditField.typeAhead = true;
+						addOrEditField.typeAhead = false;
 						addOrEditField.valueField = record.get('rshCollectionValueField');
 						addOrEditField.displayField = record.get('rshCollectionDisplayField');
 					}
