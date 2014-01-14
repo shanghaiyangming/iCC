@@ -207,6 +207,7 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 					if (record != null) {
 						return record.get('name');
 					}
+					return '';
 				}
 			}, {
 				xtype: 'booleancolumn',
@@ -225,7 +226,6 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 				flex: 1,
 				trueText: '√',
 				falseText: '×',
-				flex: 1,
 				field: {
 					xtype: 'commonComboboxBoolean'
 				}

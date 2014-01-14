@@ -738,15 +738,17 @@ class DataController extends BaseActionController
                     $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     break;
                 case 'documentfield':
-                    $value = trim($value);
-                    if (! empty($value)) {
-                        if (! isJson($value)) {
-                            throw new \Zend\Json\Exception\RuntimeException($key);
-                        }
-                        try {
-                            $value = Json::decode($value, Json::TYPE_ARRAY);
-                        } catch (\Zend\Json\Exception\RuntimeException $e) {
-                            throw new \Zend\Json\Exception\RuntimeException($key);
+                    if(!is_array($value) && is_string($value)) {
+                        $value = trim($value);
+                        if (! empty($value)) {
+                            if (! isJson($value)) {
+                                throw new \Zend\Json\Exception\RuntimeException($key);
+                            }
+                            try {
+                                $value = Json::decode($value, Json::TYPE_ARRAY);
+                            } catch (\Zend\Json\Exception\RuntimeException $e) {
+                                throw new \Zend\Json\Exception\RuntimeException($key);
+                            }
                         }
                     }
                     break;
@@ -791,11 +793,6 @@ class DataController extends BaseActionController
             
             if (! empty($detail['rshCollection'])) {
                 $exact = true;
-                // $fieldValue = preg_replace("/\s/", '', $_REQUEST[$field]);
-                // if(strpos($fieldValue,',')!==false) {
-                // $_REQUEST[$field] = explode(',', $fieldValue);
-                // unset($fieldValue);
-                // }
             }
             
             if (isset($_REQUEST[$field])) {

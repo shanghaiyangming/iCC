@@ -431,8 +431,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 		var isTree = Ext.isBoolean(record.get('isTree')) ? record.get('isTree') : false;
 		var isRowExpander = Ext.isBoolean(record.get('isRowExpander')) ? record.get('isRowExpander') : false;
 		var rowBodyTpl = record.get('rowExpanderTpl');
-		var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
-
 		var me = this;
 		var panel = tabpanel.getComponent(collection_id);
 		if (panel == null) {
@@ -464,8 +462,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
 				var addOrEditFields = [];
-
+				
 				Ext.Array.forEach(records, function(record) {
+					var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
 					//获取fatherField
 					if (record.get('rshKey')) {
 						treeField = record.get('field');
@@ -494,39 +493,39 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 
 					switch (recordType) {
-					case 'documentfield':
-						addOrEditField.xtype = 'textareafield';
-						addOrEditField.name = recordField;
-						break;
-					case 'boolfield':
-						delete addOrEditField.name;
-						addOrEditField.radioName = recordField;
-						break;
-					case 'filefield':
-						addOrEditField = {
-							xtype: 'filefield',
-							name: recordField,
-							fieldLabel: recordLabel,
-							labelWidth: 100,
-							msgTarget: 'side',
-							allowBlank: true,
-							anchor: '100%',
-							buttonText: '浏览本地文件'
-						};
-						break;
-					case '2dfield':
-						addOrEditField.title = recordLabel;
-						addOrEditField.fieldName = recordField;
-						break;
-					case 'datefield':
-						addOrEditField.format = 'Y-m-d H:i:s';
-						break;
-					case 'numberfield':
-						addOrEditField.decimalPrecision = 8;
-						break;
-					case 'htmleditor':
-						addOrEditField.height = 300;
-						break;
+						case 'documentfield':
+							addOrEditField.xtype = 'textareafield';
+							addOrEditField.name = recordField;
+							break;
+						case 'boolfield':
+							delete addOrEditField.name;
+							addOrEditField.radioName = recordField;
+							break;
+						case 'filefield':
+							addOrEditField = {
+								xtype: 'filefield',
+								name: recordField,
+								fieldLabel: recordLabel,
+								labelWidth: 100,
+								msgTarget: 'side',
+								allowBlank: true,
+								anchor: '100%',
+								buttonText: '浏览本地文件'
+							};
+							break;
+						case '2dfield':
+							addOrEditField.title = recordLabel;
+							addOrEditField.fieldName = recordField;
+							break;
+						case 'datefield':
+							addOrEditField.format = 'Y-m-d H:i:s';
+							break;
+						case 'numberfield':
+							addOrEditField.decimalPrecision = 8;
+							break;
+						case 'htmleditor':
+							addOrEditField.height = 300;
+							break;
 					};
 
 					var rshCollection = record.get('rshCollection');
@@ -580,16 +579,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 						if(isBoxSelect) {
 							addOrEditField.xtype = 'boxselect';
 							addOrEditField.name = recordField+'[]';
+							addOrEditField.multiSelect = true;
 						}
 						else {
 							addOrEditField.xtype = 'combobox';
 							addOrEditField.name = recordField;
+							addOrEditField.multiSelect = false;
 						}
 						addOrEditField.fieldLabel = recordLabel;
 						addOrEditField.store = comboboxStore;
 						addOrEditField.queryMode = 'remote';
 						addOrEditField.forceSelection = true;
-						addOrEditField.multiSelect = true;
 						addOrEditField.editable = true;
 						addOrEditField.minChars = 1;
 						addOrEditField.pageSize = 20;
