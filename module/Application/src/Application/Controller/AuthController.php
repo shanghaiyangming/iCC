@@ -20,6 +20,17 @@ class AuthController extends Action
 
     private $_account;
 
+    private $_role;
+
+    private $_resource;
+
+    public function init()
+    {
+        $this->_account = $this->model(SYSTEM_ACCOUNT);
+        $this->_role = $this->model(SYSTEM_ROLE);
+        $this->_resource = $this->model(SYSTEM_RESOURCE);
+    }
+
     /**
      * 显示登录页面
      *
@@ -46,7 +57,7 @@ class AuthController extends Action
      */
     public function loginAction()
     {
-        $this->_account = $this->model(SYSTEM_ACCOUNT);
+        session_unset();
         $username = $this->params()->fromPost('username', null);
         $password = $this->params()->fromPost('password', null);
         
@@ -60,11 +71,26 @@ class AuthController extends Action
         
         if ($accountInfo == null) {
             return $this->redirect()->toRoute('login', array(
-                'failure' => true
+                'failure' => true,
+                'code'=>500
             ));
         }
         
+        $allowResource = array();
+        if($accountInfo['role']!=='root') {
+            // 查询用户所具备的权限
+            $roleInfo = $this->_role->findOne(array(
+                'role' => $accountInfo['role']
+            ));
+            if (empty($roleInfo['resources'])) {
+                return $this->redirect()->toRoute('login', array(
+                    'failure' => true,
+                    'code'=>501
+                ));
+            }
+        }
         $_SESSION['account'] = $accountInfo;
+        $_SESSION['account']['resources'] = $roleInfo['resources'];
         return $this->redirect()->toRoute('home');
     }
 
@@ -86,7 +112,10 @@ class AuthController extends Action
      */
     public function keepAction()
     {
-    	
+        if (! isset($_SESSION['account'])) {
+            return $this->msg(false, '授权已经过期，请重新登录');
+        }
+        return $this->msg(true, 'keep is ok');
     }
 
     /**

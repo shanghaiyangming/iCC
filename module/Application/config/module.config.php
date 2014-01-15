@@ -29,7 +29,7 @@ return array(
             'login' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/login[/:failure]',
+                    'route' => '/login[/:failure][/:code]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Auth',
                         'action' => 'index'

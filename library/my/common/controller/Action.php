@@ -6,6 +6,9 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 use Zend\Permissions\Acl\Acl;
+use Zend\Permissions\Acl\Role\GenericRole as Role;
+use Zend\Permissions\Acl\Resource\GenericResource as Resource;
+use Zend\Permissions\Acl\Exception\InvalidArgumentException;
 
 abstract class Action extends AbstractActionController
 {
@@ -32,13 +35,37 @@ abstract class Action extends AbstractActionController
             $action = $this->params('action');
             
             if ($namespace == 'Idatabase\Controller') {
-                if (isset($_SESSION['role']) && $_SESSION['role'] !== 'root') {
-                    $role = $_SESSION['role'];
-                }
                 // 身份验证不通过的情况下，执行以下操作
                 if (! isset($_SESSION['account'])) {
                     $event->stopPropagation(true);
                     $event->setViewModel($this->msg(false, '未通过身份验证'));
+                }
+                
+                //授权登录后，检查是否有权限访问指定资源
+                $role = isset($_SESSION['account']['role']) ? $_SESSION['account']['role'] : false;
+                $resources = isset($_SESSION['account']['resources']) ? $_SESSION['account']['resources'] : array();
+                $action = $this->getMethodFromAction($action);
+                $currentResource = $controller . 'Controller\\' . $action;
+                fb($currentResource,'LOG');
+
+                if ($role && $role !== 'root') {
+                    $acl = new Acl();
+                    $acl->addRole(new Role($role));
+                    foreach ($resources as $resource) {
+                        $acl->addResource(new Resource($resource));
+                        $acl->allow($role, $resource);
+                    }
+                    
+                    try {
+                        if ($acl->isAllowed($role, $currentResource) === false) {
+                            $event->stopPropagation(true);
+                            $event->setViewModel($this->msg(false, '很抱歉，您访问的资源尚未得到授权'));
+                        }
+                    }
+                    catch(InvalidArgumentException $e) {
+                        $event->stopPropagation(true);
+                        $event->setViewModel($this->msg(false, '很抱歉，您访问的资源尚未得到授权'));
+                    }
                 }
             }
             

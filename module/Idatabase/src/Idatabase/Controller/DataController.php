@@ -156,7 +156,7 @@ class DataController extends BaseActionController
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
-        $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
+        $this->_collection_id = $this->getCollectionIdByAlias($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         
         $this->_mapping = $this->model(IDATABASE_MAPPING);
@@ -257,7 +257,7 @@ class DataController extends BaseActionController
     private function dealRshData()
     {
         foreach ($this->_rshCollection as $_id => $detail) {
-            $_id = $this->getCollectionIdByName($_id);
+            $_id = $this->getCollectionIdByAlias($_id);
             $collectionName = 'idatabase_collection_' . $_id;
             $model = $this->model($collectionName);
             $cursor = $model->find(array(), array(
@@ -664,7 +664,7 @@ class DataController extends BaseActionController
             
             if (! empty($row['rshCollection'])) {
                 $rshCollectionStructures = $this->_structure->findAll(array(
-                    'collection_id' => $this->getCollectionIdByName($row['rshCollection'])
+                    'collection_id' => $this->getCollectionIdByAlias($row['rshCollection'])
                 ));
                 if (! empty($rshCollectionStructures)) {
                     $rshCollectionKeyField = '';
@@ -913,22 +913,26 @@ class DataController extends BaseActionController
     /**
      * 根据集合的名称获取集合的_id
      *
-     * @param string $name            
+     * @param string $alias            
      * @throws \Exception or string
      */
-    private function getCollectionIdByName($name)
+    private function getCollectionIdByAlias($alias)
     {
         try {
-            new \MongoId($name);
-            return $name;
+            new \MongoId($alias);
+            return $alias;
         } catch (\MongoException $ex) {}
         
         $collectionInfo = $this->_collection->findOne(array(
             'project_id' => $this->_project_id,
-            'name' => $name
+            'alias' => $alias
         ));
         
         if ($collectionInfo == null) {
+            var_dump(array(
+                'project_id' => $this->_project_id,
+                'alias' => $alias
+            ));
             throw new \Exception('集合名称不存在于指定项目');
         }
         
