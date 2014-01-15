@@ -57,10 +57,17 @@ class CollectionController extends BaseActionController
         );
         
         $query = array();
-        $query['$and'][] = array(
-            'plugin_id' => $plugin_id,
-            'project_id' => $this->_project_id
-        );
+        if (empty($plugin_id)) {
+            $query['$and'][] = array(
+                'plugin_id' => $plugin_id,
+                'project_id' => $this->_project_id
+            );
+        }
+        else {
+            $query['$and'][] = array(
+                'plugin_id' => $plugin_id
+            );
+        }
         
         if ($search != '') {
             $search = myMongoRegex($search);
@@ -76,29 +83,51 @@ class CollectionController extends BaseActionController
             );
         }
         
-        if (isset($_SESSION['account']['isProfessional']) && $_SESSION['account']['isProfessional'] === false) {
+        $isProfessional = isset($_SESSION['account']['isProfessional']) ? $_SESSION['account']['isProfessional'] : false;
+        if ($isProfessional === false) {
             $query['$and'][] = array(
                 'isProfessional' => false
             );
         }
         
-        $datas = array();
-        $cursor = $this->_collection->find($query);
-        $cursor->sort($sort);
-        while ($cursor->hasNext()) {
-            $row = $cursor->getNext();
-            $row['locked'] = false;
-            $lockInfo = $this->_lock->count(array(
-                'project_id' => $this->_project_id,
-                'collection_id' => myMongoId($row['_id']),
-                'active' => true
-            ));
-            if ($lockInfo > 0) {
-                $row['locked'] = true;
+        if (empty($plugin_id)) {
+            $datas = array();
+            $cursor = $this->_collection->find($query);
+            $cursor->sort($sort);
+            while ($cursor->hasNext()) {
+                $row = $cursor->getNext();
+                $row['locked'] = false;
+                $lockInfo = $this->_lock->count(array(
+                    'project_id' => $this->_project_id,
+                    'collection_id' => myMongoId($row['_id']),
+                    'active' => true
+                ));
+                if ($lockInfo > 0) {
+                    $row['locked'] = true;
+                }
+                $datas[] = $row;
             }
-            $datas[] = $row;
+            return $this->rst($datas, $cursor->count(), true);
+        } else {
+            $datas = array();
+            fb($query,'LOG');
+            $cursor = $this->_plugin_collection->find($query);
+            $cursor->sort($sort);
+            while ($cursor->hasNext()) {
+                $row = $cursor->getNext();
+//                 $row['locked'] = false;
+//                 $lockInfo = $this->_lock->count(array(
+//                     'project_id' => $this->_project_id,
+//                     'collection_id' => myMongoId($row['_id']),
+//                     'active' => true
+//                 ));
+//                 if ($lockInfo > 0) {
+//                     $row['locked'] = true;
+//                 }
+                $datas[] = $row;
+            }
+            return $this->rst($datas, $cursor->count(), true);
         }
-        return $this->rst($datas, $cursor->count(), true);
     }
 
     /**
@@ -303,12 +332,6 @@ class CollectionController extends BaseActionController
     }
 
     /**
-     * 删除某个集合
-     */
-    public function dropAction()
-    {}
-
-    /**
      * 检测一个集合是否存在，根据名称和编号
      *
      * @param string $info            
@@ -393,6 +416,7 @@ class CollectionController extends BaseActionController
      */
     private function editPluginCollection($datas)
     {
+        unset($datas['project_id']);
         $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
         if (empty($plugin_collection_id)) {
             $this->_plugin_collection->update(array(

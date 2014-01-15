@@ -119,11 +119,6 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							action: 'lock'
 						}, {
 							xtype: 'button',
-							text: '整合输出',
-							iconCls: 'dbout',
-							action: 'dbout'
-						}, {
-							xtype: 'button',
 							text: '数据导入',
 							iconCls: 'dbimport',
 							action: 'dbimport'

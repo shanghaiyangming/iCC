@@ -18,11 +18,12 @@ Ext.define('icc.view.idatabase.Plugin.System.Add', {
 			}, {
 				name : 'xtype',
 				fieldLabel : '插件xtype',
-				allowBlank : false
+				allowBlank : false,
+				value : 'idatabaseDataGrid'
 			}]
 		}];
 		
-        this.callParent();
+        this.callParent(arguments);
     }
 	
 });
