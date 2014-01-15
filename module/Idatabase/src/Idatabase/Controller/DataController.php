@@ -975,7 +975,7 @@ class DataController extends BaseActionController
             'action' => $action
         );
         $collectionInfo = $this->_collection->findOne(array(
-            '_id' => myMongoId($this->collection_id)
+            '_id' => myMongoId($this->_collection_id)
         ));
         
         if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {

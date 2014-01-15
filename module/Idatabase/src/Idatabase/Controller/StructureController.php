@@ -594,6 +594,11 @@ class StructureController extends BaseActionController
             // fb(exceptionMsg($ex),'LOG');
         }
         
+        fb(array(
+            'project_id' => $this->_project_id,
+            'name' => $name
+        ),'LOG');
+        
         $collectionInfo = $this->_collection->findOne(array(
             'project_id' => $this->_project_id,
             'name' => $name
