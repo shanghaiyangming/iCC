@@ -85,6 +85,11 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 							checked : true
 						} ]
 					}, {
+						name : 'hook',
+						fieldLabel : 'Hook触发器',
+						allowBlank : true,
+						vtype : 'url'
+					}, {
 						xtype : 'fieldset',
 						title : '行展开模式设定（选填）',
 						collapsed : true,
@@ -110,12 +115,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 							fieldLabel : '行展开模板',
 							allowBlank : true
 						} ]
-					},{
-						name : 'hook',
-						fieldLabel : 'Hook触发器（请填写iWebsite中的对应触发逻辑，可选设定）',
-						allowBlank : true,
-						vtype : 'url'
-					} ]
+					}]
 				} ]
 			} ]
 		});
