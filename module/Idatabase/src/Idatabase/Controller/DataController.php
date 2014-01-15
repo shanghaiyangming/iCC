@@ -955,6 +955,10 @@ class DataController extends BaseActionController
             '_id' => $_id
         ));
         if ($collectionInfo == null) {
+            var_dump(array(
+                'project_id' => $this->_project_id,
+                '_id' => $_id
+            ));
             throw new \Exception('集合名称不存在于指定项目');
         }
         

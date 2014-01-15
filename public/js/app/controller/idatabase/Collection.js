@@ -220,7 +220,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						});
 						win.show();
 					} else {
-						this.buildDataPanel(grid.project_id, this.collectionTabPanel(), record);
+						this.buildDataPanel(grid, this.collectionTabPanel(), record);
 					}
 				}
 				return true;
@@ -238,7 +238,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						waitMsg: '系统处理中，请稍后……',
 						success: function(form, action) {
 							win.close();
-							me.buildDataPanel(grid.project_id, me.collectionTabPanel(), grid.getSelectionModel().getSelection()[0]);
+							me.buildDataPanel(grid, me.collectionTabPanel(), grid.getSelectionModel().getSelection()[0]);
 						},
 						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
@@ -319,11 +319,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var record = selections[0];
 					var project_id = grid.project_id;
 					var collection_id = record.get('_id');
+					var plugin_id = grid.plugin_id;
 					Ext.Ajax.request({
 						url: '/idatabase/mapping/index',
 						params: {
 							project_id: project_id,
-							collection_id: collection_id
+							collection_id: collection_id,
+							plugin_id:plugin_id
 						},
 						scope: me,
 						success: function(response) {
@@ -425,7 +427,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 		panel.close();
 		this.buildDataPanel(project_id, collection_id, collection_name, tabpanel, isTree);
 	},
-	buildDataPanel: function(project_id, tabpanel, record) {
+	buildDataPanel: function(grid, tabpanel, record) {
+		var project_id = grid.project_id;
+		var plugin_id = grid.plugin_id;
 		var collection_id = record.get('_id');
 		var collection_name = record.get('name');
 		var isTree = Ext.isBoolean(record.get('isTree')) ? record.get('isTree') : false;
@@ -955,7 +959,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							url: '/idatabase/data/tree',
 							extraParams: {
 								project_id: project_id,
-								collection_id: collection_id
+								collection_id: collection_id,
+								plugin_id : plugin_id
 							}
 						},
 						folderSort: true
@@ -971,7 +976,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								project_id: project_id,
 								collection_id: collection_id,
-								fatherField: ''
+								fatherField: '',
+								plugin_id : plugin_id
 							},
 							reader: {
 								type: 'json',
