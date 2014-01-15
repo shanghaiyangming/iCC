@@ -157,21 +157,18 @@ Ext.define('icc.controller.idatabase.Data', {
 								form.findField(field).next().setValue(true);
 							}
 						} else if (item.xtype == 'boxselect') {
-							field = field.replace("[]",'');
-							var fieldValue = selections[0].get(field);
-							var boxSelect = form.findField(field+'[]');
+							var boxSelect = form.findField(field);
+							var fieldValue = selections[0].get(field.replace("[]",''));
 							if (Ext.isArray(fieldValue)) {
-								boxSelect.setValue(fieldValue.join(','));
+								boxSelect.setValue(fieldValue);
 							}
 							else {
 								fieldValue = Ext.JSON.decode(fieldValue,true);
 								if (fieldValue!=null) {
-									boxSelect.setValue(fieldValue.join(','));
-									boxSelect.store.load(function(){
-										Ext.Array.forEach(fieldValue,function(item,index){
-											boxSelect.addValue(item);
-										});
-									});
+									boxSelect.setValue(fieldValue);
+								}
+								else {
+									console.log('boxSelect fieldValue is not a json string');
 								}
 							}
 

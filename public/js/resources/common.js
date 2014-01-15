@@ -25,20 +25,9 @@ Ext.onReady(function() {
 			setValue: function(v) {
 				var me = this;
 				if (!this.store.isLoaded && this.queryMode == 'remote') {
-					console.info(typeof(v));
-					console.info(v);
 					if (typeof(v) === 'string' || typeof(v) === 'number') {
 						if (this.store.proxy.type == 'ajax') {
-							console.log(v);
-							var decode = Ext.Json.decode(v,true);
-							if (decode==null) {
-								this.store.proxy.extraParams.idbComboboxSelectedValue = v;
-							}
-							else {
-								if (Ext.isArray(decode)) {
-									this.store.proxy.extraParams.idbComboboxSelectedValue = decode.join(',');
-								}
-							}
+							this.store.proxy.extraParams.idbComboboxSelectedValue = v;
 						}
 						try {
 							this.store.addListener('load', function() {

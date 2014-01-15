@@ -213,6 +213,16 @@ class StructureController extends BaseActionController
             return $this->msg(false, '字段描述已经存在');
         }
         
+        if ($datas['isBoxSelect']) {
+            if ($datas['type'] !== 'documentfield') {
+                return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+            }
+            
+            if (empty($datas['rshCollection'])) {
+                return $this->msg(false, '启用多选项时，必须设定“关联结合”');
+            }
+        }
+        
         $this->_structure->insert($datas);
         
         return $this->msg(true, '添加信息成功');
@@ -311,6 +321,16 @@ class StructureController extends BaseActionController
             return $this->msg(false, '字段描述已经存在');
         }
         
+        if ($datas['isBoxSelect']) {
+            if ($datas['type'] !== 'documentfield') {
+                return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+            }
+            
+            if (empty($datas['rshCollection'])) {
+                return $this->msg(false, '启用多选项时，必须设定“关联结合”');
+            }
+        }
+        
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
@@ -403,6 +423,16 @@ class StructureController extends BaseActionController
                 'collection_id' => $this->_collection_id
             )) && $oldStructureInfo['label'] != $row['label']) {
                 return $this->msg(false, '字段描述已经存在');
+            }
+            
+            if ($row['isBoxSelect']) {
+                if ($row['type'] !== 'documentfield') {
+                    return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+                }
+                
+                if (empty($row['rshCollection'])) {
+                    return $this->msg(false, '启用多选项时，必须设定“关联结合”');
+                }
             }
             
             $this->_structure->update(array(

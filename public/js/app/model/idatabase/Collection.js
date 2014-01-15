@@ -36,5 +36,8 @@ Ext.define('icc.model.idatabase.Collection', {
 	}, {
 		name : 'locked',
 		type : 'boolean'
+	}, {
+		name : 'hook',
+		type : 'string'
 	} ]
 });

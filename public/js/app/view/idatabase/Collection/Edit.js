@@ -113,7 +113,12 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 							fieldLabel : '行展开模板',
 							allowBlank : true
 						} ]
-					} ]
+					},{
+						name : 'hook',
+						fieldLabel : 'Hook触发器（请填写iWebsite中的对应触发逻辑，可选设定）',
+						allowBlank : true,
+						vtype : 'url'
+					}  ]
 				} ]
 			} ]
 		});

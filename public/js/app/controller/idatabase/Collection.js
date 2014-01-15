@@ -580,6 +580,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							addOrEditField.xtype = 'boxselect';
 							addOrEditField.name = recordField+'[]';
 							addOrEditField.multiSelect = true;
+							addOrEditField.valueParam = 'idbComboboxSelectedValue';
+							addOrEditField.delimiter = ',';
 						}
 						else {
 							addOrEditField.xtype = 'combobox';
@@ -711,7 +713,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						}
 
 						// 存在关联集合数据，则直接采用combobox的方式进行显示
-						if (rshCollection != '') {
+						if (rshCollection != '' && !isBoxSelect) {
 							column.field = {
 								xtype: 'combobox',
 								typeAhead: true,

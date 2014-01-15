@@ -51,7 +51,9 @@ Ext.define('icc.controller.idatabase.Structure', {
 						success: function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							form.reset();
-							store.load();
+							store.load(function(records){
+								form.findField('orderBy').setValue(store.getTotalCount());
+							});
 						},
 						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);

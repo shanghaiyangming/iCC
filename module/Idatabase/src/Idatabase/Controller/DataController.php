@@ -738,7 +738,7 @@ class DataController extends BaseActionController
                     $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     break;
                 case 'documentfield':
-                    if(!is_array($value) && is_string($value)) {
+                    if (! is_array($value) && is_string($value)) {
                         $value = trim($value);
                         if (! empty($value)) {
                             if (! isJson($value)) {
@@ -955,5 +955,27 @@ class DataController extends BaseActionController
         }
         
         return $collectionInfo['alias'];
+    }
+
+    /**
+     * 执行结束后操作
+     */
+    public function __destruct()
+    {
+        fastcgi_finish_request();
+        $controller = $this->params('controller');
+        $action = $this->params('action');
+        $_POST['__TRIGER__'] = array(
+            'controller' => $controller,
+            'action' => $action
+        );
+        $collectionInfo = $this->_collection->findOne(array(
+            '_id' => myMongoId($this->collection_id)
+        ));
+        
+        if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
+            doPost($collectionInfo['hook'], $_POST);
+        }
+        return false;
     }
 }

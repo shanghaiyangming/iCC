@@ -125,7 +125,8 @@ class IndexController extends Action
      */
     private function endsWith($haystack, $needle)
     {
-        if (strlen($needle) === 0) {
+        $length = strlen($needle);
+        if ($length === 0) {
             return true;
         }
         return (substr($haystack, - $length) === $needle);
@@ -151,7 +152,8 @@ class IndexController extends Action
 
     /**
      * 解析class名称
-     * @param string $className
+     * 
+     * @param string $className            
      * @return array
      */
     private function parseClassName($className)
@@ -165,7 +167,8 @@ class IndexController extends Action
 
     /**
      * 解析action名称
-     * @param string $methodName
+     * 
+     * @param string $methodName            
      * @return string
      */
     private function parseMethodName($methodName)
@@ -175,7 +178,8 @@ class IndexController extends Action
 
     /**
      * 将方法名转换为router路径
-     * @param string $name
+     * 
+     * @param string $name            
      * @return string
      */
     private function convert($name)

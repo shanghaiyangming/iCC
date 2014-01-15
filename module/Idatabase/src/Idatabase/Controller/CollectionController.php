@@ -123,6 +123,7 @@ class CollectionController extends BaseActionController
             $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
             $plugin_id = $this->params()->fromPost('plugin_id', '');
+            $hook = $this->params()->fromPost('hook', '');
             
             if ($project_id == null) {
                 return $this->msg(false, '无效的项目编号');
@@ -163,6 +164,7 @@ class CollectionController extends BaseActionController
             $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
             $datas['isRowExpander'] = $isRowExpander;
             $datas['rowExpanderTpl'] = $rowExpanderTpl;
+            $datas['hook'] = $hook;
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加集合成功');
@@ -206,6 +208,7 @@ class CollectionController extends BaseActionController
         $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
         $plugin_id = $this->params()->fromPost('plugin_id', '');
+        $hook = $this->params()->fromPost('hook', '');
         
         if ($_id == null) {
             return $this->msg(false, '无效的集合编号');
@@ -258,6 +261,7 @@ class CollectionController extends BaseActionController
         $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
         $datas['isRowExpander'] = $isRowExpander;
         $datas['rowExpanderTpl'] = $rowExpanderTpl;
+        $datas['hook'] = $hook;
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
