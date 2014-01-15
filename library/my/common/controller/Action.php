@@ -41,13 +41,13 @@ abstract class Action extends AbstractActionController
                     $event->setViewModel($this->msg(false, '未通过身份验证'));
                 }
                 
-                //授权登录后，检查是否有权限访问指定资源
+                // 授权登录后，检查是否有权限访问指定资源
                 $role = isset($_SESSION['account']['role']) ? $_SESSION['account']['role'] : false;
                 $resources = isset($_SESSION['account']['resources']) ? $_SESSION['account']['resources'] : array();
                 $action = $this->getMethodFromAction($action);
                 $currentResource = $controller . 'Controller\\' . $action;
-                fb($currentResource,'LOG');
-
+                // fb($currentResource, 'LOG');
+                
                 if ($role && $role !== 'root') {
                     $acl = new Acl();
                     $acl->addRole(new Role($role));
@@ -56,13 +56,14 @@ abstract class Action extends AbstractActionController
                         $acl->allow($role, $resource);
                     }
                     
+                    $isAllowed = false;
                     try {
-                        if ($acl->isAllowed($role, $currentResource) === false) {
-                            $event->stopPropagation(true);
-                            $event->setViewModel($this->msg(false, '很抱歉，您访问的资源尚未得到授权'));
+                        if ($acl->isAllowed($role, $currentResource) === true) {
+                            $isAllowed = true;
                         }
-                    }
-                    catch(InvalidArgumentException $e) {
+                    } catch (InvalidArgumentException $e) {}
+                    
+                    if (! $isAllowed) {
                         $event->stopPropagation(true);
                         $event->setViewModel($this->msg(false, '很抱歉，您访问的资源尚未得到授权'));
                     }
