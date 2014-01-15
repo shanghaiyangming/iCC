@@ -958,7 +958,7 @@ class DataController extends BaseActionController
     }
 
     /**
-     * 执行结束后操作
+     * 对于集合进行了任何操作，那么出发联动事件，联动修改其他集合的相关数据
      */
     public function __destruct()
     {
@@ -966,6 +966,7 @@ class DataController extends BaseActionController
         $controller = $this->params('controller');
         $action = $this->params('action');
         $_POST['__TRIGER__'] = array(
+            'collection' => $this->getCollectionAliasById($this->_collection_id),
             'controller' => $controller,
             'action' => $action
         );

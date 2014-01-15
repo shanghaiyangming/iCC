@@ -88,10 +88,17 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 							checked : true
 						} ]
 					}, {
-						name : 'hook',
-						fieldLabel : 'Hook触发器',
-						allowBlank : true,
-						vtype : 'url'
+						xtype : 'fieldset',
+						title : '触发iWebsite关联逻辑的URL(可选项)',
+						collapsed : true,
+						collapsible : true,
+						items : [ {
+							xtype : 'textfield',
+							name : 'hook',
+							fieldLabel : 'Hook触发器',
+							allowBlank : true,
+							vtype : 'url'
+						}]
 					}, {
 						xtype : 'fieldset',
 						title : '行展开模式设定（选填）',
