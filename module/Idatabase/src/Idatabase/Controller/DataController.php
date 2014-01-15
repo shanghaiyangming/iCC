@@ -959,6 +959,10 @@ class DataController extends BaseActionController
 
     /**
      * 对于集合进行了任何操作，那么出发联动事件，联动修改其他集合的相关数据
+     * 提交全部POST参数以及系统默认的触发参数__TRIGER__
+     * $_POST['__TRIGER__']['collection'] 触发事件集合的名称
+     * $_POST['__TRIGER__']['controller'] 触发控制器
+     * $_POST['__TRIGER__']['action'] 触发动作
      */
     public function __destruct()
     {

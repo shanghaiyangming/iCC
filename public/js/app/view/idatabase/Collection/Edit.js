@@ -54,7 +54,7 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 					allowBlank : false
 				}, {
 					xtype : 'fieldset',
-					title : '高级设定',
+					title : '高级设定(选填)',
 					collapsed : true,
 					collapsible : true,
 					items : [ {
@@ -89,7 +89,7 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 						} ]
 					}, {
 						xtype : 'fieldset',
-						title : '触发iWebsite关联逻辑的URL(可选项)',
+						title : '触发iWebsite关联逻辑的URL(选填)',
 						collapsed : true,
 						collapsible : true,
 						items : [ {
