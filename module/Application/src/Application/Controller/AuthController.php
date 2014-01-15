@@ -113,7 +113,7 @@ class AuthController extends Action
     public function keepAction()
     {
         if (! isset($_SESSION['account'])) {
-            return $this->msg(false, '授权已经过期，请重新登录');
+            return $this->deny('很抱歉，您的登录已经注销，请重新登录。');
         }
         return $this->msg(true, 'keep is ok');
     }

@@ -65,7 +65,7 @@ abstract class Action extends AbstractActionController
                     
                     if (! $isAllowed) {
                         $event->stopPropagation(true);
-                        $event->setViewModel($this->msg(false, '很抱歉，您访问的资源尚未得到授权'));
+                        $event->setViewModel($this->deny());
                     }
                 }
             }
@@ -192,5 +192,19 @@ abstract class Action extends AbstractActionController
             }
         }
         return $rst;
+    }
+
+    /**
+     * 权限不足，拒绝访问提示
+     * 
+     * @param string $message            
+     * @return JsonModel
+     */
+    public function deny($message = '很遗憾，您无权访问部分资源，请联系管理员开放权限；或者您的登录已经注销，请重新登录')
+    {
+        return new JsonModel(array(
+            'access' => 'deny',
+            'message' => $message
+        ));
     }
 }
