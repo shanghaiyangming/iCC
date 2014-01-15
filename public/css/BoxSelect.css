@@ -51,6 +51,10 @@ ul.x-boxselect-list.x-boxselect-singleselect {
 }
 .x-boxselect-item-close {
 	cursor: pointer;
+	font-size: 12px;
+    line-height: 18px;
+    right: 4px;
+    top: 0;
 }
 .x-boxselect-hideselections .x-boundlist-selected {
     display: none;

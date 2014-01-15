@@ -74,24 +74,7 @@ class StructureController extends BaseActionController
             $row = $cursor->getNext();
             if (isset($row['rshCollection']) && $row['rshCollection'] != '') {
                 $row = array_merge($row, $this->getRshCollectionInfo($row['rshCollection']));
-            }
-            
-            // 追加读取quick字段
-            if (! empty($row['isQuick']) && ! empty($row['quickSourceCollection']) && ! empty($row['quickTargetCollection'])) {
-                $row['__QUICK__'] = array(
-                    'drag' => array(
-                        'collectionName' => $row['quickSourceCollection'],
-                        'structure' => $this->getRshCollectionInfo($row['quickSourceCollection']),
-                        'query' => $row['quickSearchCondition']
-                    ),
-                    'drop' => array(
-                        'collectionName' => $row['quickTargetCollection'],
-                        'structure' => $this->getRshCollectionInfo($row['quickTargetCollection']),
-                        'query' => $row['quickSearchCondition']
-                    )
-                );
-            }
-            
+            } 
             $rst[] = $row;
         }
         

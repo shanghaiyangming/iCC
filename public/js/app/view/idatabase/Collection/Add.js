@@ -119,7 +119,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 						}, {
 							xtype : 'textareafield',
 							name : 'rowExpanderTpl',
-							fieldLabel : '行展开模板',
+							fieldLabel : '行展开模板(支持Ext.Xtemplate)',
 							allowBlank : true
 						} ]
 					}]
