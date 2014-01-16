@@ -61,9 +61,6 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'isQuick',
 		type : 'boolean'
 	}, {
-		name : 'quickSourceCollection',
-		type : 'string'
-	}, {
 		name : 'quickTargetCollection',
 		type : 'string'
 	}, {

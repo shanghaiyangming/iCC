@@ -210,11 +210,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 					}, {
 						xtype: 'idatabaseCollectionCombobox',
 						project_id: this.project_id,
-						fieldLabel: '数据来源集合',
-						name: 'rshCollection'
-					}, {
-						xtype: 'idatabaseCollectionCombobox',
-						project_id: this.project_id,
 						fieldLabel: '目标集合列表',
 						name: 'quickTargetCollection'
 					}, {
