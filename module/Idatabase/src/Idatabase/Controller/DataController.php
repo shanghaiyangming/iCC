@@ -137,7 +137,7 @@ class DataController extends BaseActionController
      *
      * @var int
      */
-    private $_maxDepth = 500;
+    private $_maxDepth = 1000;
 
     /**
      * 初始化函数

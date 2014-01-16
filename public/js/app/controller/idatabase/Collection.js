@@ -674,6 +674,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						};
 						switch (recordType) {
 						case 'documentfield':
+							column.align = 'center';
 							column.field = {
 								xtype: 'textfield',
 								allowBlank: allowBlank
