@@ -969,10 +969,6 @@ class DataController extends BaseActionController
         ));
         
         if ($collectionInfo == null) {
-            var_dump(array(
-                'project_id' => $this->_project_id,
-                'alias' => $alias
-            ));
             throw new \Exception('集合名称不存在于指定项目');
         }
         
@@ -995,10 +991,6 @@ class DataController extends BaseActionController
             '_id' => $_id
         ));
         if ($collectionInfo == null) {
-            var_dump(array(
-                'project_id' => $this->_project_id,
-                '_id' => $_id
-            ));
             throw new \Exception('集合名称不存在于指定项目');
         }
         
@@ -1011,6 +1003,7 @@ class DataController extends BaseActionController
      * $_POST['__TRIGER__']['collection'] 触发事件集合的名称
      * $_POST['__TRIGER__']['controller'] 触发控制器
      * $_POST['__TRIGER__']['action'] 触发动作
+     * 为了确保调用安全，签名方法为所有POST参数按照字母顺序排列，构建的字符串substr(sha1(k1=v1&k2=v2连接密钥),0,32)，做个小欺骗，让签名看起来很像MD5的。
      */
     public function __destruct()
     {
@@ -1023,10 +1016,14 @@ class DataController extends BaseActionController
             'action' => $action
         );
         $collectionInfo = $this->_collection->findOne(array(
-            '_id' => myMongoId($this->_collection_id)
+            '_id' => myMongoId($this->_collection_id),
+            'isAutoHook' => true
         ));
         
         if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
+            ksort($_POST);
+            $sign = substr(sha1(http_build_query($_POST.$collectionInfo['hookKey'])),0,32);
+            $_POST['__SIGN__'] = $sign;
             doPost($collectionInfo['hook'], $_POST);
         }
         return false;

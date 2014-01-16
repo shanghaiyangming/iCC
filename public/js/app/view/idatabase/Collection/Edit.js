@@ -113,6 +113,12 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 							fieldLabel : 'Hook触发器',
 							allowBlank : true,
 							vtype : 'url'
+						}, {
+							xtype : 'textfield',
+							name : 'hookKey',
+							fieldLabel : 'Hook安全密钥(至少8位)',
+							allowBlank : true,
+							minLength : 8
 						} ]
 					}, {
 						xtype : 'fieldset',
