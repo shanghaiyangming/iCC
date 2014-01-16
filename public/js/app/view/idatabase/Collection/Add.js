@@ -90,12 +90,27 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 						collapsed : true,
 						collapsible : true,
 						items : [ {
+							xtype : 'radiogroup',
+							fieldLabel : '是否自动执行',
+							defaultType : 'radiofield',
+							layout : 'hbox',
+							items : [ {
+								boxLabel : '是',
+								name : 'isAutoHook',
+								inputValue : true,
+								checked : true
+							}, {
+								boxLabel : '否',
+								name : 'isAutoHook',
+								inputValue : false
+							} ]
+						}, {
 							xtype : 'textfield',
 							name : 'hook',
 							fieldLabel : 'Hook触发器',
 							allowBlank : true,
 							vtype : 'url'
-						}]
+						} ]
 					}, {
 						xtype : 'fieldset',
 						title : '行展开模式设定（选填）',
@@ -122,7 +137,7 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 							fieldLabel : '行展开模板(支持Ext.Xtemplate)',
 							allowBlank : true
 						} ]
-					}]
+					} ]
 				} ]
 			} ]
 		});

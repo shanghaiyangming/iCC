@@ -152,6 +152,7 @@ class CollectionController extends BaseActionController
             $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
             $plugin_id = $this->params()->fromPost('plugin_id', '');
+            $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
             $hook = $this->params()->fromPost('hook', '');
             
             if ($project_id == null) {
@@ -193,6 +194,7 @@ class CollectionController extends BaseActionController
             $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
             $datas['isRowExpander'] = $isRowExpander;
             $datas['rowExpanderTpl'] = $rowExpanderTpl;
+            $datas['isAutoHook'] = $isAutoHook;
             $datas['hook'] = $hook;
             $this->_collection->insert($datas);
             
@@ -237,6 +239,7 @@ class CollectionController extends BaseActionController
         $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
         $plugin_id = $this->params()->fromPost('plugin_id', '');
+        $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
         $hook = $this->params()->fromPost('hook', '');
         
         if ($_id == null) {
@@ -290,6 +293,7 @@ class CollectionController extends BaseActionController
         $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
         $datas['isRowExpander'] = $isRowExpander;
         $datas['rowExpanderTpl'] = $rowExpanderTpl;
+        $datas['isAutoHook'] = $isAutoHook;
         $datas['hook'] = $hook;
         
         $this->_collection->update(array(

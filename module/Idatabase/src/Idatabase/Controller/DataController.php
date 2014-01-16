@@ -892,14 +892,9 @@ class DataController extends BaseActionController
                         );
                         break;
                     case 'boolfield':
-                        if (trim($_REQUEST[$field]) != '') {
-                            $subQuery[$field] = filter_var(trim($_REQUEST[$field]), FILTER_VALIDATE_BOOLEAN);
-                        }
+                        $subQuery[$field] = filter_var(trim($_REQUEST[$field]), FILTER_VALIDATE_BOOLEAN);
                         break;
                     default:
-                        // fb($detail['type'],'LOG');
-                        // fb($_REQUEST[$field],'LOG');
-                        // fb($field,'LOG');
                         if ($not)
                             $subQuery[$field]['$ne'] = trim($_REQUEST[$field]);
                         else

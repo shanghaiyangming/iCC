@@ -474,7 +474,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var constraintsValueField = record.get('constraintsValueField');
 					var jsonSearch = record.get('rshSearchCondition');
 					
-					//获取fatherField
+					// 获取fatherField
 					if (record.get('rshKey')) {
 						treeField = record.get('field');
 						treeLabel = record.get('label');
@@ -493,7 +493,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var recordLabel = record.get('label');
 					var allowBlank = !record.get('required');
 
-					//创建添加和编辑的field表单开始
+					// 创建添加和编辑的field表单开始
 					var addOrEditField = {
 						xtype: recordType,
 						fieldLabel: recordLabel,
@@ -612,7 +612,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					}
 
 					addOrEditFields.push(addOrEditField);
-					//创建添加和编辑的field表单结束
+					// 创建添加和编辑的field表单结束
 
 					// 创建model的fields开始
 					var field = {
@@ -754,7 +754,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 						var rshCollection = record.get('rshCollection');
 
-						//$not操作
+						// $not操作
 						var exclusive = {
 							fieldLabel: '非',
 							name: 'exclusive__' + recordField,
@@ -764,7 +764,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							checked: false
 						};
 
-						//开启精确匹配
+						// 开启精确匹配
 						var exactMatch = {
 							fieldLabel: '等于',
 							name: 'exactMatch__' + recordField,
@@ -794,10 +794,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 							});
 
 							comboboxSearchStore.addListener('load', function() {
-								var insertRecord = {};
-								insertRecord[record.get('rshCollectionDisplayField')] = '无';
-								insertRecord[record.get('rshCollectionValueField')] = '';
-								comboboxSearchStore.insert(0, Ext.create(rshCollectionModel, insertRecord));
+								var rec = comboboxSearchStore.findRecord(record.get('rshCollectionValueField'),'',0,false,false,true);
+								if(rec==null) {
+									var insertRecord = {};
+									insertRecord[record.get('rshCollectionDisplayField')] = '无';
+									insertRecord[record.get('rshCollectionValueField')] = '';
+									comboboxSearchStore.insert(0, Ext.create(rshCollectionModel, insertRecord));
+								}
+								return true;
 							});
 
 							searchFieldItem = {
@@ -909,7 +913,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					// 创建条件检索form结束
 				});
 
-				//完善树状结构
+				// 完善树状结构
 				gridColumns = Ext.Array.merge(gridColumns, [{
 					text: "_id",
 					sortable: false,
