@@ -40,6 +40,25 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'isBoxSelect',
 		type : 'boolean'
 	}, {
+		name : 'isLinkageMenu',
+		type : 'boolean'
+	}, {
+		name : 'rshConstraintsField',
+		type : 'string'
+	}, {
+		name : 'constraintsValueField',
+		type : 'string'
+	}, {
+		name : 'rshSearchCondition',
+		type : 'string',
+		convert : function(value) {
+			if (Ext.isObject(value) || Ext.isArray(value)) {
+				return Ext.JSON.encode(value);
+			} else {
+				return value;
+			}
+		}
+	}, {
 		name : 'rshKey',
 		type : 'boolean'
 	}, {
@@ -63,15 +82,5 @@ Ext.define('icc.model.idatabase.Structure', {
 	}, {
 		name : 'quickTargetCollection',
 		type : 'string'
-	}, {
-		name : 'quickSearchCondition',
-		type : 'string',
-		convert : function(value) {
-			if (Ext.isObject(value) || Ext.isArray(value)) {
-				return Ext.JSON.encode(value);
-			} else {
-				return value;
-			}
-		}
 	} ]
 });

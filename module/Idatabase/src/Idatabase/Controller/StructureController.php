@@ -139,7 +139,10 @@ class StructureController extends BaseActionController
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
-        $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
+        $datas['rshSearchCondition'] = trim($this->params()->fromPost('rshSearchCondition', ''));
+        $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshConstraintsField'] = trim($this->params()->fromPost('rshConstraintsField', ''));
+        $datas['constraintsValueField'] = trim($this->params()->fromPost('constraintsValueField', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -157,6 +160,18 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请选择字段类型');
         }
         
+        if ($datas['rshSearchCondition'] !== '') {
+            if (isJson($datas['rshSearchCondition'])) {
+                try {
+                    $datas['rshSearchCondition'] = Json::decode($datas['rshSearchCondition'], Json::TYPE_ARRAY);
+                } catch (\Exception $e) {
+                    $this->msg(false, '关联集合约束查询条件的json格式错误');
+                }
+            } else {
+                return $this->msg(false, '关联集合约束查询条件的json格式错误');
+            }
+        }
+        
         if ($datas['isQuick'] === true) {
             if ($datas['type'] !== 'documentfield') {
                 return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
@@ -164,18 +179,6 @@ class StructureController extends BaseActionController
             
             if ($datas['quickTargetCollection'] === '') {
                 return $this->msg(false, '请选快速录入的目标集合');
-            }
-            
-            if ($datas['quickSearchCondition'] !== '') {
-                if (isJson($datas['quickSearchCondition'])) {
-                    try {
-                        $datas['quickSearchCondition'] = Json::decode($datas['quickSearchCondition'], Json::TYPE_ARRAY);
-                    } catch (\Exception $e) {
-                        $this->msg(false, '快速录入查询条件的json格式错误');
-                    }
-                } else {
-                    return $this->msg(false, '快速录入查询条件的json格式错误');
-                }
             }
         }
         
@@ -238,7 +241,10 @@ class StructureController extends BaseActionController
         $datas['orderBy'] = (int) filter_var($this->params()->fromPost('orderBy', 0), FILTER_VALIDATE_INT);
         $datas['isQuick'] = filter_var($this->params()->fromPost('isQuick', false), FILTER_VALIDATE_BOOLEAN);
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
-        $datas['quickSearchCondition'] = trim($this->params()->fromPost('quickSearchCondition', ''));
+        $datas['rshSearchCondition'] = trim($this->params()->fromPost('rshSearchCondition', ''));
+        $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
+        $datas['rshConstraintsField'] = trim($this->params()->fromPost('rshConstraintsField', ''));
+        $datas['constraintsValueField'] = trim($this->params()->fromPost('constraintsValueField', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -256,6 +262,18 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请选择字段类型');
         }
         
+        if ($datas['rshSearchCondition'] !== '') {
+            if (isJson($datas['rshSearchCondition'])) {
+                try {
+                    $datas['rshSearchCondition'] = Json::decode($datas['rshSearchCondition'], Json::TYPE_ARRAY);
+                } catch (\Exception $e) {
+                    $this->msg(false, '关联集合约束查询条件的json格式错误');
+                }
+            } else {
+                return $this->msg(false, '关联集合约束查询条件的json格式错误');
+            }
+        }
+        
         if ($datas['isQuick'] === true) {
             if ($datas['type'] !== 'documentfield') {
                 return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
@@ -263,18 +281,6 @@ class StructureController extends BaseActionController
             
             if ($datas['quickTargetCollection'] === '') {
                 return $this->msg(false, '请选快速录入的目标集合');
-            }
-            
-            if ($datas['quickSearchCondition'] !== '') {
-                if (isJson($datas['quickSearchCondition'])) {
-                    try {
-                        $datas['quickSearchCondition'] = Json::decode($datas['quickSearchCondition'], Json::TYPE_ARRAY);
-                    } catch (\Exception $e) {
-                        $this->msg(false, '快速录入查询条件的json格式错误');
-                    }
-                } else {
-                    return $this->msg(false, '快速录入查询条件的json格式错误');
-                }
             }
         }
         
@@ -354,6 +360,18 @@ class StructureController extends BaseActionController
                 return $this->msg(false, '请选择字段类型');
             }
             
+            if ($row['rshSearchCondition'] !== '') {
+                if (isJson($row['rshSearchCondition'])) {
+                    try {
+                        $row['rshSearchCondition'] = Json::decode($row['rshSearchCondition'], Json::TYPE_ARRAY);
+                    } catch (\Exception $e) {
+                        $this->msg(false, '关联集合约束查询条件的json格式错误');
+                    }
+                } else {
+                    return $this->msg(false, '关联集合约束查询条件的json格式错误');
+                }
+            }
+            
             if ($row['isQuick'] === true) {
                 if ($row['type'] !== 'documentfield') {
                     return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
@@ -361,18 +379,6 @@ class StructureController extends BaseActionController
                 
                 if ($row['quickTargetCollection'] === '') {
                     return $this->msg(false, '请选快速录入的目标集合');
-                }
-                
-                if ($row['quickSearchCondition'] !== '') {
-                    if (isJson($row['quickSearchCondition'])) {
-                        try {
-                            $row['quickSearchCondition'] = Json::decode($row['quickSearchCondition'], Json::TYPE_ARRAY);
-                        } catch (\Exception $e) {
-                            $this->msg(false, '快速录入查询条件的json格式错误');
-                        }
-                    } else {
-                        return $this->msg(false, '快速录入查询条件的json格式错误');
-                    }
                 }
             }
             
