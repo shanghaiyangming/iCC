@@ -987,7 +987,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								project_id: project_id,
 								collection_id: collection_id,
-								fatherField: '',
 								plugin_id : plugin_id
 							},
 							reader: {

@@ -39,11 +39,13 @@ Ext.onReady(function() {
 								}
 
 								try {
-									var insertRecord = {};
-									insertRecord[this.displayField] = '无';
-									insertRecord[this.valueField] = '';
-									var r = Ext.create(this.store.model, insertRecord);
-									this.store.insert(0, r);
+									if(this.store.findRecord(this.valueField,'',0,false,false,true)==null) {
+										var insertRecord = {};
+										insertRecord[this.displayField] = '无';
+										insertRecord[this.valueField] = '';
+										var r = Ext.create(this.store.model, insertRecord);
+										this.store.insert(0, r);
+									}
 								} catch (e) {
 									console.info(e);
 								}

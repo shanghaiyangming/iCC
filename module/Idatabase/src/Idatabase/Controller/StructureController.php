@@ -204,6 +204,12 @@ class StructureController extends BaseActionController
             }
         }
         
+        if ($datas['isFatherField']) {
+            if (empty($datas['rshCollection'])) {
+                return $this->msg(false, '复选项，必须设定“关联结合”，且关联结合为自身');
+            }
+        }
+        
         $this->_structure->insert($datas);
         
         return $this->msg(true, '添加信息成功');
@@ -310,6 +316,12 @@ class StructureController extends BaseActionController
             }
         }
         
+        if ($datas['isFatherField']) {
+            if (empty($datas['rshCollection'])) {
+                return $this->msg(false, '复选项，必须设定“关联结合”，且关联结合为自身');
+            }
+        }
+        
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
@@ -379,6 +391,12 @@ class StructureController extends BaseActionController
                 
                 if ($row['quickTargetCollection'] === '') {
                     return $this->msg(false, '请选快速录入的目标集合');
+                }
+            }
+            
+            if ($row['isFatherField']) {
+                if (empty($row['rshCollection'])) {
+                    return $this->msg(false, '复选项，必须设定“关联结合”，且关联结合为自身');
                 }
             }
             

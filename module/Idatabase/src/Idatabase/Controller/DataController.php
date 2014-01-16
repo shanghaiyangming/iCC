@@ -128,9 +128,16 @@ class DataController extends BaseActionController
     /**
      * 无法解析的json数组异常时，错误提示信息
      *
-     * @var unknown
+     * @var string
      */
     private $_jsonExceptMessage = '子文档类型数据必须符合标准json格式，示例：{"a":1}<br />1.请注意属性务必使用双引号包裹<br />2.请检查Json数据是否完整<br />';
+
+    /**
+     * 为了防止死循环
+     *
+     * @var int
+     */
+    private $_maxDepth = 500;
 
     /**
      * 初始化函数
@@ -221,7 +228,6 @@ class DataController extends BaseActionController
             $sort = $this->defaultOrder();
         }
         
-        fb($query, 'LOG');
         $cursor = $this->_data->find($query, $this->_fields);
         $total = $cursor->count();
         $cursor->sort($sort);
@@ -361,21 +367,31 @@ class DataController extends BaseActionController
             return $this->msg(false, '树形结构，请设定字段属性和父字段属性');
         }
         
+        fb($this->_fatherField, 'LOG');
         $fatherValue = $this->params()->fromQuery('fatherValue', '');
         $tree = $this->tree($this->_fatherField, $fatherValue);
+        if (! is_array($tree)) {
+            return $tree;
+        }
         return new JsonModel($tree);
     }
 
     /**
      * 递归的方式获取树状数据
      *
-     * @param string $fatherNode            
+     * @param string $fatherField            
+     * @param string $fatherValue            
+     * @return Ambigous <\Zend\View\Model\JsonModel, multitype:string Ambigous <boolean, bool> >|multitype:|multitype:Ambigous <\MongoId, boolean>
      */
-    private function tree($fatherField, $fatherValue = '')
+    private function tree($fatherField, $fatherValue = '', $depth = 0)
     {
         $rshCollection = isset($this->_schema['post'][$fatherField]['rshCollection']) ? $this->_schema['post'][$fatherField]['rshCollection'] : '';
         if (empty($rshCollection))
             return $this->msg(false, '无效的关联集合');
+        
+        if ($this->_schema['post'][$fatherField]['type'] === 'numberfield') {
+            $fatherValue = preg_match("/^[0-9]+\.[0-9]+$/", $fatherValue) ? floatval($fatherValue) : intval($fatherValue);
+        }
         
         $rshCollectionKeyField = $this->_rshCollection[$rshCollection]['rshCollectionKeyField'];
         $rshCollectionValueField = $this->_rshCollection[$rshCollection]['rshCollectionValueField'];
@@ -401,7 +417,11 @@ class DataController extends BaseActionController
             } else {
                 $fatherValue = $row[$rshCollectionValueField];
             }
-            $children = $this->tree($fatherField, $fatherValue);
+            
+            $children = null;
+            if ($depth < $this->_maxDepth) {
+                $children = $this->tree($fatherField, $fatherValue, $depth ++);
+            }
             if (! empty($children)) {
                 $row['expanded'] = true;
                 $row['children'] = $children;
@@ -1022,7 +1042,7 @@ class DataController extends BaseActionController
         
         if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
             ksort($_POST);
-            $sign = substr(sha1(http_build_query($_POST.$collectionInfo['hookKey'])),0,32);
+            $sign = substr(sha1(http_build_query($_POST . $collectionInfo['hookKey'])), 0, 32);
             $_POST['__SIGN__'] = $sign;
             doPost($collectionInfo['hook'], $_POST);
         }

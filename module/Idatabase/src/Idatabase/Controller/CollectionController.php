@@ -153,7 +153,8 @@ class CollectionController extends BaseActionController
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
             $plugin_id = $this->params()->fromPost('plugin_id', '');
             $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
-            $hook = $this->params()->fromPost('hook', '');
+            $hook = trim($this->params()->fromPost('hook', ''));
+            $hookKey = trim($this->params()->fromPost('hookKey', ''));
             
             if ($project_id == null) {
                 return $this->msg(false, '无效的项目编号');
@@ -196,6 +197,7 @@ class CollectionController extends BaseActionController
             $datas['rowExpanderTpl'] = $rowExpanderTpl;
             $datas['isAutoHook'] = $isAutoHook;
             $datas['hook'] = $hook;
+            $datas['hookKey'] = $hookKey;
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加集合成功');
@@ -240,7 +242,8 @@ class CollectionController extends BaseActionController
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
         $plugin_id = $this->params()->fromPost('plugin_id', '');
         $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
-        $hook = $this->params()->fromPost('hook', '');
+        $hook = trim($this->params()->fromPost('hook', ''));
+        $hookKey = trim($this->params()->fromPost('hookKey', ''));
         
         if ($_id == null) {
             return $this->msg(false, '无效的集合编号');
@@ -295,6 +298,7 @@ class CollectionController extends BaseActionController
         $datas['rowExpanderTpl'] = $rowExpanderTpl;
         $datas['isAutoHook'] = $isAutoHook;
         $datas['hook'] = $hook;
+        $datas['hookKey'] = $hookKey;
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)

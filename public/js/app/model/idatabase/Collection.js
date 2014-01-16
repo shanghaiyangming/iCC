@@ -42,5 +42,8 @@ Ext.define('icc.model.idatabase.Collection', {
 	}, {
 		name : 'hook',
 		type : 'string'
-	} ]
+	}, {
+		name : 'hookKey',
+		type : 'string'
+	}]
 });

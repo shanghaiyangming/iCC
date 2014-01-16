@@ -97,12 +97,12 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 							items : [ {
 								boxLabel : '是',
 								name : 'isAutoHook',
-								inputValue : true,
-								checked : true
+								inputValue : true								
 							}, {
 								boxLabel : '否',
 								name : 'isAutoHook',
-								inputValue : false
+								inputValue : false,
+								checked : true
 							} ]
 						}, {
 							xtype : 'textfield',
