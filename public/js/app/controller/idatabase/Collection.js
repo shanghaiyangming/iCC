@@ -1016,7 +1016,17 @@ Ext.define('icc.controller.idatabase.Collection', {
 				panel.on({
 					beforerender: function(panel) {
 						var grid = panel.down('grid') ? panel.down('grid') : panel.down('treepanel');
-						grid.store.on('load', function(store, records, success) {
+						grid.store.on('load', function() {
+							if(isTree) {
+								store = arguments[0];
+								records = arguments[2];
+								success = arguments[3];
+							}
+							else {
+								store = arguments[0];
+								records = arguments[1];
+								success = arguments[2];
+							}
 							if (success) {
 								var loop = gridComboboxColumns.length;
 								if (loop > 0) {
@@ -1026,7 +1036,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 											ids.push(records[index].get(gridComboboxColumn.dataIndex));
 										}
 										var store = gridComboboxColumn.field.store;
-										store.proxy.extraParams.idbComboboxSelectedValue = ids.join(',');
+										if(isTree) {
+											store.proxy.extraParams.limit = 10000;
+										}
+										else {
+											store.proxy.extraParams.idbComboboxSelectedValue = ids.join(',');
+										}
 										store.load(function() {
 											loop -= 1;
 											if (loop == 0) {
