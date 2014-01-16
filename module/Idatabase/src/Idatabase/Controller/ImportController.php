@@ -175,7 +175,7 @@ class ImportController extends BaseActionController
                 {
                     $insertData = array();
                     foreach ($titles as $col => $colName) {
-                        $insertData[$colName] = $row[$col];
+                        $insertData[$colName] = $this->dealData($row[$col], $this->_fields[$colName]);
                     }
                     $this->_data->insertByFindAndModify($insertData);
                     unset($insertData);
@@ -248,12 +248,14 @@ class ImportController extends BaseActionController
                 $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                 break;
             case 'documentfield':
-                $value = trim($value);
-                if (! empty($value)) {
-                    if (isJson($value)) {
-                        try {
-                            $value = Json::decode($value, Json::TYPE_ARRAY);
-                        } catch (\Exception $e) {}
+                if (is_string($value)) {
+                    $value = trim($value);
+                    if (! empty($value)) {
+                        if (isJson($value)) {
+                            try {
+                                $value = Json::decode($value, Json::TYPE_ARRAY);
+                            } catch (\Exception $e) {}
+                        }
                     }
                 }
                 break;

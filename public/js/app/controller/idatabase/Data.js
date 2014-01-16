@@ -311,8 +311,9 @@ Ext.define('icc.controller.idatabase.Data', {
 					});
 
 					store.proxy.extraParams.action = button.action;
+					store.proxy.extraParams.start = 0;
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
-
+					
 					if (button.action == 'excel') {
 						Ext.Msg.confirm('系统提示', '导出数据有可能需要较长的时间，请点击“导出”按钮后，耐心等待，两次操作间隔需大于30秒！', function(btn) {
 							if (btn == 'yes') {

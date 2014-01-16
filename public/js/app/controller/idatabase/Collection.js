@@ -469,6 +469,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 				
 				Ext.Array.forEach(records, function(record) {
 					var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
+					var isLinkageMenu = Ext.isBoolean(record.get('isLinkageMenu')) ? record.get('isLinkageMenu') : false;
+					var rshConstraintsField = record.get('rshConstraintsField');
+					var constraintsValueField = record.get('constraintsValueField');
+					var jsonSearch = record.get('rshSearchCondition');
+					
 					//获取fatherField
 					if (record.get('rshKey')) {
 						treeField = record.get('field');
@@ -570,7 +575,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 								url: '/idatabase/data/index',
 								extraParams: {
 									project_id: project_id,
-									collection_id: record.get('rshCollection')
+									collection_id: record.get('rshCollection'),
+									jsonSearch : jsonSearch
 								},
 								reader: {
 									type: 'json',
@@ -776,7 +782,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 									url: '/idatabase/data/index',
 									extraParams: {
 										project_id: project_id,
-										collection_id: record.get('rshCollection')
+										collection_id: record.get('rshCollection'),
+										jsonSearch : jsonSearch
 									},
 									reader: {
 										type: 'json',

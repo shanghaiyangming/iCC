@@ -212,10 +212,16 @@ class DataController extends BaseActionController
             );
         }
         
+        $jsonSearch = $this->jsonSearch();
+        if ($jsonSearch) {
+            $query['$and'][] = $jsonSearch;
+        }
+        
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
         
+        fb($query, 'LOG');
         $cursor = $this->_data->find($query, $this->_fields);
         $total = $cursor->count();
         $cursor->sort($sort);
@@ -307,6 +313,24 @@ class DataController extends BaseActionController
             }
         }
         return $datas;
+    }
+
+    /**
+     * 追加json查询条件
+     *
+     * @return boolean or array
+     */
+    private function jsonSearch()
+    {
+        $jsonSearch = trim($this->params()->fromQuery('jsonSearch', ''));
+        if (! empty($jsonSearch)) {
+            if (isJson($jsonSearch)) {
+                try {
+                    return Json::decode($jsonSearch, Json::TYPE_ARRAY);
+                } catch (\Exception $e) {}
+            }
+        }
+        return false;
     }
 
     /**
@@ -803,21 +827,39 @@ class DataController extends BaseActionController
                     continue;
                 
                 switch ($detail['type']) {
-                    case 'numberfiled':
-                        $min = trim($_REQUEST[$field]['min']);
-                        $max = trim($_REQUEST[$field]['max']);
-                        $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
-                        $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
-                        if ($not) {
-                            if (! empty($min))
-                                $subQuery['$or'][][$field]['$lte'] = $min;
-                            if (! empty($max))
-                                $subQuery['$or'][][$field]['$gte'] = $max;
+                    case 'numberfield':
+                        if (is_array($_REQUEST[$field])) {
+                            $min = trim($_REQUEST[$field]['min']);
+                            $max = trim($_REQUEST[$field]['max']);
+                            $min = preg_match("/^[0-9]+\.[0-9]+$/", $min) ? floatval($min) : intval($min);
+                            $max = preg_match("/^[0-9]+\.[0-9]+$/", $max) ? floatval($max) : intval($max);
+                            
+                            if ($min === $max) {
+                                if ($not) {
+                                    $subQuery[$field]['$ne'] = $min;
+                                } else {
+                                    $subQuery[$field] = $min;
+                                }
+                            } else {
+                                if ($not) {
+                                    if (! empty($min))
+                                        $subQuery['$or'][][$field]['$lte'] = $min;
+                                    if (! empty($max))
+                                        $subQuery['$or'][][$field]['$gte'] = $max;
+                                } else {
+                                    if (! empty($min))
+                                        $subQuery[$field]['$gte'] = $min;
+                                    if (! empty($max))
+                                        $subQuery[$field]['$lte'] = $max;
+                                }
+                            }
                         } else {
-                            if (! empty($min))
-                                $subQuery[$field]['$gte'] = $min;
-                            if (! empty($max))
-                                $subQuery[$field]['$lte'] = $max;
+                            $value = preg_match("/^[0-9]+\.[0-9]+$/", $_REQUEST[$field]) ? floatval($_REQUEST[$field]) : intval($_REQUEST[$field]);
+                            if ($not) {
+                                $subQuery[$field]['$ne'] = $value;
+                            } else {
+                                $subQuery[$field] = $value;
+                            }
                         }
                         break;
                     case 'datefield':
@@ -855,6 +897,9 @@ class DataController extends BaseActionController
                         }
                         break;
                     default:
+                        // fb($detail['type'],'LOG');
+                        // fb($_REQUEST[$field],'LOG');
+                        // fb($field,'LOG');
                         if ($not)
                             $subQuery[$field]['$ne'] = trim($_REQUEST[$field]);
                         else
