@@ -299,13 +299,14 @@ class DataController extends BaseActionController
             $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
             if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
                 $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
-                array_walk($comboboxSelectedLists, function(&$value,$index) use($rshCollectionValueField){
-                    switch($this->_schema['post'][$rshCollectionValueField]['type']) {
-                    	case 'numberfield':
-                    	    $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
-                    	    break;
-                    	default:
-                    	    break;
+                array_walk($comboboxSelectedLists, function (&$value, $index) use($rshCollectionValueField)
+                {
+                    switch ($this->_schema['post'][$rshCollectionValueField]['type']) {
+                        case 'numberfield':
+                            $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
+                            break;
+                        default:
+                            break;
                     }
                 });
                 $cursor = $this->_data->find(array(
@@ -1050,11 +1051,23 @@ class DataController extends BaseActionController
         ));
         
         if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
-            ksort($_POST);
-            $sign = substr(sha1(http_build_query($_POST . $collectionInfo['hookKey'])), 0, 32);
+            $sign = $this->sign($_POST, $collectionInfo['hookKey']);
             $_POST['__SIGN__'] = $sign;
             doPost($collectionInfo['hook'], $_POST);
         }
         return false;
+    }
+
+    /**
+     * 计算签名
+     *
+     * @param array $datas  array(key=>value)          
+     * @param string $key            
+     * @return string
+     */
+    private function sign($datas, $key)
+    {
+        ksort($datas);
+        return substr(sha1(http_build_query($datas . $key)), 0, 32);
     }
 }

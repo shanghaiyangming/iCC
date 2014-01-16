@@ -22,8 +22,6 @@ abstract class Action extends AbstractActionController
         // 确保输出为UTF-8
         header('Content-type:text/html;charset=utf-8');
         
-        // 增加权限控制方法在这里
-        
         // 添加初始化事件函数
         $eventManager = $this->getEventManager();
         $serviceLocator = $this->getServiceLocator();
@@ -46,8 +44,6 @@ abstract class Action extends AbstractActionController
                 $resources = isset($_SESSION['account']['resources']) ? $_SESSION['account']['resources'] : array();
                 $action = $this->getMethodFromAction($action);
                 $currentResource = $controller . 'Controller\\' . $action;
-                // fb($currentResource, 'LOG');
-                
                 if ($role && $role !== 'root') {
                     $acl = new Acl();
                     $acl->addRole(new Role($role));
