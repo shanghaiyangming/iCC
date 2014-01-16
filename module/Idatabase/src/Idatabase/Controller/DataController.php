@@ -299,6 +299,15 @@ class DataController extends BaseActionController
             $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
             if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
                 $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+                array_walk($comboboxSelectedLists, function(&$value,$index) use($rshCollectionValueField){
+                    switch($this->_schema['post'][$rshCollectionValueField]['type']) {
+                    	case 'numberfield':
+                    	    $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
+                    	    break;
+                    	default:
+                    	    break;
+                    }
+                });
                 $cursor = $this->_data->find(array(
                     $rshCollectionValueField => array(
                         '$in' => $rshCollectionValueField == '_id' ? myMongoId($comboboxSelectedLists) : $comboboxSelectedLists
