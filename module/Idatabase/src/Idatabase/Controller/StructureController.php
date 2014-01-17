@@ -141,8 +141,8 @@ class StructureController extends BaseActionController
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
         $datas['rshSearchCondition'] = trim($this->params()->fromPost('rshSearchCondition', ''));
         $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['rshConstraintsField'] = trim($this->params()->fromPost('rshConstraintsField', ''));
-        $datas['constraintsValueField'] = trim($this->params()->fromPost('constraintsValueField', ''));
+        $datas['linkageClearValueField'] = trim($this->params()->fromPost('linkageClearValueField', ''));
+        $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -249,8 +249,8 @@ class StructureController extends BaseActionController
         $datas['quickTargetCollection'] = trim($this->params()->fromPost('quickTargetCollection', ''));
         $datas['rshSearchCondition'] = trim($this->params()->fromPost('rshSearchCondition', ''));
         $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
-        $datas['rshConstraintsField'] = trim($this->params()->fromPost('rshConstraintsField', ''));
-        $datas['constraintsValueField'] = trim($this->params()->fromPost('constraintsValueField', ''));
+        $datas['linkageClearValueField'] = trim($this->params()->fromPost('linkageClearValueField', ''));
+        $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');

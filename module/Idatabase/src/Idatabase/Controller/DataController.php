@@ -298,23 +298,21 @@ class DataController extends BaseActionController
         if (! empty($idbComboboxSelectedValue)) {
             $comboboxSelectedLists = explode(',', $idbComboboxSelectedValue);
             if (is_array($comboboxSelectedLists) && ! empty($comboboxSelectedLists) && isset($this->_schema['combobox']['rshCollectionKeyField']) && isset($this->_schema['combobox']['rshCollectionValueField'])) {
+                
                 $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+                
                 array_walk($comboboxSelectedLists, function (&$value, $index) use($rshCollectionValueField)
                 {
-                    switch ($this->_schema['post'][$rshCollectionValueField]['type']) {
-                        case 'numberfield':
-                            $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
-                            break;
-                        default:
-                            break;
-                    }
+                    $value = formatData($value, $this->_schema['post'][$rshCollectionValueField]['type']);
                 });
+                
                 $cursor = $this->_data->find(array(
                     $rshCollectionValueField => array(
                         '$in' => $rshCollectionValueField == '_id' ? myMongoId($comboboxSelectedLists) : $comboboxSelectedLists
                     )
                 ), $this->_fields);
                 $extraDatas = iterator_to_array($cursor, false);
+                
                 $datas = array_merge($datas, $extraDatas);
                 $uniqueArray = array();
                 array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
@@ -765,8 +763,7 @@ class DataController extends BaseActionController
                 $value = filter_var($value, $this->_schema['post'][$key]['filter']);
             }
             
-            $value = formatData($value,$this->_schema['post'][$key]['type']);
-            
+            $value = formatData($value, $this->_schema['post'][$key]['type']);
         });
         
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
@@ -1014,6 +1011,4 @@ class DataController extends BaseActionController
         }
         return false;
     }
-
-    
 }
