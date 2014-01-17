@@ -104,6 +104,8 @@ class StructureController extends BaseActionController
                 $rst['rshCollectionDisplayField'] = $row['field'];
             if ($row['rshValue'])
                 $rst['rshCollectionValueField'] = $row['field'];
+            if ($row['isFatherField'])
+                $rst['rshCollectionFatherField'] = $row['field'];
         }
         return $rst;
     }

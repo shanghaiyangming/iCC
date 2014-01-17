@@ -224,10 +224,15 @@ class DataController extends BaseActionController
             $query['$and'][] = $jsonSearch;
         }
         
+        $linkageSearch = $this->linkageSearch();
+        if ($linkageSearch) {
+            $query['$and'][] = $linkageSearch;
+        }
+        
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
-        
+        fb($query, 'LOG');
         $cursor = $this->_data->find($query, $this->_fields);
         $total = $cursor->count();
         $cursor->sort($sort);
@@ -341,6 +346,23 @@ class DataController extends BaseActionController
             if (isJson($jsonSearch)) {
                 try {
                     return Json::decode($jsonSearch, Json::TYPE_ARRAY);
+                } catch (\Exception $e) {}
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @return Ambigous <\Zend\Json\mixed, mixed, NULL, \Zend\Json\$_tokenValue, multitype:, stdClass, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, multitype:, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , NULL, stdClass> >|boolean
+     */
+    private function linkageSearch()
+    {
+        $linkageSearch = trim($this->params()->fromQuery('linkageSearch', ''));
+        if (! empty($linkageSearch)) {
+            if (isJson($linkageSearch)) {
+                try {
+                    return Json::decode($linkageSearch, Json::TYPE_ARRAY);
                 } catch (\Exception $e) {}
             }
         }

@@ -325,7 +325,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						params: {
 							project_id: project_id,
 							collection_id: collection_id,
-							plugin_id:plugin_id
+							plugin_id: plugin_id
 						},
 						scope: me,
 						success: function(response) {
@@ -466,14 +466,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 				// 存储下拉菜单模式的列
 				var gridComboboxColumns = [];
 				var addOrEditFields = [];
-				
+
 				Ext.Array.forEach(records, function(record) {
 					var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
 					var isLinkageMenu = Ext.isBoolean(record.get('isLinkageMenu')) ? record.get('isLinkageMenu') : false;
 					var linkageClearValueField = record.get('linkageClearValueField');
 					var linkageSetValueField = record.get('linkageSetValueField');
 					var jsonSearch = record.get('rshSearchCondition');
-					
+
 					// 获取fatherField
 					if (record.get('rshKey')) {
 						treeField = record.get('field');
@@ -502,39 +502,39 @@ Ext.define('icc.controller.idatabase.Collection', {
 					};
 
 					switch (recordType) {
-						case 'documentfield':
-							addOrEditField.xtype = 'textareafield';
-							addOrEditField.name = recordField;
-							break;
-						case 'boolfield':
-							delete addOrEditField.name;
-							addOrEditField.radioName = recordField;
-							break;
-						case 'filefield':
-							addOrEditField = {
-								xtype: 'filefield',
-								name: recordField,
-								fieldLabel: recordLabel,
-								labelWidth: 100,
-								msgTarget: 'side',
-								allowBlank: true,
-								anchor: '100%',
-								buttonText: '浏览本地文件'
-							};
-							break;
-						case '2dfield':
-							addOrEditField.title = recordLabel;
-							addOrEditField.fieldName = recordField;
-							break;
-						case 'datefield':
-							addOrEditField.format = 'Y-m-d H:i:s';
-							break;
-						case 'numberfield':
-							addOrEditField.decimalPrecision = 8;
-							break;
-						case 'htmleditor':
-							addOrEditField.height = 300;
-							break;
+					case 'documentfield':
+						addOrEditField.xtype = 'textareafield';
+						addOrEditField.name = recordField;
+						break;
+					case 'boolfield':
+						delete addOrEditField.name;
+						addOrEditField.radioName = recordField;
+						break;
+					case 'filefield':
+						addOrEditField = {
+							xtype: 'filefield',
+							name: recordField,
+							fieldLabel: recordLabel,
+							labelWidth: 100,
+							msgTarget: 'side',
+							allowBlank: true,
+							anchor: '100%',
+							buttonText: '浏览本地文件'
+						};
+						break;
+					case '2dfield':
+						addOrEditField.title = recordLabel;
+						addOrEditField.fieldName = recordField;
+						break;
+					case 'datefield':
+						addOrEditField.format = 'Y-m-d H:i:s';
+						break;
+					case 'numberfield':
+						addOrEditField.decimalPrecision = 8;
+						break;
+					case 'htmleditor':
+						addOrEditField.height = 300;
+						break;
 					};
 
 					var rshCollection = record.get('rshCollection');
@@ -576,7 +576,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 								extraParams: {
 									project_id: project_id,
 									collection_id: record.get('rshCollection'),
-									jsonSearch : jsonSearch
+									jsonSearch: jsonSearch
 								},
 								reader: {
 									type: 'json',
@@ -585,21 +585,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 								}
 							}
 						});
-						
-						comboboxStore.load(function(){
-							isLinkageMenu;
-							linkageClearValueField;
-							linkageSetValueField;
-						});
 
-						if(isBoxSelect) {
+						if (isBoxSelect) {
 							addOrEditField.xtype = 'boxselect';
-							addOrEditField.name = recordField+'[]';
+							addOrEditField.name = recordField + '[]';
 							addOrEditField.multiSelect = true;
 							addOrEditField.valueParam = 'idbComboboxSelectedValue';
 							addOrEditField.delimiter = ',';
-						}
-						else {
+						} else {
 							addOrEditField.xtype = 'combobox';
 							addOrEditField.name = recordField;
 							addOrEditField.multiSelect = false;
@@ -615,6 +608,41 @@ Ext.define('icc.controller.idatabase.Collection', {
 						addOrEditField.typeAhead = false;
 						addOrEditField.valueField = record.get('rshCollectionValueField');
 						addOrEditField.displayField = record.get('rshCollectionDisplayField');
+						addOrEditField.fatherField = record.get('rshCollectionFatherField');
+						addOrEditField.listeners = {
+							select: function(combo, records, eOpts) {
+								if (isLinkageMenu) {
+									var value = [];
+									if (records.length == 0) {
+										return false;
+									}
+
+									Ext.Array.forEach(records, function(record) {
+										value.push(record.get(combo.valueField));
+									});
+
+									var form = combo.up('form').getForm();
+									var clearValueFields = linkageClearValueField.split(',');
+									Ext.Array.forEach(clearValueFields, function(field) {
+										form.findField(field).clearValue();
+									});
+
+									var setValueFields = linkageSetValueField.split(',');
+									Ext.Array.forEach(setValueFields, function(field) {
+										var store = form.findField(field).store;
+										var extraParams = store.proxy.extraParams;
+										var linkageSearch = {};
+										linkageSearch[combo.fatherField] = {
+											"$in": value
+										};
+										extraParams.linkageSearch = Ext.JSON.encode(linkageSearch);
+										store.load();
+									});
+								}
+								return true;
+							}
+
+						};
 					}
 
 					addOrEditFields.push(addOrEditField);
@@ -790,7 +818,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 									extraParams: {
 										project_id: project_id,
 										collection_id: record.get('rshCollection'),
-										jsonSearch : jsonSearch
+										jsonSearch: jsonSearch
 									},
 									reader: {
 										type: 'json',
@@ -801,8 +829,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 							});
 
 							comboboxSearchStore.addListener('load', function() {
-								var rec = comboboxSearchStore.findRecord(record.get('rshCollectionValueField'),'',0,false,false,true);
-								if(rec==null) {
+								var rec = comboboxSearchStore.findRecord(record.get('rshCollectionValueField'), '', 0, false, false, true);
+								if (rec == null) {
 									var insertRecord = {};
 									insertRecord[record.get('rshCollectionDisplayField')] = '无';
 									insertRecord[record.get('rshCollectionValueField')] = '';
@@ -978,7 +1006,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								project_id: project_id,
 								collection_id: collection_id,
-								plugin_id : plugin_id
+								plugin_id: plugin_id
 							}
 						},
 						folderSort: true
@@ -994,7 +1022,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								project_id: project_id,
 								collection_id: collection_id,
-								plugin_id : plugin_id
+								plugin_id: plugin_id
 							},
 							reader: {
 								type: 'json',
@@ -1023,7 +1051,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				panel.on({
 					beforerender: function(panel) {
 						var grid = panel.down('grid') ? panel.down('grid') : panel.down('treepanel');
-						grid.store.on('load', function(store,records,success) {
+						grid.store.on('load', function(store, records, success) {
 							if (success) {
 								var loop = gridComboboxColumns.length;
 								if (loop > 0) {
@@ -1033,12 +1061,11 @@ Ext.define('icc.controller.idatabase.Collection', {
 											ids.push(records[index].get(gridComboboxColumn.dataIndex));
 										}
 										ids = Ext.Array.unique(ids);
-										
+
 										var store = gridComboboxColumn.field.store;
-										if(isTree) {
+										if (isTree) {
 											store.proxy.extraParams.limit = 10000;
-										}
-										else {
+										} else {
 											store.proxy.extraParams.idbComboboxSelectedValue = ids.join(',');
 										}
 										store.load(function() {

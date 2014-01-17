@@ -1,57 +1,57 @@
 Ext.define('icc.model.idatabase.Structure', {
-	extend : 'icc.model.common.Model',
-	fields : [ {
-		name : 'collection_id',
-		type : 'string'
+	extend: 'icc.model.common.Model',
+	fields: [{
+		name: 'collection_id',
+		type: 'string'
 	}, {
-		name : 'plugin_id',
-		type : 'string'
+		name: 'plugin_id',
+		type: 'string'
 	}, {
-		name : 'plugin_collection_id',
-		type : 'string'
+		name: 'plugin_collection_id',
+		type: 'string'
 	}, {
-		name : 'field',
-		type : 'string'
+		name: 'field',
+		type: 'string'
 	}, {
-		name : 'label',
-		type : 'string'
+		name: 'label',
+		type: 'string'
 	}, {
-		name : 'type',
-		type : 'string'
+		name: 'type',
+		type: 'string'
 	}, {
-		name : 'filter',
-		type : 'int'
+		name: 'filter',
+		type: 'int'
 	}, {
-		name : 'searchable',
-		type : 'boolean'
+		name: 'searchable',
+		type: 'boolean'
 	}, {
-		name : 'main',
-		type : 'boolean'
+		name: 'main',
+		type: 'boolean'
 	}, {
-		name : 'required',
-		type : 'boolean'
+		name: 'required',
+		type: 'boolean'
 	}, {
-		name : 'isFatherField',
-		type : 'boolean'
+		name: 'isFatherField',
+		type: 'boolean'
 	}, {
-		name : 'rshCollection',
-		type : 'string'
+		name: 'rshCollection',
+		type: 'string'
 	}, {
-		name : 'isBoxSelect',
-		type : 'boolean'
+		name: 'isBoxSelect',
+		type: 'boolean'
 	}, {
-		name : 'isLinkageMenu',
-		type : 'boolean'
+		name: 'isLinkageMenu',
+		type: 'boolean'
 	}, {
-		name : 'linkageClearValueField',
-		type : 'string'
+		name: 'linkageClearValueField',
+		type: 'string'
 	}, {
-		name : 'linkageSetValueField',
-		type : 'string'
+		name: 'linkageSetValueField',
+		type: 'string'
 	}, {
-		name : 'rshSearchCondition',
-		type : 'string',
-		convert : function(value) {
+		name: 'rshSearchCondition',
+		type: 'string',
+		convert: function(value) {
 			if (Ext.isObject(value) || Ext.isArray(value)) {
 				return Ext.JSON.encode(value);
 			} else {
@@ -59,28 +59,31 @@ Ext.define('icc.model.idatabase.Structure', {
 			}
 		}
 	}, {
-		name : 'rshKey',
-		type : 'boolean'
+		name: 'rshKey',
+		type: 'boolean'
 	}, {
-		name : 'rshValue',
-		type : 'boolean'
+		name: 'rshValue',
+		type: 'boolean'
 	}, {
-		name : 'rshCollectionDisplayField',
-		type : 'string'
+		name: 'rshCollectionDisplayField',
+		type: 'string'
 	}, {
-		name : 'rshCollectionValueField',
-		type : 'string'
+		name: 'rshCollectionValueField',
+		type: 'string'
 	}, {
-		name : 'showImage',
-		type : 'boolean'
+		name: 'rshCollectionFatherField',
+		type: 'string'
 	}, {
-		name : 'orderBy',
-		type : 'int'
+		name: 'showImage',
+		type: 'boolean'
 	}, {
-		name : 'isQuick',
-		type : 'boolean'
+		name: 'orderBy',
+		type: 'int'
 	}, {
-		name : 'quickTargetCollection',
-		type : 'string'
-	} ]
+		name: 'isQuick',
+		type: 'boolean'
+	}, {
+		name: 'quickTargetCollection',
+		type: 'string'
+	}]
 });
