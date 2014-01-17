@@ -741,13 +741,15 @@ class DataController extends BaseActionController
                 if (! empty($rshCollectionStructures)) {
                     $rshCollectionKeyField = '';
                     $rshCollectionValueField = '_id';
+                    $rshCollectionValueFieldType = 'textfield';
+                    
                     foreach ($rshCollectionStructures as $rshCollectionStructure) {
                         if ($rshCollectionStructure['rshKey'])
                             $rshCollectionKeyField = $rshCollectionStructure['field'];
                         
                         if ($rshCollectionStructure['rshValue']) {
                             $rshCollectionValueField = $rshCollectionStructure['field'];
-                            $rshCollectionValueFieldType = $rshCollectionValueField == '_id' ? 'textfield' : $rshCollectionStructure['type'];
+                            $rshCollectionValueFieldType = $rshCollectionStructure['type'];
                         }
                     }
                     
