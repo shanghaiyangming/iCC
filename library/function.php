@@ -823,8 +823,9 @@ function convertVarNameWithDot(&$array)
 
 /**
  * 数据库定义类型值的格式化转换函数
- * @param mixed $value
- * @param string $type
+ * 
+ * @param mixed $value            
+ * @param string $type            
  * @throws \Zend\Json\Exception\RuntimeException
  * @return string
  */
@@ -878,5 +879,16 @@ function formatData($value, $type = 'textfield')
     }
     
     return $value;
+}
+
+/**
+ * 签名算法，输出结果看似为MD5 实际算法为SHA1截取字符，有pow(2,32)个hash值有此校验值，确保数据安全性。
+ * @param array $datas
+ * @param string $key
+ * @return string
+ */
+function dataSignAlgorithm($datas,$key) {
+    ksort($datas);
+    return substr(sha1(http_build_query($datas . $key)), 0, 32);
 }
 

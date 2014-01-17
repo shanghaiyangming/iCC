@@ -983,20 +983,7 @@ class DataController extends BaseActionController
         
         return $collectionInfo['alias'];
     }
-    
-    /**
-     * 计算签名
-     *
-     * @param array $datas  array(key=>value)
-     * @param string $key
-     * @return string
-     */
-    private function sign($datas, $key)
-    {
-        ksort($datas);
-        return substr(sha1(http_build_query($datas . $key)), 0, 32);
-    }
-    
+
     /**
      * 对于集合进行了任何操作，那么出发联动事件，联动修改其他集合的相关数据
      * 提交全部POST参数以及系统默认的触发参数__TRIGER__
@@ -1021,7 +1008,7 @@ class DataController extends BaseActionController
         ));
         
         if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
-            $sign = $this->sign($_POST, $collectionInfo['hookKey']);
+            $sign = dataSignAlgorithm($_POST, $collectionInfo['hookKey']);
             $_POST['__SIGN__'] = $sign;
             doPost($collectionInfo['hook'], $_POST);
         }
