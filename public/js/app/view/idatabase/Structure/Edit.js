@@ -181,12 +181,12 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 							} ]
 						}, {
 							xtype : 'textfield',
-							fieldLabel : 'rshCollection约束字段',
-							name : 'rshConstraintsField'
+							fieldLabel : '联动清空字段(多字段,分隔)',
+							name : 'linkageClearValueField'
 						}, {
 							xtype : 'textfield',
-							fieldLabel : '约束数据来源字段',
-							name : 'constraintsValueField'
+							fieldLabel : '联动赋值字段(多字段,分隔)',
+							name : 'linkageSetValueField'
 						} ]
 					} ]
 				}, {

@@ -470,8 +470,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 				Ext.Array.forEach(records, function(record) {
 					var isBoxSelect = Ext.isBoolean(record.get('isBoxSelect')) ? record.get('isBoxSelect') : false;
 					var isLinkageMenu = Ext.isBoolean(record.get('isLinkageMenu')) ? record.get('isLinkageMenu') : false;
-					var rshConstraintsField = record.get('rshConstraintsField');
-					var constraintsValueField = record.get('constraintsValueField');
+					var linkageClearValueField = record.get('linkageClearValueField');
+					var linkageSetValueField = record.get('linkageSetValueField');
 					var jsonSearch = record.get('rshSearchCondition');
 					
 					// 获取fatherField
@@ -584,6 +584,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 									totalProperty: 'total'
 								}
 							}
+						});
+						
+						comboboxStore.load(function(){
+							isLinkageMenu;
+							linkageClearValueField;
+							linkageSetValueField;
 						});
 
 						if(isBoxSelect) {

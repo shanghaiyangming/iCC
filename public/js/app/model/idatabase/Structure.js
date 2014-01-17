@@ -43,10 +43,10 @@ Ext.define('icc.model.idatabase.Structure', {
 		name : 'isLinkageMenu',
 		type : 'boolean'
 	}, {
-		name : 'rshConstraintsField',
+		name : 'linkageClearValueField',
 		type : 'string'
 	}, {
-		name : 'constraintsValueField',
+		name : 'linkageSetValueField',
 		type : 'string'
 	}, {
 		name : 'rshSearchCondition',
