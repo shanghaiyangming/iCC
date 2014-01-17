@@ -613,7 +613,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							select: function(combo, records, eOpts) {
 								if (isLinkageMenu) {
 									var value = [];
-									if (records.length == 0) {
+									if (records.length == 0 || linkageClearValueField == '' || linkageSetValueField == '' || combo.fatherField == '') {
 										return false;
 									}
 
@@ -624,19 +624,25 @@ Ext.define('icc.controller.idatabase.Collection', {
 									var form = combo.up('form').getForm();
 									var clearValueFields = linkageClearValueField.split(',');
 									Ext.Array.forEach(clearValueFields, function(field) {
-										form.findField(field).clearValue();
+										var formField = form.findField(field);
+										if (formField != null) {
+											formField.clearValue();
+										}
 									});
 
 									var setValueFields = linkageSetValueField.split(',');
 									Ext.Array.forEach(setValueFields, function(field) {
-										var store = form.findField(field).store;
-										var extraParams = store.proxy.extraParams;
-										var linkageSearch = {};
-										linkageSearch[combo.fatherField] = {
-											"$in": value
-										};
-										extraParams.linkageSearch = Ext.JSON.encode(linkageSearch);
-										store.load();
+										var formField = form.findField(field);
+										if (formField != null) {
+											var store = formField.store;
+											var extraParams = store.proxy.extraParams;
+											var linkageSearch = {};
+											linkageSearch[combo.fatherField] = {
+												"$in": value
+											};
+											extraParams.linkageSearch = Ext.JSON.encode(linkageSearch);
+											store.load();
+										}
 									});
 								}
 								return true;
