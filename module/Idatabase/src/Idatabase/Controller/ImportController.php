@@ -175,7 +175,7 @@ class ImportController extends BaseActionController
                 {
                     $insertData = array();
                     foreach ($titles as $col => $colName) {
-                        $insertData[$colName] = $this->dealData($row[$col], $this->_fields[$colName]);
+                        $insertData[$colName] = formatData($row[$col], $this->_fields[$colName]);
                     }
                     $this->_data->insertByFindAndModify($insertData);
                     unset($insertData);
@@ -209,61 +209,6 @@ class ImportController extends BaseActionController
             $this->_fields[$row['field']] = $row['type'];
         }
         return true;
-    }
-
-    /**
-     * 处理数据
-     *
-     * @param mixed $value            
-     * @param string $type            
-     * @return mixed
-     */
-    private function dealData($value, $type)
-    {
-        switch ($type) {
-            case 'numberfield':
-                $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
-                break;
-            case 'datefield':
-                $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
-                break;
-            case '2dfield':
-                $value = is_array($value) ? array(
-                    floatval($value['lng']),
-                    floatval($value['lat'])
-                ) : array(
-                    0,
-                    0
-                );
-                break;
-            case 'md5field':
-                $value = trim($value);
-                $value = preg_match('/^[0-9a-f]{32}$/i', $value) ? $value : md5($value);
-                break;
-            case 'sha1field':
-                $value = trim($value);
-                $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
-                break;
-            case 'boolfield':
-                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                break;
-            case 'documentfield':
-                if (is_string($value)) {
-                    $value = trim($value);
-                    if (! empty($value)) {
-                        if (isJson($value)) {
-                            try {
-                                $value = Json::decode($value, Json::TYPE_ARRAY);
-                            } catch (\Exception $e) {}
-                        }
-                    }
-                }
-                break;
-            default:
-                $value = trim($value);
-                break;
-        }
-        return $value;
     }
 
     /**

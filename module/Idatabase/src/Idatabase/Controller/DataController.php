@@ -764,52 +764,9 @@ class DataController extends BaseActionController
             if (! empty($this->_schema['post'][$key]['filter'])) {
                 $value = filter_var($value, $this->_schema['post'][$key]['filter']);
             }
-            switch ($this->_schema['post'][$key]['type']) {
-                case 'numberfield':
-                    $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
-                    break;
-                case 'datefield':
-                    $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
-                    break;
-                case '2dfield':
-                    $value = is_array($value) ? array(
-                        floatval($value['lng']),
-                        floatval($value['lat'])
-                    ) : array(
-                        0,
-                        0
-                    );
-                    break;
-                case 'md5field':
-                    $value = trim($value);
-                    $value = preg_match('/^[0-9a-f]{32}$/i', $value) ? $value : md5($value);
-                    break;
-                case 'sha1field':
-                    $value = trim($value);
-                    $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
-                    break;
-                case 'boolfield':
-                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                    break;
-                case 'documentfield':
-                    if (! is_array($value) && is_string($value)) {
-                        $value = trim($value);
-                        if (! empty($value)) {
-                            if (! isJson($value)) {
-                                throw new \Zend\Json\Exception\RuntimeException($key);
-                            }
-                            try {
-                                $value = Json::decode($value, Json::TYPE_ARRAY);
-                            } catch (\Zend\Json\Exception\RuntimeException $e) {
-                                throw new \Zend\Json\Exception\RuntimeException($key);
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    $value = trim($value);
-                    break;
-            }
+            
+            $value = formatData($value,$this->_schema['post'][$key]['type']);
+            
         });
         
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
@@ -1026,7 +983,20 @@ class DataController extends BaseActionController
         
         return $collectionInfo['alias'];
     }
-
+    
+    /**
+     * 计算签名
+     *
+     * @param array $datas  array(key=>value)
+     * @param string $key
+     * @return string
+     */
+    private function sign($datas, $key)
+    {
+        ksort($datas);
+        return substr(sha1(http_build_query($datas . $key)), 0, 32);
+    }
+    
     /**
      * 对于集合进行了任何操作，那么出发联动事件，联动修改其他集合的相关数据
      * 提交全部POST参数以及系统默认的触发参数__TRIGER__
@@ -1058,16 +1028,5 @@ class DataController extends BaseActionController
         return false;
     }
 
-    /**
-     * 计算签名
-     *
-     * @param array $datas  array(key=>value)          
-     * @param string $key            
-     * @return string
-     */
-    private function sign($datas, $key)
-    {
-        ksort($datas);
-        return substr(sha1(http_build_query($datas . $key)), 0, 32);
-    }
+    
 }

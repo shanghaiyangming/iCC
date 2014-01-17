@@ -821,3 +821,62 @@ function convertVarNameWithDot(&$array)
     }
 }
 
+/**
+ * 数据库定义类型值的格式化转换函数
+ * @param mixed $value
+ * @param string $type
+ * @throws \Zend\Json\Exception\RuntimeException
+ * @return string
+ */
+function formatData($value, $type = 'textfield')
+{
+    switch ($type) {
+        case 'numberfield':
+            $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
+            break;
+        case 'datefield':
+            $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
+            break;
+        case '2dfield':
+            $value = is_array($value) ? array(
+                floatval($value['lng']),
+                floatval($value['lat'])
+            ) : array(
+                0,
+                0
+            );
+            break;
+        case 'md5field':
+            $value = trim($value);
+            $value = preg_match('/^[0-9a-f]{32}$/i', $value) ? $value : md5($value);
+            break;
+        case 'sha1field':
+            $value = trim($value);
+            $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
+            break;
+        case 'boolfield':
+            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+            break;
+        case 'documentfield':
+            if (! is_array($value) && is_string($value)) {
+                $value = trim($value);
+                if (! empty($value)) {
+                    if (! isJson($value)) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                    try {
+                        $value = Json::decode($value, Json::TYPE_ARRAY);
+                    } catch (\Zend\Json\Exception\RuntimeException $e) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                }
+            }
+            break;
+        default:
+            $value = trim($value);
+            break;
+    }
+    
+    return $value;
+}
+
