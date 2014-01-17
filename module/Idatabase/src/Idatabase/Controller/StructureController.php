@@ -176,7 +176,7 @@ class StructureController extends BaseActionController
         
         if ($datas['isQuick'] === true) {
             if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+                return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
             }
             
             if ($datas['quickTargetCollection'] === '') {
@@ -197,8 +197,8 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isBoxSelect']) {
-            if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+            if ($datas['type'] !== 'arrayfield') {
+                return $this->msg(false, '启用多选项时，请设定输入类型为“数组”');
             }
             
             if (empty($datas['rshCollection'])) {
@@ -284,7 +284,7 @@ class StructureController extends BaseActionController
         
         if ($datas['isQuick'] === true) {
             if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+                return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
             }
             
             if ($datas['quickTargetCollection'] === '') {
@@ -309,8 +309,8 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isBoxSelect']) {
-            if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+            if ($datas['type'] !== 'arrayfield') {
+                return $this->msg(false, '启用多选项时，请设定输入类型为“数组”');
             }
             
             if (empty($datas['rshCollection'])) {
@@ -388,7 +388,7 @@ class StructureController extends BaseActionController
             
             if ($row['isQuick'] === true) {
                 if ($row['type'] !== 'documentfield') {
-                    return $this->msg(false, '快速录入字段，输入类型必须是“子文档结构”');
+                    return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
                 }
                 
                 if ($row['quickTargetCollection'] === '') {
@@ -421,8 +421,8 @@ class StructureController extends BaseActionController
             }
             
             if ($row['isBoxSelect']) {
-                if ($row['type'] !== 'documentfield') {
-                    return $this->msg(false, '启用多选项时，请设定输入类型为“子文档结构”');
+                if ($row['type'] !== 'arrayfield') {
+                    return $this->msg(false, '启用多选项时，请设定输入类型为“数组”');
                 }
                 
                 if (empty($row['rshCollection'])) {

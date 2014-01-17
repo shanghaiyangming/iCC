@@ -352,7 +352,7 @@ class DataController extends BaseActionController
     }
 
     /**
-     * 
+     *
      * @return Ambigous <\Zend\Json\mixed, mixed, NULL, \Zend\Json\$_tokenValue, multitype:, stdClass, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, multitype:, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , NULL, stdClass> >|boolean
      */
     private function linkageSearch()
@@ -396,7 +396,6 @@ class DataController extends BaseActionController
             return $this->msg(false, '树形结构，请设定字段属性和父字段属性');
         }
         
-        fb($this->_fatherField, 'LOG');
         $fatherValue = $this->params()->fromQuery('fatherValue', '');
         $tree = $this->tree($this->_fatherField, $fatherValue);
         if (! is_array($tree)) {
@@ -746,8 +745,10 @@ class DataController extends BaseActionController
                         if ($rshCollectionStructure['rshKey'])
                             $rshCollectionKeyField = $rshCollectionStructure['field'];
                         
-                        if ($rshCollectionStructure['rshValue'])
+                        if ($rshCollectionStructure['rshValue']) {
                             $rshCollectionValueField = $rshCollectionStructure['field'];
+                            $rshCollectionValueFieldType = $rshCollectionValueField == '_id' ? 'textfield' : $rshCollectionStructure['type'];
+                        }
                     }
                     
                     if (empty($rshCollectionKeyField))
@@ -756,7 +757,8 @@ class DataController extends BaseActionController
                     $this->_rshCollection[$row['rshCollection']] = array(
                         'collectionField' => $row['field'],
                         'rshCollectionKeyField' => $rshCollectionKeyField,
-                        'rshCollectionValueField' => $rshCollectionValueField
+                        'rshCollectionValueField' => $rshCollectionValueField,
+                        'rshCollectionValueFieldType' => $rshCollectionValueFieldType
                     );
                 } else {
                     throw new \Exception('关系集合属性尚未设定');
@@ -780,11 +782,22 @@ class DataController extends BaseActionController
         $validPostData = array_intersect_key($datas, $this->_schema['post']);
         array_walk($validPostData, function (&$value, $key)
         {
-            if (! empty($this->_schema['post'][$key]['filter'])) {
-                $value = filter_var($value, $this->_schema['post'][$key]['filter']);
+            $filter = $this->_schema['post'][$key]['filter'];
+            $type = $this->_schema['post'][$key]['type'];
+            $rshCollection = $this->_schema['post'][$key]['rshCollection'];
+             
+            if (! empty($filter)) {
+                $value = filter_var($value, $filter);
             }
             
-            $value = formatData($value, $this->_schema['post'][$key]['type']);
+            if ($type == 'arrayfield') {
+                $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
+                array_walk($value, function (&$row, $index) use($rowType)
+                {
+                    $row = formatData($row, $rowType);
+                });
+            }
+            $value = formatData($value, $type);
         });
         
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
