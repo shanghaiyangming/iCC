@@ -218,7 +218,7 @@ Ext.define('icc.controller.idatabase.Data', {
 						}
 					}
 				});
-
+				return true;
 			}
 		};
 

@@ -858,6 +858,21 @@ function formatData($value, $type = 'textfield')
         case 'boolfield':
             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             break;
+        case 'arrayfield':
+            if (! is_array($value) && is_string($value)) {
+                $value = trim($value);
+                if (! empty($value)) {
+                    if (! isJson($value)) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                    try {
+                        $value = Json::decode($value, Json::TYPE_ARRAY);
+                    } catch (\Zend\Json\Exception\RuntimeException $e) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                }
+            }
+            break;
         case 'documentfield':
             if (! is_array($value) && is_string($value)) {
                 $value = trim($value);
@@ -882,7 +897,7 @@ function formatData($value, $type = 'textfield')
 }
 
 /**
- * 签名算法，输出结果看似为MD5 实际算法为SHA1截取字符，有pow(2,32)个hash值有此校验值，确保数据安全性。
+ * 签名算法，输出结果看似为MD5 实际算法为SHA1截取字符，有pow(2,32)个sha1 hash值有此校验值，用以确保数据安全性。
  * @param array $datas
  * @param string $key
  * @return string

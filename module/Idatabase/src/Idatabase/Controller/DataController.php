@@ -317,7 +317,6 @@ class DataController extends BaseActionController
                     )
                 ), $this->_fields);
                 $extraDatas = iterator_to_array($cursor, false);
-                
                 $datas = array_merge($datas, $extraDatas);
                 $uniqueArray = array();
                 array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)

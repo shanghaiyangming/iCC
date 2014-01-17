@@ -14,7 +14,10 @@ Ext.define('icc.store.idatabase.Structure.Type', {
 		"name" : '是非选择框',
 		"val" : 'boolfield'
 	}, {
-		"name" : '子文档结构',
+		"name" : '数组',
+		"val" : 'arrayfield'
+	}, {
+		"name" : '内嵌文档',
 		"val" : 'documentfield'
 	}, {
 		"name" : '富文本编辑器',

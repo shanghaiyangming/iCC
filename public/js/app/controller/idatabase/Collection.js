@@ -622,17 +622,19 @@ Ext.define('icc.controller.idatabase.Collection', {
 									});
 
 									var form = combo.up('form').getForm();
+									
 									var clearValueFields = linkageClearValueField.split(',');
 									Ext.Array.forEach(clearValueFields, function(field) {
-										var formField = form.findField(field);
+										var formField = form.findField(field) == null ? form.findField(field + '[]') : form.findField(field);
 										if (formField != null) {
 											formField.clearValue();
 										}
 									});
+									
 
 									var setValueFields = linkageSetValueField.split(',');
 									Ext.Array.forEach(setValueFields, function(field) {
-										var formField = form.findField(field);
+										var formField = form.findField(field) == null ? form.findField(field + '[]') : form.findField(field);
 										if (formField != null) {
 											var store = formField.store;
 											var extraParams = store.proxy.extraParams;
@@ -644,6 +646,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 											store.load();
 										}
 									});
+									
 								}
 								return true;
 							}
