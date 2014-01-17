@@ -36,6 +36,8 @@ class MongoCollection extends \MongoCollection
     private $_db;
 
     private $_admin;
+    
+    private $_backup;
 
     private $_config;
 
@@ -122,6 +124,11 @@ class MongoCollection extends \MongoCollection
         $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
         if (! $this->_admin instanceof \MongoDB) {
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
+        }
+        
+        $this->_backup = $this->_config[$this->_cluster]['dbs']['backup'];
+        if (! $this->_backup instanceof \MongoDB) {
+            throw new \Exception('$this->_backup is not instanceof \MongoDB');
         }
         
         $this->_fs = new \MongoGridFS($this->_db, "icc");
@@ -262,7 +269,7 @@ class MongoCollection extends \MongoCollection
         // throw new \Exception('ICC deny execute "drop()" collection operation');
         // 做法2：复制整个集合的数据到新的集合中，用于备份，备份数据不做片键，不做索引以便节约空间，仅出于安全考虑，原有_id使用保留字__OLD_ID__进行保留
         $targetCollection = 'bak_' . date('YmdHis') . '_' . $this->_collection;
-        $target = new \MongoCollection($this->db, $targetCollection);
+        $target = new \MongoCollection($this->_backup, $targetCollection);
         // 变更为重命名某个集合或者复制某个集合的操作作为替代。
         $cursor = $this->find(array());
         while ($cursor->hasNext()) {

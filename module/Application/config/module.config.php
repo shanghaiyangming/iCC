@@ -137,6 +137,7 @@ return array(
                     'ICCv1',
                     'admin',
                     'mapreduce',
+                    'backup',
                     'logs'
                 )
             ),
@@ -149,6 +150,7 @@ return array(
                     'ICCv1',
                     'admin',
                     'mapreduce',
+                    'backup',
                     'logs'
                 )
             )
