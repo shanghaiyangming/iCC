@@ -145,6 +145,12 @@ class StructureController extends BaseActionController
         $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
         $datas['linkageClearValueField'] = trim($this->params()->fromPost('linkageClearValueField', ''));
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
+        $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
+        $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
+        
+        if($datas['type']!=='filefield' && !empty($datas['cdnUrl'])) {
+            return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
+        }
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');
@@ -253,6 +259,12 @@ class StructureController extends BaseActionController
         $datas['isLinkageMenu'] = filter_var($this->params()->fromPost('isLinkageMenu', false), FILTER_VALIDATE_BOOLEAN);
         $datas['linkageClearValueField'] = trim($this->params()->fromPost('linkageClearValueField', ''));
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
+        $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
+        $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
+        
+        if($datas['type']!=='filefield' && !empty($datas['cdnUrl'])) {
+            return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
+        }
         
         if ($datas['field'] == null) {
             return $this->msg(false, '请填写字段名称');

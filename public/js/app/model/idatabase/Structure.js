@@ -85,5 +85,11 @@ Ext.define('icc.model.idatabase.Structure', {
 	}, {
 		name: 'quickTargetCollection',
 		type: 'string'
+	}, {
+		name: 'cdnUrl',
+		type: 'string'
+	}, {
+		name: 'xTemplate',
+		type: 'string'
 	}]
 });

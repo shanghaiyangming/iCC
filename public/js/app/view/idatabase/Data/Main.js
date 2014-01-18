@@ -31,6 +31,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					columns : this.gridColumns,
 					store : this.gridStore,
 					addOrEditFields : this.addOrEditFields,
+					selType: 'checkboxmodel',
 					plugins : plugins
 				} ]
 			});
@@ -43,6 +44,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					columns : this.gridColumns,
 					store : this.gridStore,
 					addOrEditFields : this.addOrEditFields,
+					selType: 'checkboxmodel',
 					plugins : plugins
 				}, {
 					xtype : 'idatabaseDataSearch',
