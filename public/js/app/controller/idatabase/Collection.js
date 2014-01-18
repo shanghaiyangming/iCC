@@ -771,7 +771,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						case 'filefield':
 							if (record.get('showImage') != undefined && record.get('showImage') == true) {
 								column.xtype = 'templatecolumn';
-								column.tpl = '<a href="{cdnUrl}{' + recordField + '}" target="_blank"><img src="{cdnUrl}{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
+								column.tpl = '<a href="'+cdnUrl+'{' + recordField + '}" target="_blank"><img src="'+cdnUrl+'{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
 							}
 							break;
 						default:
