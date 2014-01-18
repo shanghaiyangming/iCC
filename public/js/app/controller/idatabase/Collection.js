@@ -623,7 +623,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 									});
 
 									var form = combo.up('form').getForm();
-									
+
 									var clearValueFields = linkageClearValueField.split(',');
 									Ext.Array.forEach(clearValueFields, function(field) {
 										var formField = form.findField(field) == null ? form.findField(field + '[]') : form.findField(field);
@@ -631,7 +631,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 											formField.clearValue();
 										}
 									});
-									
+
 
 									var setValueFields = linkageSetValueField.split(',');
 									Ext.Array.forEach(setValueFields, function(field) {
@@ -647,7 +647,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 											store.load();
 										}
 									});
-									
+
 								}
 								return true;
 							}
@@ -777,7 +777,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 								store: comboboxStore,
 								allowBlank: allowBlank,
 								displayField: record.get('rshCollectionDisplayField'),
-								valueField: record.get('rshCollectionValueField')
+								valueField: record.get('rshCollectionValueField'),
+								queryParam: 'search',
+								minChars: 1
 							};
 
 							column.renderer = function(value) {
@@ -858,7 +860,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 								typeAhead: true,
 								store: comboboxSearchStore,
 								displayField: record.get('rshCollectionDisplayField'),
-								valueField: record.get('rshCollectionValueField')
+								valueField: record.get('rshCollectionValueField'),
+								queryParam: 'search',
+								minChars: 1
 							};
 
 							searchField = {
