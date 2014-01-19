@@ -494,8 +494,6 @@ class CollectionController extends BaseActionController
      */
     public function removePluginCollection($plugin_id, $alias)
     {
-        fb($plugin_id, 'LOG');
-        fb($alias, 'LOG');
         if (empty($plugin_id))
             return false;
         
