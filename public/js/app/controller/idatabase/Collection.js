@@ -257,8 +257,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseStructureWindow', {
 						project_id: grid.project_id,
 						collection_id: record.get('_id'),
-						plugin: me.plugin,
-						plugin_id: me.plugin_id,
+						plugin: grid.plugin,
+						plugin_id: grid.plugin_id,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -278,8 +278,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseCollectionOrderWindow', {
 						project_id: grid.project_id,
 						collection_id: record.get('_id'),
-						plugin: me.plugin,
-						plugin_id: me.plugin_id,
+						plugin: grid.plugin,
+						plugin_id: grid.plugin_id,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -299,8 +299,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseIndexWindow', {
 						project_id: grid.project_id,
 						collection_id: record.get('_id'),
-						plugin: me.plugin,
-						plugin_id: me.plugin_id,
+						plugin: grid.plugin,
+						plugin_id: grid.plugin_id,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -369,7 +369,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var record = selections[0];
 					var win = Ext.widget('idatabaseStaticWindow', {
 						project_id: grid.project_id,
-						collection_id: record.get('_id')
+						collection_id: record.get('_id'),
+						plugin_id : grid.plugin_id
 					});
 					win.show();
 				} else {
@@ -387,7 +388,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var record = selections[0];
 					var win = Ext.widget('idatabaseLockWindow', {
 						project_id: grid.project_id,
-						collection_id: record.get('_id')
+						collection_id: record.get('_id'),
+						plugin_id : grid.plugin_id
 					});
 					win.show();
 				} else {
@@ -457,7 +459,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 			var structureStore = Ext.create('icc.store.idatabase.Structure');
 			structureStore.proxy.extraParams = {
 				project_id: project_id,
-				collection_id: collection_id
+				collection_id: collection_id,
+				plugin_id: plugin_id
 			};
 
 			var treeField = '';
@@ -771,7 +774,9 @@ Ext.define('icc.controller.idatabase.Collection', {
 						case 'filefield':
 							if (record.get('showImage') != undefined && record.get('showImage') == true) {
 								column.xtype = 'templatecolumn';
-								column.tpl = '<a href="'+cdnUrl+'{' + recordField + '}" target="_blank"><img src="'+cdnUrl+'{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
+								column.tpl = '<a href="' + cdnUrl + '{' + recordField + '}" target="_blank"><img src="' + cdnUrl + '{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
+							} else {
+								column.tpl = column.tpl.replace('{cdnUrl}', cdnUrl);
 							}
 							break;
 						default:

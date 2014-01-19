@@ -31,6 +31,12 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					allowBlank: false,
 					value: this.collection_id
 				}, {
+					xtype: 'hiddenfield',
+					name: 'plugin_id',
+					fieldLabel: '插件编号',
+					allowBlank: false,
+					value: this.plugin_id
+				}, {
 					name: 'field',
 					fieldLabel: '属性名(英文数字)',
 					allowBlank: false

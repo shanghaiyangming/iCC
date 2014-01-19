@@ -23,6 +23,8 @@ class StructureController extends BaseActionController
 
     private $_structure;
 
+    private $_plugin_structure;
+
     private $_model;
 
     private $_collection;
@@ -46,6 +48,7 @@ class StructureController extends BaseActionController
         
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_model = $this->_structure;
     }
 
@@ -58,17 +61,29 @@ class StructureController extends BaseActionController
      */
     public function indexAction()
     {
-        $query = array(
-            'collection_id' => $this->_collection_id
-        );
         
+        $plugin_id = trim($this->params()->fromQuery('plugin_id',''));
+        
+        $rst = array();
         $sort = array(
             'orderBy' => 1,
             '_id' => 1
         );
         
-        $rst = array();
-        $cursor = $this->_structure->find($query);
+        if(empty($plugin_id)) {
+            $query = array(
+                'collection_id' => $this->_collection_id
+            );
+            $cursor = $this->_structure->find($query);
+        }
+        else {
+            $query = array(
+                'plugin_id' => $plugin_id
+            );
+            fb($query,'LOG');
+            $cursor = $this->_plugin_structure->find($query);
+        }
+        
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
@@ -148,7 +163,7 @@ class StructureController extends BaseActionController
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
         
-        if($datas['type']!=='filefield' && !empty($datas['cdnUrl'])) {
+        if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
         }
         
@@ -218,6 +233,7 @@ class StructureController extends BaseActionController
             }
         }
         
+        $this->syncPluginStructure($plugin_id, $datas);
         $this->_structure->insert($datas);
         
         return $this->msg(true, '添加信息成功');
@@ -262,7 +278,7 @@ class StructureController extends BaseActionController
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
         
-        if($datas['type']!=='filefield' && !empty($datas['cdnUrl'])) {
+        if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
         }
         
@@ -336,6 +352,7 @@ class StructureController extends BaseActionController
             }
         }
         
+        $this->syncPluginStructure($plugin_id, $datas);
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
@@ -442,6 +459,8 @@ class StructureController extends BaseActionController
                 }
             }
             
+            $this->syncPluginStructure($row['plugin_id'], $row);
+            
             $this->_structure->update(array(
                 '_id' => myMongoId($_id),
                 'collection_id' => $this->_collection_id
@@ -464,6 +483,8 @@ class StructureController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
+        $plugin_id = $this->params()->fromPost('plugin_id', null);
+        
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
         } catch (\Exception $e) {
@@ -474,10 +495,16 @@ class StructureController extends BaseActionController
             return $this->msg(false, '请选择你要删除的项');
         }
         foreach ($_id as $row) {
-            $this->_structure->remove(array(
-                '_id' => myMongoId($row),
-                'collection_id' => $this->_collection_id
+            $rowInfo = $this->_structure->findOne(array(
+                '_id' => myMongoId($row)
             ));
+            if ($rowInfo != null) {
+                $this->removePluginStructure($plugin_id, $rowInfo['field']);
+                $this->_structure->remove(array(
+                    '_id' => myMongoId($row),
+                    'collection_id' => $this->_collection_id
+                ));
+            }
         }
         return $this->msg(true, '删除字段属性成功');
     }
@@ -610,5 +637,38 @@ class StructureController extends BaseActionController
         } else {
             return $collectionInfo['_id']->__toString();
         }
+    }
+
+    /**
+     * 同步插件的数据结构
+     *
+     * @param string $plugin_id            
+     * @param array $datas            
+     * @return bool
+     */
+    private function syncPluginStructure($plugin_id, $datas)
+    {
+        return $this->_plugin_structure->update(array(
+            'plugin_id' => $plugin_id,
+            'field' => $datas['field']
+        ), array(
+            '$set' => $datas
+        ), array(
+            'upsert' => true
+        ));
+    }
+
+    /**
+     * 删除插件的数据结构
+     *
+     * @param string $plugin_id            
+     * @param string $field            
+     */
+    private function removePluginStructure($plugin_id, $field)
+    {
+        return $this->_plugin_structure->remove(array(
+            'plugin_id' => $plugin_id,
+            'field' => $field
+        ));
     }
 }

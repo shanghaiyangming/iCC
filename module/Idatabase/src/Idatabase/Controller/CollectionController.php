@@ -62,8 +62,7 @@ class CollectionController extends BaseActionController
                 'plugin_id' => $plugin_id,
                 'project_id' => $this->_project_id
             );
-        }
-        else {
+        } else {
             $query['$and'][] = array(
                 'plugin_id' => $plugin_id
             );
@@ -110,20 +109,32 @@ class CollectionController extends BaseActionController
             return $this->rst($datas, $cursor->count(), true);
         } else {
             $datas = array();
-            fb($query,'LOG');
             $cursor = $this->_plugin_collection->find($query);
             $cursor->sort($sort);
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
-//                 $row['locked'] = false;
-//                 $lockInfo = $this->_lock->count(array(
-//                     'project_id' => $this->_project_id,
-//                     'collection_id' => myMongoId($row['_id']),
-//                     'active' => true
-//                 ));
-//                 if ($lockInfo > 0) {
-//                     $row['locked'] = true;
-//                 }
+                // 检测是否存在对应的物理集合
+                $collectionInfo = $this->syncPluginCollection($row['alias']);
+                if ($collectionInfo === false) {
+                    fb($collectionInfo, 'LOG');
+                    fb($row['alias'], 'LOG');
+                    throw new \Exception('插件集合中不存在此集合');
+                }
+                else {
+                    fb($collectionInfo, 'LOG');
+                    fb($row['alias'], 'LOG');
+                }
+                $row['_id'] = $collectionInfo['_id'];
+                
+                $row['locked'] = false;
+                $lockInfo = $this->_lock->count(array(
+                    'project_id' => $this->_project_id,
+                    'collection_id' => myMongoId($row['_id']),
+                    'active' => true
+                ));
+                if ($lockInfo > 0) {
+                    $row['locked'] = true;
+                }
                 $datas[] = $row;
             }
             return $this->rst($datas, $cursor->count(), true);
@@ -192,12 +203,12 @@ class CollectionController extends BaseActionController
             $datas['orderBy'] = $orderBy;
             $datas['plugin'] = $plugin;
             $datas['plugin_id'] = $plugin_id;
-            $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
             $datas['isRowExpander'] = $isRowExpander;
             $datas['rowExpanderTpl'] = $rowExpanderTpl;
             $datas['isAutoHook'] = $isAutoHook;
             $datas['hook'] = $hook;
             $datas['hookKey'] = $hookKey;
+            $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加集合成功');
@@ -293,12 +304,12 @@ class CollectionController extends BaseActionController
         $datas['orderBy'] = $orderBy;
         $datas['plugin'] = $plugin;
         $datas['plugin_id'] = $plugin_id;
-        $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
         $datas['isRowExpander'] = $isRowExpander;
         $datas['rowExpanderTpl'] = $rowExpanderTpl;
         $datas['isAutoHook'] = $isAutoHook;
         $datas['hook'] = $hook;
         $datas['hookKey'] = $hookKey;
+        $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
@@ -434,5 +445,40 @@ class CollectionController extends BaseActionController
             ));
         }
         return $plugin_collection_id;
+    }
+
+    /**
+     * 自动同步集合
+     * @param string $collectionName
+     * @return array|boolean
+     */
+    private function syncPluginCollection($collectionName)
+    {
+        $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
+            'alias' => $collectionName
+        ));
+        
+        if ($pluginCollectionInfo != null) {
+            unset($pluginCollectionInfo['_id']);
+            $collectionInfo = $pluginCollectionInfo;
+            $collectionInfo['project_id'] = $this->_project_id;
+            
+            $check = $this->_collection->findOne(array(
+                'project_id' => $this->_project_id,
+                'alias' => $collectionName
+            ));
+            if ($check == null) {
+                return $this->_collection->insertRef($collectionInfo);
+            } else {
+                $this->_collection->update(array(
+                    '_id' => $check['_id']
+                ), array(
+                    '$set' => $collectionInfo
+                ));
+            }
+            return $check;
+        }
+        
+        return false;
     }
 }

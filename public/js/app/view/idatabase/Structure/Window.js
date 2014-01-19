@@ -7,7 +7,8 @@ Ext.define('icc.view.idatabase.Structure.Window', {
 			items : [ {
 				xtype : 'idatabaseStructureGrid',
 				project_id : this.project_id,
-				collection_id : this.collection_id
+				collection_id : this.collection_id,
+				plugin_id : this.plugin_id
 			} ]
 		});
 
