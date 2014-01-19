@@ -119,8 +119,7 @@ class CollectionController extends BaseActionController
                     fb($collectionInfo, 'LOG');
                     fb($row['alias'], 'LOG');
                     throw new \Exception('插件集合中不存在此集合');
-                }
-                else {
+                } else {
                     fb($collectionInfo, 'LOG');
                     fb($row['alias'], 'LOG');
                 }
@@ -449,8 +448,9 @@ class CollectionController extends BaseActionController
 
     /**
      * 自动同步集合
-     * @param string $collectionName
-     * @return array|boolean
+     * 
+     * @param string $collectionName            
+     * @return array boolean
      */
     private function syncPluginCollection($collectionName)
     {

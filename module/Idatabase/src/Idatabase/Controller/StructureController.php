@@ -61,8 +61,7 @@ class StructureController extends BaseActionController
      */
     public function indexAction()
     {
-        
-        $plugin_id = trim($this->params()->fromQuery('plugin_id',''));
+        $plugin_id = trim($this->params()->fromQuery('plugin_id', ''));
         
         $rst = array();
         $sort = array(
@@ -70,17 +69,16 @@ class StructureController extends BaseActionController
             '_id' => 1
         );
         
-        if(empty($plugin_id)) {
+        if (empty($plugin_id)) {
             $query = array(
                 'collection_id' => $this->_collection_id
             );
             $cursor = $this->_structure->find($query);
-        }
-        else {
+        } else {
             $query = array(
                 'plugin_id' => $plugin_id
             );
-            fb($query,'LOG');
+            fb($query, 'LOG');
             $cursor = $this->_plugin_structure->find($query);
         }
         

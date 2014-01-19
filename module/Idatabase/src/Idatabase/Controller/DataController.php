@@ -787,7 +787,7 @@ class DataController extends BaseActionController
             $filter = $this->_schema['post'][$key]['filter'];
             $type = $this->_schema['post'][$key]['type'];
             $rshCollection = $this->_schema['post'][$key]['rshCollection'];
-             
+            
             if (! empty($filter)) {
                 $value = filter_var($value, $filter);
             }
