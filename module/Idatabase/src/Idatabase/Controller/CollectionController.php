@@ -119,9 +119,6 @@ class CollectionController extends BaseActionController
                     fb($collectionInfo, 'LOG');
                     fb($row['alias'], 'LOG');
                     throw new \Exception('插件集合中不存在此集合');
-                } else {
-                    fb($collectionInfo, 'LOG');
-                    fb($row['alias'], 'LOG');
                 }
                 $row['_id'] = $collectionInfo['_id'];
                 
@@ -320,16 +317,18 @@ class CollectionController extends BaseActionController
     }
 
     /**
-     * 删除新的项目
+     * 删除集合
      *
      * @author young
-     * @name 删除新的项目
+     * @name 删除集合
      * @version 2013.11.14 young
      * @return JsonModel
      */
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
+        $plugin_id = $this->params()->fromPost('plugin_id', '');
+        
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
         } catch (\Exception $e) {
@@ -340,11 +339,16 @@ class CollectionController extends BaseActionController
             return $this->msg(false, '请选择你要删除的项');
         }
         foreach ($_id as $row) {
-            $this->_collection->update(array(
+            $rowInfo = $this->_collection->findOne(array(
                 '_id' => myMongoId($row)
-            ), array(
-                'project_id' => $this->_project_id
             ));
+            
+            if ($rowInfo != null) {
+                $this->removePluginCollection($plugin_id, $rowInfo['alias']);
+                $this->_collection->remove(array(
+                    '_id' => myMongoId($row)
+                ));
+            }
         }
         return $this->msg(true, '删除信息成功');
     }
@@ -448,7 +452,7 @@ class CollectionController extends BaseActionController
 
     /**
      * 自动同步集合
-     * 
+     *
      * @param string $collectionName            
      * @return array boolean
      */
@@ -480,5 +484,30 @@ class CollectionController extends BaseActionController
         }
         
         return false;
+    }
+
+    /**
+     * 删除插件集合
+     *
+     * @param string $plugin_id            
+     * @param string $alias            
+     */
+    public function removePluginCollection($plugin_id, $alias)
+    {
+        fb($plugin_id, 'LOG');
+        fb($alias, 'LOG');
+        if (empty($plugin_id))
+            return false;
+        
+        $this->_collection->remove(array(
+            'plugin_id' => $plugin_id,
+            'alias' => $alias
+        ));
+        
+        $this->_plugin_collection->remove(array(
+            'plugin_id' => $plugin_id,
+            'alias' => $alias
+        ));
+        return true;
     }
 }
