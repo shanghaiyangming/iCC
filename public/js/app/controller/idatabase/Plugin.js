@@ -84,7 +84,7 @@ Ext.define('icc.controller.idatabase.Plugin', {
 			click : function(button) {
 				var grid = button.up('gridpanel');
 				var win = Ext.widget(controllerName + 'Add', {
-					project_id : grid.project_id
+					__PROJECT_ID__ : grid.__PROJECT_ID__
 				});
 				win.show();
 			}
@@ -96,7 +96,7 @@ Ext.define('icc.controller.idatabase.Plugin', {
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
-						project_id : grid.project_id
+						__PROJECT_ID__ : grid.__PROJECT_ID__
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -157,7 +157,7 @@ Ext.define('icc.controller.idatabase.Plugin', {
 								url : me.actions.remove,
 								params : {
 									_id : Ext.encode(_id),
-									project_id : grid.project_id
+									__PROJECT_ID__ : grid.__PROJECT_ID__
 								},
 								scope : me,
 								success : function(response) {

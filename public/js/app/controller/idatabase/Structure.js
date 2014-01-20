@@ -91,7 +91,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				var grid = button.up('gridpanel');
 				var orderBy = grid.store.getTotalCount();
 				var win = Ext.widget(controllerName + 'Add', {
-					project_id: grid.project_id,
+					__PROJECT_ID__: grid.__PROJECT_ID__,
 					collection_id: grid.collection_id,
 					plugin_id : grid.plugin_id,
 					orderBy: orderBy
@@ -106,7 +106,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
-						project_id: grid.project_id,
+						__PROJECT_ID__: grid.__PROJECT_ID__,
 						collection_id: grid.collection_id,
 						plugin_id : grid.plugin_id
 					});
@@ -138,7 +138,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				Ext.Ajax.request({
 					url: me.actions.save,
 					params: {
-						project_id: grid.project_id,
+						__PROJECT_ID__: grid.__PROJECT_ID__,
 						collection_id: grid.collection_id,
 						updateInfos: Ext.encode(updateList)
 					},
@@ -174,7 +174,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 								url: me.actions.remove,
 								params: {
 									_id: Ext.encode(_id),
-									project_id: grid.project_id,
+									__PROJECT_ID__: grid.__PROJECT_ID__,
 									collection_id: grid.collection_id
 								},
 								scope: me,

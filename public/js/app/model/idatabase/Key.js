@@ -1,7 +1,7 @@
 Ext.define('icc.model.idatabase.Key', {
 	extend : 'icc.model.common.Model',
 	fields : [{
-            name : 'project_id',
+            name : '__PROJECT_ID__',
             type : 'string'
 	}, {
             name : 'name',

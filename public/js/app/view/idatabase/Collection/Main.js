@@ -14,12 +14,12 @@ Ext.define('icc.view.idatabase.Collection.Main', {
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'idatabaseCollectionAccordion',
-				project_id : this.project_id,
+				__PROJECT_ID__ : this.__PROJECT_ID__,
 				name : this.name,
 				pluginItems : this.pluginItems
 			}, {
 				xtype : 'idatabaseCollectionTabPanel',
-				project_id : this.project_id
+				__PROJECT_ID__ : this.__PROJECT_ID__
 			} ]
 		});
 		this.callParent(arguments);

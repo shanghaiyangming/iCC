@@ -3,7 +3,7 @@ Ext.define('icc.view.idatabase.Project.Edit', {
 	alias : 'widget.idatabaseProjectEdit',
 	title : '编辑项目',
 	initComponent: function() {
-		var project_id = this.project_id;
+		var __PROJECT_ID__ = this.__PROJECT_ID__;
 		this.items = [ {
 			xtype : 'iform',
 			url : '/idatabase/project/edit',

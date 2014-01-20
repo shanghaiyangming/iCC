@@ -9,17 +9,17 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 				url : '/idatabase/plugin/add',
 				items : [ {
 					xtype : 'hiddenfield',
-					name : 'project_id',
+					name : '__PROJECT_ID__',
 					fieldLabel : '插件编号',
 					allowBlank : false,
-					value : this.project_id
+					value : this.__PROJECT_ID__
 				}, {
 					xtype : 'idatabasePluginCombobox',
 					allowBlank : false
 				}, {
 					xtype : 'idatabaseProjectCombobox',
 					fieldLabel : '共享来源项目',
-					name : 'source_project_id',
+					name : 'source___PROJECT_ID__',
 					allowBlank : true
 				} ]
 			} ]

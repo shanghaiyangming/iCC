@@ -11,7 +11,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 	initComponent : function() {
 		var items = [ {
 			xtype : 'idatabaseCollectionGrid',
-			project_id : this.project_id,
+			__PROJECT_ID__ : this.__PROJECT_ID__,
 			plugin : false,
 			plugin_id : ''
 		} ];

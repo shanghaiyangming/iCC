@@ -20,10 +20,10 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					allowBlank: false
 				}, {
 					xtype: 'hiddenfield',
-					name: 'project_id',
+					name: '__PROJECT_ID__',
 					fieldLabel: '项目编号',
 					allowBlank: false,
-					value: this.project_id
+					value: this.__PROJECT_ID__
 				}, {
 					xtype: 'hiddenfield',
 					name: 'collection_id',
@@ -160,7 +160,7 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					collapsible: true,
 					items: [{
 						xtype: 'idatabaseCollectionCombobox',
-						project_id: this.project_id,
+						__PROJECT_ID__: this.__PROJECT_ID__,
 						fieldLabel: '关联集合列表',
 						name: 'rshCollection'
 					}, {
@@ -270,7 +270,7 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 						}]
 					}, {
 						xtype: 'idatabaseCollectionCombobox',
-						project_id: this.project_id,
+						__PROJECT_ID__: this.__PROJECT_ID__,
 						fieldLabel: '目标集合列表',
 						name: 'quickTargetCollection'
 					}]

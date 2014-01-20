@@ -9,8 +9,8 @@ Ext.define('icc.view.idatabase.Collection.Order.Add', {
 				url : '/idatabase/order/add',
 				items : [ {
 					xtype : 'hiddenfield',
-					name : 'project_id',
-					value : this.project_id,
+					name : '__PROJECT_ID__',
+					value : this.__PROJECT_ID__,
 					allowBlank : false
 				}, {
 					xtype : 'hiddenfield',
@@ -22,7 +22,7 @@ Ext.define('icc.view.idatabase.Collection.Order.Add', {
 					name : 'field',
 					fieldLabel : '字段名',
 					allowBlank : false,
-					project_id : this.project_id,
+					__PROJECT_ID__ : this.__PROJECT_ID__,
 					collection_id : this.collection_id
 				}, {
 					xtype : 'numberfield',

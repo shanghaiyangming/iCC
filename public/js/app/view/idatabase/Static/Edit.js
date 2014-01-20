@@ -20,10 +20,10 @@ Ext.define('icc.view.idatabase.Static.Edit', {
 					allowBlank : false
 				}, {
 					xtype : 'hiddenfield',
-					name : 'project_id',
+					name : '__PROJECT_ID__',
 					fieldLabel : '项目编号',
 					allowBlank : false,
-					value : this.project_id
+					value : this.__PROJECT_ID__
 				}, {
 					xtype : 'hiddenfield',
 					name : 'collection_id',
@@ -135,7 +135,7 @@ Ext.define('icc.view.idatabase.Static.Edit', {
 					title : '关联设定（选填）',
 					items : [ {
 						xtype : 'idatabaseCollectionCombobox',
-						project_id : this.project_id,
+						__PROJECT_ID__ : this.__PROJECT_ID__,
 						fieldLabel : '关联集合列表',
 						name : 'rshCollection'
 					}, {

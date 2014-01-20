@@ -35,13 +35,13 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 		
 		var store = Ext.create('icc.store.idatabase.Collection');
 		store.proxy.extraParams = {
-			'project_id': me.project_id,
+			'__PROJECT_ID__': me.__PROJECT_ID__,
 			'plugin_id': me.plugin_id
 		};
 		store.load();
 
 		Ext.apply(me, {
-			project_id: me.project_id,
+			__PROJECT_ID__: me.__PROJECT_ID__,
 			store: store,
 			bbar: {
 				xtype: 'paging',

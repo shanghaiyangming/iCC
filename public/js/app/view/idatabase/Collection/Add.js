@@ -9,8 +9,8 @@ Ext.define('icc.view.idatabase.Collection.Add', {
 				url : '/idatabase/collection/add',
 				items : [ {
 					xtype : 'hiddenfield',
-					name : 'project_id',
-					value : this.project_id,
+					name : '__PROJECT_ID__',
+					value : this.__PROJECT_ID__,
 					vtype : 'alphanum'
 				}, {
 					xtype : 'hiddenfield',

@@ -101,7 +101,7 @@ Ext.define('icc.controller.idatabase.Data', {
 			click: function(button) {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var win = Ext.widget(controllerName + 'Add', {
-					project_id: grid.project_id,
+					__PROJECT_ID__: grid.__PROJECT_ID__,
 					collection_id: grid.collection_id,
 					addOrEditFields: grid.addOrEditFields
 				});
@@ -119,7 +119,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				}
 				if (selections.length === 1) {
 					var win = Ext.widget(controllerName + 'Edit', {
-						project_id: grid.project_id,
+						__PROJECT_ID__: grid.__PROJECT_ID__,
 						collection_id: grid.collection_id,
 						addOrEditFields: grid.addOrEditFields
 					});
@@ -205,7 +205,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					url: me.actions.save,
 					params: {
 						updateInfos: Ext.encode(updateList),
-						project_id: grid.project_id,
+						__PROJECT_ID__: grid.__PROJECT_ID__,
 						collection_id: grid.collection_id
 					},
 					scope: me,
@@ -239,7 +239,7 @@ Ext.define('icc.controller.idatabase.Data', {
 								url: me.actions.remove,
 								params: {
 									_id: Ext.encode(_id),
-									project_id: grid.project_id,
+									__PROJECT_ID__: grid.__PROJECT_ID__,
 									collection_id: grid.collection_id
 								},
 								scope: me,
@@ -267,7 +267,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				Ext.Msg.confirm('安全警告', '您当前执行的是清空操作，清空后数据将无法找回，请确认您是否要清空全部数据?', function(btn) {
 					if (btn == 'yes') {
 						var win = Ext.widget(controllerName + 'Password', {
-							project_id: grid.project_id,
+							__PROJECT_ID__: grid.__PROJECT_ID__,
 							collection_id: grid.collection_id,
 							height: 240,
 							width: 320

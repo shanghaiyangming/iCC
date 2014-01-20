@@ -6,7 +6,7 @@ Ext.define('icc.view.idatabase.Key.Window', {
 		Ext.apply(this, {
 			items: [{
 				xtype: 'idatabaseKeyGrid',
-				project_id: this.project_id
+				__PROJECT_ID__: this.__PROJECT_ID__
 			}]
 		});
 		this.callParent();

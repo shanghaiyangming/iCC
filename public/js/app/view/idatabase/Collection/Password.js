@@ -5,8 +5,8 @@ Ext.define('icc.view.idatabase.Collection.Password', {
 	initComponent : function() {
 		var items = [ {
 			xtype : 'hiddenfield',
-			name : 'project_id',
-			value : this.project_id,
+			name : '__PROJECT_ID__',
+			value : this.__PROJECT_ID__,
 			allowBlank : false
 		}, {
 			xtype : 'hiddenfield',

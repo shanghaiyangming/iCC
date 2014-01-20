@@ -26,7 +26,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 			Ext.apply(this, {
 				items : [ {
 					xtype : 'idatabaseDataTreeGrid',
-					project_id : this.project_id,
+					__PROJECT_ID__ : this.__PROJECT_ID__,
 					collection_id : this.collection_id,
 					columns : this.gridColumns,
 					store : this.gridStore,
@@ -39,7 +39,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 			Ext.apply(this, {
 				items : [ {
 					xtype : 'idatabaseDataGrid',
-					project_id : this.project_id,
+					__PROJECT_ID__ : this.__PROJECT_ID__,
 					collection_id : this.collection_id,
 					columns : this.gridColumns,
 					store : this.gridStore,
@@ -48,7 +48,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 					plugins : plugins
 				}, {
 					xtype : 'idatabaseDataSearch',
-					project_id : this.project_id,
+					__PROJECT_ID__ : this.__PROJECT_ID__,
 					collection_id : this.collection_id,
 					searchFields : this.searchFields
 				} ]

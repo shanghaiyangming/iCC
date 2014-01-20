@@ -16,13 +16,13 @@ Ext.define('icc.view.idatabase.Collection.Order.Grid', {
 
 		var store = Ext.create('icc.store.idatabase.Collection.Order');
 		store.proxy.extraParams = {
-			'project_id' : me.project_id,
+			'__PROJECT_ID__' : me.__PROJECT_ID__,
 			'collection_id' : me.collection_id
 		};
 		store.load();
 		
 		var structureStore = Ext.create('icc.store.idatabase.Structure');
-		structureStore['proxy']['extraParams']['project_id'] =  me.project_id;
+		structureStore['proxy']['extraParams']['__PROJECT_ID__'] =  me.__PROJECT_ID__;
 		structureStore['proxy']['extraParams']['collection_id'] =  me.collection_id;
 		me.on({
 			beforerender : function() {
@@ -90,7 +90,7 @@ Ext.define('icc.view.idatabase.Collection.Order.Grid', {
 		} ];
 
 		Ext.apply(me, {
-			project_id : me.project_id,
+			__PROJECT_ID__ : me.__PROJECT_ID__,
 			collection_id : me.collection_id,
 			store : store,
 			bbar : {

@@ -199,7 +199,7 @@ Ext.define('icc.controller.idatabase.Project', {
 						//读取插件列表，构建插件体系
 						var pluginStore = Ext.create('icc.store.idatabase.Plugin');
 						pluginStore.proxy.extraParams = {
-							project_id:  id
+							__PROJECT_ID__:  id
 						};
 						
 						pluginStore.load(function(records, operation, success) {
@@ -209,7 +209,7 @@ Ext.define('icc.controller.idatabase.Project', {
 									pluginItems.push({
 										xtype: 'idatabaseCollectionGrid',
 										title: item.get('name'),
-										project_id: id,
+										__PROJECT_ID__: id,
 										plugin: true,
 										plugin_id: item.get('plugin_id')
 									});
@@ -217,7 +217,7 @@ Ext.define('icc.controller.idatabase.Project', {
 								panel = Ext.widget('idatabaseCollectionMain', {
 									id: id,
 									title: name,
-									project_id: id,
+									__PROJECT_ID__: id,
 									pluginItems: pluginItems
 								});
 								me.getTabPanel().add(panel);
@@ -251,7 +251,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabasePluginWindow', {
-						project_id: id
+						__PROJECT_ID__: id
 					});
 					win.show();
 				}
@@ -274,7 +274,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabaseUserWindow', {
-						project_id: id
+						__PROJECT_ID__: id
 					});
 					win.show();
 				}
@@ -297,7 +297,7 @@ Ext.define('icc.controller.idatabase.Project', {
 					var id = record.get('_id');
 					var name = record.get('name');
 					var win = Ext.widget('idatabaseKeyWindow', {
-						project_id: id
+						__PROJECT_ID__: id
 					});
 					win.show();
 				}

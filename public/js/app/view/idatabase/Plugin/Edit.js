@@ -13,10 +13,10 @@ Ext.define('icc.view.idatabase.Plugin.Edit', {
 				allowBlank : false
 			},{
 				xtype : 'hiddenfield',
-				name : 'project_id',
+				name : '__PROJECT_ID__',
 				fieldLabel : '项目编号',
 				allowBlank : false,
-				value : this.project_id
+				value : this.__PROJECT_ID__
 			}, {
 				xtype : 'idatabasePluginCombobox'
 			}]

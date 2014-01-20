@@ -11,7 +11,7 @@ Ext.define('icc.view.idatabase.Structure.FieldCombobox', {
 	typeAhead : false,
 	initComponent : function() {
 		var store = Ext.create('icc.store.idatabase.Structure');
-		store.proxy.extraParams['project_id'] = this.project_id;
+		store.proxy.extraParams['__PROJECT_ID__'] = this.__PROJECT_ID__;
 		store.proxy.extraParams['collection_id'] = this.collection_id;
 		store.load();
 		

@@ -28,7 +28,7 @@ Ext.define('icc.view.idatabase.Plugin.Grid', {
 	initComponent : function() {
 		var me = this;
 		var store = Ext.create('icc.store.idatabase.Plugin');
-		store['proxy']['extraParams']['project_id'] = me.project_id;
+		store['proxy']['extraParams']['__PROJECT_ID__'] = me.__PROJECT_ID__;
 		store.load();
 
 		Ext.apply(me, {

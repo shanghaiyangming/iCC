@@ -13,10 +13,10 @@ Ext.define('icc.view.idatabase.Key.Edit', {
 				allowBlank : false
 			}, {
 				xtype : 'hiddenfield',
-				name : 'project_id',
+				name : '__PROJECT_ID__',
 				fieldLabel : '项目编号',
 				allowBlank : false,
-				value : this.project_id
+				value : this.__PROJECT_ID__
 			}, {
 				name : 'name',
 				fieldLabel : '密钥名称',

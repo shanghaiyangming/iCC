@@ -28,7 +28,7 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 		}
 	}, {
 		text: '项目编号',
-		dataIndex: 'project_id',
+		dataIndex: '__PROJECT_ID__',
 		flex: 1,
 		field: {
 			xtype: 'textfield',
@@ -75,7 +75,7 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 	initComponent: function() {
 		var me = this;
 		var store = Ext.create('icc.store.idatabase.Key');
-		store['proxy']['extraParams']['project_id'] = me.project_id;
+		store['proxy']['extraParams']['__PROJECT_ID__'] = me.__PROJECT_ID__;
 		store.load();
 
 		Ext.apply(me, {
