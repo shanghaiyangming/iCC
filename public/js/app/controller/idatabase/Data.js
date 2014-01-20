@@ -5,7 +5,7 @@ Ext.define('icc.controller.idatabase.Data', {
 	views: ['idatabase.Data.Main', 'idatabase.Data.Grid', 'idatabase.Data.Search', 'idatabase.Data.Add', 'idatabase.Data.Password', 'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield'],
 	controllerName: 'idatabaseData',
 	plugin: false,
-	plugin_id: '',
+	__PLUGIN_ID__: '',
 	actions: {
 		add: '/idatabase/data/add',
 		edit: '/idatabase/data/edit',

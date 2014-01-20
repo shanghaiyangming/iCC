@@ -61,7 +61,7 @@ class StructureController extends BaseActionController
      */
     public function indexAction()
     {
-        $plugin_id = trim($this->params()->fromQuery('plugin_id', ''));
+        $plugin_id = trim($this->params()->fromQuery('__PLUGIN_ID__', ''));
         
         $rst = array();
         $sort = array(

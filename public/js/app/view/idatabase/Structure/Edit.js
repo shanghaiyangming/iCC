@@ -32,10 +32,10 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					value: this.__COLLECTION_ID__
 				}, {
 					xtype: 'hiddenfield',
-					name: 'plugin_id',
+					name: '__PLUGIN_ID__',
 					fieldLabel: '插件编号',
 					allowBlank: false,
-					value: this.plugin_id
+					value: this.__PLUGIN_ID__
 				}, {
 					name: 'field',
 					fieldLabel: '属性名(英文数字)',

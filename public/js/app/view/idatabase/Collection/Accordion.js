@@ -13,7 +13,7 @@ Ext.define('icc.view.idatabase.Collection.Accordion', {
 			xtype : 'idatabaseCollectionGrid',
 			__PROJECT_ID__ : this.__PROJECT_ID__,
 			plugin : false,
-			plugin_id : ''
+			__PLUGIN_ID__ : ''
 		} ];
 
 		items = Ext.Array.merge(items, this.pluginItems);

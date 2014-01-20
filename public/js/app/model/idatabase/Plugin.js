@@ -1,7 +1,7 @@
 Ext.define('icc.model.idatabase.Plugin', {
 	extend : 'icc.model.common.Model',
 	fields : [ {
-		name : 'plugin_id',
+		name : '__PLUGIN_ID__',
 		type : 'string'
 	}, {
 		name : 'name',

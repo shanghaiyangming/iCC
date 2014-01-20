@@ -9,7 +9,7 @@ Ext.define('icc.view.idatabase.Index.Window', {
 				__PROJECT_ID__ : this.__PROJECT_ID__,
 				__COLLECTION_ID__ : this.__COLLECTION_ID__,
 				plugin : this.plugin,
-				plugin_id : this.plugin_id,
+				__PLUGIN_ID__ : this.__PLUGIN_ID__,
 				plugin_collection_id : this.plugin_collection_id
 			} ]
 		});

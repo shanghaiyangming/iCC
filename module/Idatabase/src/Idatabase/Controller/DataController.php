@@ -473,6 +473,7 @@ class DataController extends BaseActionController
     {
         try {
             $datas = array();
+            fb($this->_schema['post'],'LOG');
             $datas = array_intersect_key($_POST, $this->_schema['post']);
             $files = array_intersect_key($_FILES, $this->_schema['file']);
             

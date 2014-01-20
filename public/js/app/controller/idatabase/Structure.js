@@ -93,7 +93,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
 					__COLLECTION_ID__: grid.__COLLECTION_ID__,
-					plugin_id : grid.plugin_id,
+					__PLUGIN_ID__ : grid.__PLUGIN_ID__,
 					orderBy: orderBy
 				});
 				win.show();
@@ -108,7 +108,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: grid.__COLLECTION_ID__,
-						plugin_id : grid.plugin_id
+						__PLUGIN_ID__ : grid.__PLUGIN_ID__
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);

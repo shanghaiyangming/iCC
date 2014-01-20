@@ -5,7 +5,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 	views: ['idatabase.Collection.Grid', 'idatabase.Collection.Add', 'idatabase.Collection.Edit', 'idatabase.Collection.TabPanel', 'idatabase.Collection.Password', 'idatabase.Collection.Dashboard'],
 	controllerName: 'idatabaseCollection',
 	plugin: false,
-	plugin_id: '',
+	__PLUGIN_ID__: '',
 	actions: {
 		add: '/idatabase/collection/add',
 		edit: '/idatabase/collection/edit',
@@ -98,7 +98,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
 					plugin: grid.plugin,
-					plugin_id: grid.plugin_id,
+					__PLUGIN_ID__: grid.__PLUGIN_ID__,
 					orderBy: grid.store.getTotalCount()
 				});
 				win.show();
@@ -113,7 +113,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						plugin: grid.plugin,
-						plugin_id: grid.plugin_id
+						__PLUGIN_ID__: grid.__PLUGIN_ID__
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -179,7 +179,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 									_id: Ext.encode(_id),
 									__PROJECT_ID__: grid.__PROJECT_ID__,
 									plugin: grid.plugin,
-									plugin_id: grid.plugin_id
+									__PLUGIN_ID__: grid.__PLUGIN_ID__
 								},
 								scope: me,
 								success: function(response) {
@@ -258,7 +258,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
 						plugin: grid.plugin,
-						plugin_id: grid.plugin_id,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -279,7 +279,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
 						plugin: grid.plugin,
-						plugin_id: grid.plugin_id,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -300,7 +300,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
 						plugin: grid.plugin,
-						plugin_id: grid.plugin_id,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -319,13 +319,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var record = selections[0];
 					var __PROJECT_ID__ = grid.__PROJECT_ID__;
 					var __COLLECTION_ID__ = record.get('_id');
-					var plugin_id = grid.plugin_id;
+					var __PLUGIN_ID__ = grid.__PLUGIN_ID__;
 					Ext.Ajax.request({
 						url: '/idatabase/mapping/index',
 						params: {
 							__PROJECT_ID__: __PROJECT_ID__,
 							__COLLECTION_ID__: __COLLECTION_ID__,
-							plugin_id: plugin_id
+							__PLUGIN_ID__: __PLUGIN_ID__
 						},
 						scope: me,
 						success: function(response) {
@@ -370,7 +370,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseStaticWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						plugin_id : grid.plugin_id
+						__PLUGIN_ID__ : grid.__PLUGIN_ID__
 					});
 					win.show();
 				} else {
@@ -389,7 +389,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseLockWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						plugin_id : grid.plugin_id
+						__PLUGIN_ID__ : grid.__PLUGIN_ID__
 					});
 					win.show();
 				} else {
@@ -431,7 +431,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 	},
 	buildDataPanel: function(grid, tabpanel, record) {
 		var __PROJECT_ID__ = grid.__PROJECT_ID__;
-		var plugin_id = grid.plugin_id;
+		var __PLUGIN_ID__ = grid.__PLUGIN_ID__;
 		var __COLLECTION_ID__ = record.get('_id');
 		var collection_name = record.get('name');
 		var isTree = Ext.isBoolean(record.get('isTree')) ? record.get('isTree') : false;
@@ -460,7 +460,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 			structureStore.proxy.extraParams = {
 				__PROJECT_ID__: __PROJECT_ID__,
 				__COLLECTION_ID__: __COLLECTION_ID__,
-				plugin_id: plugin_id
+				__PLUGIN_ID__: __PLUGIN_ID__
 			};
 
 			var treeField = '';
@@ -1042,7 +1042,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								__PROJECT_ID__: __PROJECT_ID__,
 								__COLLECTION_ID__: __COLLECTION_ID__,
-								plugin_id: plugin_id
+								__PLUGIN_ID__: __PLUGIN_ID__
 							}
 						},
 						folderSort: true
@@ -1058,7 +1058,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							extraParams: {
 								__PROJECT_ID__: __PROJECT_ID__,
 								__COLLECTION_ID__: __COLLECTION_ID__,
-								plugin_id: plugin_id
+								__PLUGIN_ID__: __PLUGIN_ID__
 							},
 							reader: {
 								type: 'json',

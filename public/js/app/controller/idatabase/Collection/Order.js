@@ -6,7 +6,7 @@ Ext.define('icc.controller.idatabase.Collection.Order', {
 			'idatabase.Collection.Order.Edit', 'idatabase.Structure.FieldCombobox' ],
 	controllerName : 'idatabaseCollectionOrder',
 	plugin : false,
-	plugin_id : '',
+	__PLUGIN_ID__ : '',
 	actions : {
 		add : '/idatabase/order/add',
 		edit : '/idatabase/order/edit',
