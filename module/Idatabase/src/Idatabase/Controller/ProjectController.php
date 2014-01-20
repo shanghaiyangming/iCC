@@ -18,11 +18,15 @@ use Zend\Json\Json;
 class ProjectController extends BaseActionController
 {
 
-    public $_project;
+    private $_project;
+
+    private $_acl;
 
     public function init()
     {
         $this->_project = $this->model(IDATABASE_PROJECTS);
+        $this->_acl = $this->model(SYSTEM_ACCOUNT_PROJECT_ACL);
+        $this->getAcl();
     }
 
     /**
@@ -35,7 +39,7 @@ class ProjectController extends BaseActionController
     public function indexAction()
     {
         $query = array();
-        $isSystem = filter_var($this->params()->fromQuery('isSystem', ''), FILTER_VALIDATE_BOOLEAN);;
+        $isSystem = filter_var($this->params()->fromQuery('isSystem', ''), FILTER_VALIDATE_BOOLEAN);
         $search = $this->params()->fromQuery('query', null);
         if ($search != null) {
             $search = myMongoRegex($search);
@@ -55,7 +59,15 @@ class ProjectController extends BaseActionController
             $query['$and'][] = $searchQuery;
         }
         
-        $query['$and'][] = array('isSystem'=>$isSystem);
+        $query['$and'][] = array(
+            'isSystem' => $isSystem
+        );
+        
+        $query['$and'][] = array(
+            '_id' => array(
+                '$in' => myMongoId($_SESSION['acl']['project'])
+            )
+        );
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 
@@ -218,5 +230,24 @@ class ProjectController extends BaseActionController
             return false;
         }
         return true;
+    }
+
+    private function getAcl()
+    {
+        $_SESSION['acl']['project'] = array();
+        $_SESSION['acl']['collection'] = array();
+        if (! in_array($_SESSION['account']['role'], array(
+            'root',
+            'admin'
+        ))) {
+            $cursor = $this->_acl->find(array(
+                'username' => $_SESSION['account']['username']
+            ));
+            while ($cursor->hasNext()) {
+                $row = $cursor->getNext();
+                $_SESSION['acl']['project'][] = $row['project_id'];
+                $_SESSION['acl']['collection'] = array_merge($_SESSION['acl']['collection'], $row['collection_ids']);
+            }
+        }
     }
 }
