@@ -78,7 +78,6 @@ class StructureController extends BaseActionController
             $query = array(
                 'plugin_id' => $plugin_id
             );
-            fb($query, 'LOG');
             $cursor = $this->_plugin_structure->find($query);
         }
         
@@ -108,7 +107,9 @@ class StructureController extends BaseActionController
         ));
         
         $rst = array(
-            'rshCollectionValueField' => '_id'
+            'rshCollectionValueField' => '_id',
+            'rshCollectionDisplayField' => '',
+            'rshCollectionFatherField' => ''
         );
         
         while ($cursor->hasNext()) {
@@ -194,8 +195,8 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
-            if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
+            if ($datas['type'] !== 'arrayfield') {
+                return $this->msg(false, '快速录入字段，输入类型必须是“数组”');
             }
             
             if ($datas['quickTargetCollection'] === '') {
@@ -309,8 +310,8 @@ class StructureController extends BaseActionController
         }
         
         if ($datas['isQuick'] === true) {
-            if ($datas['type'] !== 'documentfield') {
-                return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
+            if ($datas['type'] !== 'arrayfield') {
+                return $this->msg(false, '快速录入字段，输入类型必须是“数组”');
             }
             
             if ($datas['quickTargetCollection'] === '') {
@@ -414,8 +415,8 @@ class StructureController extends BaseActionController
             }
             
             if ($row['isQuick'] === true) {
-                if ($row['type'] !== 'documentfield') {
-                    return $this->msg(false, '快速录入字段，输入类型必须是“内嵌文档”');
+                if ($row['type'] !== 'arrayfield') {
+                    return $this->msg(false, '快速录入字段，输入类型必须是“数组”');
                 }
                 
                 if ($row['quickTargetCollection'] === '') {

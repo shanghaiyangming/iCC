@@ -619,7 +619,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							select: function(combo, records, eOpts) {
 								if (isLinkageMenu) {
 									var value = [];
-									if (records.length == 0 || linkageClearValueField == '' || linkageSetValueField == '' || combo.fatherField == '') {
+									if (records.length == 0 || linkageClearValueField == '' || linkageSetValueField == '') {
 										return false;
 									}
 
@@ -645,10 +645,12 @@ Ext.define('icc.controller.idatabase.Collection', {
 											var store = formField.store;
 											var extraParams = store.proxy.extraParams;
 											var linkageSearch = {};
-											linkageSearch[combo.fatherField] = {
-												"$in": value
-											};
-											extraParams.linkageSearch = Ext.JSON.encode(linkageSearch);
+											if(formField.fatherField!='') {
+												linkageSearch[formField.fatherField] = {
+													"$in": value
+												};
+												extraParams.linkageSearch = Ext.JSON.encode(linkageSearch);
+											}
 											store.load();
 										}
 									});

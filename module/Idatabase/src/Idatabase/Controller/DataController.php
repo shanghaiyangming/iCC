@@ -505,10 +505,57 @@ class DataController extends BaseActionController
                 return $this->msg(false, '未发现添加任何有效数据');
             }
             $datas = $this->_data->insertByFindAndModify($datas);
+            
+            // 快捷录入数据处理
+            if (isset($datas['_id'])) {
+                $this->quickOperation($datas);
+            }
+            
             return $this->msg(true, '提交数据成功');
         } catch (\Exception $e) {
             return $this->msg(false, $e->getTraceAsString());
         }
+    }
+
+    /**
+     * 执行快捷录入的逻辑操作
+     * 执行准则统一采用：先清空符合条件数据，然后全部重新插入的原则完成
+     *
+     * @param array $datas            
+     * @return boolean
+     */
+    private function quickOperation($datas)
+    {
+        $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+        if ($rshCollectionValueField == '_id') {
+            $currentCollectionValue = $datas['_id']->__toString();
+        } else {
+            $currentCollectionValue = $datas[$rshCollectionValueField];
+        }
+        
+        $quickDatas = $this->quickData($datas);
+        if (! empty($quickDatas)) {
+            // 删除陈旧的数据，更新为新的数据
+            foreach ($quickDatas as $field => $fieldValue) {
+                $targetCollection = $this->_schema['quick'][$field]['quickTargetCollection'];
+                $this->getStructrue($targetCollection);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取指定集合的数据结构
+     * @param string $collectionName
+     * @return array
+     */
+    private function getStructrue($collectionName)
+    {
+        $collection_id = $this->getCollectionIdByAlias($collectionName);
+        $cursor = $this->_structure->find(array(
+            'collection_id' => $collection_id
+        ));
+        return iterator_to_array($cursor,false);
     }
 
     /**
@@ -700,6 +747,7 @@ class DataController extends BaseActionController
             'file' => array(),
             'post' => array(),
             'all' => array(),
+            'quick' => array(),
             'combobox' => array(
                 'rshCollectionValueField' => '_id'
             )
@@ -732,6 +780,10 @@ class DataController extends BaseActionController
             
             if (isset($row['isFatherField']) && $row['isFatherField']) {
                 $this->_fatherField = $row['field'];
+            }
+            
+            if (isset($row['isQuick']) && $row['isQuick'] && $row['type'] == 'arrayfield') {
+                $schema['quick'][$row['field']] = $row;
             }
             
             if (! empty($row['rshCollection'])) {
@@ -805,6 +857,30 @@ class DataController extends BaseActionController
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
         $validData = array_merge($validPostData, $validFileData);
         return $validData;
+    }
+
+    /**
+     * 快速输入信息
+     *
+     * @param array $datas            
+     * @return array
+     */
+    private function quickData($datas)
+    {
+        $validQuickData = array_intersect_key($datas, $this->_schema['quick']);
+        array_walk($validQuickData, function (&$value, $key)
+        {
+            if ($type == 'arrayfield') {
+                $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
+                array_walk($value, function (&$row, $index) use($rowType)
+                {
+                    $row = formatData($row, $rowType);
+                });
+            }
+            $value = formatData($value, $type);
+        });
+        
+        return $validQuickData;
     }
 
     /**
