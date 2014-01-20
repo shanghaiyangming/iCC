@@ -214,6 +214,7 @@ Ext.define('icc.controller.idatabase.Project', {
 										__PLUGIN_ID__: item.get('__PLUGIN_ID__')
 									});
 								});
+								console.info(pluginItems);
 								panel = Ext.widget('idatabaseCollectionMain', {
 									id: id,
 									title: name,

@@ -299,8 +299,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseIndexWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						plugin: grid.plugin,
 						__PLUGIN_ID__: grid.__PLUGIN_ID__,
+						plugin: grid.plugin,
 						plugin_collection_id: record.get('plugin_collection_id')
 					});
 					win.show();
@@ -370,7 +370,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseStaticWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						__PLUGIN_ID__ : grid.__PLUGIN_ID__
+						__PLUGIN_ID__: grid.__PLUGIN_ID__
 					});
 					win.show();
 				} else {
@@ -389,7 +389,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					var win = Ext.widget('idatabaseLockWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						__PLUGIN_ID__ : grid.__PLUGIN_ID__
+						__PLUGIN_ID__: grid.__PLUGIN_ID__
 					});
 					win.show();
 				} else {
@@ -645,7 +645,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 											var store = formField.store;
 											var extraParams = store.proxy.extraParams;
 											var linkageSearch = {};
-											if(formField.fatherField!='') {
+											if (formField.fatherField != '') {
 												linkageSearch[formField.fatherField] = {
 													"$in": value
 												};
