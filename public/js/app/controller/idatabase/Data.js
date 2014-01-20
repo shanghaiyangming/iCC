@@ -103,6 +103,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
 					__COLLECTION_ID__: grid.__COLLECTION_ID__,
+					__PLUGIN_ID__: grid.__PLUGIN_ID__,
 					addOrEditFields: grid.addOrEditFields
 				});
 				win.show();
@@ -121,6 +122,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: grid.__COLLECTION_ID__,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						addOrEditFields: grid.addOrEditFields
 					});
 
@@ -158,16 +160,14 @@ Ext.define('icc.controller.idatabase.Data', {
 							}
 						} else if (item.xtype == 'boxselect') {
 							var boxSelect = form.findField(field);
-							var fieldValue = selections[0].get(field.replace("[]",''));
+							var fieldValue = selections[0].get(field.replace("[]", ''));
 							if (Ext.isArray(fieldValue)) {
 								boxSelect.setValue(fieldValue);
-							}
-							else {
-								fieldValue = Ext.JSON.decode(fieldValue,true);
-								if (fieldValue!=null) {
+							} else {
+								fieldValue = Ext.JSON.decode(fieldValue, true);
+								if (fieldValue != null) {
 									boxSelect.setValue(fieldValue);
-								}
-								else {
+								} else {
 									console.log('boxSelect fieldValue is not a json string');
 								}
 							}
@@ -206,7 +206,8 @@ Ext.define('icc.controller.idatabase.Data', {
 					params: {
 						updateInfos: Ext.encode(updateList),
 						__PROJECT_ID__: grid.__PROJECT_ID__,
-						__COLLECTION_ID__: grid.__COLLECTION_ID__
+						__COLLECTION_ID__: grid.__COLLECTION_ID__,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__
 					},
 					scope: me,
 					success: function(response) {
@@ -240,7 +241,8 @@ Ext.define('icc.controller.idatabase.Data', {
 								params: {
 									_id: Ext.encode(_id),
 									__PROJECT_ID__: grid.__PROJECT_ID__,
-									__COLLECTION_ID__: grid.__COLLECTION_ID__
+									__COLLECTION_ID__: grid.__COLLECTION_ID__,
+									__PLUGIN_ID__: grid.__PLUGIN_ID__
 								},
 								scope: me,
 								success: function(response) {
@@ -269,6 +271,7 @@ Ext.define('icc.controller.idatabase.Data', {
 						var win = Ext.widget(controllerName + 'Password', {
 							__PROJECT_ID__: grid.__PROJECT_ID__,
 							__COLLECTION_ID__: grid.__COLLECTION_ID__,
+							__PLUGIN_ID__: grid.__PLUGIN_ID__,
 							height: 240,
 							width: 320
 						});
@@ -313,7 +316,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					store.proxy.extraParams.action = button.action;
 					store.proxy.extraParams.start = 0;
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
-					
+
 					if (button.action == 'excel') {
 						Ext.Msg.confirm('系统提示', '导出数据有可能需要较长的时间，请点击“导出”按钮后，耐心等待，两次操作间隔需大于30秒！', function(btn) {
 							if (btn == 'yes') {

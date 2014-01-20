@@ -18,6 +18,11 @@ Ext.define('icc.view.idatabase.Data.Edit', {
 			name : '_id',
 			value : '',
 			allowBlank : false
+		}, {
+			xtype: 'hiddenfield',
+			name: '__PLUGIN_ID__',
+			value: this.__PLUGIN_ID__,
+			allowBlank: false
 		} ]);
 
 		Ext.apply(this, {

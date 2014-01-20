@@ -1075,6 +1075,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 					title: collection_name,
 					__COLLECTION_ID__: __COLLECTION_ID__,
 					__PROJECT_ID__: __PROJECT_ID__,
+					__PLUGIN_ID__: __PLUGIN_ID__,
 					gridColumns: gridColumns,
 					gridStore: dataStore,
 					isTree: isTree,
