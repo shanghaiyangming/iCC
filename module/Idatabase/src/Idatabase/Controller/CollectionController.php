@@ -25,10 +25,13 @@ class CollectionController extends BaseActionController
     private $_project_id;
 
     private $_lock;
+    
+    private $_plugin_id = '';
 
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
+        $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
@@ -49,7 +52,7 @@ class CollectionController extends BaseActionController
     public function indexAction()
     {
         $search = trim($this->params()->fromQuery('query', ''));
-        $plugin_id = $this->params()->fromQuery('__PLUGIN_ID__', '');
+        $plugin_id = $this->_plugin_id;
         
         $sort = array(
             'orderBy' => 1,
@@ -166,7 +169,7 @@ class CollectionController extends BaseActionController
             $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
             $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
-            $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
+            $plugin_id = $this->_plugin_id;
             $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
             $hook = trim($this->params()->fromPost('hook', ''));
             $hookKey = trim($this->params()->fromPost('hookKey', ''));
@@ -255,7 +258,7 @@ class CollectionController extends BaseActionController
         $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
         $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
-        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
+        $plugin_id = $this->_plugin_id;
         $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
         $hook = trim($this->params()->fromPost('hook', ''));
         $hookKey = trim($this->params()->fromPost('hookKey', ''));
@@ -335,7 +338,7 @@ class CollectionController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
+        $plugin_id = $this->_plugin_id;
         
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
