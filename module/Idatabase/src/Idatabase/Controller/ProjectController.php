@@ -63,11 +63,13 @@ class ProjectController extends BaseActionController
             'isSystem' => $isSystem
         );
         
-        $query['$and'][] = array(
-            '_id' => array(
-                '$in' => myMongoId($_SESSION['acl']['project'])
-            )
-        );
+        if (! $_SESSION['acl']['admin']) {
+            $query['$and'][] = array(
+                '_id' => array(
+                    '$in' => myMongoId($_SESSION['acl']['project'])
+                )
+            );
+        }
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 
@@ -234,8 +236,10 @@ class ProjectController extends BaseActionController
 
     private function getAcl()
     {
+        $_SESSION['acl']['admin'] = false;
         $_SESSION['acl']['project'] = array();
         $_SESSION['acl']['collection'] = array();
+        
         if (! in_array($_SESSION['account']['role'], array(
             'root',
             'admin'
@@ -248,6 +252,8 @@ class ProjectController extends BaseActionController
                 $_SESSION['acl']['project'][] = $row['project_id'];
                 $_SESSION['acl']['collection'] = array_merge($_SESSION['acl']['collection'], $row['collection_ids']);
             }
+        } else {
+            $_SESSION['acl']['admin'] = true;
         }
     }
 }

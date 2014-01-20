@@ -89,11 +89,13 @@ class CollectionController extends BaseActionController
             );
         }
         
-        $query['$and'][] = array(
-            '_id' => array(
-                '$in' => myMongoId($_SESSION['acl']['collection'])
-            )
-        );
+        if(!$_SESSION['acl']['admin']) {
+            $query['$and'][] = array(
+                '_id' => array(
+                    '$in' => myMongoId($_SESSION['acl']['collection'])
+                )
+            );
+        }
         
         if (empty($plugin_id)) {
             $datas = array();
