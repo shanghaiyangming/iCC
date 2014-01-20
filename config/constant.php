@@ -12,6 +12,7 @@ defined('DEFAULT_CLUSTER') || define('DEFAULT_CLUSTER', 'default');
  * 系统全局设定数据库
  */
 defined('SYSTEM_ACCOUNT') || define('SYSTEM_ACCOUNT', 'system_account');
+defined('SYSTEM_ACCOUNT_PROJECT_ACL') || define('SYSTEM_ACCOUNT_PROJECT_ACL', 'system_account_project_acl');
 defined('SYSTEM_ROLE') || define('SYSTEM_ROLE', 'system_role');
 defined('SYSTEM_RESOURCE') || define('SYSTEM_RESOURCE', 'system_resource');
 

@@ -70,7 +70,7 @@ Ext.onReady(function() {
 			if (result.charAt(0) == '{') {
 				var json = Ext.decode(result);
 				if (json.access == 'deny') {
-					Ext.Msg.alert('提示信息', json.message);
+					Ext.Msg.alert('提示信息', json.msg);
 				}
 			}
 		});

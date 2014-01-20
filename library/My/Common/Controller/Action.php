@@ -199,8 +199,9 @@ abstract class Action extends AbstractActionController
     public function deny($message = '很遗憾，您无权访问部分资源，请联系管理员开放权限；或者您的登录已经注销，请重新登录')
     {
         return new JsonModel(array(
+            'success'=>false,
             'access' => 'deny',
-            'message' => $message
+            'msg' => $message
         ));
     }
 }
