@@ -138,6 +138,13 @@ class DataController extends BaseActionController
      * @var int
      */
     private $_maxDepth = 1000;
+    
+    /**
+     * 插件编号
+     * 
+     * @var string
+     */
+    private $_plugin_id = '';
 
     /**
      * 初始化函数
@@ -166,6 +173,8 @@ class DataController extends BaseActionController
         $this->_collection_id = $this->getCollectionIdByAlias($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         
+        $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
+        
         $this->_mapping = $this->model(IDATABASE_MAPPING);
         
         $mapCollection = $this->_mapping->findOne(array(
@@ -180,7 +189,7 @@ class DataController extends BaseActionController
         }
         
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        
+        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_schema = $this->getSchema();
         $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
     }
@@ -754,9 +763,16 @@ class DataController extends BaseActionController
             )
         );
         
-        $cursor = $this->_structure->find(array(
-            'collection_id' => $this->_collection_id
-        ));
+        if(empty($this->_plugin_id)) {
+            $cursor = $this->_structure->find(array(
+                'collection_id' => $this->_collection_id
+            ));
+        }
+        else {
+            $cursor = $this->_plugin_structure->find(array(
+                'plugin_id' => $this->_plugin_id
+            ));
+        }
         $cursor->sort(array(
             'orderBy' => 1,
             '_id' => - 1
