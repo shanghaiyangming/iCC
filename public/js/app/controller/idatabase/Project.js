@@ -211,7 +211,7 @@ Ext.define('icc.controller.idatabase.Project', {
 										title: item.get('name'),
 										__PROJECT_ID__: id,
 										plugin: true,
-										__PLUGIN_ID__: item.get('__PLUGIN_ID__')
+										__PLUGIN_ID__: item.get('plugin_id')
 									});
 								});
 								console.info(pluginItems);

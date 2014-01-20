@@ -49,7 +49,7 @@ class CollectionController extends BaseActionController
     public function indexAction()
     {
         $search = trim($this->params()->fromQuery('query', ''));
-        $plugin_id = $this->params()->fromQuery('plugin_id', '');
+        $plugin_id = $this->params()->fromQuery('__PLUGIN_ID__', '');
         
         $sort = array(
             'orderBy' => 1,
@@ -166,7 +166,7 @@ class CollectionController extends BaseActionController
             $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
             $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
             $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
-            $plugin_id = $this->params()->fromPost('plugin_id', '');
+            $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
             $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
             $hook = trim($this->params()->fromPost('hook', ''));
             $hookKey = trim($this->params()->fromPost('hookKey', ''));
@@ -255,7 +255,7 @@ class CollectionController extends BaseActionController
         $isRowExpander = filter_var($this->params()->fromPost('isRowExpander', false), FILTER_VALIDATE_BOOLEAN);
         $rowExpanderTpl = $this->params()->fromPost('rowExpanderTpl', '');
         $plugin = filter_var($this->params()->fromPost('plugin', false), FILTER_VALIDATE_BOOLEAN);
-        $plugin_id = $this->params()->fromPost('plugin_id', '');
+        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
         $isAutoHook = filter_var($this->params()->fromPost('isAutoHook', false), FILTER_VALIDATE_BOOLEAN);
         $hook = trim($this->params()->fromPost('hook', ''));
         $hookKey = trim($this->params()->fromPost('hookKey', ''));
@@ -335,7 +335,7 @@ class CollectionController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        $plugin_id = $this->params()->fromPost('plugin_id', '');
+        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', '');
         
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
