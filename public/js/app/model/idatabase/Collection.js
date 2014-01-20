@@ -22,7 +22,7 @@ Ext.define('icc.model.idatabase.Collection', {
 		name: 'plugin',
 		type: 'boolean'
 	}, {
-		name: '__PLUGIN_ID__',
+		name: 'plugin_id',
 		type: 'string'
 	}, {
 		name: 'plugin_collection_id',
