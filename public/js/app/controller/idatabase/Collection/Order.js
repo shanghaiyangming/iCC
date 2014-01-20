@@ -86,7 +86,7 @@ Ext.define('icc.controller.idatabase.Collection.Order', {
 				var grid = button.up('gridpanel');
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__ : grid.__PROJECT_ID__,
-					collection_id : grid.collection_id
+					__COLLECTION_ID__ : grid.__COLLECTION_ID__
 				});
 				win.show();
 			}
@@ -99,7 +99,7 @@ Ext.define('icc.controller.idatabase.Collection.Order', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__ : grid.__PROJECT_ID__,
-						collection_id : grid.collection_id
+						__COLLECTION_ID__ : grid.__COLLECTION_ID__
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -130,7 +130,7 @@ Ext.define('icc.controller.idatabase.Collection.Order', {
 					params : {
 						updateInfos : Ext.encode(updateList),
 						__PROJECT_ID__ : grid.__PROJECT_ID__,
-						collection_id : grid.collection_id
+						__COLLECTION_ID__ : grid.__COLLECTION_ID__
 					},
 					scope : me,
 					success : function(response) {
@@ -165,7 +165,7 @@ Ext.define('icc.controller.idatabase.Collection.Order', {
 								params : {
 									_id : Ext.encode(_id),
 									__PROJECT_ID__ : grid.__PROJECT_ID__,
-									collection_id : grid.collection_id
+									__COLLECTION_ID__ : grid.__COLLECTION_ID__
 								},
 								scope : me,
 								success : function(response) {

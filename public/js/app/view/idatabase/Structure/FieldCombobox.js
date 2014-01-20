@@ -12,7 +12,7 @@ Ext.define('icc.view.idatabase.Structure.FieldCombobox', {
 	initComponent : function() {
 		var store = Ext.create('icc.store.idatabase.Structure');
 		store.proxy.extraParams['__PROJECT_ID__'] = this.__PROJECT_ID__;
-		store.proxy.extraParams['collection_id'] = this.collection_id;
+		store.proxy.extraParams['__COLLECTION_ID__'] = this.__COLLECTION_ID__;
 		store.load();
 		
 		Ext.apply(this,{

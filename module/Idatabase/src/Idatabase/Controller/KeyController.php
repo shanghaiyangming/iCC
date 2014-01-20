@@ -26,7 +26,7 @@ class KeyController extends BaseActionController
 
     public function init()
     {
-        $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
+        $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');

@@ -11,7 +11,7 @@ Ext.define('icc.view.idatabase.Index.Grid',{
 		var me = this;
 		var store = Ext.create('icc.store.idatabase.Index');
 		store['proxy']['extraParams']['__PROJECT_ID__'] = me.__PROJECT_ID__;
-		store['proxy']['extraParams']['collection_id'] = me.collection_id;
+		store['proxy']['extraParams']['__COLLECTION_ID__'] = me.__COLLECTION_ID__;
 		store.load();
 
 		Ext.apply(me,{

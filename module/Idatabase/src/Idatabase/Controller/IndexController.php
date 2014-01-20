@@ -76,7 +76,7 @@ class IndexController extends BaseActionController
     {
         try {
             $this->_model = $this->model(IDATABASE_INDEXES);
-            $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
+            $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
             if (empty($this->_collection_id)) {
                 throw new \Exception('$this->_collection_id值未设定');
             }

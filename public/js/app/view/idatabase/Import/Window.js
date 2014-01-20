@@ -20,10 +20,10 @@ Ext.define('icc.view.idatabase.Import.Window', {
                     value: this.__PROJECT_ID__
                 }, {
                     xtype: 'hiddenfield',
-                    name: 'collection_id',
+                    name: '__COLLECTION_ID__',
                     fieldLabel: '集合编号',
                     allowBlank: false,
-                    value: this.collection_id
+                    value: this.__COLLECTION_ID__
                 }, {
                     xtype: 'filefield',
                     name: 'import',

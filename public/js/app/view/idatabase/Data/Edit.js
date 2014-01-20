@@ -10,8 +10,8 @@ Ext.define('icc.view.idatabase.Data.Edit', {
 			allowBlank : false
 		}, {
 			xtype : 'hiddenfield',
-			name : 'collection_id',
-			value : this.collection_id,
+			name : '__COLLECTION_ID__',
+			value : this.__COLLECTION_ID__,
 			allowBlank : false
 		}, {
 			xtype : 'hiddenfield',

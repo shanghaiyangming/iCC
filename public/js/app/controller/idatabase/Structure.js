@@ -92,7 +92,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				var orderBy = grid.store.getTotalCount();
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
-					collection_id: grid.collection_id,
+					__COLLECTION_ID__: grid.__COLLECTION_ID__,
 					plugin_id : grid.plugin_id,
 					orderBy: orderBy
 				});
@@ -107,7 +107,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 				if (selections.length > 0) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
-						collection_id: grid.collection_id,
+						__COLLECTION_ID__: grid.__COLLECTION_ID__,
 						plugin_id : grid.plugin_id
 					});
 					var form = win.down('form').getForm();
@@ -139,7 +139,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 					url: me.actions.save,
 					params: {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
-						collection_id: grid.collection_id,
+						__COLLECTION_ID__: grid.__COLLECTION_ID__,
 						updateInfos: Ext.encode(updateList)
 					},
 					scope: me,
@@ -175,7 +175,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 								params: {
 									_id: Ext.encode(_id),
 									__PROJECT_ID__: grid.__PROJECT_ID__,
-									collection_id: grid.collection_id
+									__COLLECTION_ID__: grid.__COLLECTION_ID__
 								},
 								scope: me,
 								success: function(response) {

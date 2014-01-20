@@ -7,7 +7,7 @@ Ext.define('icc.view.idatabase.Collection.Order.Window', {
 			items : [ {
 				xtype : 'idatabaseCollectionOrderGrid',
 				__PROJECT_ID__ : this.__PROJECT_ID__,
-				collection_id : this.collection_id
+				__COLLECTION_ID__ : this.__COLLECTION_ID__
 			} ]
 		});
 

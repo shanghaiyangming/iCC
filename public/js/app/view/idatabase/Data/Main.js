@@ -27,7 +27,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 				items : [ {
 					xtype : 'idatabaseDataTreeGrid',
 					__PROJECT_ID__ : this.__PROJECT_ID__,
-					collection_id : this.collection_id,
+					__COLLECTION_ID__ : this.__COLLECTION_ID__,
 					columns : this.gridColumns,
 					store : this.gridStore,
 					addOrEditFields : this.addOrEditFields,
@@ -40,7 +40,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 				items : [ {
 					xtype : 'idatabaseDataGrid',
 					__PROJECT_ID__ : this.__PROJECT_ID__,
-					collection_id : this.collection_id,
+					__COLLECTION_ID__ : this.__COLLECTION_ID__,
 					columns : this.gridColumns,
 					store : this.gridStore,
 					addOrEditFields : this.addOrEditFields,
@@ -49,7 +49,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 				}, {
 					xtype : 'idatabaseDataSearch',
 					__PROJECT_ID__ : this.__PROJECT_ID__,
-					collection_id : this.collection_id,
+					__COLLECTION_ID__ : this.__COLLECTION_ID__,
 					searchFields : this.searchFields
 				} ]
 			});

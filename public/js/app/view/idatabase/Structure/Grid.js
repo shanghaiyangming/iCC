@@ -13,7 +13,7 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 		console.info(me.plugin_id);
 		store.proxy.extraParams = {
 			__PROJECT_ID__: me.__PROJECT_ID__,
-			collection_id: me.collection_id,
+			__COLLECTION_ID__: me.__COLLECTION_ID__,
 			plugin_id : me.plugin_id
 		};
 		store.load();

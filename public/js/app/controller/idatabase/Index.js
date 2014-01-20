@@ -61,7 +61,7 @@ Ext.define('icc.controller.idatabase.Index', {
 				var grid = button.up('gridpanel');
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__ : grid.__PROJECT_ID__,
-					collection_id : grid.collection_id,
+					__COLLECTION_ID__ : grid.__COLLECTION_ID__,
 					plugin : grid.plugin,
 					plugin_id : grid.plugin_id,
 					plugin_collection_id : grid.plugin_collection_id
@@ -89,7 +89,7 @@ Ext.define('icc.controller.idatabase.Index', {
 								params : {
 									_id : Ext.encode(_id),
 									__PROJECT_ID__ : grid.__PROJECT_ID__,
-									collection_id : grid.collection_id
+									__COLLECTION_ID__ : grid.__COLLECTION_ID__
 								},
 								scope : me,
 								success : function(response) {

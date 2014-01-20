@@ -102,7 +102,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				var grid = button.up('gridpanel') ? button.up('gridpanel') : button.up('treepanel');
 				var win = Ext.widget(controllerName + 'Add', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
-					collection_id: grid.collection_id,
+					__COLLECTION_ID__: grid.__COLLECTION_ID__,
 					addOrEditFields: grid.addOrEditFields
 				});
 				win.show();
@@ -120,7 +120,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				if (selections.length === 1) {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
-						collection_id: grid.collection_id,
+						__COLLECTION_ID__: grid.__COLLECTION_ID__,
 						addOrEditFields: grid.addOrEditFields
 					});
 
@@ -206,7 +206,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					params: {
 						updateInfos: Ext.encode(updateList),
 						__PROJECT_ID__: grid.__PROJECT_ID__,
-						collection_id: grid.collection_id
+						__COLLECTION_ID__: grid.__COLLECTION_ID__
 					},
 					scope: me,
 					success: function(response) {
@@ -240,7 +240,7 @@ Ext.define('icc.controller.idatabase.Data', {
 								params: {
 									_id: Ext.encode(_id),
 									__PROJECT_ID__: grid.__PROJECT_ID__,
-									collection_id: grid.collection_id
+									__COLLECTION_ID__: grid.__COLLECTION_ID__
 								},
 								scope: me,
 								success: function(response) {
@@ -268,7 +268,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					if (btn == 'yes') {
 						var win = Ext.widget(controllerName + 'Password', {
 							__PROJECT_ID__: grid.__PROJECT_ID__,
-							collection_id: grid.collection_id,
+							__COLLECTION_ID__: grid.__COLLECTION_ID__,
 							height: 240,
 							width: 320
 						});

@@ -14,8 +14,8 @@ Ext.define('icc.view.idatabase.Collection.Order.Add', {
 					allowBlank : false
 				}, {
 					xtype : 'hiddenfield',
-					name : 'collection_id',
-					value : this.collection_id,
+					name : '__COLLECTION_ID__',
+					value : this.__COLLECTION_ID__,
 					allowBlank : false
 				}, {
 					xtype : 'idatabaseStructureFieldCombobox',
@@ -23,7 +23,7 @@ Ext.define('icc.view.idatabase.Collection.Order.Add', {
 					fieldLabel : '字段名',
 					allowBlank : false,
 					__PROJECT_ID__ : this.__PROJECT_ID__,
-					collection_id : this.collection_id
+					__COLLECTION_ID__ : this.__COLLECTION_ID__
 				}, {
 					xtype : 'numberfield',
 					fieldLabel : '排序',

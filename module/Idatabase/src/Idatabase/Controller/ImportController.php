@@ -83,13 +83,13 @@ class ImportController extends BaseActionController
     public function init()
     {
         resetTimeMemLimit();
-        $this->_project_id = isset($_REQUEST['project_id']) ? trim($_REQUEST['project_id']) : '';
+        $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        $this->_collection_id = isset($_REQUEST['collection_id']) ? trim($_REQUEST['collection_id']) : '';
+        $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
