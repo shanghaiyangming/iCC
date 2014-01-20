@@ -35,5 +35,16 @@ Ext.define('icc.model.common.Model', {
 			    return value;
 			}
 		}
-	} ]
+	} ],
+	changeName: function() {
+        var __COLLECTION_ID__ = this.get('collection_id'),
+            __PROJECT_ID__ = this.get('project_id');
+
+        if(__COLLECTION_ID__!==undefined && __COLLECTION_ID__!==null) {
+        	this.set('__COLLECTION_ID__', __COLLECTION_ID__);
+        }
+        if(__PROJECT_ID__!==undefined && __PROJECT_ID__!==null) {
+        	this.set('__PROJECT_ID__', __PROJECT_ID__);
+        }
+    }
 });

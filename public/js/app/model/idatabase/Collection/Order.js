@@ -10,7 +10,7 @@ Ext.define('icc.model.idatabase.Collection.Order', {
 		name : 'priority',
 		type : 'int'
 	}, {
-		name : '__COLLECTION_ID__',
+		name : 'collection_id',
 		type : 'string'
 	} ]
 });

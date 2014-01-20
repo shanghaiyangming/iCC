@@ -1,7 +1,7 @@
 Ext.define('icc.model.idatabase.Key', {
 	extend : 'icc.model.common.Model',
 	fields : [{
-            name : '__PROJECT_ID__',
+            name : 'project_id',
             type : 'string'
 	}, {
             name : 'name',
@@ -28,5 +28,16 @@ Ext.define('icc.model.idatabase.Key', {
 	} , {
             name : 'active',
             type : 'boolean'
-	} ]
+	} ],
+	changeName: function() {
+        var __COLLECTION_ID__ = this.get('collection_id'),
+            __PROJECT_ID__ = this.get('project_id');
+
+        if(__COLLECTION_ID__!==undefined) {
+        	this.set('__COLLECTION_ID__', __COLLECTION_ID__);
+        }
+        if(__PROJECT_ID__!==undefined) {
+        	this.set('__PROJECT_ID__', __PROJECT_ID__);
+        }
+    }
 });
