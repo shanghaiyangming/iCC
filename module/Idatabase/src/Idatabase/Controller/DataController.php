@@ -138,10 +138,10 @@ class DataController extends BaseActionController
      * @var int
      */
     private $_maxDepth = 1000;
-    
+
     /**
      * 插件编号
-     * 
+     *
      * @var string
      */
     private $_plugin_id = '';
@@ -241,7 +241,7 @@ class DataController extends BaseActionController
         if (empty($sort)) {
             $sort = $this->defaultOrder();
         }
-        fb($query, 'LOG');
+        
         $cursor = $this->_data->find($query, $this->_fields);
         $total = $cursor->count();
         $cursor->sort($sort);
@@ -482,7 +482,7 @@ class DataController extends BaseActionController
     {
         try {
             $datas = array();
-            fb($this->_schema['post'],'LOG');
+            fb($this->_schema['post'], 'LOG');
             $datas = array_intersect_key($_POST, $this->_schema['post']);
             $files = array_intersect_key($_FILES, $this->_schema['file']);
             
@@ -556,7 +556,8 @@ class DataController extends BaseActionController
 
     /**
      * 获取指定集合的数据结构
-     * @param string $collectionName
+     *
+     * @param string $collectionName            
      * @return array
      */
     private function getStructrue($collectionName)
@@ -565,7 +566,7 @@ class DataController extends BaseActionController
         $cursor = $this->_structure->find(array(
             'collection_id' => $collection_id
         ));
-        return iterator_to_array($cursor,false);
+        return iterator_to_array($cursor, false);
     }
 
     /**
@@ -763,12 +764,11 @@ class DataController extends BaseActionController
             )
         );
         
-        if(empty($this->_plugin_id)) {
+        if (empty($this->_plugin_id)) {
             $cursor = $this->_structure->find(array(
                 'collection_id' => $this->_collection_id
             ));
-        }
-        else {
+        } else {
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $this->_plugin_id
             ));
@@ -1006,6 +1006,14 @@ class DataController extends BaseActionController
                         break;
                     case 'boolfield':
                         $subQuery[$field] = filter_var(trim($_REQUEST[$field]), FILTER_VALIDATE_BOOLEAN);
+                        break;
+                    case 'arrayfield':
+                        $rshCollection = $this->_schema['post'][$field]['rshCollection'];
+                        $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
+                        if ($not)
+                            $subQuery[$field]['$ne'] = formatData($_REQUEST[$field], $rowType);
+                        else
+                            $subQuery[$field] = formatData($_REQUEST[$field], $rowType);
                         break;
                     default:
                         if ($not)

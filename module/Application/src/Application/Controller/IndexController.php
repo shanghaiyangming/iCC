@@ -54,11 +54,13 @@ class IndexController extends Action
             }
         
         $setting = $this->getSetting();
-        return new ViewModel($setting);
+        $this->layout()->setVariables($setting);
+        return new ViewModel();
     }
 
     /**
      * 从系统集合中获取全局的配置参数
+     * 
      * @return array
      */
     private function getSetting()
