@@ -137,7 +137,7 @@ class StructureController extends BaseActionController
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
         $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
-        $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
+        $datas['plugin_id'] = $this->params()->fromPost('__PLUGIN_ID__', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
@@ -252,7 +252,7 @@ class StructureController extends BaseActionController
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
         $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
-        $datas['plugin_id'] = $this->params()->fromPost('plugin_id', '');
+        $datas['plugin_id'] = $this->params()->fromPost('__PLUGIN_ID__', '');
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
@@ -482,7 +482,7 @@ class StructureController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        $plugin_id = $this->params()->fromPost('plugin_id', null);
+        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', null);
         
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
