@@ -60,6 +60,13 @@ class DataController extends BaseActionController
      * @var string
      */
     private $_collection_name = '';
+    
+    /**
+     * 存储数据的物理集合别名
+     *
+     * @var string
+     */
+    private $_collection_alias = '';
 
     /**
      * 存储当前集合的结局结构信息
@@ -160,23 +167,41 @@ class DataController extends BaseActionController
         convertVarNameWithDot($_FILES);
         convertVarNameWithDot($_REQUEST);
         
+        //获取传递参数
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
+        $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
+        $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         
+        //初始化model
+        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        $this->_structure = $this->model(IDATABASE_STRUCTURES);
+        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
+        $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
+        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        
+        //检查必要的参数
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
+        //进行内部私有变量的赋值
+        $this->_collection_alias = $this->getCollectionAliasById($this->_collection_id);
         $this->_collection_id = $this->getCollectionIdByAlias($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         
-        $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
+        //进行访问权限验证
+        if(!$_SESSION['acl']['admin']) {
+            if(!in_array($this->_collection_id,$_SESSION['acl']['collection'],true)) {
+                return $this->deny();
+            }
+        }
         
-        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        //一次性获取当前集合的完整的文档结构信息
+        $this->_schema = $this->getSchema();
         
+        //获取映射关系，初始化数据集合model
         $mapCollection = $this->_mapping->findOne(array(
             'project_id' => $this->_project_id,
             'collection_id' => $this->_collection_id,
@@ -188,10 +213,6 @@ class DataController extends BaseActionController
             $this->_data = $this->model($this->_collection_name);
         }
         
-        $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
-        $this->_schema = $this->getSchema();
-        $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
     }
 
     /**
@@ -537,6 +558,10 @@ class DataController extends BaseActionController
     private function quickOperation($datas)
     {
         $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
+        $rshValueField = function($collectionName) {
+            
+        };
+        
         if ($rshCollectionValueField == '_id') {
             $currentCollectionValue = $datas['_id']->__toString();
         } else {
@@ -548,10 +573,22 @@ class DataController extends BaseActionController
             // 删除陈旧的数据，更新为新的数据
             foreach ($quickDatas as $field => $fieldValue) {
                 $targetCollection = $this->_schema['quick'][$field]['quickTargetCollection'];
-                $this->getStructrue($targetCollection);
+                $model = $this->getTargetCollectionModel($targetCollection);
+                $model->remove(array());
+                $model->insert(array());
             }
         }
         return false;
+    }
+    
+    /**
+     * 获取目标集合的Model
+     * @param string $targetCollectionName
+     * @return object
+     */
+    private function getTargetCollectionModel($targetCollectionName) {
+        $_id = $this->getCollectionIdByAlias($targetCollectionName);
+        return $this->model('idatabase_collection_' . $_id);
     }
 
     /**
@@ -560,11 +597,12 @@ class DataController extends BaseActionController
      * @param string $collectionName            
      * @return array
      */
-    private function getStructrue($collectionName)
+    private function getTargetCollectionRshValueField($collectionName)
     {
         $collection_id = $this->getCollectionIdByAlias($collectionName);
         $cursor = $this->_structure->find(array(
-            'collection_id' => $collection_id
+            'collection_id' => $collection_id,
+            
         ));
         return iterator_to_array($cursor, false);
     }
@@ -885,14 +923,17 @@ class DataController extends BaseActionController
     private function quickData($datas)
     {
         $validQuickData = array_intersect_key($datas, $this->_schema['quick']);
-        array_walk($validQuickData, function (&$value, $key)
+        array_walk($validQuickData, function (&$value, $field)
         {
             if ($type == 'arrayfield') {
+                $rshCollection = $this->_schema['post'][$field]['rshCollection'];
                 $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
-                array_walk($value, function (&$row, $index) use($rowType)
-                {
-                    $row = formatData($row, $rowType);
-                });
+                if(is_array($value)) {
+                    array_walk($value, function (&$row, $index) use($rowType)
+                    {
+                        $row = formatData($row, $rowType);
+                    });
+                }
             }
             $value = formatData($value, $type);
         });
@@ -1008,12 +1049,14 @@ class DataController extends BaseActionController
                         $subQuery[$field] = filter_var(trim($_REQUEST[$field]), FILTER_VALIDATE_BOOLEAN);
                         break;
                     case 'arrayfield':
-                        $rshCollection = $this->_schema['post'][$field]['rshCollection'];
-                        $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
-                        if ($not)
-                            $subQuery[$field]['$ne'] = formatData($_REQUEST[$field], $rowType);
-                        else
-                            $subQuery[$field] = formatData($_REQUEST[$field], $rowType);
+                        $rshCollection = $detail['rshCollection'];
+                        if (! empty($rshCollection)) {
+                            $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
+                            if ($not)
+                                $subQuery[$field]['$ne'] = formatData($_REQUEST[$field], $rowType);
+                            else
+                                $subQuery[$field] = formatData($_REQUEST[$field], $rowType);
+                        }
                         break;
                     default:
                         if ($not)
@@ -1099,17 +1142,21 @@ class DataController extends BaseActionController
     /**
      * 根据集合的编号获取集合的别名
      *
-     * @param string $_id            
+     * @param string|object $_id            
      * @throws \Exception
      */
     private function getCollectionAliasById($_id)
     {
         if (! ($_id instanceof \MongoId)) {
-            $_id = myMongoId($_id);
+            try {
+                $_id = new \MongoId($_id);
+            } catch (\MongoException $ex) {
+                return $_id;
+            }
         }
         $collectionInfo = $this->_collection->findOne(array(
-            'project_id' => $this->_project_id,
-            '_id' => $_id
+            '_id' => $_id,
+            'project_id' => $this->_project_id
         ));
         if ($collectionInfo == null) {
             throw new \Exception('集合名称不存在于指定项目');
