@@ -63,7 +63,6 @@ class ProjectController extends BaseActionController
             'isSystem' => $isSystem
         );
         
-        fb($_SESSION['acl'],'LOG');
         if (! $_SESSION['acl']['admin']) {
             $query['$and'][] = array(
                 '_id' => array(
@@ -71,7 +70,7 @@ class ProjectController extends BaseActionController
                 )
             );
         }
-        fb($query,'LOG');
+
         return $this->findAll(IDATABASE_PROJECTS, $query);
     }
 
@@ -254,11 +253,8 @@ class ProjectController extends BaseActionController
                 $_SESSION['acl']['project'][] = $row['project_id'];
                 $_SESSION['acl']['collection'] = array_merge($_SESSION['acl']['collection'], $row['collection_ids']);
             }
-            fb($_SESSION['acl'], 'LOG');
         } else {
             $_SESSION['acl']['admin'] = true;
         }
-        
-        fb($_SESSION['acl'], 'LOG');
     }
 }
