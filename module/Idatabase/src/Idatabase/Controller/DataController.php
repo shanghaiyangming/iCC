@@ -552,6 +552,11 @@ class DataController extends BaseActionController
      * 执行准则统一采用：先清空符合条件数据，然后全部重新插入的原则完成
      *
      * @param array $datas            
+     * @name
+     *
+     *
+     *
+     * @version 2014.01.21
      * @return boolean
      */
     private function quickOperation($datas)
@@ -631,21 +636,6 @@ class DataController extends BaseActionController
     {
         $_id = $this->getCollectionIdByAlias($targetCollectionName);
         return $this->model('idatabase_collection_' . $_id);
-    }
-
-    /**
-     * 获取指定集合的数据结构
-     *
-     * @param string $collectionName            
-     * @return array
-     */
-    private function getTargetCollectionRshValueField($collectionName)
-    {
-        $collection_id = $this->getCollectionIdByAlias($collectionName);
-        $cursor = $this->_structure->find(array(
-            'collection_id' => $collection_id
-        ));
-        return iterator_to_array($cursor, false);
     }
 
     /**
@@ -731,51 +721,53 @@ class DataController extends BaseActionController
      */
     public function saveAction()
     {
-        $updateInfos = $this->params()->fromPost('updateInfos', null);
         try {
-            $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
-        } catch (\Exception $e) {
-            return $this->msg(false, '无效的json字符串');
-        }
-        
-        if (! is_array($updateInfos)) {
-            return $this->msg(false, '更新数据无效');
-        }
-        
-        foreach ($updateInfos as $row) {
-            $_id = $row['_id'];
-            unset($row['_id']);
+            $updateInfos = $this->params()->fromPost('updateInfos', null);
+            try {
+                $updateInfos = Json::decode($updateInfos, Json::TYPE_ARRAY);
+            } catch (\Exception $e) {
+                return $this->msg(false, '无效的json字符串');
+            }
             
-            $oldDataInfo = $this->_data->findOne(array(
-                '_id' => myMongoId($_id)
-            ));
-            if ($oldDataInfo != null) {
-                $datas = array_intersect_key($row, $this->_schema['post']);
-                if (! empty($datas)) {
-                    try {
-                        $datas = $this->dealData($datas);
-                    } catch (\Zend\Json\Exception\RuntimeException $e) {
-                        return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
-                    }
-                    
-                    try {
-                        $this->_data->update(array(
-                            '_id' => myMongoId($_id)
-                        ), array(
-                            '$set' => $datas
-                        ));
-                        
-                        // 快捷录入数据处理
-                        $datas['_id'] = myMongoId($_id);
-                        $this->quickOperation($datas);
-                    } catch (\Exception $e) {
-                        return $this->msg(false, exceptionMsg($e));
+            if (! is_array($updateInfos)) {
+                return $this->msg(false, '更新数据无效');
+            }
+            
+            foreach ($updateInfos as $row) {
+                $_id = $row['_id'];
+                unset($row['_id']);
+                
+                $oldDataInfo = $this->_data->findOne(array(
+                    '_id' => myMongoId($_id)
+                ));
+                if ($oldDataInfo != null) {
+                    $datas = array_intersect_key($row, $this->_schema['post']);
+                    if (! empty($datas)) {
+                        try {
+                            $datas = $this->dealData($datas);
+                        } catch (\Zend\Json\Exception\RuntimeException $e) {
+                            return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
+                        }
+                        try {
+                            $this->_data->update(array(
+                                '_id' => myMongoId($_id)
+                            ), array(
+                                '$set' => $datas
+                            ));
+                            
+                            // 快捷录入数据处理
+                            $datas['_id'] = myMongoId($_id);
+                            $this->quickOperation($datas);
+                        } catch (\Exception $e) {
+                            return $this->msg(false, exceptionMsg($e));
+                        }
                     }
                 }
             }
+            return $this->msg(true, '更新数据成功');
+        } catch (\exception $e) {
+            return $this->msg(false, $e->getTraceAsString());
         }
-        
-        return $this->msg(true, '更新数据成功');
     }
 
     /**
@@ -950,6 +942,18 @@ class DataController extends BaseActionController
             
             if ($type == 'arrayfield') {
                 $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
+                
+                if (! is_array($value) && is_string($value)) {
+                    if (! isJson($value)) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                    try {
+                        $value = Json::decode($value, Json::TYPE_ARRAY);
+                    } catch (\Zend\Json\Exception\RuntimeException $e) {
+                        throw new \Zend\Json\Exception\RuntimeException($key);
+                    }
+                }
+                
                 array_walk($value, function (&$row, $index) use($rowType)
                 {
                     $row = formatData($row, $rowType);
