@@ -15,6 +15,7 @@ defined('SYSTEM_ACCOUNT') || define('SYSTEM_ACCOUNT', 'system_account');
 defined('SYSTEM_ACCOUNT_PROJECT_ACL') || define('SYSTEM_ACCOUNT_PROJECT_ACL', 'system_account_project_acl');
 defined('SYSTEM_ROLE') || define('SYSTEM_ROLE', 'system_role');
 defined('SYSTEM_RESOURCE') || define('SYSTEM_RESOURCE', 'system_resource');
+defined('SYSTEM_SETTING') || define('SYSTEM_SETTING', 'system_setting');
 
 /**
  * iDatabase常量定义,防止集合命名错误的发生

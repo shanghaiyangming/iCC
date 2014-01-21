@@ -17,6 +17,7 @@ use My\Common\Controller\Action;
 use Zend\Code\Scanner\DirectoryScanner;
 use Zend\Loader\StandardAutoloader;
 use Zend\Code\Scanner\DocBlockScanner;
+use Zend\View\View;
 
 class IndexController extends Action
 {
@@ -25,10 +26,13 @@ class IndexController extends Action
 
     private $_resource;
 
+    private $_setting;
+
     public function init()
     {
         $this->_account = $this->model(SYSTEM_ACCOUNT);
         $this->_resource = $this->model(SYSTEM_RESOURCE);
+        $this->_setting = $this->model(SYSTEM_SETTING);
     }
 
     /**
@@ -48,6 +52,24 @@ class IndexController extends Action
             if (! isset($_SESSION['account'])) {
                 return $this->redirect()->toRoute('login');
             }
+        
+        $setting = $this->getSetting();
+        return new ViewModel($setting);
+    }
+
+    /**
+     * 从系统集合中获取全局的配置参数
+     * @return array
+     */
+    private function getSetting()
+    {
+        $setting = array();
+        $cursor = $this->_setting->find(array());
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $setting[$row['key']] = $row['value'];
+        }
+        return $setting;
     }
 
     /**
@@ -152,7 +174,7 @@ class IndexController extends Action
 
     /**
      * 解析class名称
-     * 
+     *
      * @param string $className            
      * @return array
      */
@@ -167,7 +189,7 @@ class IndexController extends Action
 
     /**
      * 解析action名称
-     * 
+     *
      * @param string $methodName            
      * @return string
      */
@@ -178,7 +200,7 @@ class IndexController extends Action
 
     /**
      * 将方法名转换为router路径
-     * 
+     *
      * @param string $name            
      * @return string
      */

@@ -15,12 +15,12 @@ echo $this->headLink(array(
 ))
     ->appendStylesheet($this->basePath() . '/css/ext-theme-neptune-all.css')
     ->appendStylesheet($this->basePath() . '/css/icon.css')
-    ->appendStylesheet($this->basePath() . '/css/BoxSelect.css');
+    ->appendStylesheet($this->basePath() . '/css/BoxSelect.css?v='.$this->__VERSION__);
 echo $this->headScript()
-    ->appendFile($this->basePath() . '/js/build/production/icc/app.js?v='.time())
-    ->appendFile($this->basePath() . '/js/resources/common.js')
-    ->appendFile($this->basePath() . '/js/resources/htmlspecialchars.js')
-    ->appendFile($this->basePath() . '/css/BoxSelect.js');
+    ->appendFile($this->basePath() . '/js/build/production/icc/app.js?v='.$this->__VERSION__)
+    ->appendFile($this->basePath() . '/js/resources/common.js?v='.$this->__VERSION__)
+    ->appendFile($this->basePath() . '/js/resources/htmlspecialchars.js?v='.$this->__VERSION__)
+    ->appendFile($this->basePath() . '/css/BoxSelect.js?v='.$this->__VERSION__);
 ?>
 </head>
 <body>
