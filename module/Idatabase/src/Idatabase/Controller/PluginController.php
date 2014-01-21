@@ -182,10 +182,6 @@ class PluginController extends BaseActionController
             return $this->msg(false, '插件名称已经存在');
         }
         
-        if ($this->checkPluginXtypeExist($xtype)) {
-            return $this->msg(false, '插件xtype已经存在');
-        }
-        
         $datas = array();
         $datas['name'] = $name;
         $datas['desc'] = $desc;
@@ -231,10 +227,6 @@ class PluginController extends BaseActionController
         
         if ($this->checkPluginNameExist($name) && $oldPluginInfo['name'] != $name) {
             return $this->msg(false, '插件名称已经存在');
-        }
-        
-        if ($this->checkPluginXtypeExist($xtype) && $oldPluginInfo['xtype'] != $xtype) {
-            return $this->msg(false, '插件xtype已经存在');
         }
         
         $datas = array();
@@ -289,23 +281,6 @@ class PluginController extends BaseActionController
     {
         $check = $this->_plugin->count(array(
             'name' => $info
-        ));
-        if ($check > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 检查系统插件是否存在
-     *
-     * @param string $info            
-     * @return bool True/False
-     */
-    private function checkPluginXtypeExist($info)
-    {
-        $check = $this->_plugin->count(array(
-            'xtype' => $info
         ));
         if ($check > 0) {
             return true;
