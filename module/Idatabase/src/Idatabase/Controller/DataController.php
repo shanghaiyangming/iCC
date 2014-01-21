@@ -552,10 +552,7 @@ class DataController extends BaseActionController
      * 执行准则统一采用：先清空符合条件数据，然后全部重新插入的原则完成
      *
      * @param array $datas            
-     * @name
-     *
-     *
-     *
+     * @name 
      * @version 2014.01.21
      * @return boolean
      */
@@ -563,9 +560,10 @@ class DataController extends BaseActionController
     {
         $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
         if ($rshCollectionValueField == '_id') {
-            $currentCollectionValue = $datas['_id']->__toString();
+            $currentCollectionValue = $oldCollectionValue = $datas['_id']->__toString();
         } else {
             $currentCollectionValue = $datas[$rshCollectionValueField];
+            $oldCollectionValue = $datas['__OLD_DATA__'][$rshCollectionValueField];
         }
         
         $quickValueField = function ($targetCollectionName, $rshCollection)
@@ -601,7 +599,7 @@ class DataController extends BaseActionController
                 $model = $this->getTargetCollectionModel($targetCollection);
                 
                 $removeData = array(
-                    $quickValueField($targetCollection, $this->_collection_alias) => $currentCollectionValue
+                    $quickValueField($targetCollection, $this->_collection_alias) => $oldCollectionValue
                 );
                 $removeOldData($model, $removeData);
                 
@@ -696,6 +694,10 @@ class DataController extends BaseActionController
         }
         
         try {
+            $__OLD_DATA__ = $this->_data->findOne(array(
+                '_id' => myMongoId($_id)
+            ));
+            
             $this->_data->update(array(
                 '_id' => myMongoId($_id)
             ), array(
@@ -704,7 +706,9 @@ class DataController extends BaseActionController
             
             // 快捷录入数据处理
             $datas['_id'] = myMongoId($_id);
+            $datas['__OLD_DATA__'] = $__OLD_DATA__;
             $this->quickOperation($datas);
+            
         } catch (\Exception $e) {
             return $this->msg(false, $e->getMessage());
         }
@@ -749,6 +753,10 @@ class DataController extends BaseActionController
                             return $this->msg(false, $e->getMessage() . $this->_jsonExceptMessage);
                         }
                         try {
+                            $__OLD_DATA__ = $this->_data->findOne(array(
+                                '_id' => myMongoId($_id)
+                            ));
+                            
                             $this->_data->update(array(
                                 '_id' => myMongoId($_id)
                             ), array(
@@ -757,7 +765,9 @@ class DataController extends BaseActionController
                             
                             // 快捷录入数据处理
                             $datas['_id'] = myMongoId($_id);
+                            $datas['__OLD_DATA__'] = $__OLD_DATA__;
                             $this->quickOperation($datas);
+                            
                         } catch (\Exception $e) {
                             return $this->msg(false, exceptionMsg($e));
                         }
