@@ -85,7 +85,7 @@ class PluginController extends BaseActionController
         
         $project_id = $this->_project_id;
         $source_project_id = $this->params()->fromPost('source_project_id', '');
-        $plugin_id = $this->params()->fromPost('plugin_id', null);
+        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', null);
         
         if ($project_id == null) {
             return $this->msg(false, '无效的项目编号');

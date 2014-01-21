@@ -19,7 +19,7 @@ Ext.define('icc.view.idatabase.Plugin.Add', {
 				}, {
 					xtype : 'idatabaseProjectCombobox',
 					fieldLabel : '共享来源项目',
-					name : 'source___PROJECT_ID__',
+					name : '__SOURCE_PROJECT_ID__',
 					allowBlank : true
 				} ]
 			} ]
