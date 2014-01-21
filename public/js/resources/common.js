@@ -75,7 +75,6 @@ Ext.onReady(function() {
 				var json = Ext.decode(result);
 				if (json.access == 'deny') {
 					Ext.Msg.alert('提示信息', json.msg);
-					window.location.href = "/";
 				}
 			}
 		});

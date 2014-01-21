@@ -76,7 +76,7 @@ class AuthController extends Action
             ));
         }
         
-        $allowResource = array();
+        $_SESSION['account'] = $accountInfo;
         if($accountInfo['role']!=='root') {
             // 查询用户所具备的权限
             $roleInfo = $this->_role->findOne(array(
@@ -88,9 +88,9 @@ class AuthController extends Action
                     'code'=>501
                 ));
             }
+            $_SESSION['account']['resources'] = $roleInfo['resources'];
         }
-        $_SESSION['account'] = $accountInfo;
-        $_SESSION['account']['resources'] = $roleInfo['resources'];
+        
         return $this->redirect()->toRoute('home');
     }
 
