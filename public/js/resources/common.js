@@ -12,15 +12,19 @@ if (typeof console == "undefined" || typeof console.log == "undefined") {
 Ext.Loader.setConfig({
 	enabled: true
 });
+
 Ext.onReady(function() {
 	Ext.require(['Ext.data.proxy.Ajax', 'Ext.form.field.ComboBox', 'Ext.form.field.VTypes','Ext.grid.plugin.RowExpander'], function() {
+		
 		Ext.override('Ext.data.proxy.Ajax', {
 			timeout: 60000
 		});
+		
 		Ext.override('Ext.form.action.Submit', {
 			waitTitle: '系统提示',
 			waitMsg: '数据处理中，请稍后……'
 		});
+		
 		Ext.form.field.ComboBox.override({
 			setValue: function(v) {
 				var me = this;
@@ -71,6 +75,7 @@ Ext.onReady(function() {
 				var json = Ext.decode(result);
 				if (json.access == 'deny') {
 					Ext.Msg.alert('提示信息', json.msg);
+					window.location.href = "/";
 				}
 			}
 		});
@@ -78,20 +83,7 @@ Ext.onReady(function() {
 		Ext.Ajax.on('requestexception', function(ajax, response, options, eOpts) {
 			Ext.Msg.alert('提示信息', '网络连接异常，请检查您的网络状况是否正常');
 		});
-/*
-		Ext.override(Ext.grid.plugin.RowExpander, {
-			getRowBodyFeatureData: function(record, idx, rowValues) {
-				var me = this
-				me.self.prototype.setupRowData.apply(me, arguments);
 
-				if (!me.grid.ownerLockable) {
-					rowValues.rowBodyColspan = rowValues.rowBodyColspan;
-				}
-				rowValues.rowBody = me.getRowBodyContents(record);
-				rowValues.rowBodyCls = me.recordsExpanded[record.internalId] ? '' : me.rowBodyHiddenCls;
-			}
-		});
-*/
 	});
 
 });
