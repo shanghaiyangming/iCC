@@ -21,6 +21,10 @@ class CollectionController extends BaseActionController
     private $_collection;
 
     private $_plugin_collection;
+    
+    private $_plugin_structure;
+    
+    private $_structure;
 
     private $_project_id;
 
@@ -37,7 +41,9 @@ class CollectionController extends BaseActionController
             throw new \Exception('$this->_project_id值未设定');
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        $this->_structure = $this->model(IDATABASE_STRUCTURES);
         $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
+        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_lock = $this->model(IDATABASE_LOCK);
     }
 
@@ -470,8 +476,36 @@ class CollectionController extends BaseActionController
     private function syncPluginCollection($collectionName)
     {
         $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
+            'plugin_id' => $this->_plugin_id,
             'alias' => $collectionName
         ));
+        
+        $pluginStructure = function($plugin_id,$collection_id) {
+            if($collection_id instanceof \MongoId )
+                $collection_id = $collection_id->__toString();
+            
+            $this->_structure->remove(
+                array(
+                    'collection_id'=>$collection_id
+                )
+            );
+            
+            $cursor = $this->_plugin_structure->find(
+                array(
+                    'plugin_id'=>$plugin_id
+                )
+            );
+            while($cursor->hasNext()) {
+                $row = $cursor->getNext();
+                array_unset_recursive($row,array('collection_id','__CREATE_TIME__','__MODIFY_TIME__','__REMOVED__'));
+                $row['collection_id'] = $collection_id;
+                $this->_structure->update(
+                    array('collection_id'=>$collection_id,'field'=>$row['field']),
+                    array('$set'=>$row)
+                );
+            }
+            return true;
+        };
         
         if ($pluginCollectionInfo != null) {
             unset($pluginCollectionInfo['_id']);
@@ -483,18 +517,25 @@ class CollectionController extends BaseActionController
                 'alias' => $collectionName
             ));
             if ($check == null) {
-                return $this->_collection->insertRef($collectionInfo);
+                $rst = $this->_collection->insertRef($collectionInfo);
+                $pluginStructure($this->_plugin_id,$rst['_id']);
+                return $rst;
             } else {
                 $this->_collection->update(array(
                     '_id' => $check['_id']
                 ), array(
                     '$set' => $collectionInfo
                 ));
+                $pluginStructure($this->_plugin_id,$check['_id']);
             }
             return $check;
         }
         
         return false;
+    }
+    
+    private function syncCollectionStructure() {
+        
     }
 
     /**
@@ -503,7 +544,7 @@ class CollectionController extends BaseActionController
      * @param string $plugin_id            
      * @param string $alias            
      */
-    public function removePluginCollection($plugin_id, $alias)
+    private function removePluginCollection($plugin_id, $alias)
     {
         if (empty($plugin_id))
             return false;
