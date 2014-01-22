@@ -20,6 +20,8 @@ class CollectionController extends BaseActionController
 
     private $_collection;
 
+    private $_project_plugin;
+
     private $_plugin_collection;
 
     private $_plugin_structure;
@@ -29,6 +31,8 @@ class CollectionController extends BaseActionController
     private $_project_id;
 
     private $_lock;
+
+    private $_mapping;
 
     private $_plugin_id = '';
 
@@ -42,9 +46,11 @@ class CollectionController extends BaseActionController
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
+        $this->_project_plugin->model(IDATABASE_PROJECT_PLUGINS);
         $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
         $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_lock = $this->model(IDATABASE_LOCK);
+        $this->_mapping = $this->model(IDATABASE_MAPPING);
     }
 
     /**
@@ -479,8 +485,6 @@ class CollectionController extends BaseActionController
      */
     private function syncPluginCollection($collectionName)
     {
-        fb('syncPluginCollection', 'LOG');
-        
         $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
             'plugin_id' => $this->_plugin_id,
             'alias' => $collectionName
@@ -491,20 +495,18 @@ class CollectionController extends BaseActionController
             return false;
         }
         
+        // 同步数据结构
         $syncPluginStructure = function ($plugin_id, $collection_id) use($pluginCollectionInfo)
         {
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
-            
-            fb($collection_id,'LOG');
-            fb($this->_structure->findAll(array(
-                'collection_id' => $collection_id
-            )), 'LOG');
-            
+                
+                // 清除陈旧的数据结构
             $this->_structure->remove(array(
                 'collection_id' => $collection_id
             ));
             
+            // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $plugin_id,
                 'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
@@ -527,7 +529,40 @@ class CollectionController extends BaseActionController
             return true;
         };
         
-        fb($pluginCollectionInfo, 'LOG');
+        // 添加映射关系
+        $createMapping = function ($collection_id, $collectionName)
+        {
+            $projectPluginInfo = $this->_project_plugin->findOne(array(
+                'project_id' => $this->_project_id,
+                'plugin_id' => $this->_plugin_id
+            ));
+            if ($projectPluginInfo !== null) {
+                $source_project_id = $projectPluginInfo['source_project_id'];
+                if (! empty($source_project_id)) {
+                    $collectionInfo = $this->_collection->findOne(array(
+                        'project_id' => $source_project_id,
+                        'plugin_id' => $this->_plugin_id,
+                        'alias' => $collectionName
+                    ));
+                    $this->_mapping->update(array(
+                        'project_id' => $this->_project_id,
+                        'collection_id' => $collection_id
+                    ), array(
+                        '$set' => array(
+                            'collection' => 'iDatabase_collection_' . myMongoId($collectionInfo['_id']),
+                            'database' => DEFAULT_DATABASE,
+                            'cluster' => DEFAULT_CLUSTER,
+                            'active' => true
+                        )
+                    ), array(
+                        'upsert' => true
+                    ));
+                    return true;
+                }
+            }
+            return false;
+        };
+        
         if ($pluginCollectionInfo != null) {
             unset($pluginCollectionInfo['_id']);
             $collectionInfo = $pluginCollectionInfo;
@@ -537,7 +572,7 @@ class CollectionController extends BaseActionController
                 'project_id' => $this->_project_id,
                 'alias' => $collectionName
             ));
-            fb($check, 'LOG');
+            
             if ($check == null) {
                 $rst = $this->_collection->insertRef($collectionInfo);
                 $syncPluginStructure($this->_plugin_id, $rst['_id']);

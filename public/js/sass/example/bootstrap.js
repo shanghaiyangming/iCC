@@ -9,8 +9,7 @@ Ext.Loader.addClassPathMappings({
   "Ext.Msg": "../../ext/src/window/MessageBox.js",
   "Ext.rtl.EventObjectImpl": "../../ext/src/rtl/EventObject.js",
   "ExtThemeNeptune": "../../ext/packages/ext-theme-neptune/overrides",
-  "icc": "../../app",
-  "icc.view.idatabase.Project.Grid": "../../app/view/idatabase/Account/Grid.js"
+  "icc": "../../app"
 });
 Ext.ClassManager.addNameAlternateMappings({
   "Ext.AbstractComponent": [],
