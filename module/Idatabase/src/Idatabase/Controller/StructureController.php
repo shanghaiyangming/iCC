@@ -73,18 +73,22 @@ class StructureController extends BaseActionController
             '_id' => 1
         );
         
-        if (empty($this->_plugin_id)) {
-            $query = array(
-                'collection_id' => $this->_collection_id
-            );
-            $cursor = $this->_structure->find($query);
-        } else {
-            $query = array(
-                'plugin_id' => $this->_plugin_id,
-                'plugin_collection_id' => $this->_plugin_collection_id
-            );
-            $cursor = $this->_plugin_structure->find($query);
-        }
+        $query = array(
+            'collection_id' => $this->_collection_id
+        );
+        $cursor = $this->_structure->find($query);
+//         if (empty($this->_plugin_id)) {
+//             $query = array(
+//                 'collection_id' => $this->_collection_id
+//             );
+//             $cursor = $this->_structure->find($query);
+//         } else {
+//             $query = array(
+//                 'plugin_id' => $this->_plugin_id,
+//                 'plugin_collection_id' => $this->_plugin_collection_id
+//             );
+//             $cursor = $this->_plugin_structure->find($query);
+//         }
         
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
