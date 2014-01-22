@@ -53,13 +53,13 @@ class CollectionController extends BaseActionController
      *
      * @author young
      * @name 读取指定项目内的全部集合列表
-     * @version 2013.11.19 young
+     * @version 2014.01.21 young
      */
     public function indexAction()
     {
         $search = trim($this->params()->fromQuery('query', ''));
+        $action = trim($this->params()->fromQuery('action', ''));
         $plugin_id = $this->_plugin_id;
-        
         $sort = array(
             'orderBy' => 1,
             '_id' => - 1
@@ -106,7 +106,7 @@ class CollectionController extends BaseActionController
             );
         }
         
-        if (empty($plugin_id)) {
+        if (empty($plugin_id) || $action=='all') {
             $datas = array();
             $cursor = $this->_collection->find($query);
             $cursor->sort($sort);
@@ -152,39 +152,6 @@ class CollectionController extends BaseActionController
             }
             return $this->rst($datas, $cursor->count(), true);
         }
-    }
-
-    /**
-     *
-     * @return Ambigous <\Zend\View\Model\JsonModel, multitype:array number >
-     */
-    public function allAction()
-    {
-        $query = array();
-        $query['project_id'] = $this->_project_id;
-        if (! $_SESSION['acl']['admin']) {
-            $query['_id'] = array(
-                '$in' => myMongoId($_SESSION['acl']['collection'])
-            );
-        }
-        
-        $datas = array();
-        $cursor = $this->_collection->find($query);
-        $cursor->sort($sort);
-        while ($cursor->hasNext()) {
-            $row = $cursor->getNext();
-            $row['locked'] = false;
-            $lockInfo = $this->_lock->count(array(
-                'project_id' => $this->_project_id,
-                'collection_id' => myMongoId($row['_id']),
-                'active' => true
-            ));
-            if ($lockInfo > 0) {
-                $row['locked'] = true;
-            }
-            $datas[] = $row;
-        }
-        return $this->rst($datas, $cursor->count(), true);
     }
 
     /**

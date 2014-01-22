@@ -18,7 +18,7 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 		};
 		store.load();
 
-		var collectionStore = Ext.create('icc.store.idatabase.Collection');
+		var collectionStore = Ext.create('icc.store.idatabase.Collection.All');
 		collectionStore.proxy.extraParams = {
 			__PROJECT_ID__: me.__PROJECT_ID__
 		};

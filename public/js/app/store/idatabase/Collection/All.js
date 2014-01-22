@@ -4,9 +4,9 @@ Ext.define('icc.store.idatabase.Collection.All', {
 	model : 'icc.model.idatabase.Collection',
 	proxy : {
 		type : 'ajax',
-		url : '/idatabase/collection/all',
+		url : '/idatabase/collection/index',
 		extraParams : {
-			
+			action : 'all'
 		},
 		reader : {
 			type : 'json',
