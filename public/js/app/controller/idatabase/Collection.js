@@ -259,7 +259,14 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__COLLECTION_ID__: record.get('_id'),
 						plugin: grid.plugin,
 						__PLUGIN_ID__: grid.__PLUGIN_ID__,
-						plugin_collection_id: record.get('plugin_collection_id')
+						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
+					});
+					console.info({
+						__PROJECT_ID__: grid.__PROJECT_ID__,
+						__COLLECTION_ID__: record.get('_id'),
+						plugin: grid.plugin,
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
+						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
 					});
 					win.show();
 				} else {
@@ -280,7 +287,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__COLLECTION_ID__: record.get('_id'),
 						plugin: grid.plugin,
 						__PLUGIN_ID__: grid.__PLUGIN_ID__,
-						plugin_collection_id: record.get('plugin_collection_id')
+						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
 					});
 					win.show();
 				} else {
@@ -296,12 +303,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length == 1) {
 					var record = selections[0];
+					console.info(record);
 					var win = Ext.widget('idatabaseIndexWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
 						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						plugin: grid.plugin,
-						plugin_collection_id: record.get('plugin_collection_id')
+						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
 					});
 					win.show();
 				} else {

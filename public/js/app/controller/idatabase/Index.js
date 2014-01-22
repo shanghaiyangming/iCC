@@ -64,7 +64,7 @@ Ext.define('icc.controller.idatabase.Index', {
 					__COLLECTION_ID__ : grid.__COLLECTION_ID__,
 					plugin : grid.plugin,
 					__PLUGIN_ID__ : grid.__PLUGIN_ID__,
-					plugin_collection_id : grid.plugin_collection_id
+					__PLUGIN_COLLECTION_ID__ : grid.__PLUGIN_COLLECTION_ID__
 				});
 				win.show();
 			}

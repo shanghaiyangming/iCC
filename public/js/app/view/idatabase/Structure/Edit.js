@@ -37,6 +37,12 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					allowBlank: false,
 					value: this.__PLUGIN_ID__
 				}, {
+					xtype: 'hiddenfield',
+					name: '__PLUGIN_COLLECTION_ID__',
+					fieldLabel: '插件集合编号',
+					allowBlank: false,
+					value: this.__PLUGIN_COLLECTION_ID__
+				}, {
 					name: 'field',
 					fieldLabel: '属性名(英文数字)',
 					allowBlank: false

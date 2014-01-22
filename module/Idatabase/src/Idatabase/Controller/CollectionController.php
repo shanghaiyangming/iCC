@@ -110,10 +110,8 @@ class CollectionController extends BaseActionController
             );
         }
         
-        fb($query, 'LOG');
         if (empty($plugin_id) || $action === 'all') {
             $datas = array();
-            fb($query, 'LOG');
             $cursor = $this->_collection->find($query);
             $cursor->sort($sort);
             while ($cursor->hasNext()) {
@@ -129,15 +127,14 @@ class CollectionController extends BaseActionController
                 }
                 $datas[] = $row;
             }
-            fb($datas, 'LOG');
             return $this->rst($datas, $cursor->count(), true);
         } else {
             $datas = array();
-            fb($query, 'LOG');
             $cursor = $this->_plugin_collection->find($query);
             $cursor->sort($sort);
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
+                $row['plugin_collection_id'] = myMongoId($row['_id']);
                 // 检测是否存在对应的物理集合
                 $collectionInfo = $this->syncPluginCollection($row['alias']);
                 if ($collectionInfo === false) {
@@ -146,7 +143,6 @@ class CollectionController extends BaseActionController
                     throw new \Exception('插件集合中不存在此集合');
                 }
                 $row['_id'] = $collectionInfo['_id'];
-                
                 $row['locked'] = false;
                 $lockInfo = $this->_lock->count(array(
                     'project_id' => $this->_project_id,
@@ -483,22 +479,34 @@ class CollectionController extends BaseActionController
      */
     private function syncPluginCollection($collectionName)
     {
+        fb('syncPluginCollection', 'LOG');
+        
         $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
             'plugin_id' => $this->_plugin_id,
             'alias' => $collectionName
         ));
         
-        $syncPluginStructure = function ($plugin_id, $collection_id)
+        if ($pluginCollectionInfo == null) {
+            fb('$pluginCollectionInfo is null', 'LOG');
+            return false;
+        }
+        
+        $syncPluginStructure = function ($plugin_id, $collection_id) use($pluginCollectionInfo)
         {
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
+            
+            fb($this->_structure->findAll(array(
+                'collection_id' => $collection_id
+            )), 'LOG');
             
             $this->_structure->remove(array(
                 'collection_id' => $collection_id
             ));
             
             $cursor = $this->_plugin_structure->find(array(
-                'plugin_id' => $plugin_id
+                'plugin_id' => $plugin_id,
+                'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
             ));
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
@@ -510,16 +518,15 @@ class CollectionController extends BaseActionController
                     '__REMOVED__'
                 ));
                 $row['collection_id'] = $collection_id;
-                $this->_structure->update(array(
+                $this->_structure->insert(array(
                     'collection_id' => $collection_id,
                     'field' => $row['field']
-                ), array(
-                    '$set' => $row
                 ));
             }
             return true;
         };
         
+        fb($pluginCollectionInfo, 'LOG');
         if ($pluginCollectionInfo != null) {
             unset($pluginCollectionInfo['_id']);
             $collectionInfo = $pluginCollectionInfo;
@@ -529,6 +536,7 @@ class CollectionController extends BaseActionController
                 'project_id' => $this->_project_id,
                 'alias' => $collectionName
             ));
+            fb($check, 'LOG');
             if ($check == null) {
                 $rst = $this->_collection->insertRef($collectionInfo);
                 $syncPluginStructure($this->_plugin_id, $rst['_id']);

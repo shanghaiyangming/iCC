@@ -30,7 +30,7 @@ Ext.define('icc.view.idatabase.Collection.Edit', {
 					allowBlank : false
 				}, {
 					xtype : 'hiddenfield',
-					name : 'plugin_collection_id',
+					name : '__PLUGIN_COLLECTION_ID__',
 					vtype : 'alphanum',
 					allowBlank : false
 				}, {

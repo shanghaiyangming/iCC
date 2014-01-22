@@ -928,7 +928,7 @@ class DataController extends BaseActionController
                         'rshCollectionValueFieldType' => $rshCollectionValueFieldType
                     );
                 } else {
-                    throw new \Exception('关系集合属性尚未设定');
+                    throw new \Exception('字段'.$row['field'].'的“关联集合”的键值属性尚未设定，请检查表表结构设定');
                 }
             }
         }
