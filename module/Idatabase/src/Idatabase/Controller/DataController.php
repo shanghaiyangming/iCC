@@ -180,13 +180,15 @@ class DataController extends BaseActionController
         $this->_mapping = $this->model(IDATABASE_MAPPING);
         
         // 检查必要的参数
-        if (empty($this->_project_id))
+        if (empty($this->_project_id)) {
             throw new \Exception('$this->_project_id值未设定');
+        }
         
-        if (empty($this->_collection_id))
+        if (empty($this->_collection_id)) {
             throw new \Exception('$this->_collection_id值未设定');
-            
-            // 进行内部私有变量的赋值
+        }
+        
+        // 进行内部私有变量的赋值
         $this->_collection_alias = $this->getCollectionAliasById($this->_collection_id);
         $this->_collection_id = $this->getCollectionIdByAlias($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
@@ -200,6 +202,7 @@ class DataController extends BaseActionController
         
         // 一次性获取当前集合的完整的文档结构信息
         $this->_schema = $this->getSchema();
+
         
         // 获取映射关系，初始化数据集合model
         $mapCollection = $this->_mapping->findOne(array(
@@ -552,7 +555,13 @@ class DataController extends BaseActionController
      * 执行准则统一采用：先清空符合条件数据，然后全部重新插入的原则完成
      *
      * @param array $datas            
-     * @name 
+     * @name
+     *
+     *
+     *
+     *
+     *
+     *
      * @version 2014.01.21
      * @return boolean
      */
@@ -708,7 +717,6 @@ class DataController extends BaseActionController
             $datas['_id'] = myMongoId($_id);
             $datas['__OLD_DATA__'] = $__OLD_DATA__;
             $this->quickOperation($datas);
-            
         } catch (\Exception $e) {
             return $this->msg(false, $e->getMessage());
         }
@@ -767,7 +775,6 @@ class DataController extends BaseActionController
                             $datas['_id'] = myMongoId($_id);
                             $datas['__OLD_DATA__'] = $__OLD_DATA__;
                             $this->quickOperation($datas);
-                            
                         } catch (\Exception $e) {
                             return $this->msg(false, exceptionMsg($e));
                         }
@@ -912,7 +919,7 @@ class DataController extends BaseActionController
                     }
                     
                     if (empty($rshCollectionKeyField))
-                        throw new \Exception('关系集合未设定关系键值');
+                        throw new \Exception('字段'.$row['field'].'的“关联集合”的键值属性尚未设定，请检查表表结构设定');
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
                         'collectionField' => $row['field'],

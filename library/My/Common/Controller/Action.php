@@ -69,7 +69,12 @@ abstract class Action extends AbstractActionController
             $this->preDispatch();
             
             if (method_exists($this, 'init')) {
-                $this->init();
+                try {
+                    $this->init();
+                } catch (\Exception $e) {
+                    $event->stopPropagation(true);
+                    $event->setViewModel($this->deny($e->getMessage()));
+                }
             }
         }, 200);
     }
@@ -192,14 +197,14 @@ abstract class Action extends AbstractActionController
 
     /**
      * 权限不足，拒绝访问提示
-     * 
+     *
      * @param string $message            
      * @return JsonModel
      */
     public function deny($message = '很遗憾，您无权访问部分资源，请联系管理员开放权限；或者您的登录已经注销，请重新登录')
     {
         return new JsonModel(array(
-            'success'=>false,
+            'success' => false,
             'access' => 'deny',
             'msg' => $message
         ));

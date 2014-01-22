@@ -66,12 +66,16 @@ class CollectionController extends BaseActionController
         );
         
         $query = array();
-        if (empty($plugin_id)) {
+        if ($action === 'all') {
             $query['$and'][] = array(
-                'plugin_id' => $plugin_id,
                 'project_id' => $this->_project_id
             );
         } else {
+            if (empty($plugin_id)) {
+                $query['$and'][] = array(
+                    'project_id' => $this->_project_id
+                );
+            }
             $query['$and'][] = array(
                 'plugin_id' => $plugin_id
             );
@@ -106,8 +110,10 @@ class CollectionController extends BaseActionController
             );
         }
         
-        if (empty($plugin_id) || $action=='all') {
+        fb($query, 'LOG');
+        if (empty($plugin_id) || $action === 'all') {
             $datas = array();
+            fb($query, 'LOG');
             $cursor = $this->_collection->find($query);
             $cursor->sort($sort);
             while ($cursor->hasNext()) {
@@ -123,9 +129,11 @@ class CollectionController extends BaseActionController
                 }
                 $datas[] = $row;
             }
+            fb($datas, 'LOG');
             return $this->rst($datas, $cursor->count(), true);
         } else {
             $datas = array();
+            fb($query, 'LOG');
             $cursor = $this->_plugin_collection->find($query);
             $cursor->sort($sort);
             while ($cursor->hasNext()) {
