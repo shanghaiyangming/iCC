@@ -500,8 +500,12 @@ class CollectionController extends BaseActionController
         {
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
-                
-                // 插入新的数据结构
+            
+            $this->_structure->physicalRemove(array(
+                'collection_id' => $collection_id
+            ));
+            
+            // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $plugin_id,
                 'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
@@ -547,7 +551,7 @@ class CollectionController extends BaseActionController
                         'plugin_id' => $this->_plugin_id,
                         'alias' => $collectionName
                     ));
-
+                    
                     $this->_mapping->update(array(
                         'project_id' => $this->_project_id,
                         'collection_id' => $collection_id

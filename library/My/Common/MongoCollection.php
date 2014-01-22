@@ -552,6 +552,26 @@ class MongoCollection extends \MongoCollection
             )
         ), $options);
     }
+    
+    /**
+     * 物理删除指定范围的数据
+     *
+     * @param array $criteria
+     * @param array $options
+     */
+    public function physicalRemove($criteria = NULL, array $options = NULL) {
+        if ($criteria === NULL)
+            throw new \Exception('$criteria is NULL');
+        
+        $default = array(
+            'justOne' => self::justOne,
+            'fsync' => self::fsync,
+            'timeout' => self::timeout
+        );
+        
+        $options = ($options === NULL) ? $default : array_merge($default, $options);
+        return parent::remove($criteria, $options);
+    }
 
     /**
      * 更新指定范围的数据
