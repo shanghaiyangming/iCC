@@ -70,7 +70,7 @@ class StructureController extends BaseActionController
             '_id' => 1
         );
         
-        if (empty($plugin_id)) {
+        if (empty($this->_plugin_id)) {
             $query = array(
                 'collection_id' => $this->_collection_id
             );
@@ -233,8 +233,8 @@ class StructureController extends BaseActionController
             }
         }
         
-        $this->syncPluginStructure($datas);
         $this->_structure->insert($datas);
+        $this->syncPluginStructure($datas);
         
         return $this->msg(true, '添加信息成功');
     }
@@ -354,12 +354,12 @@ class StructureController extends BaseActionController
             }
         }
         
-        $this->syncPluginStructure($datas);
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
             '$set' => $datas
         ));
+        $this->syncPluginStructure($datas);
         
         return $this->msg(true, '编辑信息成功');
     }
@@ -460,15 +460,17 @@ class StructureController extends BaseActionController
                     return $this->msg(false, '启用多选项时，必须设定“关联结合”');
                 }
             }
-            
-            $this->syncPluginStructure($row);
-            
-            $this->_structure->update(array(
+
+            $rst = $this->_structure->update(array(
                 '_id' => myMongoId($_id),
                 'collection_id' => $this->_collection_id
             ), array(
                 '$set' => $row
             ));
+            fb($rst,'LOG');
+            fb($row,'LOG');
+            
+            $this->syncPluginStructure($row);
         }
         
         return $this->msg(true, '更新字段属性成功');
@@ -649,9 +651,9 @@ class StructureController extends BaseActionController
      */
     private function syncPluginStructure($datas)
     {
-        if (! empty($this->_plugin_id)) {
+        if (! empty($datas['plugin_id'])) {
             return $this->_plugin_structure->update(array(
-                'plugin_id' => $this->_plugin_id,
+                'plugin_id' => $datas['plugin_id'],
                 'field' => $datas['field']
             ), array(
                 '$set' => $datas

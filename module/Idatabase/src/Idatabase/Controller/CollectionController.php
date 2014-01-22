@@ -155,6 +155,39 @@ class CollectionController extends BaseActionController
     }
 
     /**
+     *
+     * @return Ambigous <\Zend\View\Model\JsonModel, multitype:array number >
+     */
+    public function allAction()
+    {
+        $query = array();
+        $query['project_id'] = $this->_project_id;
+        if (! $_SESSION['acl']['admin']) {
+            $query['_id'] = array(
+                '$in' => myMongoId($_SESSION['acl']['collection'])
+            );
+        }
+        
+        $datas = array();
+        $cursor = $this->_collection->find($query);
+        $cursor->sort($sort);
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['locked'] = false;
+            $lockInfo = $this->_lock->count(array(
+                'project_id' => $this->_project_id,
+                'collection_id' => myMongoId($row['_id']),
+                'active' => true
+            ));
+            if ($lockInfo > 0) {
+                $row['locked'] = true;
+            }
+            $datas[] = $row;
+        }
+        return $this->rst($datas, $cursor->count(), true);
+    }
+
+    /**
      * 添加新的集合
      *
      * @author young
