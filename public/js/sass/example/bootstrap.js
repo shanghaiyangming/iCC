@@ -904,6 +904,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
+  "icc.store.idatabase.Collection.All": [],
   "icc.store.idatabase.Collection.Order": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Index": [],
@@ -921,6 +922,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.common.Combobox.Boolean": [],
   "icc.view.idatabase.Collection.Accordion": [],
   "icc.view.idatabase.Collection.Add": [],
+  "icc.view.idatabase.Collection.AllCombobox": [],
   "icc.view.idatabase.Collection.Combobox": [],
   "icc.view.idatabase.Collection.Dashboard": [],
   "icc.view.idatabase.Collection.Edit": [],
@@ -2064,6 +2066,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
   "icc.store.idatabase.Collection": [],
+  "icc.store.idatabase.Collection.All": [],
   "icc.store.idatabase.Collection.Order": [],
   "icc.store.idatabase.Collection.Type": [],
   "icc.store.idatabase.Index": [],
@@ -2088,6 +2091,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Collection.Add": [
     "widget.idatabaseCollectionAdd"
+  ],
+  "icc.view.idatabase.Collection.AllCombobox": [
+    "widget.idatabaseCollectionAllCombobox"
   ],
   "icc.view.idatabase.Collection.Combobox": [
     "widget.idatabaseCollectionCombobox"

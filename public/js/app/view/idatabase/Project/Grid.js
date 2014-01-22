@@ -77,11 +77,6 @@ Ext.define('icc.view.idatabase.Project.Grid', {
 						plain: true,
 						items: [{
 							xtype: 'button',
-							text: '用户管理',
-							iconCls: 'user',
-							action: 'user'
-						}, {
-							xtype: 'button',
 							text: '密钥管理',
 							iconCls: 'key',
 							action: 'key'
