@@ -501,7 +501,7 @@ class CollectionController extends BaseActionController
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
                 
-            // 插入新的数据结构
+                // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $plugin_id,
                 'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
@@ -531,10 +531,14 @@ class CollectionController extends BaseActionController
         // 添加映射关系
         $createMapping = function ($collection_id, $collectionName)
         {
+            if ($collection_id instanceof \MongoId)
+                $collection_id = $collection_id->__toString();
+            
             $projectPluginInfo = $this->_project_plugin->findOne(array(
                 'project_id' => $this->_project_id,
                 'plugin_id' => $this->_plugin_id
             ));
+            
             if ($projectPluginInfo !== null) {
                 $source_project_id = $projectPluginInfo['source_project_id'];
                 if (! empty($source_project_id)) {
@@ -543,12 +547,13 @@ class CollectionController extends BaseActionController
                         'plugin_id' => $this->_plugin_id,
                         'alias' => $collectionName
                     ));
+
                     $this->_mapping->update(array(
                         'project_id' => $this->_project_id,
                         'collection_id' => $collection_id
                     ), array(
                         '$set' => array(
-                            'collection' => 'iDatabase_collection_' . myMongoId($collectionInfo['_id']),
+                            'collection' => 'idatabase_collection_' . myMongoId($collectionInfo['_id']),
                             'database' => DEFAULT_DATABASE,
                             'cluster' => DEFAULT_CLUSTER,
                             'active' => true
@@ -575,6 +580,7 @@ class CollectionController extends BaseActionController
             if ($check == null) {
                 $rst = $this->_collection->insertRef($collectionInfo);
                 $syncPluginStructure($this->_plugin_id, $rst['_id']);
+                $createMapping($rst['_id'], $collectionName);
                 return $rst;
             } else {
                 $this->_collection->update(array(
@@ -583,6 +589,7 @@ class CollectionController extends BaseActionController
                     '$set' => $collectionInfo
                 ));
                 $syncPluginStructure($this->_plugin_id, $check['_id']);
+                $createMapping($check['_id'], $collectionName);
             }
             return $check;
         }
