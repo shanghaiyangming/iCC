@@ -159,7 +159,7 @@ Ext.define('icc.view.idatabase.Structure.Edit', {
 					collapsed: true,
 					collapsible: true,
 					items: [{
-						xtype: 'idatabaseCollectionCombobox',
+						xtype: 'idatabaseCollectionAllCombobox',
 						__PROJECT_ID__: this.__PROJECT_ID__,
 						fieldLabel: '关联集合列表',
 						name: 'rshCollection'
