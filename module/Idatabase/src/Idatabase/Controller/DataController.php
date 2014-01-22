@@ -147,13 +147,6 @@ class DataController extends BaseActionController
     private $_maxDepth = 1000;
 
     /**
-     * 插件编号
-     *
-     * @var string
-     */
-    private $_plugin_id = '';
-
-    /**
      * 初始化函数
      *
      * @see \My\Common\ActionController::init()
@@ -169,7 +162,6 @@ class DataController extends BaseActionController
         
         // 获取传递参数
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
-        $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
         $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         
         // 初始化model
@@ -202,7 +194,6 @@ class DataController extends BaseActionController
         
         // 一次性获取当前集合的完整的文档结构信息
         $this->_schema = $this->getSchema();
-
         
         // 获取映射关系，初始化数据集合model
         $mapCollection = $this->_mapping->findOne(array(
@@ -562,6 +553,9 @@ class DataController extends BaseActionController
      *
      *
      *
+     *
+     *
+     *
      * @version 2014.01.21
      * @return boolean
      */
@@ -860,15 +854,10 @@ class DataController extends BaseActionController
             )
         );
         
-        if (empty($this->_plugin_id)) {
-            $cursor = $this->_structure->find(array(
-                'collection_id' => $this->_collection_id
-            ));
-        } else {
-            $cursor = $this->_plugin_structure->find(array(
-                'plugin_id' => $this->_plugin_id
-            ));
-        }
+        $cursor = $this->_structure->find(array(
+            'collection_id' => $this->_collection_id
+        ));
+        
         $cursor->sort(array(
             'orderBy' => 1,
             '_id' => - 1
@@ -919,7 +908,7 @@ class DataController extends BaseActionController
                     }
                     
                     if (empty($rshCollectionKeyField))
-                        throw new \Exception('字段'.$row['field'].'的“关联集合”的键值属性尚未设定，请检查表表结构设定');
+                        throw new \Exception('字段' . $row['field'] . '的“关联集合”的键值属性尚未设定，请检查表表结构设定');
                     
                     $this->_rshCollection[$row['rshCollection']] = array(
                         'collectionField' => $row['field'],
@@ -928,7 +917,7 @@ class DataController extends BaseActionController
                         'rshCollectionValueFieldType' => $rshCollectionValueFieldType
                     );
                 } else {
-                    throw new \Exception('字段'.$row['field'].'的“关联集合”的键值属性尚未设定，请检查表表结构设定');
+                    throw new \Exception('字段' . $row['field'] . '的“关联集合”的键值属性尚未设定，请检查表表结构设定');
                 }
             }
         }

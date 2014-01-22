@@ -3,7 +3,6 @@ Ext.define('icc.view.idatabase.Structure.Window', {
 	alias : 'widget.idatabaseStructureWindow',
 	title : '属性管理',
 	initComponent : function() {
-		console.info('window'+this.__PLUGIN_COLLECTION_ID__);
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'idatabaseStructureGrid',

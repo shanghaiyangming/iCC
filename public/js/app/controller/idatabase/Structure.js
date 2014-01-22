@@ -94,6 +94,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
 					__COLLECTION_ID__: grid.__COLLECTION_ID__,
 					__PLUGIN_ID__ : grid.__PLUGIN_ID__,
+					__PLUGIN_COLLECTION_ID__ : grid.__PLUGIN_COLLECTION_ID__,
 					orderBy: orderBy
 				});
 				win.show();
@@ -108,7 +109,8 @@ Ext.define('icc.controller.idatabase.Structure', {
 					var win = Ext.widget(controllerName + 'Edit', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: grid.__COLLECTION_ID__,
-						__PLUGIN_ID__ : grid.__PLUGIN_ID__
+						__PLUGIN_ID__ : grid.__PLUGIN_ID__,
+						__PLUGIN_COLLECTION_ID__ : grid.__PLUGIN_COLLECTION_ID__
 					});
 					var form = win.down('form').getForm();
 					form.loadRecord(selections[0]);
@@ -140,6 +142,7 @@ Ext.define('icc.controller.idatabase.Structure', {
 					params: {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: grid.__COLLECTION_ID__,
+						__PLUGIN_COLLECTION_ID__ : grid.__PLUGIN_COLLECTION_ID__,
 						updateInfos: Ext.encode(updateList)
 					},
 					scope: me,
@@ -175,7 +178,8 @@ Ext.define('icc.controller.idatabase.Structure', {
 								params: {
 									_id: Ext.encode(_id),
 									__PROJECT_ID__: grid.__PROJECT_ID__,
-									__COLLECTION_ID__: grid.__COLLECTION_ID__
+									__COLLECTION_ID__: grid.__COLLECTION_ID__,
+									__PLUGIN_COLLECTION_ID__ : grid.__PLUGIN_COLLECTION_ID__
 								},
 								scope: me,
 								success: function(response) {

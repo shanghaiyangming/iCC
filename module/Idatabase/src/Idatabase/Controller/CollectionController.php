@@ -496,6 +496,7 @@ class CollectionController extends BaseActionController
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
             
+            fb($collection_id,'LOG');
             fb($this->_structure->findAll(array(
                 'collection_id' => $collection_id
             )), 'LOG');

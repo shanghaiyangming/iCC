@@ -261,13 +261,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 						__PLUGIN_ID__: grid.__PLUGIN_ID__,
 						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
 					});
-					console.info({
-						__PROJECT_ID__: grid.__PROJECT_ID__,
-						__COLLECTION_ID__: record.get('_id'),
-						plugin: grid.plugin,
-						__PLUGIN_ID__: grid.__PLUGIN_ID__,
-						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
-					});
 					win.show();
 				} else {
 					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
@@ -303,7 +296,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length == 1) {
 					var record = selections[0];
-					console.info(record);
 					var win = Ext.widget('idatabaseIndexWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
@@ -441,6 +433,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 		var __PROJECT_ID__ = grid.__PROJECT_ID__;
 		var __PLUGIN_ID__ = grid.__PLUGIN_ID__;
 		var __COLLECTION_ID__ = record.get('_id');
+		var __PLUGIN_COLLECTION_ID__ = record.get('plugin_collection_id');
 		var collection_name = record.get('name');
 		var isTree = Ext.isBoolean(record.get('isTree')) ? record.get('isTree') : false;
 		var isRowExpander = Ext.isBoolean(record.get('isRowExpander')) ? record.get('isRowExpander') : false;
@@ -468,7 +461,8 @@ Ext.define('icc.controller.idatabase.Collection', {
 			structureStore.proxy.extraParams = {
 				__PROJECT_ID__: __PROJECT_ID__,
 				__COLLECTION_ID__: __COLLECTION_ID__,
-				__PLUGIN_ID__: __PLUGIN_ID__
+				__PLUGIN_ID__: __PLUGIN_ID__,
+				__PLUGIN_COLLECTION_ID__ : __PLUGIN_COLLECTION_ID__
 			};
 
 			var treeField = '';
