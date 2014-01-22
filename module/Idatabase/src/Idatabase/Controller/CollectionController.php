@@ -495,6 +495,7 @@ class CollectionController extends BaseActionController
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
                 array_unset_recursive($row, array(
+                    '_id',
                     'collection_id',
                     '__CREATE_TIME__',
                     '__MODIFY_TIME__',
@@ -550,6 +551,7 @@ class CollectionController extends BaseActionController
             return false;
         
         $this->_collection->remove(array(
+            'project_id' => $this->_project_id,
             'plugin_id' => $plugin_id,
             'alias' => $alias
         ));

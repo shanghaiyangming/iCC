@@ -21,6 +21,8 @@ class StructureController extends BaseActionController
 
     private $_collection_id;
 
+    private $_plugin_id;
+
     private $_structure;
 
     private $_plugin_structure;
@@ -35,12 +37,13 @@ class StructureController extends BaseActionController
     {
         if ($this->action != 'filter') {
             $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
+            $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
+            $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
             
             if (empty($this->_project_id)) {
                 throw new \Exception('$this->_project_id值未设定');
             }
             
-            $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
             if (empty($this->_collection_id)) {
                 throw new \Exception('$this->_collection_id值未设定');
             }
@@ -61,8 +64,6 @@ class StructureController extends BaseActionController
      */
     public function indexAction()
     {
-        $plugin_id = trim($this->params()->fromQuery('__PLUGIN_ID__', ''));
-        
         $rst = array();
         $sort = array(
             'orderBy' => 1,
@@ -76,7 +77,7 @@ class StructureController extends BaseActionController
             $cursor = $this->_structure->find($query);
         } else {
             $query = array(
-                'plugin_id' => $plugin_id
+                'plugin_id' => $this->_plugin_id
             );
             $cursor = $this->_plugin_structure->find($query);
         }
@@ -137,7 +138,7 @@ class StructureController extends BaseActionController
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
         $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
-        $datas['plugin_id'] = $this->params()->fromPost('__PLUGIN_ID__', '');
+        $datas['plugin_id'] = $this->_plugin_id;
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
@@ -232,7 +233,7 @@ class StructureController extends BaseActionController
             }
         }
         
-        $this->syncPluginStructure($plugin_id, $datas);
+        $this->syncPluginStructure($datas);
         $this->_structure->insert($datas);
         
         return $this->msg(true, '添加信息成功');
@@ -252,7 +253,7 @@ class StructureController extends BaseActionController
         $datas = array();
         $datas['collection_id'] = $this->_collection_id;
         $datas['plugin_collection_id'] = $this->params()->fromPost('plugin_collection_id', '');
-        $datas['plugin_id'] = $this->params()->fromPost('__PLUGIN_ID__', '');
+        $datas['plugin_id'] = $this->_plugin_id;
         $datas['field'] = $this->params()->fromPost('field', null);
         $datas['label'] = $this->params()->fromPost('label', null);
         $datas['type'] = $this->params()->fromPost('type', null);
@@ -326,6 +327,8 @@ class StructureController extends BaseActionController
         if ($this->checkExist('field', $datas['field'], array(
             'collection_id' => $this->_collection_id
         )) && $oldStructureInfo['field'] != $datas['field']) {
+            fb($oldStructureInfo, 'LOG');
+            fb($datas['field'], 'LOG');
             return $this->msg(false, '字段名称已经存在');
         }
         
@@ -351,7 +354,7 @@ class StructureController extends BaseActionController
             }
         }
         
-        $this->syncPluginStructure($plugin_id, $datas);
+        $this->syncPluginStructure($datas);
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
@@ -458,7 +461,7 @@ class StructureController extends BaseActionController
                 }
             }
             
-            $this->syncPluginStructure($row['plugin_id'], $row);
+            $this->syncPluginStructure($row);
             
             $this->_structure->update(array(
                 '_id' => myMongoId($_id),
@@ -482,7 +485,7 @@ class StructureController extends BaseActionController
     public function removeAction()
     {
         $_id = $this->params()->fromPost('_id', null);
-        $plugin_id = $this->params()->fromPost('__PLUGIN_ID__', null);
+        $plugin_id = $this->_plugin_id;
         
         try {
             $_id = Json::decode($_id, Json::TYPE_ARRAY);
@@ -641,20 +644,21 @@ class StructureController extends BaseActionController
     /**
      * 同步插件的数据结构
      *
-     * @param string $plugin_id            
      * @param array $datas            
      * @return bool
      */
-    private function syncPluginStructure($plugin_id, $datas)
+    private function syncPluginStructure($datas)
     {
-        return $this->_plugin_structure->update(array(
-            'plugin_id' => $plugin_id,
-            'field' => $datas['field']
-        ), array(
-            '$set' => $datas
-        ), array(
-            'upsert' => true
-        ));
+        if (! empty($this->_plugin_id)) {
+            return $this->_plugin_structure->update(array(
+                'plugin_id' => $this->_plugin_id,
+                'field' => $datas['field']
+            ), array(
+                '$set' => $datas
+            ), array(
+                'upsert' => true
+            ));
+        }
     }
 
     /**
@@ -665,9 +669,11 @@ class StructureController extends BaseActionController
      */
     private function removePluginStructure($plugin_id, $field)
     {
-        return $this->_plugin_structure->remove(array(
-            'plugin_id' => $plugin_id,
-            'field' => $field
-        ));
+        if (! empty($plugin_id) && ! empty($field)) {
+            return $this->_plugin_structure->remove(array(
+                'plugin_id' => $plugin_id,
+                'field' => $field
+            ));
+        }
     }
 }
