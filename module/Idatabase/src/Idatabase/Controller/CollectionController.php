@@ -21,15 +21,15 @@ class CollectionController extends BaseActionController
     private $_collection;
 
     private $_plugin_collection;
-    
+
     private $_plugin_structure;
-    
+
     private $_structure;
 
     private $_project_id;
 
     private $_lock;
-    
+
     private $_plugin_id = '';
 
     public function init()
@@ -98,7 +98,7 @@ class CollectionController extends BaseActionController
             );
         }
         
-        if(!$_SESSION['acl']['admin']) {
+        if (! $_SESSION['acl']['admin']) {
             $query['$and'][] = array(
                 '_id' => array(
                     '$in' => myMongoId($_SESSION['acl']['collection'])
@@ -480,29 +480,33 @@ class CollectionController extends BaseActionController
             'alias' => $collectionName
         ));
         
-        $pluginStructure = function($plugin_id,$collection_id) {
-            if($collection_id instanceof \MongoId )
+        $syncPluginStructure = function ($plugin_id, $collection_id)
+        {
+            if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
             
-            $this->_structure->remove(
-                array(
-                    'collection_id'=>$collection_id
-                )
-            );
+            $this->_structure->remove(array(
+                'collection_id' => $collection_id
+            ));
             
-            $cursor = $this->_plugin_structure->find(
-                array(
-                    'plugin_id'=>$plugin_id
-                )
-            );
-            while($cursor->hasNext()) {
+            $cursor = $this->_plugin_structure->find(array(
+                'plugin_id' => $plugin_id
+            ));
+            while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
-                array_unset_recursive($row,array('collection_id','__CREATE_TIME__','__MODIFY_TIME__','__REMOVED__'));
+                array_unset_recursive($row, array(
+                    'collection_id',
+                    '__CREATE_TIME__',
+                    '__MODIFY_TIME__',
+                    '__REMOVED__'
+                ));
                 $row['collection_id'] = $collection_id;
-                $this->_structure->update(
-                    array('collection_id'=>$collection_id,'field'=>$row['field']),
-                    array('$set'=>$row)
-                );
+                $this->_structure->update(array(
+                    'collection_id' => $collection_id,
+                    'field' => $row['field']
+                ), array(
+                    '$set' => $row
+                ));
             }
             return true;
         };
@@ -518,7 +522,7 @@ class CollectionController extends BaseActionController
             ));
             if ($check == null) {
                 $rst = $this->_collection->insertRef($collectionInfo);
-                $pluginStructure($this->_plugin_id,$rst['_id']);
+                $syncPluginStructure($this->_plugin_id, $rst['_id']);
                 return $rst;
             } else {
                 $this->_collection->update(array(
@@ -526,16 +530,12 @@ class CollectionController extends BaseActionController
                 ), array(
                     '$set' => $collectionInfo
                 ));
-                $pluginStructure($this->_plugin_id,$check['_id']);
+                $syncPluginStructure($this->_plugin_id, $check['_id']);
             }
             return $check;
         }
         
         return false;
-    }
-    
-    private function syncCollectionStructure() {
-        
     }
 
     /**
