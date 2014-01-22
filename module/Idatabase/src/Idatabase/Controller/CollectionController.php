@@ -46,7 +46,7 @@ class CollectionController extends BaseActionController
         
         $this->_collection = $this->model(IDATABASE_COLLECTIONS);
         $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        $this->_project_plugin->model(IDATABASE_PROJECT_PLUGINS);
+        $this->_project_plugin = $this->model(IDATABASE_PROJECT_PLUGINS);
         $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
         $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_lock = $this->model(IDATABASE_LOCK);
@@ -501,11 +501,6 @@ class CollectionController extends BaseActionController
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
                 
-                // 清除陈旧的数据结构
-            $this->_structure->remove(array(
-                'collection_id' => $collection_id
-            ));
-            
             // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $plugin_id,
@@ -521,9 +516,13 @@ class CollectionController extends BaseActionController
                     '__REMOVED__'
                 ));
                 $row['collection_id'] = $collection_id;
-                $this->_structure->insert(array(
+                $this->_structure->update(array(
                     'collection_id' => $collection_id,
                     'field' => $row['field']
+                ), array(
+                    '$set' => $row
+                ), array(
+                    'upsert' => true
                 ));
             }
             return true;
