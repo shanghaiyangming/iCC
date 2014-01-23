@@ -9,14 +9,14 @@
  */
 namespace Idatabase\Controller;
 
-use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
+use My\Common\Controller\Action;
 
-class ImportController extends BaseActionController
+class ImportController extends Action
 {
 
     /**

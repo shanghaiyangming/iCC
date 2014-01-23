@@ -14,10 +14,10 @@ use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
-use My\Common\ActionController;
 use Zend\Json\Json;
+use My\Common\Controller\Action;
 
-class IndexController extends BaseActionController
+class IndexController extends Action
 {
 
     /**

@@ -8,13 +8,13 @@
  */
 namespace Idatabase\Controller;
 
-use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\Json\Json;
+use My\Common\Controller\Action;
 
-class StructureController extends BaseActionController
+class StructureController extends Action
 {
 
     private $_project_id;

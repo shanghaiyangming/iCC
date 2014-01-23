@@ -8,12 +8,12 @@
  */
 namespace Idatabase\Controller;
 
-use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
+use My\Common\Controller\Action;
 
-class DashboardController extends BaseActionController
+class DashboardController extends Action
 {
     /**
      * IDatabase仪表盘显示界面

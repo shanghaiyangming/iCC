@@ -8,14 +8,14 @@
  */
 namespace Idatabase\Controller;
 
-use My\Common\ActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
+use My\Common\Controller\Action;
 
-class CollectionController extends BaseActionController
+class CollectionController extends Action
 {
 
     private $_collection;
@@ -35,11 +35,14 @@ class CollectionController extends BaseActionController
     private $_mapping;
 
     private $_plugin_id = '';
+    
+    private $_sync;
 
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
+        $this->_sync = isset($_REQUEST['__SYNC__']) ? filter_var($_REQUEST['__SYNC__'],FILTER_VALIDATE_BOOLEAN) : false;
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
@@ -141,7 +144,7 @@ class CollectionController extends BaseActionController
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
                 $row['plugin_collection_id'] = myMongoId($row['_id']);
-                // 检测是否存在对应的物理集合
+                
                 $collectionInfo = $this->syncPluginCollection($row['alias']);
                 if ($collectionInfo === false) {
                     fb($collectionInfo, 'LOG');
