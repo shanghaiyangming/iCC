@@ -8,8 +8,6 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
 use Gregwar\Captcha\CaptchaBuilder;
 use My\Common\Controller\Action;
 
@@ -24,9 +22,9 @@ class AuthController extends Action
 
     public function init()
     {
-        $this->_account = $this->model(SYSTEM_ACCOUNT);
-        $this->_role = $this->model(SYSTEM_ROLE);
-        $this->_resource = $this->model(SYSTEM_RESOURCE);
+        $this->_account = $this->collection(SYSTEM_ACCOUNT);
+        $this->_role = $this->collection(SYSTEM_ROLE);
+        $this->_resource = $this->collection(SYSTEM_RESOURCE);
     }
 
     /**

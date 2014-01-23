@@ -8,16 +8,10 @@
  */
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
-use Zend\Mvc\View\Console\ViewManager;
 use My\Common\Controller\Action;
 use Zend\Code\Scanner\DirectoryScanner;
-use Zend\Loader\StandardAutoloader;
 use Zend\Code\Scanner\DocBlockScanner;
-use Zend\View\View;
 
 class IndexController extends Action
 {
@@ -30,9 +24,9 @@ class IndexController extends Action
 
     public function init()
     {
-        $this->_account = $this->model(SYSTEM_ACCOUNT);
-        $this->_resource = $this->model(SYSTEM_RESOURCE);
-        $this->_setting = $this->model(SYSTEM_SETTING);
+        $this->_account = $this->collection(SYSTEM_ACCOUNT);
+        $this->_resource = $this->collection(SYSTEM_RESOURCE);
+        $this->_setting = $this->collection(SYSTEM_SETTING);
     }
 
     /**
