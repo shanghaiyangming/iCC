@@ -46,7 +46,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            '\Idatabase\Model\Plugin' => function ($sm)
+            'Idatabase\Model\Plugin' => function ($sm)
             {
                 return new \Idatabase\Model\Plugin($sm->get('mongos'));
             }

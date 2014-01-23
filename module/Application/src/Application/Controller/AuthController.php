@@ -7,12 +7,10 @@
  */
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\GlobalEventManager;
 use Gregwar\Captcha\CaptchaBuilder;
-use Zend\Authentication\AuthenticationService;
 use My\Common\Controller\Action;
 
 class AuthController extends Action
