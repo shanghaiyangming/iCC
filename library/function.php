@@ -1,5 +1,7 @@
 <?php
 
+use Zend\Http\Request;
+use Zend\Json\Json;
 /**
  * ICC函数定义集合文件
  *
@@ -447,6 +449,7 @@ function doGet($url, $params = array())
             return false;
         }
         
+        Request::
         $client = new Zend\Http\Client();
         $client->setUri($url);
         $client->setParameterGet($params);
@@ -825,11 +828,12 @@ function convertVarNameWithDot(&$array)
  * 数据库定义类型值的格式化转换函数
  * 
  * @param mixed $value            
- * @param string $type            
+ * @param string $type
+ * @param string $key            
  * @throws \Zend\Json\Exception\RuntimeException
  * @return string
  */
-function formatData($value, $type = 'textfield')
+function formatData($value, $type = 'textfield', $key=null)
 {
     switch ($type) {
         case 'numberfield':

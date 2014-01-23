@@ -1,10 +1,8 @@
 <?php
 /**
- * Model基类
+ * 
+ * Model基类，初始化后，如果init方法存在，自动调用init方法
  * @author Young
- * 说明:
- * 1. 自动初始化链接默认是集群
- * 2. 初始化后，如果init方法存在，自动调用init方法
  * 
  */
 namespace My\Common\Model;

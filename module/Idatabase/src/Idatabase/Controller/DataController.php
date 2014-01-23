@@ -557,6 +557,10 @@ class DataController extends Action
      *
      *
      *
+     *
+     *
+     *
+     *
      * @version 2014.01.21
      * @return boolean
      */
@@ -961,12 +965,12 @@ class DataController extends Action
                     }
                 }
                 
-                array_walk($value, function (&$row, $index) use($rowType)
+                array_walk($value, function (&$row, $index) use($rowType, $key)
                 {
-                    $row = formatData($row, $rowType);
+                    $row = formatData($row, $rowType, $key);
                 });
             }
-            $value = formatData($value, $type);
+            $value = formatData($value, $type, $key);
         });
         
         $validFileData = array_intersect_key($datas, $this->_schema['file']);
@@ -990,13 +994,13 @@ class DataController extends Action
                 $rshCollection = $this->_schema['post'][$field]['rshCollection'];
                 $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
                 if (is_array($value)) {
-                    array_walk($value, function (&$row, $index) use($rowType)
+                    array_walk($value, function (&$row, $index) use($rowType, $field)
                     {
-                        $row = formatData($row, $rowType);
+                        $row = formatData($row, $rowType, $field);
                     });
                 }
             }
-            $value = formatData($value, $type);
+            $value = formatData($value, $type, $field);
         });
         return $validQuickData;
     }
@@ -1113,9 +1117,9 @@ class DataController extends Action
                         if (! empty($rshCollection)) {
                             $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
                             if ($not)
-                                $subQuery[$field]['$ne'] = formatData($_REQUEST[$field], $rowType);
+                                $subQuery[$field]['$ne'] = formatData($_REQUEST[$field], $rowType, $field);
                             else
-                                $subQuery[$field] = formatData($_REQUEST[$field], $rowType);
+                                $subQuery[$field] = formatData($_REQUEST[$field], $rowType, $field);
                         }
                         break;
                     default:
