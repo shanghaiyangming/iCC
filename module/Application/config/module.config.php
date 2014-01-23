@@ -86,7 +86,8 @@ return array(
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'My\Common\AbstractFactory\Mongo'
+            'My\Common\AbstractFactory\Mongo',
+            'My\Common\AbstractFactory\Model'
         )
     ),
     'translator' => array(),
