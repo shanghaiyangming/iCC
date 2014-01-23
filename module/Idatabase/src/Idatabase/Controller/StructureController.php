@@ -506,10 +506,6 @@ class StructureController extends Action
             $rowInfo = $this->_structure->findOne(array(
                 '_id' => myMongoId($row)
             ));
-            fb(array(
-                '_id' => myMongoId($row)
-            ),'LOG');
-            fb($rowInfo,'LOG');
             if ($rowInfo != null) {
                 $this->removePluginStructure($plugin_id, $rowInfo);
                 $this->_structure->remove(array(

@@ -15,18 +15,19 @@ use My\Common\MongoCollection;
 
 class TestController extends Action
 {
-    public function init() {
-        
-    }
-    
-    public function indexAction() {
+
+    public function init()
+    {}
+
+    public function indexAction()
+    {
         $modelPlugin = $this->getServiceLocator()->get('Idatabase\Model\Plugin');
-        if($modelPlugin instanceof MongoCollection)
+        if ($modelPlugin instanceof MongoCollection)
             echo 'OK';
         else {
-            var_dump($modelPlugin->model->findAll(array()));
-        } 
-            
+            var_dump($modelPlugin->findAll(array()));
+        }
+        
         return $this->response;
     }
 }

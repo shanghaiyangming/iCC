@@ -8,6 +8,8 @@ use My\Common\MongoCollection;
 class Plugin extends Mongo
 {
 
+    private $_plugin_structure;
+
     private $_structure;
 
     private $_collection;
@@ -20,21 +22,11 @@ class Plugin extends Mongo
 
     public function init()
     {
+        $this->_plugin_structure = new PluginStructure($this->config);
         $this->_structure = new Structure($this->config);
         $this->_collection = new Collection($this->config);
         $this->_project = new Project($this->config);
         $this->_mapping = new Mapping($this->config);
-    }
-
-    public function getOne($plugin_id)
-    {
-        if (! ($plugin_id instanceof \MongoId)) {
-            $plugin_id = myMongoId($plugin_id);
-        }
-        
-        return $this->model->findOne(array(
-            '_id' => myMongoId($plugin_id)
-        ));
     }
 
     /**
@@ -42,8 +34,10 @@ class Plugin extends Mongo
      *
      * @param string $plugin_id            
      */
-    public function sync($plugin_id)
-    {}
+    public function syncAll($plugin_id)
+    {
+
+    }
 
     /**
      * 同步指定项目的指定插件
@@ -52,6 +46,121 @@ class Plugin extends Mongo
      * @param string $plugin_id            
      * @return true false
      */
-    public function syncProjectPlugin($project_id, $plugin_id)
-    {}
+    public function syncProject($project_id, $plugin_id)
+    {
+        $pluginCollectionInfo = $this->_plugin_collection->model->findOne(array(
+            'plugin_id' => $plugin_id,
+            'alias' => $collectionName
+        ));
+        
+        if ($pluginCollectionInfo == null) {
+            fb('$pluginCollectionInfo is null', 'LOG');
+            return false;
+        }
+        
+        // 同步数据结构
+        $syncPluginStructure = function ($plugin_id, $collection_id) use($pluginCollectionInfo)
+        {
+            if ($collection_id instanceof \MongoId)
+                $collection_id = $collection_id->__toString();
+            
+            $this->_structure->physicalRemove(array(
+                'collection_id' => $collection_id
+            ));
+            
+            // 插入新的数据结构
+            $cursor = $this->_plugin_structure->find(array(
+                'plugin_id' => $plugin_id,
+                'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
+            ));
+            while ($cursor->hasNext()) {
+                $row = $cursor->getNext();
+                array_unset_recursive($row, array(
+                    '_id',
+                    'collection_id',
+                    '__CREATE_TIME__',
+                    '__MODIFY_TIME__',
+                    '__REMOVED__'
+                ));
+                $row['collection_id'] = $collection_id;
+                $this->_structure->update(array(
+                    'collection_id' => $collection_id,
+                    'field' => $row['field']
+                ), array(
+                    '$set' => $row
+                ), array(
+                    'upsert' => true
+                ));
+            }
+            return true;
+        };
+        
+        // 添加映射关系
+        $createMapping = function ($collection_id, $collectionName)
+        {
+            if ($collection_id instanceof \MongoId)
+                $collection_id = $collection_id->__toString();
+            
+            $projectPluginInfo = $this->_project_plugin->findOne(array(
+                'project_id' => $this->_project_id,
+                'plugin_id' => $this->_plugin_id
+            ));
+            
+            if ($projectPluginInfo !== null) {
+                $source_project_id = $projectPluginInfo['source_project_id'];
+                if (! empty($source_project_id)) {
+                    $collectionInfo = $this->_collection->findOne(array(
+                        'project_id' => $source_project_id,
+                        'plugin_id' => $this->_plugin_id,
+                        'alias' => $collectionName
+                    ));
+                    
+                    $this->_mapping->update(array(
+                        'project_id' => $this->_project_id,
+                        'collection_id' => $collection_id
+                    ), array(
+                        '$set' => array(
+                            'collection' => 'idatabase_collection_' . myMongoId($collectionInfo['_id']),
+                            'database' => DEFAULT_DATABASE,
+                            'cluster' => DEFAULT_CLUSTER,
+                            'active' => true
+                        )
+                    ), array(
+                        'upsert' => true
+                    ));
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        if ($pluginCollectionInfo != null) {
+            unset($pluginCollectionInfo['_id']);
+            $collectionInfo = $pluginCollectionInfo;
+            $collectionInfo['project_id'] = $this->_project_id;
+            
+            $check = $this->_collection->findOne(array(
+                'project_id' => $this->_project_id,
+                'alias' => $collectionName
+            ));
+            
+            if ($check == null) {
+                $rst = $this->_collection->insertRef($collectionInfo);
+                $syncPluginStructure($this->_plugin_id, $rst['_id']);
+                $createMapping($rst['_id'], $collectionName);
+                return $rst;
+            } else {
+                $this->_collection->update(array(
+                    '_id' => $check['_id']
+                ), array(
+                    '$set' => $collectionInfo
+                ));
+                $syncPluginStructure($this->_plugin_id, $check['_id']);
+                $createMapping($check['_id'], $collectionName);
+            }
+            return $check;
+        }
+        
+        return false;
+    }
 }
