@@ -13,7 +13,7 @@ namespace My\Common\Model;
 use Zend\Config\Config;
 use My\Common\MongoCollection;
 
-class Mongo
+class Mongo extends MongoCollection
 {
 
     /**
@@ -64,25 +64,10 @@ class Mongo
         }
         
         $this->config = $config;
-        $this->model = new MongoCollection($config, $this->collection, $this->database, $this->cluster);
+        parent::__construct($config, $this->collection, $this->database, $this->cluster);
         if (method_exists($this, 'init')) {
             $this->init();
         }
     }
 
-    /**
-     * 过载处理
-     * 
-     * @param string $name            
-     * @param array $arguments            
-     */
-    public function __call($name, $arguments)
-    {
-        if (method_exists($this->model, $name)) {
-            return call_user_func_array(array(
-                $this->model,
-                $name
-            ), $arguments);
-        }
-    }
 }

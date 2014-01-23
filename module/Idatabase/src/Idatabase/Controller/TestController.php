@@ -22,8 +22,10 @@ class TestController extends Action
     public function indexAction()
     {
         $modelPlugin = $this->getServiceLocator()->get('Idatabase\Model\Plugin');
-        if ($modelPlugin instanceof MongoCollection)
+        if ($modelPlugin instanceof MongoCollection) {
             echo 'OK';
+            var_dump($modelPlugin->findAll(array()));
+        }
         else {
             var_dump($modelPlugin->findAll(array()));
         }

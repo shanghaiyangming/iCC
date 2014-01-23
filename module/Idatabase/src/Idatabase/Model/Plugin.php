@@ -38,7 +38,9 @@ class Plugin extends Mongo
      * @param string $plugin_id            
      */
     public function syncAll($plugin_id)
-    {}
+    {
+        
+    }
 
     /**
      * 同步指定项目的指定插件
