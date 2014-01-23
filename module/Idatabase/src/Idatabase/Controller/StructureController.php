@@ -52,8 +52,8 @@ class StructureController extends Action
             }
         }
         
-        $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        $this->_structure = $this->getServiceLocator()->get('Idatabase\Model\Structure');
+        $this->_collection = $this->getServiceLocator()->get('Idatabase\Model\Collection');
         $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
         $this->_model = $this->_structure;
     }

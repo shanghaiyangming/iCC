@@ -8,9 +8,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
 use My\Common\Controller\Action;
@@ -47,13 +44,13 @@ class CollectionController extends Action
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        $this->_project_plugin = $this->model(IDATABASE_PROJECT_PLUGINS);
-        $this->_plugin_collection = $this->model(IDATABASE_PLUGINS_COLLECTIONS);
-        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
-        $this->_lock = $this->model(IDATABASE_LOCK);
-        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        $this->_collection = $this->model('Idatabase\Model\Collection');
+        $this->_structure = $this->model('Idatabase\Model\Structure');
+        $this->_project_plugin = $this->model('Idatabase\Model\ProjectPlugin');
+        $this->_plugin_collection = $this->model('Idatabase\Model\PluginCollection');
+        $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
+        $this->_lock = $this->model('Idatabase\Model\Lock');
+        $this->_mapping = $this->model('Idatabase\Model\Mapping');
     }
 
     /**
