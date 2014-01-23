@@ -5,8 +5,7 @@
  * 说明:
  * 1. 自动初始化链接默认是集群
  * 2. 初始化后，如果init方法存在，自动调用init方法
- * 3. 采用过载的方式调用公开变量$model中的方法,$model为MongoCollection示例
- * 4. 因为3中采用的是过载方式调用MongoCollection的方法，所以如果Model中定义了MongoCollection同名方法时,将执行基类中方法，而不是$model中方法
+ * 
  */
 namespace My\Common\Model;
 
@@ -15,14 +14,7 @@ use My\Common\MongoCollection;
 
 class Mongo extends MongoCollection
 {
-
-    /**
-     * 自动化初始MongoCollection实例，用于外部调用
-     *
-     * @var MongoCollection
-     */
-    public $model;
-
+    
     /**
      * 集群环境配置信息
      *
