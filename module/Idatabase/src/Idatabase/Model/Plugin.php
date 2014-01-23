@@ -8,6 +8,8 @@ use My\Common\MongoCollection;
 class Plugin extends Mongo
 {
 
+    private $_project_plugin;
+
     private $_plugin_structure;
 
     private $_structure;
@@ -22,6 +24,7 @@ class Plugin extends Mongo
 
     public function init()
     {
+        $this->_project_plugin = new ProjectPlugin($this->config);
         $this->_plugin_structure = new PluginStructure($this->config);
         $this->_structure = new Structure($this->config);
         $this->_collection = new Collection($this->config);
@@ -35,20 +38,22 @@ class Plugin extends Mongo
      * @param string $plugin_id            
      */
     public function syncAll($plugin_id)
-    {
-
-    }
+    {}
 
     /**
      * 同步指定项目的指定插件
      *
-     * @param string $project_id            
-     * @param string $plugin_id            
+     * @param string $project_id
+     *            项目编号
+     * @param string $plugin_id
+     *            插件编号
+     * @param string $collectionName
+     *            集合名称
      * @return true false
      */
-    public function syncProject($project_id, $plugin_id)
+    public function syncProject($project_id, $plugin_id, $collectionName)
     {
-        $pluginCollectionInfo = $this->_plugin_collection->model->findOne(array(
+        $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
             'plugin_id' => $plugin_id,
             'alias' => $collectionName
         ));
@@ -96,14 +101,14 @@ class Plugin extends Mongo
         };
         
         // 添加映射关系
-        $createMapping = function ($collection_id, $collectionName)
+        $createMapping = function ($collection_id, $collectionName) use($project_id, $plugin_id)
         {
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
             
             $projectPluginInfo = $this->_project_plugin->findOne(array(
-                'project_id' => $this->_project_id,
-                'plugin_id' => $this->_plugin_id
+                'project_id' => $project_id,
+                'plugin_id' => $plugin_id
             ));
             
             if ($projectPluginInfo !== null) {
@@ -111,12 +116,12 @@ class Plugin extends Mongo
                 if (! empty($source_project_id)) {
                     $collectionInfo = $this->_collection->findOne(array(
                         'project_id' => $source_project_id,
-                        'plugin_id' => $this->_plugin_id,
+                        'plugin_id' => $plugin_id,
                         'alias' => $collectionName
                     ));
                     
                     $this->_mapping->update(array(
-                        'project_id' => $this->_project_id,
+                        'project_id' => $project_id,
                         'collection_id' => $collection_id
                     ), array(
                         '$set' => array(
@@ -137,16 +142,16 @@ class Plugin extends Mongo
         if ($pluginCollectionInfo != null) {
             unset($pluginCollectionInfo['_id']);
             $collectionInfo = $pluginCollectionInfo;
-            $collectionInfo['project_id'] = $this->_project_id;
+            $collectionInfo['project_id'] = $project_id;
             
             $check = $this->_collection->findOne(array(
-                'project_id' => $this->_project_id,
+                'project_id' => $project_id,
                 'alias' => $collectionName
             ));
             
             if ($check == null) {
                 $rst = $this->_collection->insertRef($collectionInfo);
-                $syncPluginStructure($this->_plugin_id, $rst['_id']);
+                $syncPluginStructure($plugin_id, $rst['_id']);
                 $createMapping($rst['_id'], $collectionName);
                 return $rst;
             } else {
@@ -155,7 +160,7 @@ class Plugin extends Mongo
                 ), array(
                     '$set' => $collectionInfo
                 ));
-                $syncPluginStructure($this->_plugin_id, $check['_id']);
+                $syncPluginStructure($plugin_id, $check['_id']);
                 $createMapping($check['_id'], $collectionName);
             }
             return $check;

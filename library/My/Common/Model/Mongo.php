@@ -19,7 +19,7 @@ class Mongo
     /**
      * 自动化初始MongoCollection实例，用于外部调用
      *
-     * @var object
+     * @var MongoCollection
      */
     public $model;
 
@@ -74,7 +74,7 @@ class Mongo
      * 过载处理
      * 
      * @param string $name            
-     * @param mixed $arguments            
+     * @param array $arguments            
      */
     public function __call($name, $arguments)
     {
