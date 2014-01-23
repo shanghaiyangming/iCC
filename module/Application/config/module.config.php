@@ -168,10 +168,12 @@ return array(
         'invokables' => array(
             'log' => 'My\Common\Plugin\Log',
             'model' => 'My\Common\Plugin\Model',
+            'collection' => 'My\Common\Plugin\Collection',
             'cache' => 'My\Common\Plugin\Cache'
         ),
         'aliases' => array(
-            'm' => 'model'
+            'm' => 'model',
+            'c' => 'collection'
         )
     ),
     'view_manager' => array(
