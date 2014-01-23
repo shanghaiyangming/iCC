@@ -14,12 +14,12 @@ class Collection extends AbstractPlugin
      * @param string $modelName            
      * @return \My\Common\Plugin\ModelMongoCollection \My\Common\MongoCollection
      */
-    public function __invoke($collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER)
+    public function __invoke($collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER, $collectionOptions = null)
     {
-        if ($modelName === null)
+        if ($collection === null)
             return $this;
         
-        return $this->collection($collection, $database, $cluster);
+        return $this->collection($collection, $database, $cluster, $collectionOptions);
     }
 
     /**
@@ -30,7 +30,7 @@ class Collection extends AbstractPlugin
      * @param string $cluster            
      * @return \My\Common\MongoCollection
      */
-    public function collection($collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER)
+    public function collection($collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER, $collectionOptions = null)
     {
         if ($collection === null)
             throw new \Exception('请设定集合名称');
@@ -39,6 +39,6 @@ class Collection extends AbstractPlugin
             ->getServiceLocator()
             ->get('mongos');
         
-        return new MongoCollection($mongoConfig, $collection, $database, $cluster);
+        return new MongoCollection($mongoConfig, $collection, $database, $cluster, $collectionOptions);
     }
 }
