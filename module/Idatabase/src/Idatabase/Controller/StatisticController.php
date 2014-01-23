@@ -37,7 +37,7 @@ class StatisticController extends Action
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
-        $this->_statistic = $this->model(IDATABASE_STATISTIC);
+        $this->_statistic = $this->model('Idatabase\Model\Statistic');
     }
 
     /**

@@ -162,11 +162,11 @@ class DataController extends Action
         $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         
         // 初始化model
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
-        $this->_structure = $this->model(IDATABASE_STRUCTURES);
-        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
-        $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
-        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        $this->_collection = $this->model('Idatabase\Model\Collection');
+        $this->_structure = $this->model('Idatabase\Model\Structure');
+        $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
+        $this->_order = $this->model('Idatabase\Model\Order');
+        $this->_mapping = $this->model('Idatabase\Model\Mapping');
         
         // 检查必要的参数
         if (empty($this->_project_id)) {
@@ -199,9 +199,9 @@ class DataController extends Action
             'active' => true
         ));
         if ($mapCollection != null) {
-            $this->_data = $this->model($mapCollection['collection'], $mapCollection['database'], $mapCollection['cluster']);
+            $this->_data = $this->collection($mapCollection['collection'], $mapCollection['database'], $mapCollection['cluster']);
         } else {
-            $this->_data = $this->model($this->_collection_name);
+            $this->_data = $this->collection($this->_collection_name);
         }
     }
 
@@ -296,7 +296,7 @@ class DataController extends Action
         foreach ($this->_rshCollection as $_id => $detail) {
             $_id = $this->getCollectionIdByAlias($_id);
             $collectionName = 'idatabase_collection_' . $_id;
-            $model = $this->model($collectionName);
+            $model = $this->collection($collectionName);
             $cursor = $model->find(array(), array(
                 $detail['rshCollectionKeyField'] => true,
                 $detail['rshCollectionValueField'] => true
@@ -637,7 +637,7 @@ class DataController extends Action
     private function getTargetCollectionModel($targetCollectionName)
     {
         $_id = $this->getCollectionIdByAlias($targetCollectionName);
-        return $this->model('idatabase_collection_' . $_id);
+        return $this->collection('idatabase_collection_' . $_id);
     }
 
     /**

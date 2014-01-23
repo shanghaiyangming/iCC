@@ -31,7 +31,7 @@ class KeyController extends Action
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_project = $this->model(IDATABASE_PROJECTS);
+        $this->_project = $this->model('Idatabase\Model\Project');
         if ($this->_project->count(array(
             '_id' => myMongoId($this->_project_id)
         )) == 0) {

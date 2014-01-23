@@ -24,8 +24,8 @@ class ProjectController extends Action
 
     public function init()
     {
-        $this->_project = $this->model(IDATABASE_PROJECTS);
-        $this->_acl = $this->model(SYSTEM_ACCOUNT_PROJECT_ACL);
+        $this->_project = $this->model('Idatabase\Model\Project');
+        $this->_acl = $this->collection(SYSTEM_ACCOUNT_PROJECT_ACL);
         $this->getAcl();
     }
 

@@ -75,7 +75,7 @@ class IndexController extends Action
     public function init()
     {
         try {
-            $this->_model = $this->model(IDATABASE_INDEXES);
+            $this->_model = $this->model('Idatabase\Model\Index');
             $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
             if (empty($this->_collection_id)) {
                 throw new \Exception('$this->_collection_id值未设定');
@@ -203,7 +203,7 @@ class IndexController extends Action
     private function getSchema()
     {
         if ($this->_structure == null) {
-            $this->_structure = $this->model(IDATABASE_STRUCTURES);
+            $this->_structure = $this->model('Idatabase\Model\Structure');
         }
         
         $query = array(

@@ -27,8 +27,8 @@ class PluginController extends Action
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
-        $this->_plugin = $this->model(IDATABASE_PLUGINS);
-        $this->_project_plugin = $this->model(IDATABASE_PROJECT_PLUGINS);
+        $this->_plugin = $this->model('Idatabase\Model\Plugin');
+        $this->_project_plugin = $this->model('Idatabase\Model\ProjectPlugin');
         
         // 注意这里应该增加检查，该项目id是否符合用户操作的权限范围
     }

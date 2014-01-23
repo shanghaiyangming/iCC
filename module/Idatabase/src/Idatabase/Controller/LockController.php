@@ -34,7 +34,7 @@ class LockController extends Action
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
-        $this->_lock = $this->model(IDATABASE_LOCK);
+        $this->_lock = $this->model('Idatabase\Model\Lock');
     }
 
     /**

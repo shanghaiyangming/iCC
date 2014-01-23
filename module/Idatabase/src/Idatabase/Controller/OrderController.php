@@ -40,7 +40,7 @@ class OrderController extends Action
             throw new \Exception('$this->_collection_id值未设定');
         }
         
-        $this->_order = $this->model(IDATABASE_COLLECTION_ORDERBY);
+        $this->_order = $this->model('Idatabase\Model\Order');
 
     }
 

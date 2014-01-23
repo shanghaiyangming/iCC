@@ -106,7 +106,7 @@ abstract class Action extends AbstractActionController
      */
     public function findAll($collection, $query = array(), $sort = array('_id'=>-1), $jsonModel = true, $jsonpCallback = null)
     {
-        $model = $this->model($collection);
+        $model = $this->collection($collection);
         $cursor = $model->find($query);
         if (! $cursor instanceof \MongoCursor)
             throw new \Exception('$query error:' . json_encode($query));

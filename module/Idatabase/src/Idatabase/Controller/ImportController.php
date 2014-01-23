@@ -88,7 +88,7 @@ class ImportController extends Action
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_collection = $this->model(IDATABASE_COLLECTIONS);
+        $this->_collection = $this->model('Idatabase\Model\Collection');
         $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
@@ -96,8 +96,8 @@ class ImportController extends Action
         $this->_collection_id = $this->getCollectionIdByName($this->_collection_id);
         $this->_collection_name = 'idatabase_collection_' . $this->_collection_id;
         
-        $this->_data = $this->model($this->_collection_name);
-        $this->_structure = $this->model(IDATABASE_STRUCTURES);
+        $this->_data = $this->collection($this->_collection_name);
+        $this->_structure = $this->model('Idatabase\Model\Structure');
         
         $this->getSchema();
     }

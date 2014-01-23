@@ -8,9 +8,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
 use Zend\Json\Json;
 use My\Common\Controller\Action;
 
@@ -52,9 +49,9 @@ class StructureController extends Action
             }
         }
         
-        $this->_structure = $this->getServiceLocator()->get('Idatabase\Model\Structure');
-        $this->_collection = $this->getServiceLocator()->get('Idatabase\Model\Collection');
-        $this->_plugin_structure = $this->model(IDATABASE_PLUGINS_STRUCTURES);
+        $this->_structure = $this->model('Idatabase\Model\Structure');
+        $this->_collection = $this->model('Idatabase\Model\Collection');
+        $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
         $this->_model = $this->_structure;
     }
 

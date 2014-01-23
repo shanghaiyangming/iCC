@@ -34,7 +34,7 @@ class MappingController extends Action
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
-        $this->_mapping = $this->model(IDATABASE_MAPPING);
+        $this->_mapping = $this->model('Idatabase\Model\Mapping');
     }
 
     /**
