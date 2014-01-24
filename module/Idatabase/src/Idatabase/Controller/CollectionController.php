@@ -17,29 +17,31 @@ class CollectionController extends Action
 
     private $_collection;
 
+    private $_structure;
+
+    private $_plugin;
+
     private $_project_plugin;
 
     private $_plugin_collection;
 
     private $_plugin_structure;
 
-    private $_structure;
-
-    private $_project_id;
-
     private $_lock;
 
     private $_mapping;
 
+    private $_project_id;
+
     private $_plugin_id = '';
-    
+
     private $_sync;
 
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         $this->_plugin_id = isset($_REQUEST['__PLUGIN_ID__']) ? trim($_REQUEST['__PLUGIN_ID__']) : '';
-        $this->_sync = isset($_REQUEST['__SYNC__']) ? filter_var($_REQUEST['__SYNC__'],FILTER_VALIDATE_BOOLEAN) : false;
+        $this->_sync = isset($_REQUEST['__SYNC__']) ? filter_var($_REQUEST['__SYNC__'], FILTER_VALIDATE_BOOLEAN) : false;
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
@@ -47,6 +49,7 @@ class CollectionController extends Action
         $this->_collection = $this->model('Idatabase\Model\Collection');
         $this->_structure = $this->model('Idatabase\Model\Structure');
         $this->_project_plugin = $this->model('Idatabase\Model\ProjectPlugin');
+        $this->_plugin = $this->model('Idatabase\Model\Plugin');
         $this->_plugin_collection = $this->model('Idatabase\Model\PluginCollection');
         $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
         $this->_lock = $this->model('Idatabase\Model\Lock');
@@ -142,7 +145,7 @@ class CollectionController extends Action
                 $row = $cursor->getNext();
                 $row['plugin_collection_id'] = myMongoId($row['_id']);
                 
-                $collectionInfo = $this->syncPluginCollection($row['alias']);
+                $collectionInfo = $this->_plugin_collection->syncPluginCollection($this->_project_id, $this->_plugin_id, $row['alias']);
                 if ($collectionInfo === false) {
                     fb($collectionInfo, 'LOG');
                     fb($row['alias'], 'LOG');
@@ -231,7 +234,7 @@ class CollectionController extends Action
             $datas['isAutoHook'] = $isAutoHook;
             $datas['hook'] = $hook;
             $datas['hookKey'] = $hookKey;
-            $datas['plugin_collection_id'] = $this->addPluginCollection($datas);
+            $datas['plugin_collection_id'] = $this->_plugin_collection->addPluginCollection($datas);
             $this->_collection->insert($datas);
             
             return $this->msg(true, '添加集合成功');
@@ -332,7 +335,7 @@ class CollectionController extends Action
         $datas['isAutoHook'] = $isAutoHook;
         $datas['hook'] = $hook;
         $datas['hookKey'] = $hookKey;
-        $datas['plugin_collection_id'] = $this->editPluginCollection($datas);
+        $datas['plugin_collection_id'] = $this->_plugin_collection->editPluginCollection($datas);
         
         $this->_collection->update(array(
             '_id' => myMongoId($_id)
@@ -371,7 +374,7 @@ class CollectionController extends Action
             ));
             
             if ($rowInfo != null) {
-                $this->removePluginCollection($plugin_id, $rowInfo['alias']);
+                $this->_plugin_collection->removePluginCollection($this->_project_id, $this->_plugin_id, $rowInfo['alias']);
                 $this->_collection->remove(array(
                     '_id' => myMongoId($row)
                 ));
@@ -438,190 +441,4 @@ class CollectionController extends Action
         return true;
     }
 
-    /**
-     * 添加集合到插件集合管理
-     *
-     * @param array $datas            
-     * @return string
-     */
-    private function addPluginCollection($datas)
-    {
-        if (empty($datas['plugin_id']))
-            return '';
-        
-        unset($datas['project_id']);
-        $this->_plugin_collection->insertRef($datas);
-        if ($datas['_id'] instanceof \MongoId)
-            return $datas['_id']->__toString();
-        
-        return '';
-    }
-
-    /**
-     * 添加集合到插件集合管理
-     *
-     * @param array $datas            
-     * @return string
-     */
-    private function editPluginCollection($datas)
-    {
-        unset($datas['project_id']);
-        $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
-        if (empty($plugin_collection_id)) {
-            $this->_plugin_collection->update(array(
-                '_id' => myMongoId($plugin_collection_id)
-            ), array(
-                '$set' => $datas
-            ));
-        }
-        return $plugin_collection_id;
-    }
-
-    /**
-     * 自动同步集合
-     *
-     * @param string $collectionName            
-     * @return array boolean
-     */
-    private function syncPluginCollection($collectionName)
-    {
-        $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
-            'plugin_id' => $this->_plugin_id,
-            'alias' => $collectionName
-        ));
-        
-        if ($pluginCollectionInfo == null) {
-            fb('$pluginCollectionInfo is null', 'LOG');
-            return false;
-        }
-        
-        // 同步数据结构
-        $syncPluginStructure = function ($plugin_id, $collection_id) use($pluginCollectionInfo)
-        {
-            if ($collection_id instanceof \MongoId)
-                $collection_id = $collection_id->__toString();
-            
-            $this->_structure->physicalRemove(array(
-                'collection_id' => $collection_id
-            ));
-            
-            // 插入新的数据结构
-            $cursor = $this->_plugin_structure->find(array(
-                'plugin_id' => $plugin_id,
-                'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
-            ));
-            while ($cursor->hasNext()) {
-                $row = $cursor->getNext();
-                array_unset_recursive($row, array(
-                    '_id',
-                    'collection_id',
-                    '__CREATE_TIME__',
-                    '__MODIFY_TIME__',
-                    '__REMOVED__'
-                ));
-                $row['collection_id'] = $collection_id;
-                $this->_structure->update(array(
-                    'collection_id' => $collection_id,
-                    'field' => $row['field']
-                ), array(
-                    '$set' => $row
-                ), array(
-                    'upsert' => true
-                ));
-            }
-            return true;
-        };
-        
-        // 添加映射关系
-        $createMapping = function ($collection_id, $collectionName)
-        {
-            if ($collection_id instanceof \MongoId)
-                $collection_id = $collection_id->__toString();
-            
-            $projectPluginInfo = $this->_project_plugin->findOne(array(
-                'project_id' => $this->_project_id,
-                'plugin_id' => $this->_plugin_id
-            ));
-            
-            if ($projectPluginInfo !== null) {
-                $source_project_id = $projectPluginInfo['source_project_id'];
-                if (! empty($source_project_id)) {
-                    $collectionInfo = $this->_collection->findOne(array(
-                        'project_id' => $source_project_id,
-                        'plugin_id' => $this->_plugin_id,
-                        'alias' => $collectionName
-                    ));
-                    
-                    $this->_mapping->update(array(
-                        'project_id' => $this->_project_id,
-                        'collection_id' => $collection_id
-                    ), array(
-                        '$set' => array(
-                            'collection' => 'idatabase_collection_' . myMongoId($collectionInfo['_id']),
-                            'database' => DEFAULT_DATABASE,
-                            'cluster' => DEFAULT_CLUSTER,
-                            'active' => true
-                        )
-                    ), array(
-                        'upsert' => true
-                    ));
-                    return true;
-                }
-            }
-            return false;
-        };
-        
-        if ($pluginCollectionInfo != null) {
-            unset($pluginCollectionInfo['_id']);
-            $collectionInfo = $pluginCollectionInfo;
-            $collectionInfo['project_id'] = $this->_project_id;
-            
-            $check = $this->_collection->findOne(array(
-                'project_id' => $this->_project_id,
-                'alias' => $collectionName
-            ));
-            
-            if ($check == null) {
-                $rst = $this->_collection->insertRef($collectionInfo);
-                $syncPluginStructure($this->_plugin_id, $rst['_id']);
-                $createMapping($rst['_id'], $collectionName);
-                return $rst;
-            } else {
-                $this->_collection->update(array(
-                    '_id' => $check['_id']
-                ), array(
-                    '$set' => $collectionInfo
-                ));
-                $syncPluginStructure($this->_plugin_id, $check['_id']);
-                $createMapping($check['_id'], $collectionName);
-            }
-            return $check;
-        }
-        
-        return false;
-    }
-
-    /**
-     * 删除插件集合
-     *
-     * @param string $plugin_id            
-     * @param string $alias            
-     */
-    private function removePluginCollection($plugin_id, $alias)
-    {
-        if (empty($plugin_id))
-            return false;
-        
-        $this->_collection->remove(array(
-            'project_id' => $this->_project_id,
-            'plugin_id' => $plugin_id,
-            'alias' => $alias
-        ));
-        
-        $this->_plugin_collection->remove(array(
-            'plugin_id' => $plugin_id,
-            'alias' => $alias
-        ));
-        return true;
-    }
 }
