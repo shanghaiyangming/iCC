@@ -28,7 +28,7 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 		}
 	}, {
 		text: '项目编号',
-		dataIndex: '__PROJECT_ID__',
+		dataIndex: 'project_id',
 		flex: 1,
 		field: {
 			xtype: 'textfield',

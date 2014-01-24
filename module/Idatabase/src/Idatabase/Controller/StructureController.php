@@ -74,18 +74,18 @@ class StructureController extends Action
             'collection_id' => $this->_collection_id
         );
         $cursor = $this->_structure->find($query);
-//         if (empty($this->_plugin_id)) {
-//             $query = array(
-//                 'collection_id' => $this->_collection_id
-//             );
-//             $cursor = $this->_structure->find($query);
-//         } else {
-//             $query = array(
-//                 'plugin_id' => $this->_plugin_id,
-//                 'plugin_collection_id' => $this->_plugin_collection_id
-//             );
-//             $cursor = $this->_plugin_structure->find($query);
-//         }
+        // if (empty($this->_plugin_id)) {
+        // $query = array(
+        // 'collection_id' => $this->_collection_id
+        // );
+        // $cursor = $this->_structure->find($query);
+        // } else {
+        // $query = array(
+        // 'plugin_id' => $this->_plugin_id,
+        // 'plugin_collection_id' => $this->_plugin_collection_id
+        // );
+        // $cursor = $this->_plugin_structure->find($query);
+        // }
         
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
@@ -109,7 +109,7 @@ class StructureController extends Action
     {
         $rst = array();
         $cursor = $this->_structure->find(array(
-            'collection_id' => $this->getCollectionIdByAlias($collectionName)
+            'collection_id' => $this->_collection->getCollectionIdByAlias($this->_project_id, $collectionName)
         ));
         
         $rst = array(
@@ -167,6 +167,7 @@ class StructureController extends Action
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
+        $datas['isPluginStructure'] = filter_var($this->params()->fromPost('isPluginStructure', false), FILTER_VALIDATE_BOOLEAN);
         
         if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
@@ -239,7 +240,7 @@ class StructureController extends Action
         }
         
         $this->_structure->insert($datas);
-        $this->syncPluginStructure($datas);
+        $this->_plugin_structure->sync($datas);
         
         return $this->msg(true, '添加信息成功');
     }
@@ -282,6 +283,7 @@ class StructureController extends Action
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
+        $datas['isPluginStructure'] = filter_var($this->params()->fromPost('isPluginStructure', false), FILTER_VALIDATE_BOOLEAN);
         
         if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
@@ -362,7 +364,7 @@ class StructureController extends Action
         ), array(
             '$set' => $datas
         ));
-        $this->syncPluginStructure($datas);
+        $this->_plugin_structure->sync($datas);
         
         return $this->msg(true, '编辑信息成功');
     }
@@ -471,7 +473,7 @@ class StructureController extends Action
                 '$set' => $row
             ));
             
-            $this->syncPluginStructure($row);
+            $this->_plugin_structure->sync($row);
         }
         
         return $this->msg(true, '更新字段属性成功');
@@ -504,7 +506,7 @@ class StructureController extends Action
                 '_id' => myMongoId($row)
             ));
             if ($rowInfo != null) {
-                $this->removePluginStructure($plugin_id, $rowInfo);
+                $this->_plugin_structure->removePluginStructure($plugin_id, $rowInfo);
                 $this->_structure->remove(array(
                     '_id' => myMongoId($row),
                     'collection_id' => $this->_collection_id
@@ -618,67 +620,4 @@ class StructureController extends Action
         return true;
     }
 
-    /**
-     * 根据集合的名称获取集合的_id
-     *
-     * @param string $alias            
-     * @throws \Exception or string
-     */
-    private function getCollectionIdByAlias($alias)
-    {
-        try {
-            new \MongoId($alias);
-            return $alias;
-        } catch (\MongoException $ex) {}
-        
-        $collectionInfo = $this->_collection->findOne(array(
-            'project_id' => $this->_project_id,
-            'alias' => $alias
-        ));
-        
-        if ($collectionInfo == null) {
-            fb('集合名称不存在于指定项目', 'LOG');
-            return false;
-        } else {
-            return $collectionInfo['_id']->__toString();
-        }
-    }
-
-    /**
-     * 同步插件的数据结构
-     *
-     * @param array $datas            
-     * @return bool
-     */
-    private function syncPluginStructure($datas)
-    {
-        if (! empty($datas['plugin_id'])) {
-            return $this->_plugin_structure->update(array(
-                'plugin_id' => $datas['plugin_id'],
-                'plugin_collection_id' => $datas['plugin_collection_id'],
-                'field' => $datas['field']
-            ), array(
-                '$set' => $datas
-            ), array(
-                'upsert' => true
-            ));
-        }
-    }
-
-    /**
-     * 删除插件的数据结构
-     *
-     * @param string $plugin_id            
-     * @param string $datas            
-     */
-    private function removePluginStructure($plugin_id, $datas)
-    {
-        if (! empty($plugin_id) && ! empty($field)) {
-            return $this->_plugin_structure->remove(array(
-                'plugin_id' => $plugin_id,
-                'plugin_collection_id' => $datas['plugin_collection_id'],
-                'field' => $datas['field']
-            ));
-        }
-    }
 }

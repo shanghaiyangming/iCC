@@ -38,7 +38,7 @@ class KeyController extends Action
             throw new \Exception('$this->_project_id无效');
         }
         
-        $this->_keys = $this->model(IDATABASE_KEYS);
+        $this->_keys = $this->model('Idatabase\Model\Key');
     }
 
     /**
@@ -71,7 +71,7 @@ class KeyController extends Action
         $key = $this->params()->fromPost('key', null);
         $expire = $this->params()->fromPost('expire', null);
         $active = filter_var($this->params()->fromPost('active', ''), FILTER_VALIDATE_BOOLEAN);
-        $project_id = $this->params()->fromPost('project_id', null);
+        $project_id = $this->_project_id;
         
         if ($name == null) {
             return $this->msg(false, '请填写密钥名称');
@@ -126,7 +126,7 @@ class KeyController extends Action
         $key = $this->params()->fromPost('key', null);
         $expire = $this->params()->fromPost('expire', null);
         $active = filter_var($this->params()->fromPost('active', ''), FILTER_VALIDATE_BOOLEAN);
-        $project_id = $this->params()->fromPost('project_id', null);
+        $project_id = $this->_project_id;
         
         if ($name == null) {
             return $this->msg(false, '请填写密钥名称');
