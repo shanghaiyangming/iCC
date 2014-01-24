@@ -74,19 +74,6 @@ class StructureController extends Action
             'collection_id' => $this->_collection_id
         );
         $cursor = $this->_structure->find($query);
-        // if (empty($this->_plugin_id)) {
-        // $query = array(
-        // 'collection_id' => $this->_collection_id
-        // );
-        // $cursor = $this->_structure->find($query);
-        // } else {
-        // $query = array(
-        // 'plugin_id' => $this->_plugin_id,
-        // 'plugin_collection_id' => $this->_plugin_collection_id
-        // );
-        // $cursor = $this->_plugin_structure->find($query);
-        // }
-        
         $cursor->sort($sort);
         while ($cursor->hasNext()) {
             $row = $cursor->getNext();
@@ -371,6 +358,7 @@ class StructureController extends Action
                     $oldStructureInfo['field'] => $datas['field']
                 )
             ));
+            $datas['__OLD_FIELD__'] = $oldStructureInfo['field'];
         }
         
         // 同步插件中的数据结构
@@ -486,6 +474,7 @@ class StructureController extends Action
             
             if ($oldStructureInfo['field'] != $row['field']) {
                 $rename[$oldStructureInfo['field']] = $row['field'];
+                $row['__OLD_FIELD__'] = $oldStructureInfo['field'];
             }
             
             $this->_plugin_structure->sync($row);

@@ -20,7 +20,7 @@ class PluginStructure extends Mongo
             return $this->update(array(
                 'plugin_id' => $datas['plugin_id'],
                 'plugin_collection_id' => $datas['plugin_collection_id'],
-                'field' => $datas['field']
+                'field' => isset($datas['__OLD_FIELD__']) ? $datas['__OLD_FIELD__'] : $datas['field']
             ), array(
                 '$set' => $datas
             ), array(
