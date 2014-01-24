@@ -166,3 +166,6 @@
     background-image: url(./icons/lock.png) !important;
 }
 
+.sync {
+    background-image: url(./icons/database_refresh.png) !important;
+}

@@ -126,6 +126,11 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							text : '数据导入',
 							iconCls : 'dbimport',
 							action : 'dbimport'
+						} , {
+							xtype : 'button',
+							text : '同步插件',
+							iconCls : 'sync',
+							action : 'sync'
 						} ]
 					}
 				}, '-', {
