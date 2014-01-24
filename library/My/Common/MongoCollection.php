@@ -582,8 +582,8 @@ class MongoCollection extends \MongoCollection
      */
     public function update($criteria, $object, array $options = NULL)
     {
-        if (empty($criteria))
-            throw new \Exception('$criteria is empty');
+        if (!is_array($criteria))
+            throw new \Exception('$criteria is array');
         
         if (empty($object))
             throw new \Exception('$object is empty');

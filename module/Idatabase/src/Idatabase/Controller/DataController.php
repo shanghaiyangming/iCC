@@ -548,22 +548,7 @@ class DataController extends Action
      * 执行准则统一采用：先清空符合条件数据，然后全部重新插入的原则完成
      *
      * @param array $datas            
-     * @name
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
+     * @name young
      * @version 2014.01.21
      * @return boolean
      */
