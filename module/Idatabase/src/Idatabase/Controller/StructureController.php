@@ -362,6 +362,18 @@ class StructureController extends Action
         ), array(
             '$set' => $datas
         ));
+        
+        // 如果修改了字段名称，那么对于数据集合中的对应字段进行重命名操作
+        $dataCollection = $this->collection(iCollectionName($this->_collection_id));
+        if ($dataCollection instanceof \MongoCollection) {
+            $dataCollection->update(array(), array(
+                '$rename' => array(
+                    $oldStructureInfo['field'] => $datas['field']
+                )
+            ));
+        }
+        
+        // 同步插件中的数据结构
         $this->_plugin_structure->sync($datas);
         
         return $this->msg(true, '编辑信息成功');
@@ -388,6 +400,7 @@ class StructureController extends Action
             return $this->msg(false, '更新数据无效');
         }
         
+        $rename = array();
         foreach ($updateInfos as $row) {
             $_id = $row['_id'];
             unset($row['_id']);
@@ -471,9 +484,22 @@ class StructureController extends Action
                 '$set' => $row
             ));
             
+            if ($oldStructureInfo['field'] != $row['field']) {
+                $rename[$oldStructureInfo['field']] = $row['field'];
+            }
+            
             $this->_plugin_structure->sync($row);
         }
         
+        // 如果修改了字段名称，那么对于数据集合中的对应字段进行重命名操作
+        if (! empty($rename)) {
+            $dataCollection = $this->collection(iCollectionName($this->_collection_id));
+            if ($dataCollection instanceof \MongoCollection) {
+                $dataCollection->update(array(), array(
+                    '$rename' => $rename
+                ));
+            }
+        }
         return $this->msg(true, '更新字段属性成功');
     }
 

@@ -14,7 +14,7 @@ echo $this->headLink(array(
     'href' => $this->basePath() . '/img/favicon.ico'
 ))
     ->appendStylesheet($this->basePath() . '/css/ext-theme-neptune-all.css')
-    ->appendStylesheet($this->basePath() . '/css/icon.css')
+    ->appendStylesheet($this->basePath() . '/css/icon.css?v='.$this->__VERSION__)
     ->appendStylesheet($this->basePath() . '/css/BoxSelect.css?v='.$this->__VERSION__);
 echo $this->headScript()
     ->appendFile($this->basePath() . '/js/build/production/icc/app.js?v='.$this->__VERSION__)

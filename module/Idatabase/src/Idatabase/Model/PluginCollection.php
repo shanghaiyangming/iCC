@@ -48,12 +48,15 @@ class PluginCollection extends Mongo
     {
         unset($datas['project_id']);
         $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
-        if (empty($plugin_collection_id)) {
+        if (!empty($plugin_collection_id)) {
             $this->update(array(
                     '_id' => myMongoId($plugin_collection_id)
             ), array(
                     '$set' => $datas
             ));
+        }
+        else {
+            return $this->addPluginCollection($datas);
         }
         return $plugin_collection_id;
     }
@@ -87,15 +90,16 @@ class PluginCollection extends Mongo
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
             
-            fb($this->_structure->physicalRemove(array(
+            $this->_structure->physicalRemove(array(
                 'collection_id' => $collection_id
-            )),'LOG');
+            ));
             
             // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
                 'plugin_id' => $plugin_id,
                 'plugin_collection_id' => $pluginCollectionInfo['_id']->__toString()
             ));
+            
             while ($cursor->hasNext()) {
                 $row = $cursor->getNext();
                 array_unset_recursive($row, array(
@@ -160,7 +164,7 @@ class PluginCollection extends Mongo
         if ($pluginCollectionInfo != null) {
             unset($pluginCollectionInfo['_id']);
             $collectionInfo = $pluginCollectionInfo;
-            $collectionInfo['project_id'] = $project_id;
+            $collectionInfo['project_id'] = array($project_id);
             
             $check = $this->_collection->findOne(array(
                 'project_id' => $project_id,
@@ -168,10 +172,10 @@ class PluginCollection extends Mongo
             ));
             
             if ($check == null) {
-                $rst = $this->_collection->insertRef($collectionInfo);
-                $syncPluginStructure($plugin_id, $rst['_id']);
-                $createMapping($rst['_id'], $collectionName);
-                return $rst;
+                $this->_collection->insertRef($collectionInfo);
+                $syncPluginStructure($plugin_id, $collectionInfo['_id']);
+                $createMapping($collectionInfo['_id'], $collectionName);
+                return $collectionInfo;
             } else {
                 $this->_collection->update(array(
                     '_id' => $check['_id']

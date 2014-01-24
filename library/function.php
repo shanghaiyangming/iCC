@@ -912,3 +912,17 @@ function dataSignAlgorithm($datas, $key)
     return substr(sha1(http_build_query($datas . $key)), 0, 32);
 }
 
+
+/**
+ * 构建集合名称
+ * @param mixed $_id
+ * @return string
+ */
+function iCollectionName($_id) {
+    if($_id instanceof MongoId)
+        $_id = $_id->__toString();
+    if(empty($_id))
+        throw new \Exception('集合_id不能为空');
+    
+    return 'idatabase_collection_'.$_id;
+}

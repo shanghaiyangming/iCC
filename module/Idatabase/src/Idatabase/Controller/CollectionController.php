@@ -75,16 +75,10 @@ class CollectionController extends Action
         );
         
         $query = array();
-        if ($action === 'all') {
-            $query['$and'][] = array(
-                'project_id' => $this->_project_id
-            );
-        } else {
-            if (empty($plugin_id)) {
-                $query['$and'][] = array(
-                    'project_id' => $this->_project_id
-                );
-            }
+        $query['$and'][] = array(
+            'project_id' => $this->_project_id
+        );
+        if ($action !== 'all') {
             $query['$and'][] = array(
                 'plugin_id' => $plugin_id
             );
@@ -119,51 +113,52 @@ class CollectionController extends Action
             );
         }
         
-        if (empty($plugin_id) || $action === 'all') {
-            $datas = array();
-            $cursor = $this->_collection->find($query);
-            $cursor->sort($sort);
-            while ($cursor->hasNext()) {
-                $row = $cursor->getNext();
-                $row['locked'] = false;
-                $lockInfo = $this->_lock->count(array(
-                    'project_id' => $this->_project_id,
-                    'collection_id' => myMongoId($row['_id']),
-                    'active' => true
-                ));
-                if ($lockInfo > 0) {
-                    $row['locked'] = true;
-                }
-                $datas[] = $row;
+        $datas = array();
+        $cursor = $this->_collection->find($query);
+        $cursor->sort($sort);
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            $row['locked'] = false;
+            $lockInfo = $this->_lock->count(array(
+                'project_id' => $this->_project_id,
+                'collection_id' => myMongoId($row['_id']),
+                'active' => true
+            ));
+            if ($lockInfo > 0) {
+                $row['locked'] = true;
             }
-            return $this->rst($datas, $cursor->count(), true);
-        } else {
+            $datas[] = $row;
+        }
+        return $this->rst($datas, $cursor->count(), true);
+    }
+
+    /**
+     * 同步插件集合数据结构
+     *
+     * @author young
+     * @name 同步插件集合数据结构
+     * @version 2014.01.24 young
+     */
+    public function syncAction()
+    {
+        if (! empty($this->_plugin_id)) {
             $datas = array();
-            $cursor = $this->_plugin_collection->find($query);
-            $cursor->sort($sort);
-            while ($cursor->hasNext()) {
-                $row = $cursor->getNext();
-                $row['plugin_collection_id'] = myMongoId($row['_id']);
-                
-                $collectionInfo = $this->_plugin_collection->syncPluginCollection($this->_project_id, $this->_plugin_id, $row['alias']);
-                if ($collectionInfo === false) {
-                    fb($collectionInfo, 'LOG');
-                    fb($row['alias'], 'LOG');
-                    throw new \Exception('插件集合中不存在此集合');
+            $cursor = $this->_plugin_collection->find(array(
+                'plugin_id' => $this->_plugin_id
+            ));
+            if ($cursor->count() > 0) {
+                while ($cursor->hasNext()) {
+                    $row = $cursor->getNext();
+                    $this->_plugin_collection->syncPluginCollection($this->_project_id, $this->_plugin_id, $row['alias']);
                 }
-                $row['_id'] = $collectionInfo['_id'];
-                $row['locked'] = false;
-                $lockInfo = $this->_lock->count(array(
-                    'project_id' => $this->_project_id,
-                    'collection_id' => myMongoId($row['_id']),
-                    'active' => true
-                ));
-                if ($lockInfo > 0) {
-                    $row['locked'] = true;
-                }
-                $datas[] = $row;
+                return $this->msg(true, '同步成功');
             }
-            return $this->rst($datas, $cursor->count(), true);
+            else {
+                return $this->msg(false, '该插件中的未发现有效集合');
+            }
+        }
+        else {
+            return $this->msg(false, '插件编号为空');
         }
     }
 

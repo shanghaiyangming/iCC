@@ -418,16 +418,31 @@ Ext.define('icc.controller.idatabase.Collection', {
 				return true;
 			}
 		};
+		
+		listeners[controllerName + 'Grid button[action=sync]'] = {
+			click: function(button) {
+				Ext.Msg.confirm('提示信息', '请确认你要同步当前插件的集合或者文档结构?', function(btn) {
+					if (btn == 'yes') {
+						var grid = button.up('gridpanel');
+						Ext.Ajax.request({
+							url: '/idatabase/collection/sync',
+							params: {
+								__PROJECT_ID__: grid.__PROJECT_ID__,
+								__PLUGIN_ID__: grid.__PLUGIN_ID__
+							},
+							scope: me,
+							success: function(response) {
+								var text = Ext.JSON.decode(response.responseText,true);
+								Ext.Msg.alert('提示信息', text.msg);
+								grid.store.load();
+							}
+						});
+					}
+				},me);
+			}
+		};
 
 		me.control(listeners);
-	},
-	reBuildDataPanel: function(__COLLECTION_ID__) {
-		var tabpanel = this.collectionTabPanel();
-		var __PROJECT_ID__ = tabpanel.__PROJECT_ID__;
-		var panel = tabpanel.getComponent(__COLLECTION_ID__);
-		var collection_name = panel.collection_name;
-		panel.close();
-		this.buildDataPanel(__PROJECT_ID__, __COLLECTION_ID__, collection_name, tabpanel, isTree);
 	},
 	buildDataPanel: function(grid, tabpanel, record) {
 		var __PROJECT_ID__ = grid.__PROJECT_ID__;
