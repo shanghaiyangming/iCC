@@ -23,24 +23,4 @@ class Model extends AbstractPlugin
             ->getServiceLocator()
             ->get($modelName);
     }
-
-    /**
-     * 初始化集合调用
-     *
-     * @param string $collection            
-     * @param string $database            
-     * @param string $cluster            
-     * @return \My\Common\MongoCollection
-     */
-    public function collection($collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER)
-    {
-        if($collection===null)
-            throw new \Exception('请设定集合名称');
-        
-        $this->_mongoConfig = $this->getController()
-            ->getServiceLocator()
-            ->get('mongos');
-        
-        return new MongoCollection($this->_mongoConfig, $collection, $database, $cluster);
-    }
 }
