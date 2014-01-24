@@ -353,7 +353,7 @@ class StructureController extends Action
         // 如果修改了字段名称，那么对于数据集合中的对应字段进行重命名操作
         $dataCollection = $this->collection(iCollectionName($this->_collection_id));
         if ($dataCollection instanceof \MongoCollection) {
-            $dataCollection->update(array(), array(
+            $rstRename = $dataCollection->update(array(), array(
                 '$rename' => array(
                     $oldStructureInfo['field'] => $datas['field']
                 )

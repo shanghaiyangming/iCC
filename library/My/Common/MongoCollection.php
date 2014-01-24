@@ -25,6 +25,7 @@ use Zend\EventManager\GlobalEventManager;
 
 class MongoCollection extends \MongoCollection
 {
+
     private $_collection = '';
 
     private $_database = DEFAULT_DATABASE;
@@ -36,7 +37,7 @@ class MongoCollection extends \MongoCollection
     private $_db;
 
     private $_admin;
-    
+
     private $_backup;
 
     private $_config;
@@ -94,7 +95,7 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('请安装FirePHP');
         }
         
-        if(! class_exists("MongoClient")) {
+        if (! class_exists("MongoClient")) {
             throw new \Exception('请安装MongoClient');
         }
         
@@ -142,15 +143,14 @@ class MongoCollection extends \MongoCollection
         
         /**
          * 设定读取优先级
-         * MongoClient::RP_PRIMARY  只读取主db
+         * MongoClient::RP_PRIMARY 只读取主db
          * MongoClient::RP_PRIMARY_PREFERRED 读取主db优先
          * MongoClient::RP_SECONDARY 只读从db优先
          * MongoClient::RP_SECONDARY_PREFERRED 读取从db优先
-         *
          */
         $this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
     }
-    
+
     /**
      * 检测是简单查询还是复杂查询，涉及复杂查询采用$and方式进行处理，简单模式采用连接方式进行处理
      *
@@ -541,7 +541,7 @@ class MongoCollection extends \MongoCollection
         // return parent::remove($criteria, $options);
         // 方案二 伪删除
         
-        if(!$options['justOne']) {
+        if (! $options['justOne']) {
             $options['multiple'] = true;
         }
         
@@ -552,14 +552,15 @@ class MongoCollection extends \MongoCollection
             )
         ), $options);
     }
-    
+
     /**
      * 物理删除指定范围的数据
      *
-     * @param array $criteria
-     * @param array $options
+     * @param array $criteria            
+     * @param array $options            
      */
-    public function physicalRemove($criteria = NULL, array $options = NULL) {
+    public function physicalRemove($criteria = NULL, array $options = NULL)
+    {
         if ($criteria === NULL)
             throw new \Exception('$criteria is NULL');
         
@@ -582,7 +583,7 @@ class MongoCollection extends \MongoCollection
      */
     public function update($criteria, $object, array $options = NULL)
     {
-        if (!is_array($criteria))
+        if (! is_array($criteria))
             throw new \Exception('$criteria is array');
         
         if (empty($object))
@@ -591,7 +592,7 @@ class MongoCollection extends \MongoCollection
         $keys = array_keys($object);
         foreach ($keys as $key) {
             $key = strtolower($key);
-            if (! in_array($key, $this->_updateHaystack)) {
+            if (! in_array($key, $this->_updateHaystack, true)) {
                 throw new \Exception('$key must contain ' . join(',', $this->_updateHaystack));
             }
         }
@@ -612,38 +613,42 @@ class MongoCollection extends \MongoCollection
         ));
         
         if (parent::count($criteria) == 0) {
-            parent::update($criteria, array(
-                '$set' => array(
-                    '__CREATE_TIME__' => new \MongoDate(),
-                    '__MODIFY_TIME__' => new \MongoDate(),
-                    '__REMOVED__' => false
-                )
-            ), $options);
+            if (isset($options['upsert']) && $options['upsert']) {
+                parent::update($criteria, array(
+                    '$set' => array(
+                        '__CREATE_TIME__' => new \MongoDate(),
+                        '__MODIFY_TIME__' => new \MongoDate(),
+                        '__REMOVED__' => false
+                    )
+                ), $options);
+            }
         } else {
             parent::update($criteria, array(
                 '$set' => array(
-                    '__MODIFY_TIME__' => new \MongoDate(),
-                    '__REMOVED__' => false
+                    '__MODIFY_TIME__' => new \MongoDate()
                 )
             ), $options);
         }
-
+        
         return parent::update($criteria, $object, $options);
     }
-    
+
     /**
      * 执行DB的command操作
-     * @param array $command
+     *
+     * @param array $command            
      * @return array
      */
-    public function command($command) {
+    public function command($command)
+    {
         return $this->db->command($command);
     }
 
     /**
      * 云存储文件
      *
-     * @param array $file $_FILES['name']
+     * @param array $file
+     *            $_FILES['name']
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
