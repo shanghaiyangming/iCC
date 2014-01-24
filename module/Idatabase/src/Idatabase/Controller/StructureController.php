@@ -167,7 +167,6 @@ class StructureController extends Action
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
-        $datas['isPluginStructure'] = filter_var($this->params()->fromPost('isPluginStructure', false), FILTER_VALIDATE_BOOLEAN);
         
         if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
@@ -283,7 +282,6 @@ class StructureController extends Action
         $datas['linkageSetValueField'] = trim($this->params()->fromPost('linkageSetValueField', ''));
         $datas['cdnUrl'] = trim($this->params()->fromPost('cdnUrl', ''));
         $datas['xTemplate'] = trim($this->params()->fromPost('xTemplate', ''));
-        $datas['isPluginStructure'] = filter_var($this->params()->fromPost('isPluginStructure', false), FILTER_VALIDATE_BOOLEAN);
         
         if ($datas['type'] !== 'filefield' && ! empty($datas['cdnUrl'])) {
             return $this->msg(false, '只有当输入类型为“文件类型”时，才需要设定文件资源域名');
@@ -619,5 +617,4 @@ class StructureController extends Action
         
         return true;
     }
-
 }

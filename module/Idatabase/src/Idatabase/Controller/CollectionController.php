@@ -440,5 +440,4 @@ class CollectionController extends Action
         }
         return true;
     }
-
 }

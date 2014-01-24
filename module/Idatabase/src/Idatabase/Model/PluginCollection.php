@@ -11,7 +11,6 @@ class PluginCollection extends Mongo
     public function init()
     {
         $this->_project_plugin = new ProjectPlugin($this->config);
-        $this->_plugin_collection = new PluginCollection($this->config);
         $this->_plugin_structure = new PluginStructure($this->config);
         $this->_structure = new Structure($this->config);
         $this->_collection = new Collection($this->config);
@@ -32,7 +31,7 @@ class PluginCollection extends Mongo
             return '';
     
         unset($datas['project_id']);
-        $this->_plugin_collection->insertRef($datas);
+        $this->insertRef($datas);
         if ($datas['_id'] instanceof \MongoId)
             return $datas['_id']->__toString();
     
@@ -50,7 +49,7 @@ class PluginCollection extends Mongo
         unset($datas['project_id']);
         $plugin_collection_id = isset($datas['plugin_collection_id']) ? $datas['plugin_collection_id'] : '';
         if (empty($plugin_collection_id)) {
-            $this->_plugin_collection->update(array(
+            $this->update(array(
                     '_id' => myMongoId($plugin_collection_id)
             ), array(
                     '$set' => $datas
@@ -72,7 +71,7 @@ class PluginCollection extends Mongo
      */
     public function syncPluginCollection($project_id, $plugin_id, $collectionName)
     {
-        $pluginCollectionInfo = $this->_plugin_collection->findOne(array(
+        $pluginCollectionInfo = $this->findOne(array(
             'plugin_id' => $plugin_id,
             'alias' => $collectionName
         ));
@@ -88,9 +87,9 @@ class PluginCollection extends Mongo
             if ($collection_id instanceof \MongoId)
                 $collection_id = $collection_id->__toString();
             
-            $this->_structure->physicalRemove(array(
+            fb($this->_structure->physicalRemove(array(
                 'collection_id' => $collection_id
-            ));
+            )),'LOG');
             
             // 插入新的数据结构
             $cursor = $this->_plugin_structure->find(array(
@@ -206,7 +205,7 @@ class PluginCollection extends Mongo
             'alias' => $alias
         ));
         
-        $this->_plugin_collection->remove(array(
+        $this->remove(array(
             'plugin_id' => $plugin_id,
             'alias' => $alias
         ));

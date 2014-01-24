@@ -268,25 +268,6 @@ Ext.define('icc.view.idatabase.Structure.Add', {
 			}]
 		}];
 
-		if (this.__PLUGIN_ID__ != '') {
-			items.push({
-				xtype: 'radiogroup',
-				fieldLabel: '是否更改插件定义',
-				defaultType: 'radiofield',
-				layout: 'hbox',
-				items: [{
-					boxLabel: '是',
-					name: 'isPluginStructure',
-					inputValue: true
-				}, {
-					boxLabel: '否',
-					name: 'isPluginStructure',
-					inputValue: false,
-					checked: true
-				}]
-			});
-		}
-
 		Ext.apply(this, {
 			items: [{
 				xtype: 'iform',
