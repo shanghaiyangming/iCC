@@ -361,20 +361,22 @@ Ext.define('icc.controller.idatabase.Collection', {
 			}
 		};
 
-		listeners[controllerName + 'Grid button[action=static]'] = {
+		listeners[controllerName + 'Grid button[action=statistic]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
 				var selections = grid.getSelectionModel().getSelection();
 				if (selections.length == 1) {
 					var record = selections[0];
-					var win = Ext.widget('idatabaseStaticWindow', {
+					var win = Ext.widget('idatabaseStatisticWindow', {
 						__PROJECT_ID__: grid.__PROJECT_ID__,
 						__COLLECTION_ID__: record.get('_id'),
-						__PLUGIN_ID__: grid.__PLUGIN_ID__
+						__PLUGIN_ID__: grid.__PLUGIN_ID__,
+						plugin: grid.plugin,
+						__PLUGIN_COLLECTION_ID__: record.get('plugin_collection_id')
 					});
 					win.show();
 				} else {
-					Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+					Ext.Msg.alert('提示信息', '请选择一项您要添加统计信息的集合');
 				}
 				return true;
 			}

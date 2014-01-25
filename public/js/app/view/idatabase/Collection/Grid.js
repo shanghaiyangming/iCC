@@ -110,7 +110,7 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							xtype : 'button',
 							text : '统计管理',
 							iconCls : 'static',
-							action : 'static'
+							action : 'statistic'
 						}, {
 							xtype : 'button',
 							text : '映射管理',

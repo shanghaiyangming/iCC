@@ -79,7 +79,15 @@ class StatisticController extends Action
         
         $datas = array();
         $datas['name'] = $name;
-        $datas['type'] = $type;
+        $datas['yAxis']['type'] = $yAxisType; //[Numeric]
+        $datas['yAxis']['fields'] = array();
+        $datas['xAxis']['type'] = '';
+        $datas['xAxis']['fields'] = array();
+        $datas['series']['type'] = $ySeriesType;//[line|column]
+        $datas['series']['xField'] = $ySeriesXField;
+        $datas['series']['yField'] = $ySeriesXField;
+        $datas['ySeriesType'];
+        
         $datas['axes'] = $axes;
         $datas['series'] = $series;
         $datas['interval'] = $interval;

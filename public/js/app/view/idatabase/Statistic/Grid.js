@@ -10,8 +10,12 @@ Ext.define('icc.view.idatabase.Statistic.Grid', {
 	initComponent: function() {
 		var me = this;
 		var store = Ext.create('icc.store.idatabase.Statistic');
-		store['proxy']['extraParams']['__PROJECT_ID__'] = me.__PROJECT_ID__;
-		store['proxy']['extraParams']['__COLLECTION_ID__'] = me.__COLLECTION_ID__;
+		store.proxy.extraParams = {
+			'__PROJECT_ID__': me.__PROJECT_ID__,
+			'__COLLECTION_ID__': me.__COLLECTION_ID__,
+			'__PLUGIN_ID__': me.__PLUGIN_ID__,
+			'__PLUGIN_COLLECTION_ID__': me.__PLUGIN_COLLECTION_ID__
+		};
 		store.load();
 
 		Ext.apply(me, {

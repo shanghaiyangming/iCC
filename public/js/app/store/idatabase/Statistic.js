@@ -1,7 +1,7 @@
 Ext.define('icc.store.idatabase.Statistic', {
 	extend: 'Ext.data.Store',
 	requires: ['icc.model.idatabase.Statistic'],
-	autoLoad: true,
+	autoLoad: false,
 	model: 'icc.model.idatabase.Statistic',
 	proxy: {
 		type: 'ajax',

@@ -14,17 +14,17 @@ Ext.Loader.setConfig({
 });
 
 Ext.onReady(function() {
-	Ext.require(['Ext.data.proxy.Ajax', 'Ext.form.field.ComboBox', 'Ext.form.field.VTypes','Ext.grid.plugin.RowExpander'], function() {
-		
+	Ext.require(['Ext.data.proxy.Ajax', 'Ext.form.field.ComboBox', 'Ext.form.field.VTypes', 'Ext.grid.plugin.RowExpander'], function() {
+
 		Ext.override('Ext.data.proxy.Ajax', {
 			timeout: 60000
 		});
-		
+
 		Ext.override('Ext.form.action.Submit', {
 			waitTitle: '系统提示',
 			waitMsg: '数据处理中，请稍后……'
 		});
-		
+
 		Ext.form.field.ComboBox.override({
 			setValue: function(v) {
 				var me = this;
@@ -43,7 +43,7 @@ Ext.onReady(function() {
 								}
 
 								try {
-									if(this.store.findRecord(this.valueField,'',0,false,false,true)==null) {
+									if (this.store.findRecord(this.valueField, '', 0, false, false, true) == null) {
 										var insertRecord = {};
 										insertRecord[this.displayField] = '无';
 										insertRecord[this.valueField] = '';
@@ -84,5 +84,44 @@ Ext.onReady(function() {
 		});
 
 	});
+
+	var toolbar;
+
+	setTimeout(function() {
+		toolbar = Ext.widget({
+			xtype: 'toolbar',
+			border: false,
+			rtl: false,
+			id: 'logout-toolbar',
+			floating: true,
+			fixed: true,
+			preventFocusOnActivate: true,
+			draggable: {
+				constrain: true
+			},
+			items: [{
+				xtype: 'button',
+				rtl: false,
+				hidden: false,
+				enableToggle: true,
+				text: '注销登录',
+				margin: '0 5 0 0',
+				listeners: {
+					click: function() {
+						window.location.href = '/application/auth/logout';
+					}
+				}
+			}],
+			constraintInsets: '0 -' + (Ext.getScrollbarSize().width + 4) + ' 0 0'
+		});
+		toolbar.show();
+		toolbar.alignTo(
+		document.body, Ext.optionsToolbarAlign || 'tr-tr', [(Ext.getScrollbarSize().width + 4) * (Ext.rootHierarchyState.rtl ? 1 : -1), -(document.body.scrollTop || document.documentElement.scrollTop)]);
+
+		var constrainer = function() {
+			toolbar.doConstrain();
+		};
+		Ext.EventManager.onWindowResize(constrainer);
+	}, 100);
 
 });
