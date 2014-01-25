@@ -1,24 +1,18 @@
-Ext.define('icc.view.idatabase.Static.Edit', {
+Ext.define('icc.view.idatabase.Statistic.Add', {
 	extend : 'icc.common.Window',
-	alias : 'widget.idatabaseStaticEdit',
-	title : '编辑属性',
+	alias : 'widget.idatabaseStatisticAdd',
+	title : '添加属性',
 	initComponent : function() {
-
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
-				url : '/idatabase/structure/edit',
+				url : '/idatabase/structure/add',
 				fieldDefaults : {
 					labelAlign : 'left',
 					labelWidth : 150,
 					anchor : '100%'
 				},
 				items : [ {
-					xtype : 'hiddenfield',
-					name : '_id',
-					fieldLabel : '属性_id',
-					allowBlank : false
-				}, {
 					xtype : 'hiddenfield',
 					name : '__PROJECT_ID__',
 					fieldLabel : '项目编号',
@@ -48,7 +42,8 @@ Ext.define('icc.view.idatabase.Static.Edit', {
 					displayField : 'name',
 					editable : false
 				}, {
-					xtype : 'idatabaseStructureFilterCombobox'
+					xtype : 'idatabaseStructureFilterCombobox',
+					value : 0
 				}, {
 					xtype : 'radiogroup',
 					fieldLabel : '是否为检索条件',
@@ -129,7 +124,7 @@ Ext.define('icc.view.idatabase.Static.Edit', {
 					name : 'orderBy',
 					fieldLabel : '排序',
 					allowBlank : false,
-					value : 0
+					value : this.orderBy
 				}, {
 					xtype : 'fieldset',
 					title : '关联设定（选填）',

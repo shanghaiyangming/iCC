@@ -1,6 +1,6 @@
-Ext.define('icc.view.idatabase.Static.Grid',{
+Ext.define('icc.view.idatabase.Statistic.Grid',{
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.idatabaseStaticGrid',
+	alias : 'widget.idatabaseStatisticGrid',
 	requires : [ 'icc.common.Paging','icc.view.common.Combobox.Boolean' ],
 	collapsible : false,
 	closable : false,

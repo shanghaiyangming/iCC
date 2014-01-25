@@ -1,11 +1,11 @@
-Ext.define('icc.view.idatabase.Static.Window', {
+Ext.define('icc.view.idatabase.Statistic.Window', {
 	extend : 'icc.common.Window',
-	alias : 'widget.idatabaseStaticWindow',
+	alias : 'widget.idatabaseStatisticWindow',
 	title : '统计管理',
 	initComponent : function() {
 		Ext.apply(this, {
 			items : [ {
-				xtype : 'idatabaseStaticGrid',
+				xtype : 'idatabaseStatisticGrid',
 				__PROJECT_ID__ : this.__PROJECT_ID__,
 				__COLLECTION_ID__ : this.__COLLECTION_ID__
 			} ]
