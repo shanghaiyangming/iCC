@@ -59,43 +59,47 @@ class StatisticController extends Action
      */
     public function addAction()
     {
-        $name = $this->params()->fromPost('name', null);
-        $type = $this->params()->fromPost('type', null);
-        $axes = $this->params()->fromPost('axes', null);
-        $series = $this->params()->fromPost('series', null);
-        $interval = intval($this->params()->fromPost('interval', 0));
+        $name = trim($this->params()->fromPost('name', ''));
+        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
+        $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisFields', ''));
+        $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
+        $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
+        $xAxisFields = trim($this->params()->fromPost('xAxisFields', ''));
+        $seriesType = trim($this->params()->fromPost('seriesType', ''));
+        $seriesField = trim($this->params()->fromPost('seriesField', ''));//用于pie
+        $seriesXField = trim($this->params()->fromPost('seriesXField', ''));//用于x轴显示
+        $seriesYField = trim($this->params()->fromPost('seriesYField', ''));//用于y轴显示
+        $interval = intval($this->params()->fromPost('interval', 300));
         
         if ($name == null) {
             return $this->msg(false, '请填写统计名称');
-        }
-        
-        if ($type == null) {
-            return $this->msg(false, '请选择统计类型');
         }
         
         if ($interval <= 300) {
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
+        $yAxisFields = explode(',',$yAxisFields);
+        $xAxisFields = explode(',',$xAxisFields);
+        
         $datas = array();
         $datas['name'] = $name;
-        $datas['yAxis']['type'] = $yAxisType; //[Numeric]
-        $datas['yAxis']['fields'] = array();
-        $datas['xAxis']['type'] = '';
-        $datas['xAxis']['fields'] = array();
-        $datas['series']['type'] = $ySeriesType;//[line|column]
-        $datas['series']['xField'] = $ySeriesXField;
-        $datas['series']['yField'] = $ySeriesXField;
-        $datas['ySeriesType'];
-        
-        $datas['axes'] = $axes;
-        $datas['series'] = $series;
+        $datas['yAxis']['title'] = $yAxisTitle; // title string
+        $datas['yAxis']['type'] = $yAxisType; // [Numeric]
+        $datas['yAxis']['fields'] = $yAxisFields; // array()
+        $datas['yAxis']['title'] = $xAxisTitle; // title string
+        $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
+        $datas['xAxis']['fields'] = $xAxisFields; // array()
+        $datas['series']['type'] = $seriesType; // [line|column]
+        $datas['series']['xField'] = $seriesXField;
+        $datas['series']['yField'] = $seriesYField;
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
         $datas['isRunning'] = false;
-        $this->_statistic->insert($datas);
         
+        $this->_statistic->insert($datas);
         return $this->msg(true, '添加统计成功');
     }
 
