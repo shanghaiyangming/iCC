@@ -44,10 +44,13 @@ class StatisticController extends Action
      */
     public function indexAction()
     {
-        $query = array();
-        $query = $this->_statistic->find(array(
-            'collection_id' => $this->_collection_id
-        ));
+        $query = array(
+            array(
+                'collection_id' => $this->_collection_id
+            )
+        );
+        $datas = $this->_statistic->findAll($query);
+        return $this->rst($datas, 0, true);
     }
 
     /**
@@ -58,6 +61,8 @@ class StatisticController extends Action
     {
         $name = $this->params()->fromPost('name', null);
         $type = $this->params()->fromPost('type', null);
+        $axes = $this->params()->fromPost('axes', null);
+        $series = $this->params()->fromPost('series', null);
         $interval = intval($this->params()->fromPost('interval', 0));
         
         if ($name == null) {
@@ -68,16 +73,14 @@ class StatisticController extends Action
             return $this->msg(false, '请选择统计类型');
         }
         
-        if ($interval <=300 ) {
+        if ($interval <= 300) {
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
         $datas = array();
         $datas['name'] = $name;
         $datas['type'] = $type;
-        $datas['axes'][''] = $axes['left'];
-        $datas['axes']['left'] = $axes['left'];
-        $datas['axes']['bottom'] = $axes['bottom'];
+        $datas['axes'] = $axes;
         $datas['series'] = $series;
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
@@ -87,12 +90,11 @@ class StatisticController extends Action
         
         return $this->msg(true, '添加统计成功');
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
-    public function editAction() {
-        
-    }
+    public function editAction()
+    {}
 }

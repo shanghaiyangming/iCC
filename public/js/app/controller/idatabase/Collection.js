@@ -418,7 +418,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				return true;
 			}
 		};
-		
+
 		listeners[controllerName + 'Grid button[action=sync]'] = {
 			click: function(button) {
 				Ext.Msg.confirm('提示信息', '请确认你要同步当前插件的集合或者文档结构?', function(btn) {
@@ -432,13 +432,13 @@ Ext.define('icc.controller.idatabase.Collection', {
 							},
 							scope: me,
 							success: function(response) {
-								var text = Ext.JSON.decode(response.responseText,true);
+								var text = Ext.JSON.decode(response.responseText, true);
 								Ext.Msg.alert('提示信息', text.msg);
 								grid.store.load();
 							}
 						});
 					}
-				},me);
+				}, me);
 			}
 		};
 
@@ -477,7 +477,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 				__PROJECT_ID__: __PROJECT_ID__,
 				__COLLECTION_ID__: __COLLECTION_ID__,
 				__PLUGIN_ID__: __PLUGIN_ID__,
-				__PLUGIN_COLLECTION_ID__ : __PLUGIN_COLLECTION_ID__
+				__PLUGIN_COLLECTION_ID__: __PLUGIN_COLLECTION_ID__
 			};
 
 			var treeField = '';
@@ -1143,7 +1143,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				tabpanel.add(panel);
 				tabpanel.setActiveTab(__COLLECTION_ID__);
-				
+
 			});
 		} else {
 			tabpanel.setActiveTab(__COLLECTION_ID__);

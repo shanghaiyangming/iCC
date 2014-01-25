@@ -91,8 +91,8 @@ Ext.define('icc.controller.idatabase.Project', {
 		listeners[controllerName + 'Grid button[action=add]'] = {
 			click: function(button) {
 				var grid = button.up('gridpanel');
-				var win = Ext.widget(controllerName + 'Add',{
-					isSystem : grid.isSystem
+				var win = Ext.widget(controllerName + 'Add', {
+					isSystem: grid.isSystem
 				});
 				win.show();
 			}
@@ -199,9 +199,9 @@ Ext.define('icc.controller.idatabase.Project', {
 						//读取插件列表，构建插件体系
 						var pluginStore = Ext.create('icc.store.idatabase.Plugin');
 						pluginStore.proxy.extraParams = {
-							__PROJECT_ID__:  id
+							__PROJECT_ID__: id
 						};
-						
+
 						pluginStore.load(function(records, operation, success) {
 							if (success) {
 								var pluginItems = [];
