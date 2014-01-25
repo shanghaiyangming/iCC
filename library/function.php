@@ -835,6 +835,8 @@ function convertVarNameWithDot(&$array)
 function formatData($value, $type = 'textfield', $key = null)
 {
     switch ($type) {
+    	case '_idfield':
+    	    break;
         case 'numberfield':
             $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
             break;

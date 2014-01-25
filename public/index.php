@@ -3,10 +3,10 @@
 session_start();
 
 //PHP配置文件修改
-error_reporting(E_ALL);
 date_default_timezone_set('Asia/Shanghai');
-ini_set('mongo.native_long', 1);
+error_reporting(E_ALL);
 ini_set("display_errors", 1);
+ini_set('mongo.native_long', 1);
 
 //初始化应用程序
 chdir(dirname(__DIR__));

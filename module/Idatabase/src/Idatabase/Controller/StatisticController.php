@@ -8,11 +8,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
-use Zend\View\Model\JsonModel;
-use Zend\Json\Json;
 use My\Common\Controller\Action;
 
 class StatisticController extends Action
@@ -29,11 +24,11 @@ class StatisticController extends Action
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
+        $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
         
-        $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
         if (empty($this->_collection_id))
             throw new \Exception('$this->_collection_id值未设定');
         
@@ -80,6 +75,7 @@ class StatisticController extends Action
         $datas = array();
         $datas['name'] = $name;
         $datas['type'] = $type;
+        $datas['axes'][''] = $axes['left'];
         $datas['axes']['left'] = $axes['left'];
         $datas['axes']['bottom'] = $axes['bottom'];
         $datas['series'] = $series;
@@ -89,7 +85,7 @@ class StatisticController extends Action
         $datas['isRunning'] = false;
         $this->_statistic->insert($datas);
         
-        return $this->msg(true, '添加信息成功');
+        return $this->msg(true, '添加统计成功');
     }
     
     /**

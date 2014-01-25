@@ -21,6 +21,8 @@ class StructureController extends Action
     private $_plugin_id;
 
     private $_structure;
+    
+    private $_mapping;
 
     private $_plugin_structure;
 
@@ -52,6 +54,7 @@ class StructureController extends Action
         $this->_structure = $this->model('Idatabase\Model\Structure');
         $this->_collection = $this->model('Idatabase\Model\Collection');
         $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
+        $this->_mapping = $this->model('Idatabase\Model\Mapping');
         $this->_model = $this->_structure;
     }
 
@@ -344,22 +347,27 @@ class StructureController extends Action
             }
         }
         
+        // 如果修改了字段名称，那么对于数据集合中的对应字段进行重命名操作
+        if ($oldStructureInfo['field'] !== $datas['field']) {
+            if($this->_mapping->getMapping($this->_collection_id)!==null) {
+                return $this->msg(false, '当前集合开启了映射，无法修改字段名');
+            }
+            $dataCollection = $this->collection(iCollectionName($this->_collection_id));
+            if ($dataCollection instanceof \MongoCollection) {
+                $rstRename = $dataCollection->update(array(), array(
+                    '$rename' => array(
+                        $oldStructureInfo['field'] => $datas['field']
+                    )
+                ));
+                $datas['__OLD_FIELD__'] = $oldStructureInfo['field'];
+            }
+        }
+        
         $this->_structure->update(array(
             '_id' => myMongoId($_id)
         ), array(
             '$set' => $datas
         ));
-        
-        // 如果修改了字段名称，那么对于数据集合中的对应字段进行重命名操作
-        $dataCollection = $this->collection(iCollectionName($this->_collection_id));
-        if ($dataCollection instanceof \MongoCollection) {
-            $rstRename = $dataCollection->update(array(), array(
-                '$rename' => array(
-                    $oldStructureInfo['field'] => $datas['field']
-                )
-            ));
-            $datas['__OLD_FIELD__'] = $oldStructureInfo['field'];
-        }
         
         // 同步插件中的数据结构
         $this->_plugin_structure->sync($datas);
@@ -465,18 +473,21 @@ class StructureController extends Action
                 }
             }
             
+            if ($oldStructureInfo['field'] != $row['field']) {
+                if($this->_mapping->getMapping($this->_collection_id)!==null) {
+                    return $this->msg(false, '当前集合开启了映射，无法修改字段名');
+                }
+                $rename[$oldStructureInfo['field']] = $row['field'];
+                $row['__OLD_FIELD__'] = $oldStructureInfo['field'];
+            }
+            
             $rst = $this->_structure->update(array(
                 '_id' => myMongoId($_id),
                 'collection_id' => $this->_collection_id
             ), array(
                 '$set' => $row
             ));
-            
-            if ($oldStructureInfo['field'] != $row['field']) {
-                $rename[$oldStructureInfo['field']] = $row['field'];
-                $row['__OLD_FIELD__'] = $oldStructureInfo['field'];
-            }
-            
+
             $this->_plugin_structure->sync($row);
         }
         

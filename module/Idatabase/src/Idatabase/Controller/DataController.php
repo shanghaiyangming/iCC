@@ -333,6 +333,8 @@ class DataController extends Action
                 
                 array_walk($comboboxSelectedLists, function (&$value, $index) use($rshCollectionValueField)
                 {
+                    fb($rshCollectionValueField, 'LOG');
+                    fb($this->_schema['post'][$rshCollectionValueField]['type'], 'LOG');
                     $value = formatData($value, $this->_schema['post'][$rshCollectionValueField]['type']);
                 });
                 
@@ -346,7 +348,7 @@ class DataController extends Action
                 $uniqueArray = array();
                 array_walk($datas, function ($value, $key) use(&$datas, &$uniqueArray)
                 {
-                    if (! in_array($value['_id'], $uniqueArray)) {
+                    if (! in_array($value['_id'], $uniqueArray, true)) {
                         $uniqueArray[] = $value['_id'];
                     } else {
                         unset($datas[$key]);
@@ -839,7 +841,11 @@ class DataController extends Action
     {
         $schema = array(
             'file' => array(),
-            'post' => array(),
+            'post' => array(
+                '_id' => array(
+                    'type' => '_idfield'
+                )
+            ),
             'all' => array(),
             'quick' => array(),
             'combobox' => array(
