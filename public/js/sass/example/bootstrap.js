@@ -889,6 +889,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
   "icc.controller.idatabase.Project": [],
+  "icc.controller.idatabase.Statistic": [],
   "icc.controller.idatabase.Structure": [],
   "icc.model.common.Model": [],
   "icc.model.idatabase.Collection": [],
@@ -898,7 +899,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
-  "icc.model.idatabase.Static": [],
+  "icc.model.idatabase.Statistic": [],
   "icc.model.idatabase.Structure": [],
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
@@ -911,7 +912,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
   "icc.store.idatabase.Project": [],
-  "icc.store.idatabase.Static": [],
+  "icc.store.idatabase.Statistic": [],
+  "icc.store.idatabase.Statistic.Axis": [],
+  "icc.store.idatabase.Statistic.Series": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -969,10 +972,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Project.Edit": [],
   "icc.view.idatabase.Project.Grid": [],
   "icc.view.idatabase.Project.TabPanel": [],
-  "icc.view.idatabase.Static.Add": [],
-  "icc.view.idatabase.Static.Edit": [],
-  "icc.view.idatabase.Static.Grid": [],
-  "icc.view.idatabase.Static.Window": [],
+  "icc.view.idatabase.Statistic.Add": [],
+  "icc.view.idatabase.Statistic.Edit": [],
+  "icc.view.idatabase.Statistic.Grid": [],
+  "icc.view.idatabase.Statistic.Series": [],
+  "icc.view.idatabase.Statistic.Window": [],
   "icc.view.idatabase.Structure.Add": [],
   "icc.view.idatabase.Structure.Edit": [],
   "icc.view.idatabase.Structure.FieldCombobox": [],
@@ -2051,6 +2055,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.controller.idatabase.Plugin": [],
   "icc.controller.idatabase.Plugin.System": [],
   "icc.controller.idatabase.Project": [],
+  "icc.controller.idatabase.Statistic": [],
   "icc.controller.idatabase.Structure": [],
   "icc.model.common.Model": [],
   "icc.model.idatabase.Collection": [],
@@ -2060,7 +2065,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.model.idatabase.Plugin": [],
   "icc.model.idatabase.Plugin.System": [],
   "icc.model.idatabase.Project": [],
-  "icc.model.idatabase.Static": [],
+  "icc.model.idatabase.Statistic": [],
   "icc.model.idatabase.Structure": [],
   "icc.model.idatabase.Structure.FilterType": [],
   "icc.store.common.Boolean": [],
@@ -2073,7 +2078,9 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Plugin": [],
   "icc.store.idatabase.Plugin.System": [],
   "icc.store.idatabase.Project": [],
-  "icc.store.idatabase.Static": [],
+  "icc.store.idatabase.Statistic": [],
+  "icc.store.idatabase.Statistic.Axis": [],
+  "icc.store.idatabase.Statistic.Series": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -2235,17 +2242,20 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.view.idatabase.Project.TabPanel": [
     "widget.idatabaseProjectTabPanel"
   ],
-  "icc.view.idatabase.Static.Add": [
-    "widget.idatabaseStaticAdd"
+  "icc.view.idatabase.Statistic.Add": [
+    "widget.idatabaseStatisticAdd"
   ],
-  "icc.view.idatabase.Static.Edit": [
-    "widget.idatabaseStaticEdit"
+  "icc.view.idatabase.Statistic.Edit": [
+    "widget.idatabaseStatisticEdit"
   ],
-  "icc.view.idatabase.Static.Grid": [
-    "widget.idatabaseStaticGrid"
+  "icc.view.idatabase.Statistic.Grid": [
+    "widget.idatabaseStatisticGrid"
   ],
-  "icc.view.idatabase.Static.Window": [
-    "widget.idatabaseStaticWindow"
+  "icc.view.idatabase.Statistic.Series": [
+    "widget.idatabaseStatisticSeries"
+  ],
+  "icc.view.idatabase.Statistic.Window": [
+    "widget.idatabaseStatisticWindow"
   ],
   "icc.view.idatabase.Structure.Add": [
     "widget.idatabaseStructureAdd"

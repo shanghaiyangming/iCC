@@ -1,4 +1,4 @@
-Ext.define('icc.store.Statistic.Axis', {
+Ext.define('icc.store.idatabase.Statistic.Axis', {
 	extend : 'Ext.data.Store',
 	fields : [ "name", "value" ],
 	data : [ {

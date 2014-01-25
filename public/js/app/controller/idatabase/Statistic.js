@@ -1,8 +1,8 @@
 Ext.define('icc.controller.idatabase.Statistic', {
     extend: 'Ext.app.Controller',
     models: ['idatabase.Statistic'],
-    stores: ['idatabase.Statistic'],
-    views: ['idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit'],
+    stores: ['idatabase.Statistic','idatabase.Statistic.Series','idatabase.Statistic.Axis'],
+    views: ['idatabase.Statistic.Series','idatabase.Statistic.Window','idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit'],
     controllerName: 'idatabaseStatistic',
     actions: {
         add: '/idatabase/statistic/add',
