@@ -846,8 +846,16 @@ class DataController extends Action
                     'type' => '_idfield'
                 )
             ),
-            'all' => array(),
-            'quick' => array(),
+            'all' => array(
+                '_id' => array(
+                    'type' => '_idfield'
+                )
+            ),
+            'quick' => array(
+                '_id' => array(
+                    'type' => '_idfield'
+                )
+            ),
             'combobox' => array(
                 'rshCollectionValueField' => '_id'
             )
