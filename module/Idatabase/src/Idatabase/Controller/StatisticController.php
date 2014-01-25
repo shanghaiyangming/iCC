@@ -36,16 +36,17 @@ class StatisticController extends Action
     }
 
     /**
-     * 读取某个集合的全部统计
+     * 读取统计列表
      *
      * @author young
-     * @name 读取指定项目内的全部集合列表
-     * @version 2014.01.09 young
+     * @name 读取统计列表
+     * @version 2014.01.25 young
      */
     public function indexAction()
     {
         $query = array(
             array(
+                'project_id' => $this->_project_id,
                 'collection_id' => $this->_collection_id
             )
         );
@@ -54,11 +55,17 @@ class StatisticController extends Action
     }
 
     /**
+     * 添加统计信息
      *
-     * @return array
+     * @author young
+     * @name 添加统计信息
+     * @version 2014.01.25 young
      */
     public function addAction()
     {
+        $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
+        $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
+        $name = trim($this->params()->fromPost('name', ''));
         $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
         $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
@@ -67,9 +74,9 @@ class StatisticController extends Action
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
         $xAxisFields = trim($this->params()->fromPost('xAxisFields', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
-        $seriesField = trim($this->params()->fromPost('seriesField', ''));//用于pie
-        $seriesXField = trim($this->params()->fromPost('seriesXField', ''));//用于x轴显示
-        $seriesYField = trim($this->params()->fromPost('seriesYField', ''));//用于y轴显示
+        $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
+        $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
+        $seriesYField = trim($this->params()->fromPost('seriesYField', '')); // 用于y轴显示
         $interval = intval($this->params()->fromPost('interval', 300));
         
         if ($name == null) {
@@ -80,10 +87,12 @@ class StatisticController extends Action
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
-        $yAxisFields = explode(',',$yAxisFields);
-        $xAxisFields = explode(',',$xAxisFields);
+        $yAxisFields = explode(',', $yAxisFields);
+        $xAxisFields = explode(',', $xAxisFields);
         
         $datas = array();
+        $datas['project_id'] = $project_id;
+        $datas['collection_id'] = $collection_id;
         $datas['name'] = $name;
         $datas['yAxis']['title'] = $yAxisTitle; // title string
         $datas['yAxis']['type'] = $yAxisType; // [Numeric]
@@ -92,8 +101,9 @@ class StatisticController extends Action
         $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
         $datas['xAxis']['fields'] = $xAxisFields; // array()
         $datas['series']['type'] = $seriesType; // [line|column]
-        $datas['series']['xField'] = $seriesXField;
-        $datas['series']['yField'] = $seriesYField;
+        $datas['series']['field'] = $seriesField; // pie
+        $datas['series']['xField'] = $seriesXField; // 用于x轴显示
+        $datas['series']['yField'] = $seriesYField; // 用于y轴显示
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
@@ -104,9 +114,100 @@ class StatisticController extends Action
     }
 
     /**
+     * 编辑统计信息
      *
-     * @return array
+     * @author young
+     * @name 编辑统计信息
+     * @version 2014.01.25 young
      */
     public function editAction()
-    {}
+    {
+        $_id = trim($this->params()->fromPost('_id', ''));
+        $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
+        $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
+        $name = trim($this->params()->fromPost('name', ''));
+        $name = trim($this->params()->fromPost('name', ''));
+        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
+        $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisFields', ''));
+        $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
+        $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
+        $xAxisFields = trim($this->params()->fromPost('xAxisFields', ''));
+        $seriesType = trim($this->params()->fromPost('seriesType', ''));
+        $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
+        $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
+        $seriesYField = trim($this->params()->fromPost('seriesYField', '')); // 用于y轴显示
+        $interval = intval($this->params()->fromPost('interval', 300));
+        
+        if ($name == null) {
+            return $this->msg(false, '请填写统计名称');
+        }
+        
+        if ($interval <= 300) {
+            return $this->msg(false, '统计时间的间隔不得少于300秒');
+        }
+        
+        $yAxisFields = explode(',', $yAxisFields);
+        $xAxisFields = explode(',', $xAxisFields);
+        
+        $datas = array();
+        $datas['project_id'] = $project_id;
+        $datas['collection_id'] = $collection_id;
+        $datas['name'] = $name;
+        $datas['yAxis']['title'] = $yAxisTitle; // title string
+        $datas['yAxis']['type'] = $yAxisType; // [Numeric]
+        $datas['yAxis']['fields'] = $yAxisFields; // array()
+        $datas['yAxis']['title'] = $xAxisTitle; // title string
+        $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
+        $datas['xAxis']['fields'] = $xAxisFields; // array()
+        $datas['series']['type'] = $seriesType; // [line|column]
+        $datas['series']['field'] = $seriesField; // pie
+        $datas['series']['xField'] = $seriesXField; // 用于x轴显示
+        $datas['series']['yField'] = $seriesYField; // 用于y轴显示
+        $datas['interval'] = $interval;
+        $datas['lastExecuteTime'] = new \MongoDate(0);
+        $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
+        $datas['isRunning'] = false;
+        
+        $this->_statistic->update(array(
+            '_id' => myMongoId($_id)
+        ), array(
+            '$set' => $datas
+        ));
+        return $this->msg(true, '编辑统计成功');
+    }
+
+    public function saveAction()
+    {
+        return $this->msg(false, '本功能不支持批量编辑');
+    }
+
+    /**
+     * 删除统计信息
+     *
+     * @author young
+     * @name 删除统计信息
+     * @version 2014.01.25 young
+     */
+    public function removeAction()
+    {
+        $_id = $this->params()->fromPost('_id', null);
+        try {
+            $_id = Json::decode($_id, Json::TYPE_ARRAY);
+        } catch (\Exception $e) {
+            return $this->msg(false, '无效的json字符串');
+        }
+        
+        if (! is_array($_id)) {
+            return $this->msg(false, '请选择你要删除的项');
+        }
+        foreach ($_id as $row) {
+            $this->_statistic->remove(array(
+                '_id' => myMongoId($row),
+                'project_id' => $this->_project_id,
+                'collection_id' => $this->_collection_id
+            ));
+        }
+        return $this->msg(true, '删除统计信息成功');
+    }
 }
