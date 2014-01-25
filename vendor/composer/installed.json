@@ -662,69 +662,6 @@
         ]
     },
     {
-        "name": "doctrine/mongodb",
-        "version": "1.0.4",
-        "version_normalized": "1.0.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/doctrine/mongodb.git",
-            "reference": "401796e7a5ec3cea099d993fd0034235b917f1a8"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/mongodb/zipball/401796e7a5ec3cea099d993fd0034235b917f1a8",
-            "reference": "401796e7a5ec3cea099d993fd0034235b917f1a8",
-            "shasum": ""
-        },
-        "require": {
-            "doctrine/common": ">=2.1.0,<2.5-dev",
-            "ext-mongo": ">=1.2.12,<1.6-dev",
-            "php": ">=5.3.2"
-        },
-        "time": "2013-11-01 17:12:21",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Doctrine\\MongoDB": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Bulat Shakirzyanov",
-                "email": "mallluhuct@gmail.com",
-                "homepage": "http://avalanche123.com"
-            },
-            {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/",
-                "role": "Creator"
-            },
-            {
-                "name": "Kris Wallsmith",
-                "email": "kris.wallsmith@gmail.com",
-                "homepage": "http://kriswallsmith.net/"
-            },
-            {
-                "name": "Jeremy Mikola",
-                "email": "jmikola@gmail.com",
-                "homepage": "http://jmikola.net"
-            }
-        ],
-        "description": "Doctrine MongoDB Abstraction Layer",
-        "homepage": "http://www.doctrine-project.org",
-        "keywords": [
-            "database",
-            "mongodb",
-            "persistence"
-        ]
-    },
-    {
         "name": "doctrine/mongodb-odm",
         "version": "1.0.0-BETA9",
         "version_normalized": "1.0.0.0-beta9",
@@ -883,84 +820,6 @@
         "keywords": [
             "doctrine",
             "module",
-            "zf2"
-        ]
-    },
-    {
-        "name": "doctrine/doctrine-mongo-odm-module",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/doctrine/DoctrineMongoODMModule.git",
-            "reference": "91308681081a86df12be37ddcb9d68a19323c9e2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/DoctrineMongoODMModule/zipball/91308681081a86df12be37ddcb9d68a19323c9e2",
-            "reference": "91308681081a86df12be37ddcb9d68a19323c9e2",
-            "shasum": ""
-        },
-        "require": {
-            "doctrine/doctrine-module": "0.7.*",
-            "doctrine/mongodb-odm": "~1.0.0-beta9@dev",
-            "php": ">=5.3.3",
-            "zendframework/zend-mvc": "2.*",
-            "zendframework/zend-servicemanager": "2.*",
-            "zendframework/zend-stdlib": "2.*"
-        },
-        "time": "2013-10-18 21:47:34",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.8.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "DoctrineMongoODMModule\\": "src/",
-                "DoctrineMongoODMModuleTest\\": "tests/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Kyle Spraggs",
-                "email": "theman@spiffyjr.me",
-                "homepage": "http://www.spiffyjr.me/"
-            },
-            {
-                "name": "Marco Pivetta",
-                "email": "ocramius@gmail.com",
-                "homepage": "http://marco-pivetta.com/",
-                "role": "Developer"
-            },
-            {
-                "name": "Evan Coury",
-                "email": "me@evancoury.com",
-                "homepage": "http://blog.evan.pro/"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@hotmail.com"
-            },
-            {
-                "name": "Tim Roediger",
-                "email": "superdweebie@gmail.com",
-                "homepage": "http://superdweebie.com"
-            }
-        ],
-        "description": "Zend Framework 2 Module that provides Doctrine MongoDB ODM functionality",
-        "homepage": "http://www.doctrine-project.org/",
-        "keywords": [
-            "doctrine",
-            "module",
-            "mongodb",
-            "odm",
             "zf2"
         ]
     },
@@ -1213,57 +1072,6 @@
         ]
     },
     {
-        "name": "cboden/ratchet",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/cboden/Ratchet.git",
-            "reference": "c2f82efb8536a3d6a94e19a371f928f76ed0f31c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/cboden/Ratchet/zipball/c2f82efb8536a3d6a94e19a371f928f76ed0f31c",
-            "reference": "c2f82efb8536a3d6a94e19a371f928f76ed0f31c",
-            "shasum": ""
-        },
-        "require": {
-            "guzzle/http": ">=3.6.0,<3.8.0-dev",
-            "php": ">=5.3.9",
-            "react/socket": "0.3.*",
-            "symfony/http-foundation": "~2.2",
-            "symfony/routing": "~2.2"
-        },
-        "time": "2013-12-21 18:04:53",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Ratchet": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Chris Boden",
-                "email": "cboden@gmail.com",
-                "homepage": "http://res.im",
-                "role": "Developer"
-            }
-        ],
-        "description": "PHP WebSocket library",
-        "homepage": "http://socketo.me",
-        "keywords": [
-            "Ratchet",
-            "WebSockets",
-            "server",
-            "sockets"
-        ]
-    },
-    {
         "name": "gregwar/captcha",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -1381,60 +1189,6 @@
             "log",
             "logging",
             "psr-3"
-        ]
-    },
-    {
-        "name": "mobiledetect/mobiledetectlib",
-        "version": "2.7.6",
-        "version_normalized": "2.7.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/serbanghita/Mobile-Detect.git",
-            "reference": "b7631859df47ceca6609278b59ec61e86f60c483"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/b7631859df47ceca6609278b59ec61e86f60c483",
-            "reference": "b7631859df47ceca6609278b59ec61e86f60c483",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "time": "2013-12-05 22:00:17",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "Mobile_Detect.php"
-            ],
-            "psr-0": {
-                "Detection": "namespaced/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Serban Ghita",
-                "email": "serbanghita@gmail.com",
-                "homepage": "http://mobiledetect.net",
-                "role": "Developer"
-            }
-        ],
-        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
-        "homepage": "https://github.com/serbanghita/Mobile-Detect",
-        "keywords": [
-            "detect mobile devices",
-            "mobile",
-            "mobile detect",
-            "mobile detector",
-            "php mobile detect"
         ]
     },
     {
@@ -1974,6 +1728,252 @@
         "keywords": [
             "event-loop",
             "reactor"
+        ]
+    },
+    {
+        "name": "mobiledetect/mobiledetectlib",
+        "version": "2.7.7",
+        "version_normalized": "2.7.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/serbanghita/Mobile-Detect.git",
+            "reference": "bea11a6f0f702f8263da7e02d91b36ba27da5c26"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/bea11a6f0f702f8263da7e02d91b36ba27da5c26",
+            "reference": "bea11a6f0f702f8263da7e02d91b36ba27da5c26",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2014-01-17 15:58:35",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "Mobile_Detect.php"
+            ],
+            "psr-0": {
+                "Detection": "namespaced/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Serban Ghita",
+                "email": "serbanghita@gmail.com",
+                "homepage": "http://mobiledetect.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
+        "homepage": "https://github.com/serbanghita/Mobile-Detect",
+        "keywords": [
+            "detect mobile devices",
+            "mobile",
+            "mobile detect",
+            "mobile detector",
+            "php mobile detect"
+        ]
+    },
+    {
+        "name": "doctrine/mongodb",
+        "version": "1.0.5",
+        "version_normalized": "1.0.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/mongodb.git",
+            "reference": "cb0253987458dfb2fd3950c28163a4a5eabdaec2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/mongodb/zipball/cb0253987458dfb2fd3950c28163a4a5eabdaec2",
+            "reference": "cb0253987458dfb2fd3950c28163a4a5eabdaec2",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/common": ">=2.1.0,<2.5-dev",
+            "ext-mongo": ">=1.2.12,<1.6-dev",
+            "php": ">=5.3.2"
+        },
+        "time": "2014-01-09 21:16:38",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Doctrine\\MongoDB": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Bulat Shakirzyanov",
+                "email": "mallluhuct@gmail.com",
+                "homepage": "http://avalanche123.com"
+            },
+            {
+                "name": "Jonathan H. Wage",
+                "email": "jonwage@gmail.com",
+                "homepage": "http://www.jwage.com/",
+                "role": "Creator"
+            },
+            {
+                "name": "Kris Wallsmith",
+                "email": "kris.wallsmith@gmail.com",
+                "homepage": "http://kriswallsmith.net/"
+            },
+            {
+                "name": "Jeremy Mikola",
+                "email": "jmikola@gmail.com",
+                "homepage": "http://jmikola.net"
+            }
+        ],
+        "description": "Doctrine MongoDB Abstraction Layer",
+        "homepage": "http://www.doctrine-project.org",
+        "keywords": [
+            "database",
+            "mongodb",
+            "persistence"
+        ]
+    },
+    {
+        "name": "doctrine/doctrine-mongo-odm-module",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/DoctrineMongoODMModule.git",
+            "reference": "558042e196dabd74fba6c122025107431ca3af3a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/DoctrineMongoODMModule/zipball/558042e196dabd74fba6c122025107431ca3af3a",
+            "reference": "558042e196dabd74fba6c122025107431ca3af3a",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/doctrine-module": "0.7.*",
+            "doctrine/mongodb-odm": "~1.0.0-beta9@dev",
+            "php": ">=5.3.3",
+            "zendframework/zend-mvc": "2.*",
+            "zendframework/zend-servicemanager": "2.*",
+            "zendframework/zend-stdlib": "2.*"
+        },
+        "time": "2014-01-22 20:59:27",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.8.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "DoctrineMongoODMModule\\": "src/",
+                "DoctrineMongoODMModuleTest\\": "tests/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Kyle Spraggs",
+                "email": "theman@spiffyjr.me",
+                "homepage": "http://www.spiffyjr.me/"
+            },
+            {
+                "name": "Marco Pivetta",
+                "email": "ocramius@gmail.com",
+                "homepage": "http://marco-pivetta.com/",
+                "role": "Developer"
+            },
+            {
+                "name": "Evan Coury",
+                "email": "me@evancoury.com",
+                "homepage": "http://blog.evan.pro/"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@hotmail.com"
+            },
+            {
+                "name": "Tim Roediger",
+                "email": "superdweebie@gmail.com",
+                "homepage": "http://superdweebie.com"
+            }
+        ],
+        "description": "Zend Framework 2 Module that provides Doctrine MongoDB ODM functionality",
+        "homepage": "http://www.doctrine-project.org/",
+        "keywords": [
+            "doctrine",
+            "module",
+            "mongodb",
+            "odm",
+            "zf2"
+        ]
+    },
+    {
+        "name": "cboden/ratchet",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cboden/Ratchet.git",
+            "reference": "6dc5fae36bc313359e0c5814cf66984b834f7ccf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cboden/Ratchet/zipball/6dc5fae36bc313359e0c5814cf66984b834f7ccf",
+            "reference": "6dc5fae36bc313359e0c5814cf66984b834f7ccf",
+            "shasum": ""
+        },
+        "require": {
+            "guzzle/http": ">=3.6.0,<3.8.0-dev",
+            "php": ">=5.3.9",
+            "react/socket": "0.3.*",
+            "symfony/http-foundation": "~2.2",
+            "symfony/routing": "~2.2"
+        },
+        "time": "2014-01-11 16:52:16",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Ratchet": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Chris Boden",
+                "email": "cboden@gmail.com",
+                "homepage": "http://res.im",
+                "role": "Developer"
+            }
+        ],
+        "description": "PHP WebSocket library",
+        "homepage": "http://socketo.me",
+        "keywords": [
+            "Ratchet",
+            "WebSockets",
+            "server",
+            "sockets"
         ]
     }
 ]
