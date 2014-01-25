@@ -8,9 +8,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
 use My\Common\Controller\Action;
 
 class DashboardController extends Action

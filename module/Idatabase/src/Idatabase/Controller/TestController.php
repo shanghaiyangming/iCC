@@ -8,8 +8,6 @@
 */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
 use My\Common\Controller\Action;
 use My\Common\MongoCollection;
 

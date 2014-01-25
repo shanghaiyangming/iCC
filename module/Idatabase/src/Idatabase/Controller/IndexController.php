@@ -9,11 +9,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
-use Zend\View\Model\JsonModel;
-use Zend\Mvc\MvcEvent;
 use Zend\Json\Json;
 use My\Common\Controller\Action;
 

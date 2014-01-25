@@ -9,11 +9,6 @@
  */
 namespace Idatabase\Controller;
 
-use Zend\View\Model\ViewModel;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\GlobalEventManager;
-use Zend\View\Model\JsonModel;
-use Zend\Json\Json;
 use My\Common\Controller\Action;
 
 class ImportController extends Action
@@ -185,7 +180,7 @@ class ImportController extends Action
             } else {
                 return $this->msg(false, '上传文件失败');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             fb(exceptionMsg($e), \FirePHP::LOG);
             return $this->msg(false, '导入失败，发生异常');
         }
