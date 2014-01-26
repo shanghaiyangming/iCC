@@ -949,7 +949,7 @@ class DataController extends Action
                 $value = filter_var($value, $filter);
             }
             
-            if ($type == 'arrayfield') {
+            if ($type == 'arrayfield' && isset($this->_rshCollection[$rshCollection])) {
                 $rowType = $this->_rshCollection[$rshCollection]['rshCollectionValueFieldType'];
                 
                 if (! is_array($value) && is_string($value)) {
