@@ -696,6 +696,7 @@ class DataController extends Action
                 '_id' => myMongoId($_id)
             ));
             
+            unset($datas['_id']);
             $this->_data->update(array(
                 '_id' => myMongoId($_id)
             ), array(
@@ -846,11 +847,7 @@ class DataController extends Action
                     'type' => '_idfield'
                 )
             ),
-            'all' => array(
-                '_id' => array(
-                    'type' => '_idfield'
-                )
-            ),
+            'all' => array(),
             'quick' => array(),
             'combobox' => array(
                 'rshCollectionValueField' => '_id'
@@ -941,9 +938,9 @@ class DataController extends Action
         $validPostData = array_intersect_key($datas, $this->_schema['post']);
         array_walk($validPostData, function (&$value, $key)
         {
-            $filter = $this->_schema['post'][$key]['filter'];
+            $filter = isset($this->_schema['post'][$key]['filter']) ? $this->_schema['post'][$key]['filter'] : '';
             $type = $this->_schema['post'][$key]['type'];
-            $rshCollection = $this->_schema['post'][$key]['rshCollection'];
+            $rshCollection = isset($this->_schema['post'][$key]['rshCollection']) ? $this->_schema['post'][$key]['rshCollection'] : '';
             
             if (! empty($filter)) {
                 $value = filter_var($value, $filter);

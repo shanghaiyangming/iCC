@@ -607,6 +607,7 @@ class MongoCollection extends \MongoCollection
         
         $criteria = $this->appendQuery($criteria);
         array_unset_recursive($object, array(
+            '_id',
             '__CREATE_TIME__',
             '__MODIFY_TIME__',
             '__REMOVED__'
