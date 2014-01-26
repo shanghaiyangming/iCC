@@ -259,7 +259,7 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 直接禁止drop操作
+     * 直接禁止drop操作,注意备份表中只包含当前集合中的有效数据，__REMOVED__为true的不在此列
      *
      * @see MongoCollection::drop()
      */
