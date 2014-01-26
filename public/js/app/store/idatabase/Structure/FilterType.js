@@ -1,6 +1,6 @@
 Ext.define('icc.store.idatabase.Structure.FilterType', {
 	extend : 'Ext.data.Store',
-	autoLoad: true,
+	autoLoad: false,
 	model : 'icc.model.idatabase.Structure.FilterType',
 	proxy : {
 		type : 'ajax',
