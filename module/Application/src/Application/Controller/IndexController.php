@@ -53,8 +53,28 @@ class IndexController extends Action
     }
 
     /**
+     * 手动更新js/css版本
+     *
+     * @author young
+     * @name 手动更新js/css版本
+     * @version 2014.01.26
+     */
+    public function versionAction()
+    {
+        $this->_setting->update(array(
+            'key' => '__VERSION__'
+        ), array(
+            '$set' => array(
+                'value' => date("YmdHis")
+            )
+        ));
+        echo 'ok';
+        return $this->response;
+    }
+
+    /**
      * 从系统集合中获取全局的配置参数
-     * 
+     *
      * @return array
      */
     private function getSetting()

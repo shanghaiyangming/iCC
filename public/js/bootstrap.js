@@ -914,6 +914,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Project": [],
   "icc.store.idatabase.Statistic": [],
   "icc.store.idatabase.Statistic.Axis": [],
+  "icc.store.idatabase.Statistic.Method": [],
   "icc.store.idatabase.Statistic.Series": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
@@ -973,9 +974,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Project.Grid": [],
   "icc.view.idatabase.Project.TabPanel": [],
   "icc.view.idatabase.Statistic.Add": [],
+  "icc.view.idatabase.Statistic.Combobox.Axis": [],
+  "icc.view.idatabase.Statistic.Combobox.Method": [],
+  "icc.view.idatabase.Statistic.Combobox.Series": [],
   "icc.view.idatabase.Statistic.Edit": [],
   "icc.view.idatabase.Statistic.Grid": [],
-  "icc.view.idatabase.Statistic.Series": [],
   "icc.view.idatabase.Statistic.Window": [],
   "icc.view.idatabase.Structure.Add": [],
   "icc.view.idatabase.Structure.Edit": [],
@@ -2080,6 +2083,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Project": [],
   "icc.store.idatabase.Statistic": [],
   "icc.store.idatabase.Statistic.Axis": [],
+  "icc.store.idatabase.Statistic.Method": [],
   "icc.store.idatabase.Statistic.Series": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
@@ -2245,14 +2249,20 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.view.idatabase.Statistic.Add": [
     "widget.idatabaseStatisticAdd"
   ],
+  "icc.view.idatabase.Statistic.Combobox.Axis": [
+    "widget.idatabaseStatisticComboboxAxis"
+  ],
+  "icc.view.idatabase.Statistic.Combobox.Method": [
+    "widget.idatabaseStatisticComboboxMethod"
+  ],
+  "icc.view.idatabase.Statistic.Combobox.Series": [
+    "widget.idatabaseStatisticComboboxSeries"
+  ],
   "icc.view.idatabase.Statistic.Edit": [
     "widget.idatabaseStatisticEdit"
   ],
   "icc.view.idatabase.Statistic.Grid": [
     "widget.idatabaseStatisticGrid"
-  ],
-  "icc.view.idatabase.Statistic.Series": [
-    "widget.idatabaseStatisticSeries"
   ],
   "icc.view.idatabase.Statistic.Window": [
     "widget.idatabaseStatisticWindow"

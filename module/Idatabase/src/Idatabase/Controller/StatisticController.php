@@ -66,13 +66,13 @@ class StatisticController extends Action
         $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
         $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
         $name = trim($this->params()->fromPost('name', ''));
-        $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
         $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisFields', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisField', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisMethod', ''));
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
-        $xAxisFields = trim($this->params()->fromPost('xAxisFields', ''));
+        $xAxisFields = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
         $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
@@ -87,8 +87,21 @@ class StatisticController extends Action
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
-        $yAxisFields = explode(',', $yAxisFields);
-        $xAxisFields = explode(',', $xAxisFields);
+        if (empty($yAxisTitle)) {
+            return $this->msg(false, 'Y轴统计名称');
+        }
+        
+        if (empty($yAxisType)) {
+            return $this->msg(false, 'Y轴统计类型');
+        }
+        
+        if (empty($xAxisTitle)) {
+            return $this->msg(false, 'X轴统计名称');
+        }
+        
+        if (empty($xAxisType)) {
+            return $this->msg(false, 'X轴统计类型');
+        }
         
         $datas = array();
         $datas['project_id'] = $project_id;
@@ -96,10 +109,10 @@ class StatisticController extends Action
         $datas['name'] = $name;
         $datas['yAxis']['title'] = $yAxisTitle; // title string
         $datas['yAxis']['type'] = $yAxisType; // [Numeric]
-        $datas['yAxis']['fields'] = $yAxisFields; // array()
+        $datas['yAxis']['fields'] = $yAxisField; // array()
         $datas['yAxis']['title'] = $xAxisTitle; // title string
         $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
-        $datas['xAxis']['fields'] = $xAxisFields; // array()
+        $datas['xAxis']['fields'] = $xAxisField; // array()
         $datas['series']['type'] = $seriesType; // [line|column]
         $datas['series']['field'] = $seriesField; // pie
         $datas['series']['xField'] = $seriesXField; // 用于x轴显示
@@ -126,13 +139,13 @@ class StatisticController extends Action
         $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
         $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
         $name = trim($this->params()->fromPost('name', ''));
-        $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
         $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisFields', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisField', ''));
+        $yAxisFields = trim($this->params()->fromPost('yAxisMethod', ''));
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
-        $xAxisFields = trim($this->params()->fromPost('xAxisFields', ''));
+        $xAxisFields = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
         $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
@@ -147,8 +160,21 @@ class StatisticController extends Action
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
-        $yAxisFields = explode(',', $yAxisFields);
-        $xAxisFields = explode(',', $xAxisFields);
+        if (empty($yAxisTitle)) {
+            return $this->msg(false, 'Y轴统计名称');
+        }
+        
+        if (empty($yAxisType)) {
+            return $this->msg(false, 'Y轴统计类型');
+        }
+        
+        if (empty($xAxisTitle)) {
+            return $this->msg(false, 'X轴统计名称');
+        }
+        
+        if (empty($xAxisType)) {
+            return $this->msg(false, 'X轴统计类型');
+        }
         
         $datas = array();
         $datas['project_id'] = $project_id;
@@ -156,10 +182,10 @@ class StatisticController extends Action
         $datas['name'] = $name;
         $datas['yAxis']['title'] = $yAxisTitle; // title string
         $datas['yAxis']['type'] = $yAxisType; // [Numeric]
-        $datas['yAxis']['fields'] = $yAxisFields; // array()
+        $datas['yAxis']['fields'] = $yAxisField; // array()
         $datas['yAxis']['title'] = $xAxisTitle; // title string
         $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
-        $datas['xAxis']['fields'] = $xAxisFields; // array()
+        $datas['xAxis']['fields'] = $xAxisField; // array()
         $datas['series']['type'] = $seriesType; // [line|column]
         $datas['series']['field'] = $seriesField; // pie
         $datas['series']['xField'] = $seriesXField; // 用于x轴显示
@@ -177,6 +203,13 @@ class StatisticController extends Action
         return $this->msg(true, '编辑统计成功');
     }
 
+    /**
+     * 批量编辑统计信息
+     *
+     * @author young
+     * @name 批量编辑统计信息
+     * @version 2014.01.26 young
+     */
     public function saveAction()
     {
         return $this->msg(false, '本功能不支持批量编辑');

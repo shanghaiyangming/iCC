@@ -46,6 +46,16 @@ return array(
                     )
                 )
             ),
+            'version' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route' => '/version',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action' => 'version'
+                    )
+                )
+            ),
             'application' => array(
                 'type' => 'Literal',
                 'options' => array(

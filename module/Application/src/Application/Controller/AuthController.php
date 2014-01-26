@@ -2,8 +2,6 @@
 /**
  * 身份认证控制器
  *
- * @link https://github.com/Gregwar/Captcha 生成验证码的出处
- * 
  */
 namespace Application\Controller;
 

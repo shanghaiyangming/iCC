@@ -1,8 +1,8 @@
 Ext.define('icc.controller.idatabase.Statistic', {
     extend: 'Ext.app.Controller',
     models: ['idatabase.Statistic'],
-    stores: ['idatabase.Statistic','idatabase.Statistic.Series','idatabase.Statistic.Axis'],
-    views: ['idatabase.Statistic.Series','idatabase.Statistic.Window','idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit'],
+    stores: ['idatabase.Statistic','idatabase.Statistic.Series','idatabase.Statistic.Axis','idatabase.Statistic.Method'],
+    views: ['idatabase.Statistic.Combobox.Series','idatabase.Statistic.Combobox.Axis','idatabase.Statistic.Combobox.Method','idatabase.Statistic.Combobox.Axis','idatabase.Statistic.Window','idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit'],
     controllerName: 'idatabaseStatistic',
     actions: {
         add: '/idatabase/statistic/add',
@@ -92,7 +92,8 @@ Ext.define('icc.controller.idatabase.Statistic', {
             click: function(button) {
                 var grid = button.up('gridpanel');
                 var win = Ext.widget(controllerName + 'Add', {
-                    isSystem: grid.isSystem
+                	__PROJECT_ID__:grid.__PROJECT_ID__,
+                    __COLLECTION_ID__:grid.__COLLECTION_ID__
                 });
                 win.show();
             }
@@ -103,7 +104,10 @@ Ext.define('icc.controller.idatabase.Statistic', {
                 var grid = button.up('gridpanel');
                 var selections = grid.getSelectionModel().getSelection();
                 if (selections.length > 0) {
-                    var win = Ext.widget(controllerName + 'Edit');
+                    var win = Ext.widget(controllerName + 'Edit',{
+                    	__PROJECT_ID__:grid.__PROJECT_ID__,
+                        __COLLECTION_ID__:grid.__COLLECTION_ID__
+                    });
                     var form = win.down('form').getForm();
                     form.loadRecord(selections[0]);
                     win.show();
@@ -129,7 +133,9 @@ Ext.define('icc.controller.idatabase.Statistic', {
                 Ext.Ajax.request({
                     url: me.actions.save,
                     params: {
-                        updateInfos: Ext.encode(updateList)
+                        updateInfos: Ext.encode(updateList),
+                        __PROJECT_ID__:grid.__PROJECT_ID__,
+                        __COLLECTION_ID__:grid.__COLLECTION_ID__
                     },
                     scope: me,
                     success: function(response) {
@@ -162,7 +168,9 @@ Ext.define('icc.controller.idatabase.Statistic', {
                             Ext.Ajax.request({
                                 url: me.actions.remove,
                                 params: {
-                                    _id: Ext.encode(_id)
+                                    _id: Ext.encode(_id),
+                                    __PROJECT_ID__:grid.__PROJECT_ID__,
+                                    __COLLECTION_ID__:grid.__COLLECTION_ID__
                                 },
                                 scope: me,
                                 success: function(response) {
@@ -182,129 +190,6 @@ Ext.define('icc.controller.idatabase.Statistic', {
             }
         };
 
-        listeners[controllerName + 'Grid'] = {
-            selectionchange: function(selectionModel, selected, eOpts) {
-
-                if (selected.length > 1) {
-                    Ext.Msg.alert('提示信息', '请勿选择多项');
-                    return false;
-                }
-
-                var record = selected[0];
-                if (record) {
-                    var id = record.get('_id');
-                    var name = record.get('name');
-                    var panel = this.getTabPanel().getComponent(id);
-                    if (panel == null) {
-                        //读取插件列表，构建插件体系
-                        var pluginStore = Ext.create('icc.store.idatabase.Plugin');
-                        pluginStore.proxy.extraParams = {
-                            __PROJECT_ID__: id
-                        };
-
-                        pluginStore.load(function(records, operation, success) {
-                            if (success) {
-                                var pluginItems = [];
-                                Ext.Array.forEach(records, function(item, index) {
-                                    pluginItems.push({
-                                        xtype: 'idatabaseCollectionGrid',
-                                        title: item.get('name'),
-                                        __PROJECT_ID__: id,
-                                        plugin: true,
-                                        __PLUGIN_ID__: item.get('plugin_id')
-                                    });
-                                });
-
-                                panel = Ext.widget('idatabaseCollectionMain', {
-                                    id: id,
-                                    title: name,
-                                    __PROJECT_ID__: id,
-                                    pluginItems: pluginItems
-                                });
-                                me.getTabPanel().add(panel);
-                                me.getTabPanel().setActiveTab(id);
-                            } else {
-                                selectionModel.deselectAll();
-                                Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');
-                            }
-                        });
-
-                    }
-                    this.getProjectAccordion().toggleCollapse();
-                    this.getTabPanel().setActiveTab(id);
-                }
-                return true;
-            }
-        };
-
-        listeners[controllerName + 'Grid button[action=plugin]'] = {
-            click: function(button) {
-                var grid = button.up('gridpanel');
-                var selections = grid.getSelectionModel().getSelection();
-
-                if (selections.length != 1) {
-                    Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-                    return false;
-                }
-
-                var record = selections[0];
-                if (record) {
-                    var id = record.get('_id');
-                    var name = record.get('name');
-                    var win = Ext.widget('idatabasePluginWindow', {
-                        __PROJECT_ID__: id
-                    });
-                    win.show();
-                }
-                return true;
-            }
-        };
-
-        listeners[controllerName + 'Grid button[action=user]'] = {
-            click: function(button) {
-                var grid = button.up('gridpanel');
-                var selections = grid.getSelectionModel().getSelection();
-
-                if (selections.length != 1) {
-                    Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-                    return false;
-                }
-
-                var record = selections[0];
-                if (record) {
-                    var id = record.get('_id');
-                    var name = record.get('name');
-                    var win = Ext.widget('idatabaseUserWindow', {
-                        __PROJECT_ID__: id
-                    });
-                    win.show();
-                }
-                return true;
-            }
-        };
-
-        listeners[controllerName + 'Grid button[action=key]'] = {
-            click: function(button) {
-                var grid = button.up('gridpanel');
-                var selections = grid.getSelectionModel().getSelection();
-
-                if (selections.length != 1) {
-                    Ext.Msg.alert('提示信息', '请选择一项你要编辑的项目');
-                    return false;
-                }
-
-                var record = selections[0];
-                if (record) {
-                    var id = record.get('_id');
-                    var name = record.get('name');
-                    var win = Ext.widget('idatabaseKeyWindow', {
-                        __PROJECT_ID__: id
-                    });
-                    win.show();
-                }
-                return true;
-            }
-        };
 
         me.control(listeners);
         return true;

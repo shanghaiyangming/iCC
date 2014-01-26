@@ -36,9 +36,31 @@ Ext.define('icc.view.idatabase.Statistic.Add', {
 					maxValue : 86400,
 					value : 300
 				}, {
-					name: 'type',
-					fieldLabel: '统计类型',
-					allowBlank: false
+					xtype : 'idatabaseStatisticComboboxSeries'
+				}, {
+					name : 'yAxisTitle',
+					fieldLabel : 'Y轴名称',
+					allowBlank : false
+				}, {
+					name : 'yAxisType',
+					fieldLabel : 'Y轴类型',
+					allowBlank : false
+				}, {
+					name : 'yAxisFields',
+					fieldLabel : 'Y轴字段名',
+					allowBlank : false
+				}, {
+					name : 'xAxisTitle',
+					fieldLabel : '',
+					allowBlank : false
+				}, {
+					name : 'xAxisType',
+					fieldLabel : '',
+					allowBlank : false
+				}, {
+					name : 'xAxisFields',
+					fieldLabel : '',
+					allowBlank : false
 				}]
 			}]
 		});
