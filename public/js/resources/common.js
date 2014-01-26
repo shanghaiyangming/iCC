@@ -123,5 +123,18 @@ Ext.onReady(function() {
 		};
 		Ext.EventManager.onWindowResize(constrainer);
 	}, 100);
+	
+	var keepMeSignedIn = {
+	    run: function(){
+	    	Ext.Ajax.request({
+				url : '/application/auth/keep',
+				success : function(response) {}
+			});
+	    },
+	    interval: 1000*60 //1分钟
+	};
 
+	var task = new Ext.util.DelayedTask(function(){
+		Ext.TaskManager.start(keepMeSignedIn);
+	});
 });
