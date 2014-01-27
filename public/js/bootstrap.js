@@ -916,6 +916,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.store.idatabase.Statistic.Axis": [],
   "icc.store.idatabase.Statistic.Method": [],
   "icc.store.idatabase.Statistic.Series": [],
+  "icc.store.idatabase.Statistic.Type": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -977,6 +978,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Statistic.Combobox.Axis": [],
   "icc.view.idatabase.Statistic.Combobox.Method": [],
   "icc.view.idatabase.Statistic.Combobox.Series": [],
+  "icc.view.idatabase.Statistic.Combobox.Type": [],
   "icc.view.idatabase.Statistic.Edit": [],
   "icc.view.idatabase.Statistic.Grid": [],
   "icc.view.idatabase.Statistic.Window": [],
@@ -2085,6 +2087,7 @@ Ext.ClassManager.addNameAliasMappings({
   "icc.store.idatabase.Statistic.Axis": [],
   "icc.store.idatabase.Statistic.Method": [],
   "icc.store.idatabase.Statistic.Series": [],
+  "icc.store.idatabase.Statistic.Type": [],
   "icc.store.idatabase.Structure": [],
   "icc.store.idatabase.Structure.FilterType": [],
   "icc.store.idatabase.Structure.RshType": [],
@@ -2257,6 +2260,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Statistic.Combobox.Series": [
     "widget.idatabaseStatisticComboboxSeries"
+  ],
+  "icc.view.idatabase.Statistic.Combobox.Type": [
+    "widget.idatabaseStatisticComboboxType"
   ],
   "icc.view.idatabase.Statistic.Edit": [
     "widget.idatabaseStatisticEdit"

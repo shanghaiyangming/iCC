@@ -68,11 +68,11 @@ class StatisticController extends Action
         $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
         $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisField', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisMethod', ''));
+        $yAxisField = trim($this->params()->fromPost('yAxisField', ''));
+        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', ''));
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
-        $xAxisFields = trim($this->params()->fromPost('xAxisField', ''));
+        $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
         $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
@@ -83,7 +83,7 @@ class StatisticController extends Action
             return $this->msg(false, '请填写统计名称');
         }
         
-        if ($interval <= 300) {
+        if ($interval < 300) {
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
@@ -136,64 +136,7 @@ class StatisticController extends Action
     public function editAction()
     {
         $_id = trim($this->params()->fromPost('_id', ''));
-        $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
-        $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
-        $name = trim($this->params()->fromPost('name', ''));
-        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
-        $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisField', ''));
-        $yAxisFields = trim($this->params()->fromPost('yAxisMethod', ''));
-        $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
-        $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
-        $xAxisFields = trim($this->params()->fromPost('xAxisField', ''));
-        $seriesType = trim($this->params()->fromPost('seriesType', ''));
-        $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
-        $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
-        $seriesYField = trim($this->params()->fromPost('seriesYField', '')); // 用于y轴显示
-        $interval = intval($this->params()->fromPost('interval', 300));
-        
-        if ($name == null) {
-            return $this->msg(false, '请填写统计名称');
-        }
-        
-        if ($interval <= 300) {
-            return $this->msg(false, '统计时间的间隔不得少于300秒');
-        }
-        
-        if (empty($yAxisTitle)) {
-            return $this->msg(false, 'Y轴统计名称');
-        }
-        
-        if (empty($yAxisType)) {
-            return $this->msg(false, 'Y轴统计类型');
-        }
-        
-        if (empty($xAxisTitle)) {
-            return $this->msg(false, 'X轴统计名称');
-        }
-        
-        if (empty($xAxisType)) {
-            return $this->msg(false, 'X轴统计类型');
-        }
-        
-        $datas = array();
-        $datas['project_id'] = $project_id;
-        $datas['collection_id'] = $collection_id;
-        $datas['name'] = $name;
-        $datas['yAxis']['title'] = $yAxisTitle; // title string
-        $datas['yAxis']['type'] = $yAxisType; // [Numeric]
-        $datas['yAxis']['fields'] = $yAxisField; // array()
-        $datas['yAxis']['title'] = $xAxisTitle; // title string
-        $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
-        $datas['xAxis']['fields'] = $xAxisField; // array()
-        $datas['series']['type'] = $seriesType; // [line|column]
-        $datas['series']['field'] = $seriesField; // pie
-        $datas['series']['xField'] = $seriesXField; // 用于x轴显示
-        $datas['series']['yField'] = $seriesYField; // 用于y轴显示
-        $datas['interval'] = $interval;
-        $datas['lastExecuteTime'] = new \MongoDate(0);
-        $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
-        $datas['isRunning'] = false;
+
         
         $this->_statistic->update(array(
             '_id' => myMongoId($_id)
