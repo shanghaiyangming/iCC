@@ -141,13 +141,13 @@ function arrayToExcel($datas, $name = '')
         $j = 0;
         foreach ($data as $cell) {
             // 判断是否为图片，如果是图片，那么绘制图片
-            if (is_array($cell) && $cell['type'] == 'image') {
+            if (is_array($cell) && isset($cell['type']) && $cell['type'] == 'image') {
                 $coordinate = excelTitle($j) . $i;
-                $cellName = $cell['name'];
-                $cellDesc = $cell['desc'];
-                $cellType = $cell['type'];
-                $cellUrl = $cell['url'];
-                $cellHeight = (int) $cell['height'];
+                $cellName = isset($cell['name']) ? $cell['name'] : '';
+                $cellDesc = isset($cell['desc']) ? $cell['desc'] : '';
+                $cellType = isset($cell['type']) ? $cell['type'] : '';
+                $cellUrl = isset($cell['url']) ? $cell['url'] : '';
+                $cellHeight = isset($cell['height']) ? intval($cell['height']) : 0;
                 if ($cellType == 'image') {
                     if ($cellHeight == 0)
                         $cellHeight = 20;

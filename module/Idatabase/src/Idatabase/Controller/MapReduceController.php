@@ -25,7 +25,7 @@ class MapReduceController extends Action
 
     public function init()
     {
-
+        //return $this->
     }
 
 }

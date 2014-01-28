@@ -975,6 +975,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "icc.view.idatabase.Project.Grid": [],
   "icc.view.idatabase.Project.TabPanel": [],
   "icc.view.idatabase.Statistic.Add": [],
+  "icc.view.idatabase.Statistic.Combobox": [],
   "icc.view.idatabase.Statistic.Combobox.Axis": [],
   "icc.view.idatabase.Statistic.Combobox.Method": [],
   "icc.view.idatabase.Statistic.Combobox.Series": [],
@@ -2251,6 +2252,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "icc.view.idatabase.Statistic.Add": [
     "widget.idatabaseStatisticAdd"
+  ],
+  "icc.view.idatabase.Statistic.Combobox": [
+    "widget.idatabaseStatisticCombobox"
   ],
   "icc.view.idatabase.Statistic.Combobox.Axis": [
     "widget.idatabaseStatisticComboboxAxis"
