@@ -15,6 +15,7 @@ defined('DB_ADMIN') || define('DB_ADMIN', 'admin');
 defined('DB_BACKUP') || define('DB_BACKUP', 'backup');
 defined('DB_MAPREDUCE') || define('DB_MAPREDUCE', 'mapreduce');
 defined('DB_LOGS') || define('DB_LOGS', 'logs');
+defined('GRIDFS_PREFIX') || define('GRIDFS_PREFIX', 'icc');
 
 /**
  * 系统全局设定数据库

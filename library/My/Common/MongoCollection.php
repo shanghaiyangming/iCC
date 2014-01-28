@@ -143,7 +143,7 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$this->_mapreduce is not instanceof \MongoDB');
         }
         
-        $this->_fs = new \MongoGridFS($this->_db, "icc");
+        $this->_fs = new \MongoGridFS($this->_db, GRIDFS_PREFIX);
         
         // 默认执行几个操作
         // 第一个操作，判断集合是否创建，如果没有创建，则进行分片处理（目前采用_ID作为片键）
