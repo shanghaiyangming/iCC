@@ -664,43 +664,80 @@ class MongoCollection extends \MongoCollection
     public function mapReduce($map, $reduce, $method = 'replace', $query = array(), $sort = array('$natural'=>1), $limit = null, $finalize = null, $scope = null)
     {
         try {
-            $command = array();
-            $command['mapReduce'] = $this->_collection;
-            $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
-            $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
-            if (! empty($finalize))
-                $command['finalize'] = ($finalize instanceof \MongoCode) ? $finalize : new \MongoCode($finalize);
-            $command['query'] = $query;
-            if (! empty($sort))
-                $command['sort'] = $sort;
-            if (! empty($limit))
-                $command['limit'] = $limit;
-            $command['scope'] = $scope;
-            $command['jsMode'] = false;
-            $command['verbose'] = true;
-            $out = md5(serialize($command));
+            // 加入统计锁
+            $out = md5(serialize(func_num_args()));
+            $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
+            $locks->setReadPreference(MongoClient::RP_PRIMARY_PREFERRED);
+            $checkLocks = $locks->findOne(array(
+                'out' => $out,
+                'isRunning' => true,
+                'expire' => array(
+                    '$gt' => new \MongoDate()
+                )
+            ));
             
-            if (! in_array($method, array(
-                'replace',
-                'merge',
-                'reduce'
-            ), true)) {
-                $method = 'replace';
+            if ($checkLocks == null) {
+                $locks->remove(array(
+                    'out' => $out
+                ));
+                
+                $locks->insert(array(
+                    'out' => $out,
+                    'isRunning' => true,
+                    'expire' => new \MongoDate(time() + 60)
+                ));
+                
+                $command = array();
+                $command['mapReduce'] = $this->_collection;
+                $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
+                $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
+                if (! empty($finalize))
+                    $command['finalize'] = ($finalize instanceof \MongoCode) ? $finalize : new \MongoCode($finalize);
+                $command['query'] = $query;
+                if (! empty($sort))
+                    $command['sort'] = $sort;
+                if (! empty($limit))
+                    $command['limit'] = $limit;
+                $command['scope'] = $scope;
+                $command['jsMode'] = false;
+                $command['verbose'] = true;
+                
+                if (! in_array($method, array(
+                    'replace',
+                    'merge',
+                    'reduce'
+                ), true)) {
+                    $method = 'replace';
+                }
+                
+                $command['out'] = array(
+                    $method => $out,
+                    'db' => DB_MAPREDUCE,
+                    'sharded' => false,
+                    'nonAtomic' => true
+                );
+                $rst = $this->command($command);
+                
+                $locks->update(array(
+                    'out' => $out
+                ), array(
+                    '$set' => array(
+                        'isRunning' => false,
+                        'rst'=>$rst
+                    )
+                ));
+                
+                if ($rst['ok'] == 1) {
+                    return new self($this->_configInstance, $out, DB_MAPREDUCE, $this->_cluster);
+                } else {
+                    fb($command, 'LOG');
+                    fb($rst, 'LOG');
+                    throw new \Exception(Json::encode($rst));
+                }
             }
-            
-            $command['out'] = array(
-                $method => $out,
-                'db' => DB_MAPREDUCE,
-                'sharded' => false,
-                'nonAtomic' => true
-            );
-            $rst = $this->command($command);
-            if ($rst['ok'] == 1) {
-                return new self($this->_configInstance, $out, $this->_database, $this->_cluster);
-            } else {
-                fb($command, 'LOG');
-                fb($rst, 'LOG');
-                throw new \Exception(Json::encode($rst));
+            else {
+                fb('程序正在执行中，请勿频繁尝试','LOG');
+                return false;
             }
         } catch (\Exception $e) {
             fb($command, 'LOG');
