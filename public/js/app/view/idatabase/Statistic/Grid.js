@@ -76,10 +76,25 @@ Ext.define('icc.view.idatabase.Statistic.Grid', {
 				}
 			}, {
 				text: '类型',
-				dataIndex: 'type',
+				dataIndex: 'seriesType',
 				flex: 1,
 				field: {
-					xtype: 'textfield'
+					xtype: 'combobox',
+					store: 'idatabase.Statistic.Series',
+					displayField: 'name',
+					valueField: 'value',
+					queryMode: 'local',
+					pageSize: 0,
+					editable: false,
+					typeAhead: false
+				},
+				renderer: function(value) {
+					var store = Ext.data.StoreManager.lookup('idatabase.Statistic.Series');
+					var record = store.findRecord('value', value, 0, false, true, true);
+					if (record != null) {
+						return record.get('name');
+					}
+					return value;
 				}
 			}, {
 				text: '执行间隔',
@@ -89,15 +104,17 @@ Ext.define('icc.view.idatabase.Statistic.Grid', {
 					xtype: 'numberfield'
 				}
 			}, {
+				xtype: 'datecolumn',
 				text: '更新时间',
 				dataIndex: 'lastExecuteTime',
-				flex: 1
+				flex: 1,
+				format : 'Y-m-d H:i:s'
 			}, {
 				xtype: 'booleancolumn',
 				trueText: '√',
 				falseText: '×',
 				text: '统计中……',
-				dataIndex: 'main',
+				dataIndex: 'isRunning',
 				flex: 1,
 				field: {
 					xtype: 'commonComboboxBoolean'

@@ -55,7 +55,7 @@ Ext.define('icc.controller.idatabase.Statistic', {
 
 		listeners[controllerName + 'Add button[action=submit]'] = {
 			click : function(button) {
-				var store = me.getExpandedAccordion().store;
+				var store = me.getList().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
@@ -78,7 +78,7 @@ Ext.define('icc.controller.idatabase.Statistic', {
 
 		listeners[controllerName + 'Edit button[action=submit]'] = {
 			click : function(button) {
-				var store = me.getExpandedAccordion().store;
+				var store = me.getList().store;
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({

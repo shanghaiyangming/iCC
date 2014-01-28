@@ -9,6 +9,7 @@
 namespace Idatabase\Controller;
 
 use My\Common\Controller\Action;
+use Zend\Json\Json;
 
 class StatisticController extends Action
 {
@@ -45,12 +46,11 @@ class StatisticController extends Action
     public function indexAction()
     {
         $query = array(
-            array(
-                'project_id' => $this->_project_id,
-                'collection_id' => $this->_collection_id
-            )
+            'project_id' => $this->_project_id,
+            'collection_id' => $this->_collection_id
         );
         $datas = $this->_statistic->findAll($query);
+        fb($datas, 'LOG');
         return $this->rst($datas, 0, true);
     }
 
@@ -66,17 +66,15 @@ class StatisticController extends Action
         $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
         $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
         $name = trim($this->params()->fromPost('name', ''));
-        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', ''));
-        $yAxisType = trim($this->params()->fromPost('yAxisType', ''));
-        $yAxisField = trim($this->params()->fromPost('yAxisField', ''));
-        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', ''));
+        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', '')); // Y轴名称
+        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴类型
+        $yAxisField = trim($this->params()->fromPost('yAxisField', '')); // Y轴统计字段
+        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', '')); // Y轴统计方法
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
         $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
-        $seriesXField = trim($this->params()->fromPost('seriesXField', '')); // 用于x轴显示
-        $seriesYField = trim($this->params()->fromPost('seriesYField', '')); // 用于y轴显示
         $interval = intval($this->params()->fromPost('interval', 300));
         
         if ($name == null) {
@@ -107,16 +105,18 @@ class StatisticController extends Action
         $datas['project_id'] = $project_id;
         $datas['collection_id'] = $collection_id;
         $datas['name'] = $name;
-        $datas['yAxis']['title'] = $yAxisTitle; // title string
-        $datas['yAxis']['type'] = $yAxisType; // [Numeric]
-        $datas['yAxis']['fields'] = $yAxisField; // array()
-        $datas['yAxis']['title'] = $xAxisTitle; // title string
-        $datas['xAxis']['type'] = $xAxisType; // [Category|Time]
-        $datas['xAxis']['fields'] = $xAxisField; // array()
-        $datas['series']['type'] = $seriesType; // [line|column]
-        $datas['series']['field'] = $seriesField; // pie
-        $datas['series']['xField'] = $seriesXField; // 用于x轴显示
-        $datas['series']['yField'] = $seriesYField; // 用于y轴显示
+        $datas['yAxisTitle'] = $yAxisTitle; // title string
+        $datas['yAxisType'] = $yAxisType; // [Numeric]
+        $datas['yAxisField'] = $yAxisField; // array()
+        $datas['xAxisTitle'] = $xAxisTitle; // title string
+        $datas['xAxisType'] = $xAxisType; // [Category|Time]
+        $datas['xAxisField'] = $xAxisField; // array()
+        $datas['seriesType'] = $seriesType; // [line|column|pie]
+        $datas['seriesField'] = $seriesField; // pie
+        
+        $datas['seriesXField'] = $xAxisField; // 用于x轴显示
+        $datas['seriesYField'] = $yAxisField; // 用于y轴显示
+        
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
@@ -136,7 +136,64 @@ class StatisticController extends Action
     public function editAction()
     {
         $_id = trim($this->params()->fromPost('_id', ''));
-
+        $project_id = trim($this->params()->fromPost('__PROJECT_ID__', ''));
+        $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
+        $name = trim($this->params()->fromPost('name', ''));
+        $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', '')); // Y轴名称
+        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴类型
+        $yAxisField = trim($this->params()->fromPost('yAxisField', '')); // Y轴统计字段
+        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', '')); // Y轴统计方法
+        $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
+        $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
+        $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
+        $seriesType = trim($this->params()->fromPost('seriesType', ''));
+        $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
+        $interval = intval($this->params()->fromPost('interval', 300));
+        
+        if ($name == null) {
+            return $this->msg(false, '请填写统计名称');
+        }
+        
+        if ($interval < 300) {
+            return $this->msg(false, '统计时间的间隔不得少于300秒');
+        }
+        
+        if (empty($yAxisTitle)) {
+            return $this->msg(false, 'Y轴统计名称');
+        }
+        
+        if (empty($yAxisType)) {
+            return $this->msg(false, 'Y轴统计类型');
+        }
+        
+        if (empty($xAxisTitle)) {
+            return $this->msg(false, 'X轴统计名称');
+        }
+        
+        if (empty($xAxisType)) {
+            return $this->msg(false, 'X轴统计类型');
+        }
+        
+        $datas = array();
+        $datas['project_id'] = $project_id;
+        $datas['collection_id'] = $collection_id;
+        $datas['name'] = $name;
+        $datas['yAxisTitle'] = $yAxisTitle; // title string
+        $datas['yAxisType'] = $yAxisType; // [Numeric]
+        $datas['yAxisField'] = $yAxisField; // array()
+        $datas['xAxisTitle'] = $xAxisTitle; // title string
+        $datas['xAxisType'] = $xAxisType; // [Category|Time]
+        $datas['xAxisField'] = $xAxisField; // array()
+        $datas['seriesType'] = $seriesType; // [line|column|pie]
+        $datas['seriesField'] = $seriesField; // pie
+        
+        $datas['seriesXField'] = $xAxisField; // 用于x轴显示
+        $datas['seriesYField'] = $yAxisField; // 用于y轴显示
+        
+        $datas['interval'] = $interval;
+        $datas['lastExecuteTime'] = new \MongoDate(0);
+        $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
+        $datas['isRunning'] = false;
         
         $this->_statistic->update(array(
             '_id' => myMongoId($_id)

@@ -1,24 +1,45 @@
 Ext.define('icc.model.idatabase.Statistic', {
-	extend: 'icc.model.common.Model',
-	fields: [{
-		name: 'name',
-		type: 'string'
+	extend : 'icc.model.common.Model',
+	fields : [ {
+		name : 'name',
+		type : 'string'
 	}, {
-		name: 'type',
-		type: 'string'
+		name : 'yAxisTitle',
+		type : 'string'
 	}, {
-		name: 'axes',
-		type: 'object'
+		name : 'yAxisType',
+		type : 'string'
 	}, {
-		name: 'series',
-		type: 'object'
+		name : 'yAxisField',
+		type : 'string'
 	}, {
-		name: 'interval',
-		type: 'int'
+		name : 'xAxisTitle',
+		type : 'string'
 	}, {
-		name: 'lastExecuteTime',
-		type: 'string',
-		convert: function(value, record) {
+		name : 'xAxisType',
+		type : 'string'
+	}, {
+		name : 'xAxisField',
+		type : 'string'
+	}, {
+		name : 'seriesType',
+		type : 'string'
+	}, {
+		name : 'seriesField',
+		type : 'string'
+	}, {
+		name : 'seriesXField',
+		type : 'string'
+	}, {
+		name : 'seriesYField',
+		type : 'string'
+	}, {
+		name : 'interval',
+		type : 'int'
+	}, {
+		name : 'lastExecuteTime',
+		type : 'string',
+		convert : function(value, record) {
 			if (Ext.isObject(value) && value['sec'] != undefined) {
 				var date = new Date();
 				date.setTime(value.sec * 1000);
@@ -28,9 +49,9 @@ Ext.define('icc.model.idatabase.Statistic', {
 			}
 		}
 	}, {
-		name: 'resultExpireTime',
-		type: 'object',
-		convert: function(value, record) {
+		name : 'resultExpireTime',
+		type : 'object',
+		convert : function(value, record) {
 			if (Ext.isObject(value) && value['sec'] != undefined) {
 				var date = new Date();
 				date.setTime(value.sec * 1000);
@@ -40,7 +61,7 @@ Ext.define('icc.model.idatabase.Statistic', {
 			}
 		}
 	}, {
-		name: 'isRunning',
-		type: 'boolean'
-	}]
+		name : 'isRunning',
+		type : 'boolean'
+	} ]
 });

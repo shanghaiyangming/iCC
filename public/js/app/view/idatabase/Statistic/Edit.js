@@ -1,13 +1,12 @@
 Ext.define('icc.view.idatabase.Statistic.Edit', {
 	extend : 'icc.common.Window',
 	alias : 'widget.idatabaseStatisticEdit',
-	title : '编辑属性',
+	title : '编辑统计信息',
 	initComponent : function() {
-
 		Ext.apply(this, {
 			items : [ {
 				xtype : 'iform',
-				url : '/idatabase/structure/edit',
+				url : '/idatabase/statistic/edit',
 				fieldDefaults : {
 					labelAlign : 'left',
 					labelWidth : 150,
@@ -16,9 +15,9 @@ Ext.define('icc.view.idatabase.Statistic.Edit', {
 				items : [ {
 					xtype : 'hiddenfield',
 					name : '_id',
-					fieldLabel : '属性_id',
+					fieldLabel : '_id',
 					allowBlank : false
-				}, {
+				},{
 					xtype : 'hiddenfield',
 					name : '__PROJECT_ID__',
 					fieldLabel : '项目编号',
@@ -31,145 +30,85 @@ Ext.define('icc.view.idatabase.Statistic.Edit', {
 					allowBlank : false,
 					value : this.__COLLECTION_ID__
 				}, {
-					name : 'field',
-					fieldLabel : '属性名(英文数字)',
+					name : 'name',
+					fieldLabel : '统计名称',
 					allowBlank : false
-				}, {
-					name : 'label',
-					fieldLabel : '属性描述',
-					allowBlank : false
-				}, {
-					xtype : 'combobox',
-					name : 'type',
-					fieldLabel : '输入类型',
-					allowBlank : false,
-					store : 'idatabase.Structure.Type',
-					valueField : 'val',
-					displayField : 'name',
-					editable : false
-				}, {
-					xtype : 'idatabaseStructureFilterCombobox'
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否为检索条件',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'searchable',
-						inputValue : true,
-						checked : true
-					}, {
-						boxLabel : '否',
-						name : 'searchable',
-						inputValue : false
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否在列表页显示',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'main',
-						inputValue : true,
-						checked : true
-					}, {
-						boxLabel : '否',
-						name : 'main',
-						inputValue : false
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否必填',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'required',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'required',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '是否在表格中显示图片',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'showImage',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'showImage',
-						inputValue : false,
-						checked : true
-					} ]
-				}, {
-					xtype : 'radiogroup',
-					fieldLabel : '记录Tree的父节点',
-					defaultType : 'radiofield',
-					layout : 'hbox',
-					items : [ {
-						boxLabel : '是',
-						name : 'isFatherField',
-						inputValue : true
-					}, {
-						boxLabel : '否',
-						name : 'isFatherField',
-						inputValue : false,
-						checked : true
-					} ]
 				}, {
 					xtype : 'numberfield',
-					name : 'orderBy',
-					fieldLabel : '排序',
-					allowBlank : false,
-					value : 0
+					name : 'interval',
+					fieldLabel : '执行间隔',
+					minValue : 300,
+					maxValue : 86400,
+					value : 300
+				}, {
+					xtype : 'idatabaseStatisticComboboxSeries',
+					name : 'seriesType'
 				}, {
 					xtype : 'fieldset',
-					title : '关联设定（选填）',
+					title : '柱状图/线形图',
+					collapsed : false,
+					collapsible : true,
 					items : [ {
-						xtype : 'idatabaseCollectionCombobox',
-						__PROJECT_ID__ : this.__PROJECT_ID__,
-						fieldLabel : '关联集合列表',
-						name : 'rshCollection'
-					}, {
-						xtype : 'radiogroup',
-						fieldLabel : '关联表显示字段',
-						defaultType : 'radiofield',
-						layout : 'hbox',
+						xtype : 'fieldset',
+						title : 'Y轴设定(纵向)',
+						collapsed : false,
+						collapsible : true,
 						items : [ {
-							boxLabel : '是',
-							name : 'rshKey',
-							inputValue : true
+							xtype : 'textfield',
+							name : 'yAxisTitle',
+							fieldLabel : 'Y轴名称',
+							allowBlank : true
 						}, {
-							boxLabel : '否',
-							name : 'rshKey',
-							inputValue : false,
-							checked : true
+							xtype : 'idatabaseStatisticComboboxMethod',
+							name : 'yAxisType',
+							fieldLabel : 'Y轴统计方法',
+							allowBlank : true
+						}, {
+							xtype : 'idatabaseStructureFieldCombobox',
+							name : 'yAxisField',
+							fieldLabel : 'Y轴统计属性',
+							allowBlank : true,
+							__PROJECT_ID__ : this.__PROJECT_ID__,
+							__COLLECTION_ID__ : this.__COLLECTION_ID__
 						} ]
 					}, {
-						xtype : 'radiogroup',
-						fieldLabel : '关联表提交字段',
-						defaultType : 'radiofield',
-						layout : 'hbox',
+						xtype : 'fieldset',
+						title : 'X轴设定(横向)',
+						collapsed : false,
+						collapsible : true,
 						items : [ {
-							boxLabel : '是',
-							name : 'rshValue',
-							inputValue : true
+							xtype : 'textfield',
+							name : 'xAxisTitle',
+							fieldLabel : 'X轴名称',
+							allowBlank : true
 						}, {
-							boxLabel : '否',
-							name : 'rshValue',
-							inputValue : false,
-							checked : true
+							xtype : 'idatabaseStatisticComboboxType',
+							name : 'xAxisType',
+							fieldLabel : 'X轴统计类型',
+							allowBlank : true
+						}, {
+							xtype : 'idatabaseStructureFieldCombobox',
+							name : 'xAxisField',
+							fieldLabel : 'X轴统计属性',
+							allowBlank : true,
+							__PROJECT_ID__ : this.__PROJECT_ID__,
+							__COLLECTION_ID__ : this.__COLLECTION_ID__
 						} ]
 					} ]
-				}]
+				}, {
+					xtype : 'fieldset',
+					title : '饼状图',
+					collapsed : false,
+					collapsible : true,
+					items : [ {
+						xtype : 'idatabaseStructureFieldCombobox',
+						name : 'seriesField',
+						fieldLabel : '统计属性',
+						allowBlank : true,
+						__PROJECT_ID__ : this.__PROJECT_ID__,
+						__COLLECTION_ID__ : this.__COLLECTION_ID__
+					} ]
+				} ]
 			} ]
 		});
 

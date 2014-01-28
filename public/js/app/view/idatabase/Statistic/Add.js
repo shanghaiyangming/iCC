@@ -36,7 +36,8 @@ Ext.define('icc.view.idatabase.Statistic.Add', {
 					maxValue : 86400,
 					value : 300
 				}, {
-					xtype : 'idatabaseStatisticComboboxSeries'
+					xtype : 'idatabaseStatisticComboboxSeries',
+					name : 'seriesType'
 				}, {
 					xtype : 'fieldset',
 					title : '柱状图/线形图',

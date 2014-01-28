@@ -1235,22 +1235,27 @@ class DataController extends Action
     public function __destruct()
     {
         fastcgi_finish_request();
-        $controller = $this->params('controller');
-        $action = $this->params('action');
-        $_POST['__TRIGER__'] = array(
-            'collection' => $this->getCollectionAliasById($this->_collection_id),
-            'controller' => $controller,
-            'action' => $action
-        );
-        $collectionInfo = $this->_collection->findOne(array(
-            '_id' => myMongoId($this->_collection_id),
-            'isAutoHook' => true
-        ));
-        
-        if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
-            $sign = dataSignAlgorithm($_POST, $collectionInfo['hookKey']);
-            $_POST['__SIGN__'] = $sign;
-            doPost($collectionInfo['hook'], $_POST);
+        try {
+            $controller = $this->params('controller');
+            $action = $this->params('action');
+            $_POST['__TRIGER__'] = array(
+                'collection' => $this->getCollectionAliasById($this->_collection_id),
+                'controller' => $controller,
+                'action' => $action
+            );
+            $collectionInfo = $this->_collection->findOne(array(
+                '_id' => myMongoId($this->_collection_id),
+                'isAutoHook' => true
+            ));
+            
+            if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
+                $sign = dataSignAlgorithm($_POST, $collectionInfo['hookKey']);
+                $_POST['__SIGN__'] = $sign;
+                doPost($collectionInfo['hook'], $_POST);
+            }
+        }
+        catch(\Exception $e) {
+            $this->log(exceptionMsg($e));
         }
         return false;
     }

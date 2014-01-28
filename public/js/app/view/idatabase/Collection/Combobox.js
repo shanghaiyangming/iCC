@@ -11,13 +11,15 @@ Ext.define('icc.view.idatabase.Collection.Combobox', {
 	typeAhead : false,
 	initComponent : function() {
 		var store = Ext.create('icc.store.idatabase.Collection');
-		store.proxy.extraParams['__PROJECT_ID__'] = this.__PROJECT_ID__;
+		store.proxy.extraParams = {
+			'__PROJECT_ID__' : this.__PROJECT_ID__
+		};
 		store.load();
-		
-		Ext.apply(this,{
+
+		Ext.apply(this, {
 			store : store
 		});
-		
+
 		this.callParent();
 	}
 });
