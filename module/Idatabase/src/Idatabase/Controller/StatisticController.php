@@ -22,6 +22,12 @@ class StatisticController extends Action
 
     private $_statistic;
 
+    private $_seriesType = array(
+        'column',
+        'line',
+        'pie'
+    );
+
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
@@ -50,7 +56,6 @@ class StatisticController extends Action
             'collection_id' => $this->_collection_id
         );
         $datas = $this->_statistic->findAll($query);
-        fb($datas, 'LOG');
         return $this->rst($datas, 0, true);
     }
 
@@ -67,9 +72,8 @@ class StatisticController extends Action
         $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
         $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', '')); // Y轴名称
-        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴类型
+        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴统计方法
         $yAxisField = trim($this->params()->fromPost('yAxisField', '')); // Y轴统计字段
-        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', '')); // Y轴统计方法
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
         $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
@@ -85,20 +89,38 @@ class StatisticController extends Action
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
-        if (empty($yAxisTitle)) {
-            return $this->msg(false, 'Y轴统计名称');
+        if (! in_array($seriesType, $this->_seriesType, true)) {
+            return $this->msg(false, '请设定统计图表类型');
         }
         
-        if (empty($yAxisType)) {
-            return $this->msg(false, 'Y轴统计类型');
-        }
-        
-        if (empty($xAxisTitle)) {
-            return $this->msg(false, 'X轴统计名称');
-        }
-        
-        if (empty($xAxisType)) {
-            return $this->msg(false, 'X轴统计类型');
+        if ($seriesType !== 'pie') {
+            if (empty($yAxisTitle)) {
+                return $this->msg(false, '请设定Y轴统计名称');
+            }
+            
+            if (empty($yAxisType)) {
+                return $this->msg(false, '请设定Y轴统计类型');
+            }
+            
+            if (empty($yAxisField)) {
+                return $this->msg(false, '请设定Y轴统计字段');
+            }
+            
+            if (empty($xAxisTitle)) {
+                return $this->msg(false, '请设定X轴统计名称');
+            }
+            
+            if (empty($xAxisType)) {
+                return $this->msg(false, '请设定X轴统计类型');
+            }
+            
+            if (empty($xAxisField)) {
+                return $this->msg(false, '请设定X轴统计字段');
+            }
+        } else {
+            if (empty($seriesField)) {
+                return $this->msg(false, '请设定饼形图统计属性');
+            }
         }
         
         $datas = array();
@@ -140,9 +162,8 @@ class StatisticController extends Action
         $collection_id = trim($this->params()->fromPost('__COLLECTION_ID__', ''));
         $name = trim($this->params()->fromPost('name', ''));
         $yAxisTitle = trim($this->params()->fromPost('yAxisTitle', '')); // Y轴名称
-        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴类型
+        $yAxisType = trim($this->params()->fromPost('yAxisType', '')); // Y轴统计方法
         $yAxisField = trim($this->params()->fromPost('yAxisField', '')); // Y轴统计字段
-        $yAxisMethod = trim($this->params()->fromPost('yAxisMethod', '')); // Y轴统计方法
         $xAxisTitle = trim($this->params()->fromPost('xAxisTitle', ''));
         $xAxisType = trim($this->params()->fromPost('xAxisType', ''));
         $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
@@ -158,20 +179,38 @@ class StatisticController extends Action
             return $this->msg(false, '统计时间的间隔不得少于300秒');
         }
         
-        if (empty($yAxisTitle)) {
-            return $this->msg(false, 'Y轴统计名称');
+        if (! in_array($seriesType, $this->_seriesType, true)) {
+            return $this->msg(false, '请设定统计图表类型');
         }
         
-        if (empty($yAxisType)) {
-            return $this->msg(false, 'Y轴统计类型');
-        }
-        
-        if (empty($xAxisTitle)) {
-            return $this->msg(false, 'X轴统计名称');
-        }
-        
-        if (empty($xAxisType)) {
-            return $this->msg(false, 'X轴统计类型');
+        if ($seriesType !== 'pie') {
+            if (empty($yAxisTitle)) {
+                return $this->msg(false, '请设定Y轴统计名称');
+            }
+            
+            if (empty($yAxisType)) {
+                return $this->msg(false, '请设定Y轴统计类型');
+            }
+            
+            if (empty($yAxisField)) {
+                return $this->msg(false, '请设定Y轴统计字段');
+            }
+            
+            if (empty($xAxisTitle)) {
+                return $this->msg(false, '请设定X轴统计名称');
+            }
+            
+            if (empty($xAxisType)) {
+                return $this->msg(false, '请设定X轴统计类型');
+            }
+            
+            if (empty($xAxisField)) {
+                return $this->msg(false, '请设定X轴统计字段');
+            }
+        } else {
+            if (empty($seriesField)) {
+                return $this->msg(false, '请设定饼形图统计属性');
+            }
         }
         
         $datas = array();
