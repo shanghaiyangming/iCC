@@ -146,11 +146,11 @@ return array(
                     '127.0.0.1:27017'
                 ),
                 'dbs' => array(
-                    'ICCv1',
-                    'admin',
-                    'mapreduce',
-                    'backup',
-                    'logs'
+                    DEFAULT_DATABASE,
+                    DB_ADMIN,
+                    DB_MAPREDUCE,
+                    DB_BACKUP,
+                    DB_LOGS
                 )
             ),
             'analysis' => array(
@@ -160,11 +160,11 @@ return array(
                     '127.0.0.1:27017'
                 ),
                 'dbs' => array(
-                    'ICCv1',
-                    'admin',
-                    'mapreduce',
-                    'backup',
-                    'logs'
+                    DEFAULT_DATABASE,
+                    DB_ADMIN,
+                    DB_MAPREDUCE,
+                    DB_BACKUP,
+                    DB_LOGS
                 )
             )
         )

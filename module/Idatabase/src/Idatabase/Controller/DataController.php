@@ -333,8 +333,6 @@ class DataController extends Action
                 
                 array_walk($comboboxSelectedLists, function (&$value, $index) use($rshCollectionValueField)
                 {
-                    fb($rshCollectionValueField, 'LOG');
-                    fb($this->_schema['post'][$rshCollectionValueField]['type'], 'LOG');
                     $value = formatData($value, $this->_schema['post'][$rshCollectionValueField]['type']);
                 });
                 

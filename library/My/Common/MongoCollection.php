@@ -22,6 +22,7 @@ namespace My\Common;
 
 use Zend\Config\Config;
 use Zend\EventManager\GlobalEventManager;
+use Zend\Json\Json;
 
 class MongoCollection extends \MongoCollection
 {
@@ -40,7 +41,11 @@ class MongoCollection extends \MongoCollection
 
     private $_backup;
 
+    private $_mapreduce;
+
     private $_config;
+
+    private $_configInstance;
 
     /**
      * GridFS
@@ -107,6 +112,7 @@ class MongoCollection extends \MongoCollection
         $this->_database = $database;
         $this->_cluster = $cluster;
         $this->_collectionOptions = $collectionOptions;
+        $this->_configInstance = $config;
         $this->_config = $config->toArray();
         
         if (! isset($this->_config[$this->_cluster]))
@@ -119,17 +125,22 @@ class MongoCollection extends \MongoCollection
         if (! $this->_db instanceof \MongoDB)
             throw new \Exception('$this->_db is not instanceof \MongoDB');
         
-        if (! isset($this->_config[$this->_cluster]['dbs']['admin']))
+        if (! isset($this->_config[$this->_cluster]['dbs'][DB_ADMIN]))
             throw new \Exception('Config error:admin database init');
         
-        $this->_admin = $this->_config[$this->_cluster]['dbs']['admin'];
+        $this->_admin = $this->_config[$this->_cluster]['dbs'][DB_ADMIN];
         if (! $this->_admin instanceof \MongoDB) {
             throw new \Exception('$this->_admin is not instanceof \MongoDB');
         }
         
-        $this->_backup = $this->_config[$this->_cluster]['dbs']['backup'];
+        $this->_backup = $this->_config[$this->_cluster]['dbs'][DB_BACKUP];
         if (! $this->_backup instanceof \MongoDB) {
             throw new \Exception('$this->_backup is not instanceof \MongoDB');
+        }
+        
+        $this->_mapreduce = $this->_config[$this->_cluster]['dbs'][DB_MAPREDUCE];
+        if (! $this->_mapreduce instanceof \MongoDB) {
+            throw new \Exception('$this->_mapreduce is not instanceof \MongoDB');
         }
         
         $this->_fs = new \MongoGridFS($this->_db, "icc");
@@ -643,6 +654,58 @@ class MongoCollection extends \MongoCollection
     public function command($command)
     {
         return $this->db->command($command);
+    }
+
+    /**
+     * 执行map reduce操作
+     *
+     * @param array $command            
+     */
+    public function mapReduce($map, $reduce, $method = 'replace', $query = array(), $sort = array('$natural'=>1), $limit = null, $finalize = null, $scope = null)
+    {
+        try {
+            $command = array();
+            $command['mapReduce'] = $this->_collection;
+            $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
+            $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
+            if (! empty($finalize))
+                $command['finalize'] = ($finalize instanceof \MongoCode) ? $finalize : new \MongoCode($finalize);
+            $command['query'] = $query;
+            if (! empty($sort))
+                $command['sort'] = $sort;
+            if (! empty($limit))
+                $command['limit'] = $limit;
+            $command['scope'] = $scope;
+            $command['jsMode'] = false;
+            $command['verbose'] = true;
+            $out = md5(serialize($command));
+            
+            if (! in_array($method, array(
+                'replace',
+                'merge',
+                'reduce'
+            ), true)) {
+                $method = 'replace';
+            }
+            
+            $command['out'] = array(
+                $method => $out,
+                'db' => DB_MAPREDUCE,
+                'sharded' => false,
+                'nonAtomic' => true
+            );
+            $rst = $this->command($command);
+            if ($rst['ok'] == 1) {
+                return new self($this->_configInstance, $out, $this->_database, $this->_cluster);
+            } else {
+                fb($command, 'LOG');
+                fb($rst, 'LOG');
+                throw new \Exception(Json::encode($rst));
+            }
+        } catch (\Exception $e) {
+            fb($command, 'LOG');
+            throw new \Exception(exceptionMsg($e));
+        }
     }
 
     /**
