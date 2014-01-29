@@ -666,15 +666,29 @@ class MongoCollection extends \MongoCollection
     {
         $out = md5(serialize(func_num_args()));
         try {
+            //map reduce执行锁管理开始
             $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
             $locks->setReadPreference(MongoClient::RP_PRIMARY_PREFERRED);
-            $checkLocks = $locks->findOne(array(
-                'out' => $out,
-                'isRunning' => true,
-                'expire' => array(
-                    '$gt' => new \MongoDate()
-                )
-            ));
+            
+            $checkLock = function ($out) use($locks)
+            {
+                $check = $locks->findOne(array(
+                    'out' => $out,
+                    'isRunning' => true,
+                    'expire' => array(
+                        '$gt' => new \MongoDate()
+                    )
+                ));
+                if ($check == null) {
+                    $locks->insert(array(
+                        'out' => $out,
+                        'isRunning' => true,
+                        'expire' => new \MongoDate(time() + 300)
+                    ));
+                    return false;
+                }
+                return true;
+            };
             
             $releaseLock = function ($out, $rst = null) use($lock)
             {
@@ -687,14 +701,9 @@ class MongoCollection extends \MongoCollection
                     )
                 ));
             };
+            //map reduce执行锁管理结束
             
-            if ($checkLocks == null) {
-                $locks->insert(array(
-                    'out' => $out,
-                    'isRunning' => true,
-                    'expire' => new \MongoDate(time() + 300)
-                ));
-                
+            if (! $checkLock($out)) {
                 $command = array();
                 $command['mapReduce'] = $this->_collection;
                 $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
