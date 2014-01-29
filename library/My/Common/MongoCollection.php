@@ -658,7 +658,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 执行map reduce操作,为了防止数据量过大，导致无法完成mapreduce,统一采用集合的方式，取代内存方式
-     * 内存方式，当执行结果数据使用量超过物理内存的10%就会报错。
+     * 内存方式，不允许执行过程的数据量量超过物理内存的10%，故无法进行大数量分析工作。
      *
      * @param array $command            
      */
