@@ -12,6 +12,8 @@ namespace Idatabase\Controller;
 use Zend\View\Model\JsonModel;
 use Zend\Json\Json;
 use My\Common\Controller\Action;
+use My\Common\MongoCollection;
+use Psr\Log\AbstractLogger;
 
 class DataController extends Action
 {
@@ -294,6 +296,229 @@ class DataController extends Action
     }
 
     /**
+     * 对集合数据进行统计
+     * 目前支持的统计类型：
+     * 计数、唯一数、求和、均值、中位数、方差、标准差、最大值、最小值
+     *
+     * @author young
+     * @name 对集合数据进行统计
+     * @version 2014.01.29 young
+     */
+    public function statisticAction()
+    {
+        $action = $this->params()->fromQuery('action', null);
+        $statistic_id = $this->params()->fromQuery('statistic_id', null);
+        
+        $query = array();
+        if ($action == 'statistic') {
+            $query = $this->searchCondition();
+        }
+        
+        if (empty($statistic_id)) {
+            return $this->msg(false, '请选择统计方法');
+        }
+        
+        $info = $this->_statistic->findOne(array(
+            'statistic_id' => $statistic_id
+        ));
+        if ($info == null) {
+            return $this->msg(false, '统计方法不存在');
+        }
+        
+        $map = "function(){
+            var xAxisField = this.{$info['xAxisField']};  
+            var yAxisField = this.{$info['yAxisField']};  
+            var key = '';
+            var rst = {
+               total : !isNaN(yAxisField) ? yAxisField : 0,
+               count : yAxisField!==undefined ? 1 : 0,
+               max : Number.NEGATIVE_INFINITY
+               min : Number.POSITIVE_INFINITY
+               val : [yAxisField]
+            };
+
+            if(xField==undefined) {
+                key = '__OTHERS__';
+                return emit(key,rst);
+            }
+            
+            if('{$info['xAxisType']}'=='day' || '{$info['xAxisType']}'=='month' ||'{$info['xAxisType']}'=='year') {
+                var timestamp = Date.parse(xAxisField);
+                if (isNaN(timestamp)==false) {
+                    var year = xAxisField.getFullYear();
+                    var m = xAxisField.getMonth() + 1;
+                    var month = m<10 ? '0'+m : m; 
+                    var d = xAxisField.getDate();
+                    var day = d<10 ? '0'+d : d; 
+                }
+                else {
+                    key = '__OTHERS__';
+                    return emit(key,rst);
+                }
+            }
+            else {
+                if(isNaN(yAxisField)) {
+                    yAxisField = 0;
+                }
+            }
+            
+            swicth('{$info['xAxisType']}') {
+                case 'range':
+                    var	options = [
+                        0,
+						10, 20, 50,
+						100, 200, 500,
+						1000, 2000, 5000,
+						10000, 20000, 50000,
+						100000, 200000, 500000,
+						1000000, 2000000, 5000000,
+						10000000, 20000000, 50000000,
+						100000000, 200000000, 500000000,
+						1000000000, Number.POSITIVE_INFINITY
+					];
+    				
+					for(var index = 0; options[index] < field; index++) {
+						key = options[index]+'-'+options[index+1];
+					}
+                    break;
+                case 'day':
+                    key = day;
+                    break;
+                case 'month':
+                    key = year;
+                    break;
+                case 'year':
+                    key = year;
+                    break;
+                default : 
+                    key = xAxisField;
+                    break;
+            }
+            
+            return emit(key,rst);
+        }";
+        
+        $reduce = "function(key,values){
+              var rst = {
+                   total : 0,
+                   count : 0,
+                   max : Number.NEGATIVE_INFINITY
+                   min : Number.POSITIVE_INFINITY
+                   val : []
+              };
+
+              
+              for(var idx = values.length; idx >=0 ; idx--) {  
+                  if('{$info['yAxisType']}'=='count') {
+                      rst.count += values[idx].count;
+                  } else if('{$info['yAxisType']}'=='sum') {
+                      rst.total += values[idx].total;
+                  } else if('{$info['yAxisType']}'=='max') {
+                      if(rst.max==undefined)
+                          rst.max = values[idx].max;
+                      else if(rst.max <= values[idx].max) {
+                          rst.max = values[idx].max;
+                      }
+                  } else if('{$info['yAxisType']}'=='min') {
+                      if(rst.min==undefined) {
+                          rst.min = values[idx].min;
+                      }
+                      else if(rst.min >= values[idx].min) {
+                          rst.min = values[idx].min;
+                      }
+                  } else if('{$info['yAxisType']}'=='unique') {
+                      values[idx].val.forEach(function(v,i){
+                          rst.val.push(v);
+                      });   
+                  } else if('{$info['yAxisType']}'=='avg') {
+                      rst.total += values[idx].total;
+                      rst.count += values[idx].count;
+                  } else if('{$info['yAxisType']}'=='median') {
+                      values[idx].val.forEach(function(v,i){
+                          rst.val.push(v);
+                      });
+                  } else if('{$info['yAxisType']}'=='variance') {
+                      rst.total += values[idx].total;
+                      rst.count += values[idx].count;
+                      values[idx].val.forEach(function(v,i){
+                          rst.val.push(v);
+                      });
+                  } else if('{$info['yAxisType']}'=='standard') {
+                      rst.total += values[idx].total;
+                      rst.count += values[idx].count;
+                      values[idx].val.forEach(function(v,i){
+                          rst.val.push(v);
+                      });
+                  }
+              }
+              return rst;
+        }";
+        
+        $finalize = "function(key,reducedValue){
+            var rst = 0;
+            var uniqueData = [];
+            var uniqueNumber = 0;
+                    
+            if('{$info['yAxisType']}'=='count') {
+                rst = reducedValue.count;
+            }
+            else if('{$info['yAxisType']}'=='sum') {
+                rst = reducedValue.total;
+            }
+            else if('{$info['yAxisType']}'=='max') {
+                rst = reducedValue.max;
+            }
+            else if('{$info['yAxisType']}'=='min') {
+                rst = reducedValue.min;
+            }
+            else if('{$info['yAxisType']}'=='unique') {
+                reducedValue.val.forEach(function(v,i){
+                    if(uniqueData.indexOf(v)===-1) {
+                        uniqueNumber += 1;
+                        uniqueData.push(v);
+                    }
+                });
+                rst = uniqueNumber;
+            }
+            else if('{$info['yAxisType']}'=='avg') {
+                rst = Math.round(reducedValue.total / reducedValue.count,2);
+            }
+            else if('{$info['yAxisType']}'=='median') {
+                reducedValue.val.sort(function(a,b){return a>b?1:-1});
+                rst = reducedValue.val[Math.floor(reducedValue.val.length/2)];
+            }
+            else if('{$info['yAxisType']}'=='variance') {
+                var avg = Math.round(reducedValue.total / reducedValue.count,2);
+                var squared_Diff = 0;
+                for(var i=reducedValue.val.length;i>=0;i--) {
+                    var deviation = reducedValue.val[i] - avg;
+                    squared_Diff += deviation * deviation;
+                }
+                rst = squared_Diff/(values.length);
+            }
+            else if('{$info['yAxisType']}'=='standard') {
+                var avg = Math.round(reducedValue.total / reducedValue.count,2);
+                var squared_Diff = 0;
+                for(var i=reducedValue.val.length;i>=0;i--) {
+                    var deviation = reducedValue.val[i] - avg;
+                    squared_Diff += deviation * deviation;
+                }
+                rst = Math.sqrt(squared_Diff/(values.length));
+            }
+            return rst;
+        }";
+        
+        $rst = $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
+        if ($rst === false) {
+            return $this->msg(false, '前次统计尚未执行完成，请勿频繁进行大数据量统计或者请稍后重试');
+        }
+        
+        if (! $rst instanceof MongoCollection) {
+            throw new \Exception('$rst不是MongoCollection的子类实例');
+        }
+    }
+
+    /**
      * 处理数据中的关联数据
      */
     private function dealRshData()
@@ -412,9 +637,6 @@ class DataController extends Action
 
     /**
      * 获取树状表格数据
-     *
-     * 解决方案路径：
-     * http://www.sencha.com/forum/showthread.php?152584-EXT-4.0.7-TreeStore-loading-twice-if-autoload-to-false
      */
     public function treeAction()
     {
@@ -1251,8 +1473,7 @@ class DataController extends Action
                 $_POST['__SIGN__'] = $sign;
                 doPost($collectionInfo['hook'], $_POST);
             }
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->log(exceptionMsg($e));
         }
         return false;

@@ -668,11 +668,11 @@ class MongoCollection extends \MongoCollection
      *
      * @param array $command            
      */
-    public function mapReduce($map, $reduce, $query = array(), $method = 'replace', $sort = array('$natural'=>1), $limit = null, $finalize = null, $scope = null)
+    public function mapReduce($map, $reduce, $query = array(), $finalize = null, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
     {
-        $out = md5(serialize(func_num_args()));
+        $out = md5(serialize(func_get_args()));
         try {
-            //map reduce执行锁管理开始
+            // map reduce执行锁管理开始
             $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
             $locks->setReadPreference(MongoClient::RP_PRIMARY_PREFERRED);
             
@@ -707,7 +707,7 @@ class MongoCollection extends \MongoCollection
                     )
                 ));
             };
-            //map reduce执行锁管理结束
+            // map reduce执行锁管理结束
             
             if (! $checkLock($out)) {
                 $command = array();

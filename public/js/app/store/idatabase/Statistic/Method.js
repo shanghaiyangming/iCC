@@ -4,8 +4,8 @@ Ext.define('icc.store.idatabase.Statistic.Method', {
 	data : [ {
 		"name" : '计数',
 		"value" : 'count'
-	},  {
-		"name" : '唯一计数',
+	}, {
+		"name" : '唯一数',
 		"value" : 'distinct'
 	}, {
 		"name" : '求和',
@@ -13,6 +13,9 @@ Ext.define('icc.store.idatabase.Statistic.Method', {
 	}, {
 		"name" : '均值',
 		"value" : 'avg'
+	}, {
+		"name" : '中位数',
+		"value" : 'median',
 	}, {
 		"name" : '方差',
 		"value" : 'variance'
