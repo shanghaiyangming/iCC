@@ -121,12 +121,18 @@ class MongoCollection extends \MongoCollection
         if (! isset($this->_config[$this->_cluster]['dbs'][$this->_database]))
             throw new \Exception('Config error:no database init');
         
+        if (! isset($this->_config[$this->_cluster]['dbs'][DB_ADMIN]))
+            throw new \Exception('Config error:admin database init');
+        
+        if (! isset($this->_config[$this->_cluster]['dbs'][DB_BACKUP]))
+            throw new \Exception('Config error:backup database init');
+        
+        if (! isset($this->_config[$this->_cluster]['dbs'][DB_MAPREDUCE]))
+            throw new \Exception('Config error:mapreduce database init');
+        
         $this->_db = $this->_config[$this->_cluster]['dbs'][$this->_database];
         if (! $this->_db instanceof \MongoDB)
             throw new \Exception('$this->_db is not instanceof \MongoDB');
-        
-        if (! isset($this->_config[$this->_cluster]['dbs'][DB_ADMIN]))
-            throw new \Exception('Config error:admin database init');
         
         $this->_admin = $this->_config[$this->_cluster]['dbs'][DB_ADMIN];
         if (! $this->_admin instanceof \MongoDB) {
