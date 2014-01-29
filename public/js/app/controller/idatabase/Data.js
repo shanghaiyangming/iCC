@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Data', {
 	extend: 'Ext.app.Controller',
 	models: [],
 	stores: [],
-	views: ['idatabase.Data.Main', 'idatabase.Data.Grid', 'idatabase.Data.Search', 'idatabase.Data.Add', 'idatabase.Data.Password', 'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield'],
+	views: ['idatabase.Data.Main', 'idatabase.Data.Grid', 'idatabase.Data.Search', 'idatabase.Data.Add', 'idatabase.Data.Password', 'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield','idatabase.Statistic.Combobox'],
 	controllerName: 'idatabaseData',
 	plugin: false,
 	__PLUGIN_ID__: '',
@@ -272,8 +272,8 @@ Ext.define('icc.controller.idatabase.Data', {
 							__PROJECT_ID__: grid.__PROJECT_ID__,
 							__COLLECTION_ID__: grid.__COLLECTION_ID__,
 							__PLUGIN_ID__: grid.__PLUGIN_ID__,
-							height: 240,
-							width: 320
+							width: 320,
+							height: 240
 						});
 						win.show();
 					}
@@ -351,6 +351,7 @@ Ext.define('icc.controller.idatabase.Data', {
 					var grid = me.activeDataGrid();
 					var __STATISTIC_ID__ = form.findField('__STATISTIC_ID__').getValue();
 					
+					var store = Ext.create('icc.store.statistic');
 					Ext.Ajax.request({
 						url: '/idatabase/statistic/get',
 						params: {

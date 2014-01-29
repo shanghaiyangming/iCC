@@ -3,7 +3,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 	alias : 'widget.idatabaseStatisticChart',
 	title : '统计结果',
 	initComponent : function() {
-		var statistics = this.statistics;
+		var statistics = this.__STATISTIC_INFO__;
 		var me = this;
 
 		var statistics_id = statistics.get('_id');
@@ -48,7 +48,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				minimum : 0,
 				position : 'left',
 				fields : [ 'value' ],
-				title : statistics.get('yAxis'),
+				title : statistics.yAxisTitle,
 				minorTickSteps : 1,
 				grid : {
 					odd : {
