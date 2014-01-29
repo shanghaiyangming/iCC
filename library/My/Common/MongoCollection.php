@@ -657,15 +657,15 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
-     * 执行map reduce操作
+     * 执行map reduce操作,为了防止数据量过大，导致无法完成mapreduce,统一采用集合的方式，取代内存方式
+     * 内存方式，当执行结果数据使用量超过物理内存的10%就会报错。
      *
      * @param array $command            
      */
-    public function mapReduce($map, $reduce, $method = 'replace', $query = array(), $sort = array('$natural'=>1), $limit = null, $finalize = null, $scope = null)
+    public function mapReduce($map, $reduce, $query = array(), $method = 'replace', $sort = array('$natural'=>1), $limit = null, $finalize = null, $scope = null)
     {
+        $out = md5(serialize(func_num_args()));
         try {
-            // 加入统计锁
-            $out = md5(serialize(func_num_args()));
             $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
             $locks->setReadPreference(MongoClient::RP_PRIMARY_PREFERRED);
             $checkLocks = $locks->findOne(array(
@@ -676,29 +676,38 @@ class MongoCollection extends \MongoCollection
                 )
             ));
             
-            if ($checkLocks == null) {
-                $locks->remove(array(
+            $releaseLock = function ($out, $rst = null) use($lock)
+            {
+                return $locks->update(array(
                     'out' => $out
+                ), array(
+                    '$set' => array(
+                        'isRunning' => false,
+                        'rst' => $rst
+                    )
                 ));
-                
+            };
+            
+            if ($checkLocks == null) {
                 $locks->insert(array(
                     'out' => $out,
                     'isRunning' => true,
-                    'expire' => new \MongoDate(time() + 60)
+                    'expire' => new \MongoDate(time() + 300)
                 ));
                 
                 $command = array();
                 $command['mapReduce'] = $this->_collection;
                 $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
                 $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
+                $command['query'] = $query;
                 if (! empty($finalize))
                     $command['finalize'] = ($finalize instanceof \MongoCode) ? $finalize : new \MongoCode($finalize);
-                $command['query'] = $query;
                 if (! empty($sort))
                     $command['sort'] = $sort;
                 if (! empty($limit))
                     $command['limit'] = $limit;
-                $command['scope'] = $scope;
+                if (! empty($scope))
+                    $command['scope'] = $scope;
                 $command['jsMode'] = false;
                 $command['verbose'] = true;
                 
@@ -717,15 +726,7 @@ class MongoCollection extends \MongoCollection
                     'nonAtomic' => true
                 );
                 $rst = $this->command($command);
-                
-                $locks->update(array(
-                    'out' => $out
-                ), array(
-                    '$set' => array(
-                        'isRunning' => false,
-                        'rst'=>$rst
-                    )
-                ));
+                $releaseLock($out, $rst);
                 
                 if ($rst['ok'] == 1) {
                     return new self($this->_configInstance, $out, DB_MAPREDUCE, $this->_cluster);
@@ -734,13 +735,13 @@ class MongoCollection extends \MongoCollection
                     fb($rst, 'LOG');
                     throw new \Exception(Json::encode($rst));
                 }
-            }
-            else {
-                fb('程序正在执行中，请勿频繁尝试','LOG');
+            } else {
+                fb('程序正在执行中，请勿频繁尝试', 'LOG');
                 return false;
             }
         } catch (\Exception $e) {
             fb($command, 'LOG');
+            $releaseLock($out, exceptionMsg($e));
             throw new \Exception(exceptionMsg($e));
         }
     }
