@@ -306,8 +306,8 @@ class DataController extends Action
      */
     public function statisticAction()
     {
-        $action = $this->params()->fromQuery('action', null);
-        $statistic_id = $this->params()->fromQuery('statistic_id', null);
+        $action = $this->params()->fromPost('action', null);
+        $statistic_id = $this->params()->froPost('statistic_id', null);
         
         $query = array();
         if ($action == 'statistic') {
@@ -485,7 +485,8 @@ class DataController extends Action
             }
             else if('{$info['yAxisType']}'=='median') {
                 reducedValue.val.sort(function(a,b){return a>b?1:-1});
-                rst = reducedValue.val[Math.floor(reducedValue.val.length/2)];
+                var length = reducedValue.val.length;
+                rst = reducedValue.val[(length%2==1 ? Math.floor(length/2)+1 : Math.floor(length/2))];
             }
             else if('{$info['yAxisType']}'=='variance') {
                 var avg = Math.round(reducedValue.total / reducedValue.count,2);

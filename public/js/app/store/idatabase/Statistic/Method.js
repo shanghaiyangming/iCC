@@ -15,7 +15,7 @@ Ext.define('icc.store.idatabase.Statistic.Method', {
 		"value" : 'avg'
 	}, {
 		"name" : '中位数',
-		"value" : 'median',
+		"value" : 'median'
 	}, {
 		"name" : '方差',
 		"value" : 'variance'

@@ -1151,6 +1151,6 @@ Ext.define('icc.controller.idatabase.Collection', {
 		} else {
 			tabpanel.setActiveTab(__COLLECTION_ID__);
 		}
-		//grid.getSelectionModel().deselectAll();
+		// grid.getSelectionModel().deselectAll();
 	}
 });

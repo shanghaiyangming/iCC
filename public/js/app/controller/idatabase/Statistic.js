@@ -10,7 +10,7 @@ Ext.define('icc.controller.idatabase.Statistic', {
 			'idatabase.Statistic.Combobox.Method',
 			'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Window',
 			'idatabase.Statistic.Grid', 'idatabase.Statistic.Add',
-			'idatabase.Statistic.Edit' ],
+			'idatabase.Statistic.Edit','idatabase.Statistic.Chart'],
 	controllerName : 'idatabaseStatistic',
 	actions : {
 		add : '/idatabase/statistic/add',

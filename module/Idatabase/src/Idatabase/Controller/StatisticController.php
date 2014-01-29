@@ -60,6 +60,23 @@ class StatisticController extends Action
     }
 
     /**
+     * 查询某一条统计信息
+     *
+     * @author young
+     * @name 查询某一条统计信息
+     * @version 2014.01.29 young
+     */
+    public function getAction()
+    {
+        $statistic_id = trim($this->params()->fromPost('__STATISTIC_ID__', ''));
+        $cursor = $this->_statistic->find(array(
+            '_id' => myMongoId($statistic_id)
+        ));
+        $datas = iterator_to_array($cursor,false);
+        return $this->rst($datas, 0, true);
+    }
+
+    /**
      * 添加统计信息
      *
      * @author young
