@@ -44,7 +44,7 @@ Ext.define('icc.controller.idatabase.Mapping', {
                 }
             }
         };
-        
+
         me.control(listeners);
         return true;
     }

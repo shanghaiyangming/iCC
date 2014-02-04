@@ -679,11 +679,7 @@ class MongoCollection extends \MongoCollection
             $checkLock = function ($out) use($locks)
             {
                 $check = $locks->findOne(array(
-                    'out' => $out,
-                    'isRunning' => true,
-                    'expire' => array(
-                        '$gt' => new \MongoDate()
-                    )
+                    'out' => $out
                 ));
                 if ($check == null) {
                     $locks->insert(array(
@@ -692,8 +688,25 @@ class MongoCollection extends \MongoCollection
                         'expire' => new \MongoDate(time() + 300)
                     ));
                     return false;
+                } else {
+                    if (isset($check['isRunning']) && $check['isRunning']) {
+                        return true;
+                    }
+                    if (isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
+                        if ($check['expire']->sec > time())
+                            return true;
+                    }
+                    
+                    $locks->update(array(
+                        'out' => $out
+                    ), array(
+                        '$set' => array(
+                            'isRunning' => true,
+                            'expire' => new \MongoDate(time() + 300)
+                        )
+                    ));
+                    return false;
                 }
-                return true;
             };
             
             $releaseLock = function ($out, $rst = null) use($lock)

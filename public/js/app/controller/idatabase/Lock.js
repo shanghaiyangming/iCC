@@ -1,28 +1,26 @@
 Ext.define('icc.controller.idatabase.Lock', {
-	extend : 'Ext.app.Controller',
-	models : [],
-	stores : [],
-	views : [ 'idatabase.Lock.Window' ],
-	controllerName : 'idatabaseLock',
-	actions : {
-		add : '/idatabase/lock/add',
-		edit : '/idatabase/lock/edit',
-		remove : '/idatabase/lock/remove',
-		save : '/idatabase/lock/save'
+	extend: 'Ext.app.Controller',
+	models: [],
+	stores: [],
+	views: ['idatabase.Lock.Window'],
+	controllerName: 'idatabaseLock',
+	actions: {
+		add: '/idatabase/lock/add',
+		edit: '/idatabase/lock/edit',
+		remove: '/idatabase/lock/remove',
+		save: '/idatabase/lock/save'
 	},
-	refs : [ {
-		ref : 'projectTabPanel',
-		selector : 'idatabaseProjectTabPanel'
-	} ],
-	collectionTabPanel : function() {
-		return this.getProjectTabPanel().getActiveTab().down(
-				'idatabaseCollectionTabPanel');
+	refs: [{
+		ref: 'projectTabPanel',
+		selector: 'idatabaseProjectTabPanel'
+	}],
+	collectionTabPanel: function() {
+		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionTabPanel');
 	},
-	getExpandedAccordion : function() {
-		return this.getProjectTabPanel().getActiveTab().down(
-				'idatabaseCollectionAccordion').child("[collapsed=false]");
+	getExpandedAccordion: function() {
+		return this.getProjectTabPanel().getActiveTab().down('idatabaseCollectionAccordion').child("[collapsed=false]");
 	},
-	init : function() {
+	init: function() {
 		var me = this;
 		var controllerName = me.controllerName;
 
@@ -34,17 +32,17 @@ Ext.define('icc.controller.idatabase.Lock', {
 		var listeners = {};
 
 		listeners[controllerName + 'Window button[action=submit]'] = {
-			click : function(button) {
+			click: function(button) {
 				var form = button.up('form').getForm();
 				if (form.isValid()) {
 					form.submit({
-						waitTitle : '系统提示',
-						waitMsg : '系统处理中，请稍后……',
-						success : function(form, action) {
+						waitTitle: '系统提示',
+						waitMsg: '系统处理中，请稍后……',
+						success: function(form, action) {
 							Ext.Msg.alert('成功提示', action.result.msg);
 							me.getExpandedAccordion().store.load();
 						},
-						failure : function(form, action) {
+						failure: function(form, action) {
 							Ext.Msg.alert('失败提示', action.result.msg);
 						}
 					});

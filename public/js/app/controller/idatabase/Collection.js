@@ -793,7 +793,7 @@ Ext.define('icc.controller.idatabase.Collection', {
 							};
 							break;
 						case 'filefield':
-							if(xTemplate!='') {
+							if (xTemplate != '') {
 								if (record.get('showImage') != undefined && record.get('showImage') == true) {
 									column.tpl = '<a href="' + cdnUrl + '{' + recordField + '}" target="_blank"><img src="' + cdnUrl + '{' + recordfield + '}?size=100x100" border="0" height="100" /></a>';
 								} else {

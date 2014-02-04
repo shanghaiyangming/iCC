@@ -2,7 +2,7 @@ Ext.define('icc.controller.idatabase.Data', {
 	extend: 'Ext.app.Controller',
 	models: [],
 	stores: [],
-	views: ['idatabase.Data.Main', 'idatabase.Data.Grid', 'idatabase.Data.Search', 'idatabase.Data.Add', 'idatabase.Data.Password', 'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield','idatabase.Statistic.Combobox'],
+	views: ['idatabase.Data.Main', 'idatabase.Data.Grid', 'idatabase.Data.Search', 'idatabase.Data.Add', 'idatabase.Data.Password', 'idatabase.Data.Edit', 'idatabase.Data.Field.2dfield', 'idatabase.Statistic.Combobox'],
 	controllerName: 'idatabaseData',
 	plugin: false,
 	__PLUGIN_ID__: '',
@@ -314,8 +314,8 @@ Ext.define('icc.controller.idatabase.Data', {
 					});
 
 					store.proxy.extraParams = {
-						action : button.action,
-						start : 0
+						action: button.action,
+						start: 0
 					};
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
 
@@ -339,49 +339,46 @@ Ext.define('icc.controller.idatabase.Data', {
 				}
 			}
 		};
-		
+
 		listeners['idatabaseDataSearch button[action=statistic]'] = {
-				click: function(button) {
-					button.setDisabled(true);
-					setTimeout(function() {
-						button.setDisabled(false);
-					}, 30000);
-					
-					var form = button.up('form').getForm();
-					var grid = me.activeDataGrid();
-					var __STATISTIC_ID__ = form.findField('__STATISTIC_ID__').getValue();
-					
-					var store = Ext.create('icc.store.statistic');
-					Ext.Ajax.request({
-						url: '/idatabase/statistic/get',
-						params: {
-							__PROJECT_ID__: grid.__PROJECT_ID__,
-							__COLLECTION_ID__: grid.__COLLECTION_ID__,
-							__STATISTIC_ID__ : __STATISTIC_ID__
-						},
-						scope: me,
-						success: function(response) {
-							var text = response.responseText;
-							var json = Ext.decode(text);
-							if(Ext.isArray(json.result)) {
-								var statistic = json.result[0];
-								var win = Ext.widget('idatabaseStatisticChart', {
-									__PROJECT_ID__: grid.__PROJECT_ID__,
-									__COLLECTION_ID__: grid.__COLLECTION_ID__,
-									__PLUGIN_ID__: grid.__PLUGIN_ID__,
-									__STATISTIC_ID__ : grid.__STATISTIC_ID__,
-									__STATISTIC_INFO__ : statistic,
-									width: 640,
-									height: 480
-								});
-								win.show();
-							}
+			click: function(button) {
+				button.setDisabled(true);
+				setTimeout(function() {
+					button.setDisabled(false);
+				}, 30000);
+
+				var form = button.up('form').getForm();
+				var grid = me.activeDataGrid();
+				var __STATISTIC_ID__ = form.findField('__STATISTIC_ID__').getValue();
+
+				var store = Ext.create('icc.store.Statistic.One');
+				store.proxy.extraParams = {
+					__PROJECT_ID__: grid.__PROJECT_ID__,
+					__COLLECTION_ID__: grid.__COLLECTION_ID__,
+					__STATISTIC_ID__: __STATISTIC_ID__
+				};
+
+				store.load(function(records, operation, success) {
+					if (success) {
+						if (records.length > 0) {
+							var win = Ext.widget('idatabaseStatisticChart', {
+								__PROJECT_ID__: grid.__PROJECT_ID__,
+								__COLLECTION_ID__: grid.__COLLECTION_ID__,
+								__PLUGIN_ID__: grid.__PLUGIN_ID__,
+								__STATISTIC_ID__: grid.__STATISTIC_ID__,
+								__STATISTIC_INFO__: records[0],
+								width: 640,
+								height: 480
+							});
+							win.show();
 						}
-					});
-				}
-			};
-		
+					}
+				});
+			}
+		};
+
 
 		me.control(listeners);
+		return true;
 	}
 });
