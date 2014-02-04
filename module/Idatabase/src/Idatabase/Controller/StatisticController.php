@@ -21,6 +21,8 @@ class StatisticController extends Action
     private $_project_id;
 
     private $_statistic;
+    
+    private $_statistic_id;
 
     private $_seriesType = array(
         'column',
@@ -32,6 +34,7 @@ class StatisticController extends Action
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         $this->_collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
+        $this->_statistic_id = isset($_REQUEST['__STATISTIC_ID__']) ? trim($_REQUEST['__STATISTIC_ID__']) : '';
         
         if (empty($this->_project_id))
             throw new \Exception('$this->_project_id值未设定');
@@ -61,16 +64,15 @@ class StatisticController extends Action
 
     /**
      * 查询某一条统计信息
-     *
+     * 
      * @author young
      * @name 查询某一条统计信息
      * @version 2014.01.29 young
      */
     public function getAction()
     {
-        $statistic_id = trim($this->params()->fromPost('__STATISTIC_ID__', ''));
         $cursor = $this->_statistic->find(array(
-            '_id' => myMongoId($statistic_id)
+            '_id' => myMongoId($this->_statistic_id)
         ));
         $datas = iterator_to_array($cursor,false);
         return $this->rst($datas, 0, true);

@@ -787,7 +787,12 @@ function myMongoId($var = null)
             return $var->__toString();
         } else {
             $var = ! empty($var) && strlen($var) == 24 ? $var : null;
-            return new MongoId($var);
+            try {
+                return new MongoId($var);
+            } catch (Exception $e) {
+                fb(exceptionMsg($e),'LOG');
+                return new MongoId();
+            }
         }
     }
 }

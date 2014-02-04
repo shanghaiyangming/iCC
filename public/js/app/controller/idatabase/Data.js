@@ -310,13 +310,14 @@ Ext.define('icc.controller.idatabase.Data', {
 					var extraParams = form.getValues(false, true);
 					var store = me.activeDataGrid().store;
 					form.getFields().each(function(items, index) {
-						if (items.xtype != 'hiddenfield') delete store.proxy.extraParams[items.name];
+						if (items.xtype != 'hiddenfield') {
+							delete store.proxy.extraParams[items.name];
+							console.info(items.name);
+						}
 					});
 
-					store.proxy.extraParams = {
-						action: button.action,
-						start: 0
-					};
+					store.proxy.extraParams.action = button.action;
+					store.proxy.extraParams.start = 0;
 					store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
 
 					if (button.action == 'excel') {
@@ -350,8 +351,12 @@ Ext.define('icc.controller.idatabase.Data', {
 				var form = button.up('form').getForm();
 				var grid = me.activeDataGrid();
 				var __STATISTIC_ID__ = form.findField('__STATISTIC_ID__').getValue();
+				if (__STATISTIC_ID__ == null || __STATISTIC_ID__ == '' || __STATISTIC_ID__ == undefined) {
+					Ext.Msg.alert('提示信息', '请选择统计方法');
+					return false;
+				}
 
-				var store = Ext.create('icc.store.Statistic.One');
+				var store = Ext.create('icc.store.idatabase.Statistic.One');
 				store.proxy.extraParams = {
 					__PROJECT_ID__: grid.__PROJECT_ID__,
 					__COLLECTION_ID__: grid.__COLLECTION_ID__,
@@ -371,9 +376,16 @@ Ext.define('icc.controller.idatabase.Data', {
 								height: 480
 							});
 							win.show();
+						} else {
+							Ext.Msg.alert('提示信息', '无效的统计方法');
+							return false;
 						}
+					} else {
+						console.info(success, records);
 					}
+					return true;
 				});
+				return true;
 			}
 		};
 

@@ -8,6 +8,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 
 		var statistics_id = statistics.get('_id');
 		var type = {sum:'求和',avg:'均值',count:'计数',max:'最大值',min:'最小值',unique:'唯一值',median:'中位数',variance:'方差',standard:'标准差'};
+		
 		var store = new Ext.data.Store({
 			fields : [ {
 				name : '_id',
@@ -38,7 +39,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			}
 		});
 		
-		this.items = {
+		var items = {
 			xtype : 'chart',
 			style : 'background:#fff',
 			store : store,
@@ -48,7 +49,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				minimum : 0,
 				position : 'left',
 				fields : [ 'value' ],
-				title : statistics.yAxisTitle,
+				title : statistics.get('yAxisTitle'),
 				minorTickSteps : 1,
 				grid : {
 					odd : {
@@ -65,7 +66,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				title : statistics.get('xAxis')
 			} ],
 			series : [ {
-				type : statistics.get('chartType'),
+				type : statistics.get('seriesType'),
 				axis : 'left',
 				highlight: false,
 				xField : '_id',
@@ -82,13 +83,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 		};
 
 		Ext.apply(this, {
-			items : [ {
-				xtype : 'idatabaseStatisticGrid',
-				__PROJECT_ID__ : this.__PROJECT_ID__,
-				__COLLECTION_ID__ : this.__COLLECTION_ID__,
-				__PLUGIN_ID__ : this.__PLUGIN_ID__,
-				__PLUGIN_COLLECTION_ID__ : this.__PLUGIN_COLLECTION_ID__
-			} ]
+			items : items
 		});
 		
 		this.callParent(arguments);
@@ -100,11 +95,12 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				msg : "统计中...",
 				useMsg : true
 			});
-			
+			/*
 			var chart = win.down('chart');
 			chart.store.load(function() {
 				mask.hide();
 			});
+			*/
 			
 		}
 	}
