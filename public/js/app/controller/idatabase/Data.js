@@ -353,6 +353,7 @@ Ext.define('icc.controller.idatabase.Data', {
 				var __STATISTIC_ID__ = form.findField('__STATISTIC_ID__').getValue();
 				if (__STATISTIC_ID__ == null || __STATISTIC_ID__ == '' || __STATISTIC_ID__ == undefined) {
 					Ext.Msg.alert('提示信息', '请选择统计方法');
+					button.setDisabled(false);
 					return false;
 				}
 
@@ -372,12 +373,14 @@ Ext.define('icc.controller.idatabase.Data', {
 								__PLUGIN_ID__: grid.__PLUGIN_ID__,
 								__STATISTIC_ID__: grid.__STATISTIC_ID__,
 								__STATISTIC_INFO__: records[0],
+								__EXTRAPARAMS__: form.getValues(false, true),
 								width: 640,
 								height: 480
 							});
 							win.show();
 						} else {
 							Ext.Msg.alert('提示信息', '无效的统计方法');
+							button.setDisabled(false);
 							return false;
 						}
 					} else {
