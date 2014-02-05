@@ -336,6 +336,7 @@ class DataController extends Action
         $query = $this->searchCondition();
         
         $map = "function(){
+            var xAxisType = '{$info['xAxisType']}';
             var xAxisField = this.{$info['xAxisField']};  
             var yAxisField = this.{$info['yAxisField']};  
             var key = '';
@@ -352,7 +353,7 @@ class DataController extends Action
                 return emit(key,rst);
             }
             
-            if('{$info['xAxisType']}'=='day' || '{$info['xAxisType']}'=='month' ||'{$info['xAxisType']}'=='year') {
+            if(xAxisType=='day' || xAxisType=='month' || xAxisType=='year') {
                 var timestamp = Date.parse(xAxisField);
                 if (isNaN(timestamp)==false) {
                     var year = xAxisField.getFullYear();
@@ -372,7 +373,10 @@ class DataController extends Action
                 }
             }
             
-            switch('{$info['xAxisType']}') {
+            switch(xAxisType) {
+                case 'total':
+                     key = 'Total';
+                     break;
                 case 'range':
                     var	options = [
                         0,
@@ -395,7 +399,7 @@ class DataController extends Action
                     key = day;
                     break;
                 case 'month':
-                    key = year;
+                    key = month;
                     break;
                 case 'year':
                     key = year;
@@ -418,12 +422,9 @@ class DataController extends Action
               };
 
               var yAxisType = '{$info['yAxisType']}';
-              print(yAxisType);
-              printjson(values);
-              for(var idx = values.length; idx >0 ; idx--) {  
+              var length = values.length;
+              for(var idx = 0; idx < length ; idx++) {  
                   if(yAxisType=='count') {
-                      printjson(values[idx]);
-                      print(idx);
                       rst.count += values[idx].count;
                   } else if(yAxisType=='sum') {
                       rst.total += values[idx].total;
@@ -524,7 +525,7 @@ class DataController extends Action
         }";
         
         $rst = $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
-        if ($rst['ok'] === 0) {
+        if (is_array($rst) && isset($rst['ok']) && $rst['ok'] === 0) {
             switch ($rst['code']) {
                 case 500:
                     return $this->deny('根据查询条件，未检测到有效的统计数据');
@@ -541,7 +542,8 @@ class DataController extends Action
             }
         }
         
-        if (! $rst instanceof MongoCollection) {
+        if (! $rst instanceof \MongoCollection) {
+            return $this->deny('$rst不是MongoCollection的子类实例');
             throw new \Exception('$rst不是MongoCollection的子类实例');
         }
         

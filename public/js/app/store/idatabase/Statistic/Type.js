@@ -2,6 +2,9 @@ Ext.define('icc.store.idatabase.Statistic.Type', {
 	extend : 'Ext.data.Store',
 	fields : [ "name", "value" ],
 	data : [ {
+		"name" : '全部数据统计',
+		"value" : 'total'
+	},{
 		"name" : '按具体值统计',
 		"value" : 'value'
 	}, {

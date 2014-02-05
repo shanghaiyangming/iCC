@@ -703,11 +703,16 @@ class MongoCollection extends \MongoCollection
                 } else {
                     if (isset($check['isRunning']) && $check['isRunning']) {
                         return true;
-                    } else 
-                        if (isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
-                            if ($check['expire']->sec > time())
-                                return true;
+                    }
+                    if ($check['isRunning'] && isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
+                        if ($check['expire']->sec > time()) {
+                            return true;
                         }
+                        else {
+                            $releaseLock($out);
+                            return false;
+                        }
+                    }
                     $locks->update(array(
                         'out' => $out
                     ), array(
