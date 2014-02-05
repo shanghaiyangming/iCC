@@ -4,7 +4,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 	title: '统计结果',
 	initComponent: function() {
 		var statistics = this.__STATISTIC_INFO__;
-		var me = this;
+		var extraParams = this.__EXTRAPARAMS__;
 
 		var statistics_id = statistics.get('_id');
 		var type = {
@@ -36,10 +36,13 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			autoLoad: false,
 			proxy: {
 				type: 'ajax',
-				url: '/idatabase/data/statistics',
+				url: '/idatabase/data/statistic',
 				timeout: 300000,
 				extraParams: {
-					_id: statistics_id
+					action : 'statistic',
+					statistic_id: statistics_id,
+					__PROJECT_ID__: this.__PROJECT_ID__,
+					__COLLECTION_ID__: this.__COLLECTION_ID__
 				},
 				reader: {
 					type: 'json',
@@ -48,7 +51,9 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				}
 			}
 		});
-
+		store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
+		store.load();
+		
 		var items = {
 			xtype: 'chart',
 			style: 'background:#fff',
@@ -73,7 +78,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				type: 'Category',
 				position: 'bottom',
 				fields: ['_id'],
-				title: statistics.get('xAxis')
+				title: statistics.get('xAxisTitle')
 			}],
 			series: [{
 				type: statistics.get('seriesType'),
@@ -100,12 +105,13 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 	},
 	listeners: {
 		afterrender: function(win) {
+/*
 			var mask = new Ext.LoadMask(win, {
 				autoShow: true,
 				msg: "统计中...",
 				useMsg: true
 			});
-/*
+
 			var chart = win.down('chart');
 			chart.store.load(function() {
 				mask.hide();

@@ -790,7 +790,7 @@ function myMongoId($var = null)
             try {
                 return new MongoId($var);
             } catch (Exception $e) {
-                fb(exceptionMsg($e),'LOG');
+                fb(exceptionMsg($e), 'LOG');
                 return new MongoId();
             }
         }
@@ -840,8 +840,8 @@ function convertVarNameWithDot(&$array)
 function formatData($value, $type = 'textfield', $key = null)
 {
     switch ($type) {
-    	case '_idfield':
-    	    break;
+        case '_idfield':
+            break;
         case 'numberfield':
             $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
             break;
@@ -908,7 +908,7 @@ function formatData($value, $type = 'textfield', $key = null)
 
 /**
  * 签名算法，输出结果看似为MD5 实际算法为SHA1截取字符，有pow(2,32)个sha1 hash值有此校验值，用以确保数据安全性。
- * 
+ *
  * @param array $datas            
  * @param string $key            
  * @return string
@@ -919,17 +919,18 @@ function dataSignAlgorithm($datas, $key)
     return substr(sha1(http_build_query($datas . $key)), 0, 32);
 }
 
-
 /**
  * 构建集合名称
- * @param mixed $_id
+ * 
+ * @param mixed $_id            
  * @return string
  */
-function iCollectionName($_id) {
-    if($_id instanceof MongoId)
+function iCollectionName($_id)
+{
+    if ($_id instanceof MongoId)
         $_id = $_id->__toString();
-    if(empty($_id))
+    if (empty($_id))
         throw new \Exception('集合_id不能为空');
     
-    return 'idatabase_collection_'.$_id;
+    return 'idatabase_collection_' . $_id;
 }

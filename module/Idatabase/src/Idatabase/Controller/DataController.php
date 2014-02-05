@@ -40,6 +40,13 @@ class DataController extends Action
     private $_collection;
 
     /**
+     * 读取统计信息集合的mongocollection实例
+     *
+     * @var object
+     */
+    private $_statistic;
+
+    /**
      * 当前集合所属项目
      *
      * @var string
@@ -169,6 +176,7 @@ class DataController extends Action
         $this->_plugin_structure = $this->model('Idatabase\Model\PluginStructure');
         $this->_order = $this->model('Idatabase\Model\Order');
         $this->_mapping = $this->model('Idatabase\Model\Mapping');
+        $this->_statistic = $this->model('Idatabase\Model\Statistic');
         
         // 检查必要的参数
         if (empty($this->_project_id)) {
@@ -306,12 +314,11 @@ class DataController extends Action
      */
     public function statisticAction()
     {
-        $action = $this->params()->fromPost('action', null);
-        $statistic_id = $this->params()->froPost('statistic_id', null);
+        $action = $this->params()->fromQuery('action', null);
+        $statistic_id = $this->params()->fromQuery('statistic_id', null);
         
-        $query = array();
-        if ($action == 'statistic') {
-            $query = $this->searchCondition();
+        if ($action !== 'statistic') {
+            return $this->msg(false, '$action is not statistic');
         }
         
         if (empty($statistic_id)) {
@@ -319,11 +326,14 @@ class DataController extends Action
         }
         
         $info = $this->_statistic->findOne(array(
-            'statistic_id' => $statistic_id
+            '_id' => myMongoId($statistic_id)
         ));
         if ($info == null) {
             return $this->msg(false, '统计方法不存在');
         }
+        
+        $query = array();
+        $query = $this->searchCondition();
         
         $map = "function(){
             var xAxisField = this.{$info['xAxisField']};  
@@ -332,12 +342,12 @@ class DataController extends Action
             var rst = {
                total : !isNaN(yAxisField) ? yAxisField : 0,
                count : yAxisField!==undefined ? 1 : 0,
-               max : Number.NEGATIVE_INFINITY
-               min : Number.POSITIVE_INFINITY
+               max : Number.NEGATIVE_INFINITY,
+               min : Number.POSITIVE_INFINITY,
                val : [yAxisField]
             };
 
-            if(xField==undefined) {
+            if(xAxisField==undefined ||yAxisField==undefined) {
                 key = '__OTHERS__';
                 return emit(key,rst);
             }
@@ -362,7 +372,7 @@ class DataController extends Action
                 }
             }
             
-            swicth('{$info['xAxisType']}') {
+            switch('{$info['xAxisType']}') {
                 case 'range':
                     var	options = [
                         0,
@@ -402,48 +412,52 @@ class DataController extends Action
               var rst = {
                    total : 0,
                    count : 0,
-                   max : Number.NEGATIVE_INFINITY
-                   min : Number.POSITIVE_INFINITY
+                   max : Number.NEGATIVE_INFINITY,
+                   min : Number.POSITIVE_INFINITY,
                    val : []
               };
 
-              
-              for(var idx = values.length; idx >=0 ; idx--) {  
-                  if('{$info['yAxisType']}'=='count') {
+              var yAxisType = '{$info['yAxisType']}';
+              print(yAxisType);
+              printjson(values);
+              for(var idx = values.length; idx >0 ; idx--) {  
+                  if(yAxisType=='count') {
+                      printjson(values[idx]);
+                      print(idx);
                       rst.count += values[idx].count;
-                  } else if('{$info['yAxisType']}'=='sum') {
+                  } else if(yAxisType=='sum') {
                       rst.total += values[idx].total;
-                  } else if('{$info['yAxisType']}'=='max') {
+                  } else if(yAxisType=='max') {
                       if(rst.max==undefined)
                           rst.max = values[idx].max;
                       else if(rst.max <= values[idx].max) {
                           rst.max = values[idx].max;
                       }
-                  } else if('{$info['yAxisType']}'=='min') {
+                  } else if(yAxisType=='min') {
                       if(rst.min==undefined) {
                           rst.min = values[idx].min;
                       }
                       else if(rst.min >= values[idx].min) {
                           rst.min = values[idx].min;
                       }
-                  } else if('{$info['yAxisType']}'=='unique') {
+                  } else if(yAxisType=='unique') {
                       values[idx].val.forEach(function(v,i){
                           rst.val.push(v);
                       });   
-                  } else if('{$info['yAxisType']}'=='avg') {
+                  } else if(yAxisType=='avg') {
                       rst.total += values[idx].total;
                       rst.count += values[idx].count;
-                  } else if('{$info['yAxisType']}'=='median') {
+                  } else if(yAxisType=='median') {
                       values[idx].val.forEach(function(v,i){
                           rst.val.push(v);
                       });
-                  } else if('{$info['yAxisType']}'=='variance') {
+                  } else if(yAxisType=='variance') {
                       rst.total += values[idx].total;
                       rst.count += values[idx].count;
                       values[idx].val.forEach(function(v,i){
                           rst.val.push(v);
                       });
-                  } else if('{$info['yAxisType']}'=='standard') {
+                  } else if(yAxisType=='standard') {
                       rst.total += values[idx].total;
                       rst.count += values[idx].count;
                       values[idx].val.forEach(function(v,i){
@@ -458,20 +472,20 @@ class DataController extends Action
             var rst = 0;
             var uniqueData = [];
             var uniqueNumber = 0;
-                    
-            if('{$info['yAxisType']}'=='count') {
+            var yAxisType = '{$info['yAxisType']}';  
+            if(yAxisType=='count') {
                 rst = reducedValue.count;
             }
-            else if('{$info['yAxisType']}'=='sum') {
+            else if(yAxisType=='sum') {
                 rst = reducedValue.total;
             }
-            else if('{$info['yAxisType']}'=='max') {
+            else if(yAxisType=='max') {
                 rst = reducedValue.max;
             }
-            else if('{$info['yAxisType']}'=='min') {
+            else if(yAxisType=='min') {
                 rst = reducedValue.min;
             }
-            else if('{$info['yAxisType']}'=='unique') {
+            else if(yAxisType=='unique') {
                 reducedValue.val.forEach(function(v,i){
                     if(uniqueData.indexOf(v)===-1) {
                         uniqueNumber += 1;
@@ -480,15 +494,15 @@ class DataController extends Action
                 });
                 rst = uniqueNumber;
             }
-            else if('{$info['yAxisType']}'=='avg') {
+            else if(yAxisType=='avg') {
                 rst = Math.round(reducedValue.total / reducedValue.count,2);
             }
-            else if('{$info['yAxisType']}'=='median') {
+            else if(yAxisType=='median') {
                 reducedValue.val.sort(function(a,b){return a>b?1:-1});
                 var length = reducedValue.val.length;
                 rst = reducedValue.val[(length%2==1 ? Math.floor(length/2)+1 : Math.floor(length/2))];
             }
-            else if('{$info['yAxisType']}'=='variance') {
+            else if(yAxisType=='variance') {
                 var avg = Math.round(reducedValue.total / reducedValue.count,2);
                 var squared_Diff = 0;
                 for(var i=reducedValue.val.length;i>=0;i--) {
@@ -497,7 +511,7 @@ class DataController extends Action
                 }
                 rst = squared_Diff/(values.length);
             }
-            else if('{$info['yAxisType']}'=='standard') {
+            else if(yAxisType=='standard') {
                 var avg = Math.round(reducedValue.total / reducedValue.count,2);
                 var squared_Diff = 0;
                 for(var i=reducedValue.val.length;i>=0;i--) {
@@ -510,13 +524,29 @@ class DataController extends Action
         }";
         
         $rst = $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
-        if ($rst === false) {
-            return $this->msg(false, '前次统计尚未执行完成，请勿频繁进行大数据量统计或者请稍后重试');
+        if ($rst['ok'] === 0) {
+            switch ($rst['code']) {
+                case 500:
+                    return $this->deny('根据查询条件，未检测到有效的统计数据');
+                    break;
+                case 501:
+                    return $this->deny('MapReduce执行失败，原因：'.$rst['msg']);
+                    break;
+                case 502:
+                    return $this->deny('程序正在执行中，请勿频繁尝试');
+                    break;
+                case 503:
+                    return $this->deny('程序异常：'.$rst['msg']);
+                    break;
+            }
         }
         
         if (! $rst instanceof MongoCollection) {
             throw new \Exception('$rst不是MongoCollection的子类实例');
         }
+        
+        $datas = $rst->findAll(array());
+        return $this->rst($datas, 0, true);
     }
 
     /**

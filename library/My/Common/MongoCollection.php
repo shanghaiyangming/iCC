@@ -81,6 +81,8 @@ class MongoCollection extends \MongoCollection
         '$isolated'
     );
 
+    private $_noAppendQuery = false;
+
     const timeout = 6000000;
 
     const fsync = false;
@@ -168,6 +170,11 @@ class MongoCollection extends \MongoCollection
         $this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
     }
 
+    public function setNoAppendQuery($boolean)
+    {
+        $this->_noAppendQuery = is_bool($boolean) ? $boolean : false;
+    }
+
     /**
      * 检测是简单查询还是复杂查询，涉及复杂查询采用$and方式进行处理，简单模式采用连接方式进行处理
      *
@@ -179,6 +186,10 @@ class MongoCollection extends \MongoCollection
         if (! is_array($query)) {
             $query = array();
         }
+        if ($this->_noAppendQuery) {
+            return $query;
+        }
+        
         $keys = array_keys($query);
         $intersect = array_intersect($keys, $this->_queryHaystack);
         if (! empty($intersect)) {
@@ -344,7 +355,7 @@ class MongoCollection extends \MongoCollection
      * @param array $fields            
      * @return array
      */
-    public function findAll($query, $sort = array('_id'=>-1), $skip = 0, $limit = 0, $fields = array())
+    public function findAll($query, $sort = array('$natural'=>1), $skip = 0, $limit = 0, $fields = array())
     {
         $cursor = $this->find($this->appendQuery($query), $fields);
         if (! $cursor instanceof \MongoCursor)
@@ -671,10 +682,11 @@ class MongoCollection extends \MongoCollection
     public function mapReduce($map, $reduce, $query = array(), $finalize = null, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
     {
         $out = md5(serialize(func_get_args()));
+        fb(func_get_args(), 'LOG');
         try {
             // map reduce执行锁管理开始
             $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
-            $locks->setReadPreference(MongoClient::RP_PRIMARY_PREFERRED);
+            $locks->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
             
             $checkLock = function ($out) use($locks)
             {
@@ -691,12 +703,11 @@ class MongoCollection extends \MongoCollection
                 } else {
                     if (isset($check['isRunning']) && $check['isRunning']) {
                         return true;
-                    }
-                    if (isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
-                        if ($check['expire']->sec > time())
-                            return true;
-                    }
-                    
+                    } else 
+                        if (isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
+                            if ($check['expire']->sec > time())
+                                return true;
+                        }
                     $locks->update(array(
                         'out' => $out
                     ), array(
@@ -709,7 +720,7 @@ class MongoCollection extends \MongoCollection
                 }
             };
             
-            $releaseLock = function ($out, $rst = null) use($lock)
+            $releaseLock = function ($out, $rst = null) use($locks)
             {
                 return $locks->update(array(
                     'out' => $out
@@ -720,6 +731,18 @@ class MongoCollection extends \MongoCollection
                     )
                 ));
             };
+            
+            $failure = function ($code, $msg)
+            {
+                if(is_array($msg)) {
+                    $msg = Json::encode($msg);
+                }
+                return array(
+                    'ok' => 0,
+                    'code' => $code,
+                    'msg' => $msg
+                );
+            };
             // map reduce执行锁管理结束
             
             if (! $checkLock($out)) {
@@ -727,7 +750,8 @@ class MongoCollection extends \MongoCollection
                 $command['mapReduce'] = $this->_collection;
                 $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
                 $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
-                $command['query'] = $query;
+                $command['query'] = $this->appendQuery($query);
+                
                 if (! empty($finalize))
                     $command['finalize'] = ($finalize instanceof \MongoCode) ? $finalize : new \MongoCode($finalize);
                 if (! empty($sort))
@@ -751,26 +775,35 @@ class MongoCollection extends \MongoCollection
                     $method => $out,
                     'db' => DB_MAPREDUCE,
                     'sharded' => false,
-                    'nonAtomic' => true
+                    'nonAtomic' => in_array($method, array(
+                        'merge',
+                        'reduce'
+                    ), true) ? true : false
                 );
                 $rst = $this->command($command);
                 $releaseLock($out, $rst);
                 
                 if ($rst['ok'] == 1) {
-                    return new self($this->_configInstance, $out, DB_MAPREDUCE, $this->_cluster);
+                    if ($rst['counts']['emit'] > 0 && $rst['counts']['output'] > 0) {
+                        $outMongoCollection = new self($this->_configInstance, $out, DB_MAPREDUCE, $this->_cluster);
+                        $outMongoCollection->setNoAppendQuery(true);
+                        return $outMongoCollection;
+                    }
+                    fb(Json::encode($rst['counts']), 'LOG');
+                    return $failure(500,$rst['counts']);
                 } else {
                     fb($command, 'LOG');
                     fb($rst, 'LOG');
-                    throw new \Exception(Json::encode($rst));
+                    return $failure(501,$rst);
                 }
             } else {
                 fb('程序正在执行中，请勿频繁尝试', 'LOG');
-                return false;
+                return $failure(502,'程序正在执行中，请勿频繁尝试');
             }
         } catch (\Exception $e) {
             fb($command, 'LOG');
             $releaseLock($out, exceptionMsg($e));
-            throw new \Exception(exceptionMsg($e));
+            return $failure(503,exceptionMsg($e));
         }
     }
 
