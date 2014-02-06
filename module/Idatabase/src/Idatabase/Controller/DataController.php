@@ -339,12 +339,13 @@ class DataController extends Action
             var xAxisType = '{$info['xAxisType']}';
             var xAxisField = this.{$info['xAxisField']};  
             var yAxisField = this.{$info['yAxisField']};  
+            var xAxisTitle = '{$info['xAxisTitle']}'; 
             var key = '';
             var rst = {
                total : !isNaN(yAxisField) ? yAxisField : 0,
                count : yAxisField!==undefined ? 1 : 0,
-               max : Number.NEGATIVE_INFINITY,
-               min : Number.POSITIVE_INFINITY,
+               max : !isNaN(yAxisField) ? yAxisField : Number.NEGATIVE_INFINITY,
+               min : !isNaN(yAxisField) ? yAxisField : Number.POSITIVE_INFINITY,
                val : [yAxisField]
             };
 
@@ -375,7 +376,7 @@ class DataController extends Action
             
             switch(xAxisType) {
                 case 'total':
-                     key = 'Total';
+                     key = xAxisTitle;
                      break;
                 case 'range':
                     var	options = [
@@ -501,25 +502,29 @@ class DataController extends Action
             else if(yAxisType=='median') {
                 reducedValue.val.sort(function(a,b){return a>b?1:-1});
                 var length = reducedValue.val.length;
-                rst = reducedValue.val[(length%2==1 ? Math.floor(length/2)+1 : Math.floor(length/2))];
+                rst = reducedValue.val[(length%2==1 ? Math.floor(length/2) : Math.floor(length/2))];
             }
             else if(yAxisType=='variance') {
                 var avg = Math.round(reducedValue.total / reducedValue.count,2);
                 var squared_Diff = 0;
-                for(var i=reducedValue.val.length;i>=0;i--) {
+                var length = reducedValue.val.length;
+                for(var i=0;i<length;i++) {
                     var deviation = reducedValue.val[i] - avg;
                     squared_Diff += deviation * deviation;
                 }
-                rst = squared_Diff/(values.length);
+                print(squared_Diff);
+                print(length);
+                rst = Math.round(squared_Diff/length,2);
             }
             else if(yAxisType=='standard') {
                 var avg = Math.round(reducedValue.total / reducedValue.count,2);
                 var squared_Diff = 0;
-                for(var i=reducedValue.val.length;i>=0;i--) {
+                var length = reducedValue.val.length;
+                for(var i=0;i<length;i++) {
                     var deviation = reducedValue.val[i] - avg;
                     squared_Diff += deviation * deviation;
                 }
-                rst = Math.sqrt(squared_Diff/(values.length));
+                rst = Math.round(Math.sqrt(squared_Diff/length),2);
             }
             return rst;
         }";

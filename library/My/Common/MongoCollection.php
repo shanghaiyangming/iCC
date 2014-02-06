@@ -27,33 +27,77 @@ use Zend\Json\Json;
 class MongoCollection extends \MongoCollection
 {
 
+    /**
+     * 连接的集合名称
+     * @var string
+     */
     private $_collection = '';
 
+    /**
+     * 连接的数据库名称，默认为系统默认数据库
+     * @var string
+     */
     private $_database = DEFAULT_DATABASE;
 
+    /**
+     * 连接集群的名称，模拟人生为系统默认集合
+     * @var string
+     */
     private $_cluster = DEFAULT_CLUSTER;
 
+    /**
+     * 集合操作参数
+     * @var array
+     */
     private $_collectionOptions = NULL;
 
+    /**
+     * 当前数据库连接实例
+     * @var object
+     */
     private $_db;
 
+    /**
+     * 管理数据连接实例
+     * @var object
+     */
     private $_admin;
 
+    /**
+     * 备份数据库连接实例
+     * @var object
+     */
     private $_backup;
 
+    /**
+     * mapreduce保存数据的数据库连接实例
+     * @var object
+     */
     private $_mapreduce;
 
+    /**
+     * 相关数据库配置参数的数组
+     * @var array
+     */
     private $_config;
 
+    /**
+     * 相关数据库配置参数的Config实例
+     * @var Config
+     */
     private $_configInstance;
 
     /**
-     * GridFS
+     * GridFS连接实例
      *
      * @var MongoGridFS
      */
     private $_fs;
 
+    /**
+     * 查询操作列表
+     * @var array
+     */
     private $_queryHaystack = array(
         '$and',
         '$or',
@@ -62,6 +106,10 @@ class MongoCollection extends \MongoCollection
         '$where'
     );
 
+    /**
+     * 更新操作列表
+     * @var array
+     */
     private $_updateHaystack = array(
         '$set',
         '$inc',
@@ -81,20 +129,57 @@ class MongoCollection extends \MongoCollection
         '$isolated'
     );
 
+    /**
+     * 是否开启追加参数__REMOVED__:true
+     * @var boolean
+     */
     private $_noAppendQuery = false;
 
+    /**
+     * 超时时间
+     * @var int
+     */
     const timeout = 6000000;
 
+    /**
+     * 强制同步写入操作
+     * @var boolean
+     */
     const fsync = false;
 
+    /**
+     * 是否开启更新不存在插入数据
+     * @var boolean
+     */
     const upsert = false;
 
+    /**
+     * 允许更改多项
+     * @var boolean
+     */
     const multiple = true;
 
+    /**
+     * 仅此一项
+     * @var boolean
+     */
     const justOne = false;
 
+    /**
+     * 开启调试模式
+     * @var boolean
+     */
     const debug = false;
 
+    /**
+     * 构造函数
+     * @param Config $config 
+     * @param string $collection
+     * @param string $database
+     * @param string $cluster
+     * @param string $collectionOptions
+     * @throws \Exception
+     */
     public function __construct(Config $config, $collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER, $collectionOptions = null)
     {
         // 检测是否加载了FirePHP
@@ -170,6 +255,10 @@ class MongoCollection extends \MongoCollection
         $this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
     }
 
+    /**
+     * 是否开启追加模式
+     * @param boolean $boolean
+     */
     public function setNoAppendQuery($boolean)
     {
         $this->_noAppendQuery = is_bool($boolean) ? $boolean : false;

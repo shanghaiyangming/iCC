@@ -71,6 +71,10 @@ class Database
         }
         return false;
     }
+    
+    public function name() {
+        
+    }
 
     public function __destruct()
     {}

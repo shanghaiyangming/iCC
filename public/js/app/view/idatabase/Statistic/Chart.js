@@ -39,7 +39,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				url: '/idatabase/data/statistic',
 				timeout: 300000,
 				extraParams: {
-					action : 'statistic',
+					action: 'statistic',
 					statistic_id: statistics_id,
 					__PROJECT_ID__: this.__PROJECT_ID__,
 					__COLLECTION_ID__: this.__COLLECTION_ID__
@@ -53,7 +53,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 		});
 		store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
 		store.load();
-		
+
 		var items = {
 			xtype: 'chart',
 			style: 'background:#fff',
