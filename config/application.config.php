@@ -6,7 +6,8 @@ return array(
     'modules' => array(
         'Application',
         'Idatabase',
-        'Logs'
+        'Logs',
+        'ReactZF'
     ),
     
     // These are various options for the listeners attached to the ModuleManager

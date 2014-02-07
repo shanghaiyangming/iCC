@@ -312,7 +312,6 @@ Ext.define('icc.controller.idatabase.Data', {
 					form.getFields().each(function(items, index) {
 						if (items.xtype != 'hiddenfield') {
 							delete store.proxy.extraParams[items.name];
-							console.info(items.name);
 						}
 					});
 
@@ -336,7 +335,11 @@ Ext.define('icc.controller.idatabase.Data', {
 							button.setDisabled(false);
 						}, 3000);
 					}
-					store.load();
+					store.load(function(records, operation, success) {
+						if (success) {
+							button.setDisabled(false);
+						}
+					});
 				}
 			}
 		};

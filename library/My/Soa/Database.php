@@ -57,12 +57,12 @@ class Database
      *            随机数,建议保持一定的长度（10位以上，可以考虑Unix时间戳）
      * @param string $sign
      *            签名算法:md5($project_id.$rand.$sign) 请转化为长度为32位的16进制字符串
-     * @return bool
+     * @return boolean
      */
-    public function authenticate($project_id, $key_id, $rand, $sign)
+    public function authenticate($project_id, $rand, $sign, $key_id = 'default')
     {
         $this->_project_id = $project_id;
-        $info = $this->getProjectInfo($project_id);
+        $info = $this->getKeysInfo($project_id);
         
         if (md5($project_id . $rand . $info['password']) == strtolower($sign)) {
             $this->_verify = true;
@@ -72,9 +72,60 @@ class Database
         return false;
     }
     
-    public function name() {
+    private function getKeysInfo($key_id='default') {
         
     }
+
+    public function count()
+    {}
+
+    public function find()
+    {}
+
+    public function findOne()
+    {}
+
+    public function findAll()
+    {}
+
+    public function distinct()
+    {}
+
+    public function save()
+    {}
+
+    public function insert()
+    {}
+
+    public function batchInsert()
+    {}
+
+    public function update()
+    {}
+
+    public function remove()
+    {}
+
+    public function drop()
+    {}
+
+    public function ensureIndex()
+    {}
+
+    public function deleteIndex()
+    {}
+
+    public function deleteIndexes()
+    {}
+
+    public function findAndModify()
+    {}
+
+    public function group()
+    {}
+
+    public function aggregate()
+    {}
 
     public function __destruct()
     {}

@@ -2,7 +2,7 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	extend: 'Ext.grid.Panel',
 	alias: 'widget.idatabaseDataGrid',
 	requires: ['Ext.grid.plugin.CellEditing', 'Ext.grid.plugin.RowExpander'],
-	region: 'center',
+	region: "center",
 	border: false,
 	collapsible: false,
 	split: true,
@@ -12,7 +12,7 @@ Ext.define('icc.view.idatabase.Data.Grid', {
 	sortableColumns: false,
 	initComponent: function() {
 		Ext.apply(this, {
-			columns : this.columns,
+			columns: this.columns,
 			dockedItems: [{
 				xtype: 'toolbar',
 				dock: 'top',

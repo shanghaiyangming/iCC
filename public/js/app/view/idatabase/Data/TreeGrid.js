@@ -1,7 +1,7 @@
 Ext.define('icc.view.idatabase.Data.TreeGrid', {
 	extend: 'Ext.tree.Panel',
 	alias: 'widget.idatabaseDataTreeGrid',
-	region: 'center',
+	region: "center",
 	border: false,
 	collapsible: false,
 	split: true,

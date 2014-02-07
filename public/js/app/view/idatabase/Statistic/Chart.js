@@ -5,7 +5,6 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 	initComponent: function() {
 		var statistics = this.__STATISTIC_INFO__;
 		var extraParams = this.__EXTRAPARAMS__;
-
 		var statistics_id = statistics.get('_id');
 		var type = {
 			sum: '求和',
@@ -54,8 +53,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 		store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
 		store.load();
 
-		var items = {
-			xtype: 'chart',
+		var chart = Ext.create('Ext.chart.Chart', {
 			style: 'background:#fff',
 			store: store,
 			title: statistics.get('name'),
@@ -83,41 +81,24 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			series: [{
 				type: statistics.get('seriesType'),
 				axis: 'left',
-				highlight: false,
+				highlight: true,
 				xField: '_id',
 				yField: 'value',
 				tips: {
 					trackMouse: true,
-					width: 300,
+					width: 'auto',
 					height: 30,
+					minHeight: 30,
 					renderer: function(storeItem, item) {
-						this.setTitle(storeItem.get('_id') + '的' + type[statistics.get('yAxisType')] + '为' + storeItem.get('value'));
+						this.setTitle(storeItem.get('_id') + '的' + type[statistics.get('yAxisType')] + ':' + storeItem.get('value'));
 					}
 				}
 			}]
-		};
-
+		});
 		Ext.apply(this, {
-			items: items
+			items: chart
 		});
 
-		this.callParent(arguments);
-	},
-	listeners: {
-		afterrender: function(win) {
-/*
-			var mask = new Ext.LoadMask(win, {
-				autoShow: true,
-				msg: "统计中...",
-				useMsg: true
-			});
-
-			var chart = win.down('chart');
-			chart.store.load(function() {
-				mask.hide();
-			});
-			*/
-
-		}
+		this.callParent();
 	}
 });

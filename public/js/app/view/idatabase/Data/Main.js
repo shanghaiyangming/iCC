@@ -3,9 +3,7 @@ Ext.define('icc.view.idatabase.Data.Main', {
 	requires : [],
 	alias : 'widget.idatabaseDataMain',
 	closable : true,
-	layout : {
-		type : 'border'
-	},
+	layout : 'border',
 	initComponent : function() {
 		var plugins = [ Ext.create('Ext.grid.plugin.CellEditing', {
 			clicksToEdit : 2
