@@ -1,8 +1,10 @@
 Ext.define('icc.view.Main', {
     extend: 'Ext.container.Container',
     requires:[
+	'Ext.chart.*',
         'Ext.form.field.HtmlEditor',
         'Ext.tab.Panel',
+	'Ext.toolbar.Toolbar',
         'Ext.layout.container.Border',
         'icc.view.idatabase.Project.Grid',
         'icc.common.Form',

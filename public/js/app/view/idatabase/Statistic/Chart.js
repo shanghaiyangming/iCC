@@ -3,6 +3,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 	alias: 'widget.idatabaseStatisticChart',
 	title: '统计结果',
 	initComponent: function() {
+
 		var statistics = this.__STATISTIC_INFO__;
 		var extraParams = this.__EXTRAPARAMS__;
 		var statistics_id = statistics.get('_id');
@@ -51,7 +52,6 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			}
 		});
 		store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
-		store.load();
 
 		var chart = Ext.create('Ext.chart.Chart', {
 			style: 'background:#fff',
@@ -81,7 +81,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			series: [{
 				type: statistics.get('seriesType'),
 				axis: 'left',
-				highlight: true,
+				highlight: false,
 				xField: '_id',
 				yField: 'value',
 				tips: {
@@ -95,10 +95,27 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				}
 			}]
 		});
+
 		Ext.apply(this, {
 			items: chart
 		});
 
 		this.callParent();
+	},
+	listeners: {
+		afterrender: function(win) {
+			var mask = new Ext.LoadMask(win, {
+				autoShow: true,
+				msg: "统计中...",
+				useMsg: true
+			});
+
+			var chart = win.down('chart');
+			chart.store.load(function() {
+				mask.hide();
+				win.__BUTTON__.setDisabled(false);
+			});
+
+		}
 	}
 });

@@ -377,6 +377,7 @@ Ext.define('icc.controller.idatabase.Data', {
 								__STATISTIC_ID__: grid.__STATISTIC_ID__,
 								__STATISTIC_INFO__: records[0],
 								__EXTRAPARAMS__: form.getValues(false, true),
+								__BUTTON__ : button,
 								width: 640,
 								height: 480
 							});
