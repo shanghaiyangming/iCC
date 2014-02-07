@@ -7,6 +7,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 		var statistics = this.__STATISTIC_INFO__;
 		var extraParams = this.__EXTRAPARAMS__;
 		var statistics_id = statistics.get('_id');
+		var seriesType = statistics.get('seriesType');
 		var type = {
 			sum: '求和',
 			avg: '均值',
@@ -53,49 +54,91 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 		});
 		store.proxy.extraParams = Ext.Object.merge(store.proxy.extraParams, extraParams);
 
-		var chart = Ext.create('Ext.chart.Chart', {
-			style: 'background:#fff',
-			store: store,
-			title: statistics.get('name'),
-			axes: [{
-				type: 'Numeric',
-				minimum: 0,
-				position: 'left',
-				fields: ['value'],
-				title: statistics.get('yAxisTitle'),
-				minorTickSteps: 1,
-				grid: {
-					odd: {
-						opacity: 1,
-						fill: '#ddd',
-						stroke: '#bbb',
-						'stroke-width': 0.5
+		if (seriesType !== 'pie') {
+			var chart = Ext.create('Ext.chart.Chart', {
+				style: 'background:#fff',
+				store: store,
+				title: statistics.get('name'),
+				axes: [{
+					type: 'Numeric',
+					minimum: 0,
+					position: 'left',
+					fields: ['value'],
+					title: statistics.get('yAxisTitle'),
+					minorTickSteps: 1,
+					grid: {
+						odd: {
+							opacity: 1,
+							fill: '#ddd',
+							stroke: '#bbb',
+							'stroke-width': 0.5
+						}
 					}
-				}
-			}, {
-				type: 'Category',
-				position: 'bottom',
-				fields: ['_id'],
-				title: statistics.get('xAxisTitle')
-			}],
-			series: [{
-				type: statistics.get('seriesType'),
-				axis: 'left',
-				highlight: false,
-				xField: '_id',
-				yField: 'value',
-				tips: {
-					trackMouse: true,
-					width: 'auto',
-					height: 30,
-					minHeight: 30,
-					renderer: function(storeItem, item) {
-						this.setTitle(storeItem.get('_id') + '的' + type[statistics.get('yAxisType')] + ':' + storeItem.get('value'));
+				}, {
+					type: 'Category',
+					position: 'bottom',
+					fields: ['_id'],
+					title: statistics.get('xAxisTitle')
+				}],
+				series: [{
+					type: statistics.get('seriesType'),
+					axis: 'left',
+					highlight: false,
+					xField: '_id',
+					yField: 'value',
+					tips: {
+						trackMouse: true,
+						width: 'auto',
+						height: 30,
+						minHeight: 30,
+						renderer: function(storeItem, item) {
+							this.setTitle(storeItem.get('_id') + '的' + type[statistics.get('yAxisType')] + ':' + storeItem.get('value'));
+						}
 					}
-				}
-			}]
-		});
-
+				}]
+			});
+		} else {
+			var chart = Ext.create('Ext.chart.Chart', {
+				xtype: 'chart',
+				animate: true,
+				store: store,
+				shadow: true,
+				legend: {
+					position: 'right'
+				},
+				insetPadding: 60,
+				theme: 'Base:gradients',
+				series: [{
+					type: 'pie',
+					field: 'value',
+					showInLegend: true,
+					donut: true,
+					tips: {
+						trackMouse: true,
+						width: 140,
+						height: 28,
+						renderer: function(storeItem, item) {
+							var total = 0;
+							store.each(function(rec) {
+								total += rec.get('value');
+							});
+							this.setTitle(storeItem.get('_id') + ': ' + Math.round(storeItem.get('value') / total * 100, 2) + '%');
+						}
+					},
+					highlight: {
+						segment: {
+							margin: 20
+						}
+					},
+					label: {
+						field: 'value',
+						display: 'rotate',
+						contrast: true,
+						font: '18px Arial'
+					}
+				}]
+			});
+		}
 		Ext.apply(this, {
 			items: chart
 		});

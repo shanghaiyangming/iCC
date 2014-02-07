@@ -5,6 +5,7 @@ Ext.define('icc.view.idatabase.Data.Search', {
 	region : 'east',
 	collapsible : true,
 	collapsed : true,
+	animCollapse: false,
 	border : true,
 	frame : false,
 	autoScroll : true,

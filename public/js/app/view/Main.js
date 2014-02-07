@@ -1,6 +1,7 @@
 Ext.define('icc.view.Main', {
     extend: 'Ext.container.Container',
     requires:[
+	'Ext.*',
 	'Ext.chart.*',
         'Ext.form.field.HtmlEditor',
         'Ext.tab.Panel',
