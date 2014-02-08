@@ -563,6 +563,8 @@ class DataController extends Action
             throw new \Exception('$rst不是MongoCollection的子类实例');
         }
         
+        $outCollectionName = $rst->getName();//输出集合名称
+        
         if ($export) {
             $datas = $rst->findAll(array());
             $excel = array();
