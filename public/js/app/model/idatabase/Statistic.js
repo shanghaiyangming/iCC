@@ -34,6 +34,21 @@ Ext.define('icc.model.idatabase.Statistic', {
 		name : 'seriesYField',
 		type : 'string'
 	}, {
+		name : 'maxShowNumber',
+		type : 'int'
+	}, {
+		name : 'isDashboard',
+		type : 'boolean'
+	}, {
+		name : 'dashboardQuery',
+		type : 'string'
+	}, {
+		name : 'statisticPeriod',
+		type : 'int'
+	}, {
+		name : 'colspan',
+		type : 'int'
+	}, {
 		name : 'interval',
 		type : 'int'
 	}, {

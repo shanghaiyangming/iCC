@@ -316,7 +316,7 @@ class DataController extends Action
     {
         $action = $this->params()->fromQuery('action', null);
         $export = filter_var($this->params()->fromQuery('export', false));
-        $statistic_id = $this->params()->fromQuery('statistic_id', null);
+        $statistic_id = $this->params()->fromQuery('__STATISTIC_ID__', null);
         
         if ($action !== 'statistic') {
             return $this->msg(false, '$action is not statistic');

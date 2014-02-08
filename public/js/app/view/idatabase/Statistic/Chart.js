@@ -41,7 +41,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				timeout: 300000,
 				extraParams: {
 					action: 'statistic',
-					statistic_id: statistics_id,
+					__STATISTIC_ID__: statistics_id,
 					__PROJECT_ID__: this.__PROJECT_ID__,
 					__COLLECTION_ID__: this.__COLLECTION_ID__
 				},
@@ -139,8 +139,20 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 				}]
 			});
 		}
+
+
 		Ext.apply(this, {
-			items: chart
+			items: chart,
+			dockedItems: [{
+				xtype: 'toolbar',
+				dock: 'top',
+				items: [{
+					xtype: 'button',
+					text: '导出',
+					iconCls: 'excel',
+					action: 'statisticExport'
+				}]
+			}]
 		});
 
 		this.callParent();

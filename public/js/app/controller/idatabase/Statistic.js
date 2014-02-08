@@ -1,8 +1,8 @@
 Ext.define('icc.controller.idatabase.Statistic', {
     extend: 'Ext.app.Controller',
     models: ['idatabase.Statistic'],
-    stores: ['idatabase.Statistic.Period','idatabase.Statistic.Type', 'idatabase.Statistic', 'idatabase.Statistic.One', 'idatabase.Statistic.Series', 'idatabase.Statistic.Axis', 'idatabase.Statistic.Method'],
-    views: ['idatabase.Statistic.Combobox.Period','idatabase.Statistic.Combobox.Type', 'idatabase.Statistic.Combobox.Series', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Combobox.Method', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Window', 'idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit', 'idatabase.Statistic.Chart'],
+    stores: ['idatabase.Statistic.Period', 'idatabase.Statistic.Type', 'idatabase.Statistic', 'idatabase.Statistic.One', 'idatabase.Statistic.Series', 'idatabase.Statistic.Axis', 'idatabase.Statistic.Method'],
+    views: ['idatabase.Statistic.Combobox.Period', 'idatabase.Statistic.Combobox.Type', 'idatabase.Statistic.Combobox.Series', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Combobox.Method', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Window', 'idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit', 'idatabase.Statistic.Chart'],
     controllerName: 'idatabaseStatistic',
     actions: {
         add: '/idatabase/statistic/add',
@@ -189,6 +189,26 @@ Ext.define('icc.controller.idatabase.Statistic', {
                 }
             }
         };
+
+        listeners['idatabaseStatisticChart button[action=statisticExport]'] = {
+            click: function(button) {
+                var win = button.up('window');
+                var statistics = win.__STATISTIC_INFO__;
+                var extraParams = win.__EXTRAPARAMS__;
+                var statistics_id = statistics.get('_id');
+                var params = {
+                    'action': 'statistic',
+                    'export': true,
+                    '__STATISTIC_ID__': statistics_id,
+                    '__PROJECT_ID__': win.__PROJECT_ID__,
+                    '__COLLECTION_ID__': win.__COLLECTION_ID__
+                };
+
+                params = Ext.Object.merge(params, win.__EXTRAPARAMS__);
+                window.location.href = '/idatabase/data/statistic?' + Ext.Object.toQueryString(params);
+            }
+        };
+
 
         me.control(listeners);
         return true;
