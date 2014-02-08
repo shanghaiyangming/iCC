@@ -98,7 +98,12 @@ class StatisticController extends Action
         $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
-        $interval = intval($this->params()->fromPost('interval', 300));
+        $maxShowNumber = intval($this->params()->fromPost('maxShowNumber', 100));//显示最大数量，防止饼状图太多
+        $isDashboard = filter_var($this->params()->fromPost('isDashboard', null),FILTER_VALIDATE_BOOLEAN);//是否显示在控制面板
+        $dashboardQuery = trim($this->params()->fromPost('dashboardQuery', ''));//控制面板附加查询条件
+        $statisticPeriod = intval($this->params()->fromPost('statisticPeriod', 24*3600));//控制面板显示周期
+        $colspan = intval($this->params()->fromPost('colspan', 1));//行显示是否合并
+        $interval = intval($this->params()->fromPost('interval', 3600));//统计执行间隔
         
         if ($name == null) {
             return $this->msg(false, '请填写统计名称');
@@ -157,7 +162,12 @@ class StatisticController extends Action
         
         $datas['seriesXField'] = $xAxisField; // 用于x轴显示
         $datas['seriesYField'] = $yAxisField; // 用于y轴显示
+        $datas['maxShowNumber'] = $maxShowNumber;
         
+        $datas['isDashboard'] = $isDashboard;
+        $datas['dashboardQuery'] = $dashboardQuery;
+        $datas['statisticPeriod'] = $statisticPeriod;
+        $datas['colspan'] = $colspan;
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
@@ -188,7 +198,13 @@ class StatisticController extends Action
         $xAxisField = trim($this->params()->fromPost('xAxisField', ''));
         $seriesType = trim($this->params()->fromPost('seriesType', ''));
         $seriesField = trim($this->params()->fromPost('seriesField', '')); // 用于pie
-        $interval = intval($this->params()->fromPost('interval', 300));
+        $maxShowNumber = intval($this->params()->fromPost('maxShowNumber', 100));//显示最大数量，防止饼状图太多
+        $isDashboard = filter_var($this->params()->fromPost('isDashboard', null),FILTER_VALIDATE_BOOLEAN);//是否显示在控制面板
+        $dashboardQuery = trim($this->params()->fromPost('dashboardQuery', ''));//控制面板附加查询条件
+        $statisticPeriod = intval($this->params()->fromPost('statisticPeriod', 24*3600));//控制面板显示周期
+        $colspan = intval($this->params()->fromPost('colspan', 1));//行显示是否合并
+        $interval = intval($this->params()->fromPost('interval', 3600));//统计执行间隔
+        
         
         if ($name == null) {
             return $this->msg(false, '请填写统计名称');
@@ -247,7 +263,12 @@ class StatisticController extends Action
         
         $datas['seriesXField'] = $xAxisField; // 用于x轴显示
         $datas['seriesYField'] = $yAxisField; // 用于y轴显示
+        $datas['maxShowNumber'] = $maxShowNumber;
         
+        $datas['isDashboard'] = $isDashboard;
+        $datas['dashboardQuery'] = $dashboardQuery;
+        $datas['statisticPeriod'] = $statisticPeriod;
+        $datas['colspan'] = $colspan;
         $datas['interval'] = $interval;
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);

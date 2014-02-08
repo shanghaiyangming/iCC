@@ -1,8 +1,8 @@
 Ext.define('icc.controller.idatabase.Statistic', {
     extend: 'Ext.app.Controller',
     models: ['idatabase.Statistic'],
-    stores: ['idatabase.Statistic.Type', 'idatabase.Statistic', 'idatabase.Statistic.One', 'idatabase.Statistic.Series', 'idatabase.Statistic.Axis', 'idatabase.Statistic.Method'],
-    views: ['idatabase.Statistic.Combobox.Type', 'idatabase.Statistic.Combobox.Series', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Combobox.Method', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Window', 'idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit', 'idatabase.Statistic.Chart'],
+    stores: ['idatabase.Statistic.Period','idatabase.Statistic.Type', 'idatabase.Statistic', 'idatabase.Statistic.One', 'idatabase.Statistic.Series', 'idatabase.Statistic.Axis', 'idatabase.Statistic.Method'],
+    views: ['idatabase.Statistic.Combobox.Period','idatabase.Statistic.Combobox.Type', 'idatabase.Statistic.Combobox.Series', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Combobox.Method', 'idatabase.Statistic.Combobox.Axis', 'idatabase.Statistic.Window', 'idatabase.Statistic.Grid', 'idatabase.Statistic.Add', 'idatabase.Statistic.Edit', 'idatabase.Statistic.Chart'],
     controllerName: 'idatabaseStatistic',
     actions: {
         add: '/idatabase/statistic/add',

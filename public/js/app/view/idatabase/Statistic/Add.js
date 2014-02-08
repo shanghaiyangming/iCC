@@ -32,6 +32,13 @@ Ext.define('icc.view.idatabase.Statistic.Add', {
 					xtype: 'idatabaseStatisticComboboxSeries',
 					name: 'seriesType'
 				}, {
+					xtype: 'numberfield',
+					name: 'maxShowNumber',
+					fieldLabel: '最大显示条数',
+					minValue: 0,
+					maxValue: 1000,
+					value: 100
+				}, {
 					xtype: 'fieldset',
 					title: '柱状图/线形图',
 					collapsed: false,
@@ -119,11 +126,11 @@ Ext.define('icc.view.idatabase.Statistic.Add', {
 					}, {
 						xtype: 'textareafield',
 						name: 'dashboardQuery',
-						fieldLabel: '统计附加查询条件'
+						fieldLabel: '统计条件'
 					}, {
-						xtype: 'textareafield',
-						name: 'dashboardQuery',
-						fieldLabel: '统计时间周期'
+						xtype: 'idatabaseStatisticComboboxPeriod',
+						name: 'statisticPeriod',
+						fieldLabel: '统计周期'
 					}, {
 						xtype: 'numberfield',
 						name: 'colspan',

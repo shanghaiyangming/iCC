@@ -34,15 +34,15 @@ Ext.define('icc.view.idatabase.Statistic.Edit', {
 					fieldLabel : '统计名称',
 					allowBlank : false
 				}, {
-					xtype : 'numberfield',
-					name : 'interval',
-					fieldLabel : '执行间隔',
-					minValue : 300,
-					maxValue : 86400,
-					value : 300
-				}, {
 					xtype : 'idatabaseStatisticComboboxSeries',
 					name : 'seriesType'
+				}, {
+					xtype: 'numberfield',
+					name: 'maxShowNumber',
+					fieldLabel: '最大显示条数',
+					minValue: 0,
+					maxValue: 1000,
+					value: 100
 				}, {
 					xtype : 'fieldset',
 					title : '柱状图/线形图',
@@ -108,6 +108,49 @@ Ext.define('icc.view.idatabase.Statistic.Edit', {
 						__PROJECT_ID__ : this.__PROJECT_ID__,
 						__COLLECTION_ID__ : this.__COLLECTION_ID__
 					} ]
+				}, {
+					xtype: 'fieldset',
+					title: '控制面板参数(可选)',
+					collapsed: false,
+					collapsible: true,
+					items: [{
+						xtype: 'radiogroup',
+						fieldLabel: '开启控制面板显示',
+						defaultType: 'radiofield',
+						layout: 'hbox',
+						items: [{
+							boxLabel: '是',
+							name: 'isDashboard',
+							inputValue: true
+						}, {
+							boxLabel: '否',
+							name: 'isDashboard',
+							inputValue: false,
+							checked: true
+						}]
+					}, {
+						xtype: 'textareafield',
+						name: 'dashboardQuery',
+						fieldLabel: '统计条件'
+					}, {
+						xtype: 'idatabaseStatisticComboboxPeriod',
+						name: 'statisticPeriod',
+						fieldLabel: '统计周期'
+					}, {
+						xtype: 'numberfield',
+						name: 'colspan',
+						fieldLabel: '合并列1-3',
+						minValue: 1,
+						maxValue: 3,
+						value: 1
+					}, {
+						xtype: 'numberfield',
+						name: 'interval',
+						fieldLabel: '计划任务执行间隔',
+						minValue: 3600,
+						maxValue: 86400,
+						value: 3600
+					}]
 				} ]
 			} ]
 		});

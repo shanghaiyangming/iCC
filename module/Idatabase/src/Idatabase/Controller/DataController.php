@@ -566,13 +566,17 @@ class DataController extends Action
         if ($export) {
             $datas = $rst->findAll(array());
             $excel = array();
-            $excel['title'] = array('键','值');
+            $excel['title'] = array(
+                '键',
+                '值'
+            );
             $excel['result'] = $datas;
-        	arrayToExcel($excel);
+            arrayToExcel($excel);
         } else {
+            $limit = intval($info['maxShowNumber']) > 0 ? intval($info['maxShowNumber']) : 100;
             $datas = $rst->findAll(array(), array(
                 'value' => - 1
-            ), 0, 100);
+            ), 0, $limit);
             return $this->rst($datas, 0, true);
         }
     }

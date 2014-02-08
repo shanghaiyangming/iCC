@@ -1,29 +1,26 @@
 Ext.define('icc.store.idatabase.Statistic.Period', {
-	extend: 'Ext.data.Store',
-	fields: ["name", "value"],
-	data: [{
-		"name": '最近24小时',
-		"value": '24hour'
-	}, {
-		"name": '最近48小时',
-		"value": '48hour'
-	}, , {
-		"name": '最近72小时',
-		"value": '72hour'
-	}, {
-		"name": '最近7天',
-		"value": '7day'
-	}, {
-		"name": '最近30天',
-		"value": '7day'
-	}, {
-		"name": '最近4周',
-		"value": '4week'
-	}, {
-		"name": '最近8周',
-		"value": '4week'
-	}, {
-		"name": '最近3月',
-		"value": '3month'
-	}]
+    extend: 'Ext.data.Store',
+    fields: ["name", "value"],
+    data: [{
+        "name": '最近24小时',
+        "value": 24*3600
+    }, {
+        "name": '最近48小时',
+        "value": 2*24*3600
+    }, {
+        "name": '最近72小时',
+        "value": 3*24*3600
+    }, {
+        "name": '最近7天',
+        "value": 7*24*3600
+    }, {
+        "name": '最近30天',
+        "value": 30*24*3600
+    }, {
+        "name": '最近2个月',
+        "value": 60*24*3600
+    }, {
+        "name": '最近3个月',
+        "value": 90*24*3600
+    }]
 });
