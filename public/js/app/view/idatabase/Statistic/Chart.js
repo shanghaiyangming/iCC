@@ -131,7 +131,7 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 						}
 					},
 					label: {
-						field: 'value',
+						field: '_id',
 						display: 'rotate',
 						contrast: true,
 						font: '18px Arial'

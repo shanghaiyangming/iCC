@@ -12,7 +12,7 @@ Ext.define('icc.store.idatabase.Statistic.Type', {
 		"value": 'hour'
 	}, {
 		"name": '按日期统计',
-		"value": 'date'
+		"value": 'day'
 	}, {
 		"name": '按月份统计',
 		"value": 'month'

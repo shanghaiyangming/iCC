@@ -315,6 +315,7 @@ class DataController extends Action
     public function statisticAction()
     {
         $action = $this->params()->fromQuery('action', null);
+        $export = filter_var($this->params()->fromQuery('export', false));
         $statistic_id = $this->params()->fromQuery('statistic_id', null);
         
         if ($action !== 'statistic') {
@@ -353,15 +354,24 @@ class DataController extends Action
                 key = '__OTHERS__';
                 return emit(key,rst);
             }
-            
-            if(xAxisType=='day' || xAxisType=='month' || xAxisType=='year') {
-                var timestamp = Date.parse(xAxisField);
-                if (isNaN(timestamp)==false) {
-                    var year = xAxisField.getFullYear();
-                    var m = xAxisField.getMonth() + 1;
-                    var month = m<10 ? '0'+m : m; 
-                    var d = xAxisField.getDate();
-                    var day = d<10 ? '0'+d : d; 
+            if(xAxisType=='hour' || xAxisType=='day' || xAxisType=='month' || xAxisType=='year') {
+                if(xAxisField!==undefined) {
+                    try {
+                        var time = new Date(xAxisField);
+                        var timeSec = time.getTime();
+                        //time = new Date();
+                        //time.setTime(timeSec+8*3600000);
+                        var year = time.getFullYear();
+                        var m = time.getMonth() + 1;
+                        var month = m<10 ? '0'+m : m; 
+                        var d = time.getDate();
+                        var day = d<10 ? '0'+d : d; 
+                        var h = time.getHours();
+                        var hour = h<10 ? '0'+h : h; 
+                    } catch (e) {
+                        key = '__OTHERS__';
+                        return emit(key,rst);
+                    }
                 }
                 else {
                     key = '__OTHERS__';
@@ -397,13 +407,16 @@ class DataController extends Action
 					}
                     break;
                 case 'day':
-                    key = day;
+                    key = year+'/'+month+'/'+day;
                     break;
                 case 'month':
-                    key = month;
+                    key = year+'/'+month;
                     break;
                 case 'year':
                     key = year;
+                    break;
+                case 'hour':
+                    key = hour;
                     break;
                 default : 
                     key = xAxisField;
@@ -512,8 +525,6 @@ class DataController extends Action
                     var deviation = reducedValue.val[i] - avg;
                     squared_Diff += deviation * deviation;
                 }
-                print(squared_Diff);
-                print(length);
                 rst = Math.round(squared_Diff/length,2);
             }
             else if(yAxisType=='standard') {
@@ -536,13 +547,13 @@ class DataController extends Action
                     return $this->deny('根据查询条件，未检测到有效的统计数据');
                     break;
                 case 501:
-                    return $this->deny('MapReduce执行失败，原因：'.$rst['msg']);
+                    return $this->deny('MapReduce执行失败，原因：' . $rst['msg']);
                     break;
                 case 502:
                     return $this->deny('程序正在执行中，请勿频繁尝试');
                     break;
                 case 503:
-                    return $this->deny('程序异常：'.$rst['msg']);
+                    return $this->deny('程序异常：' . $rst['msg']);
                     break;
             }
         }
@@ -552,8 +563,18 @@ class DataController extends Action
             throw new \Exception('$rst不是MongoCollection的子类实例');
         }
         
-        $datas = $rst->findAll(array());
-        return $this->rst($datas, 0, true);
+        if ($export) {
+            $datas = $rst->findAll(array());
+            $excel = array();
+            $excel['title'] = array('键','值');
+            $excel['result'] = $datas;
+        	arrayToExcel($excel);
+        } else {
+            $datas = $rst->findAll(array(), array(
+                'value' => - 1
+            ), 0, 100);
+            return $this->rst($datas, 0, true);
+        }
     }
 
     /**
