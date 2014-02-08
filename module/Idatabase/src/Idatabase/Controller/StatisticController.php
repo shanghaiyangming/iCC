@@ -147,6 +147,18 @@ class StatisticController extends Action
             }
         }
         
+        if ($dashboardQuery !== '') {
+            if (isJson($dashboardQuery)) {
+                try {
+                    $dashboardQuery = Json::decode($dashboardQuery, Json::TYPE_ARRAY);
+                } catch (\Exception $e) {
+                    return $this->msg(false, '统计条件的json格式错误');
+                }
+            } else {
+                return $this->msg(false, '统计条件的json格式错误');
+            }
+        }
+        
         $datas = array();
         $datas['project_id'] = $project_id;
         $datas['collection_id'] = $collection_id;
@@ -245,6 +257,18 @@ class StatisticController extends Action
         } else {
             if (empty($seriesField)) {
                 return $this->msg(false, '请设定饼形图统计属性');
+            }
+        }
+        
+        if ($dashboardQuery !== '') {
+            if (isJson($dashboardQuery)) {
+                try {
+                    $dashboardQuery = Json::decode($dashboardQuery, Json::TYPE_ARRAY);
+                } catch (\Exception $e) {
+                    return $this->msg(false, '统计条件的json格式错误');
+                }
+            } else {
+                return $this->msg(false, '统计条件的json格式错误');
             }
         }
         
