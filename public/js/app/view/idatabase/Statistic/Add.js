@@ -133,6 +133,11 @@ Ext.define('icc.view.idatabase.Statistic.Add', {
 						fieldLabel: '统计周期'
 					}, {
 						xtype: 'numberfield',
+						name: 'priority',
+						fieldLabel: '优先级',
+						value: 0
+					}, {
+						xtype: 'numberfield',
 						name: 'colspan',
 						fieldLabel: '合并列1-3',
 						minValue: 1,

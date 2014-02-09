@@ -323,19 +323,78 @@ class DataController extends Action
         }
         
         if (empty($statistic_id)) {
-            return $this->msg(false, '请选择统计方法');
+            throw new \Exception('请选择统计方法');
         }
         
         $info = $this->_statistic->findOne(array(
             '_id' => myMongoId($statistic_id)
         ));
         if ($info == null) {
-            return $this->msg(false, '统计方法不存在');
+            throw new \Exception('统计方法不存在');
         }
         
-        $query = array();
-        $query = $this->searchCondition();
-        
+        try {
+            $query = array();
+            $query = $this->searchCondition();
+            $rst = $this->mapreduce($info, $query);
+            
+            if (is_array($rst) && isset($rst['ok']) && $rst['ok'] === 0) {
+                switch ($rst['code']) {
+                    case 500:
+                        return $this->deny('根据查询条件，未检测到有效的统计数据');
+                        break;
+                    case 501:
+                        return $this->deny('MapReduce执行失败，原因：' . $rst['msg']);
+                        break;
+                    case 502:
+                        return $this->deny('程序正在执行中，请勿频繁尝试');
+                        break;
+                    case 503:
+                        return $this->deny('程序异常：' . $rst['msg']);
+                        break;
+                }
+            }
+            
+            if (! $rst instanceof \MongoCollection) {
+                return $this->deny('$rst不是MongoCollection的子类实例');
+                throw new \Exception('$rst不是MongoCollection的子类实例');
+            }
+            
+            $outCollectionName = $rst->getName(); // 输出集合名称
+            
+            if ($export) {
+                $datas = $rst->findAll(array());
+                $excel = array();
+                $excel['title'] = array(
+                    '键',
+                    '值'
+                );
+                $excel['result'] = $datas;
+                arrayToExcel($excel);
+            } else {
+                $limit = intval($info['maxShowNumber']) > 0 ? intval($info['maxShowNumber']) : 100;
+                $datas = $rst->findAll(array(), array(
+                    'value' => - 1
+                ), 0, $limit);
+                return $this->rst($datas, 0, true);
+            }
+        } catch (\Exception $e) {
+            return $this->deny('程序异常：' . $e->getLine() . $e->getMessage());
+        }
+    }
+
+    /**
+     * 执行map reduce统计条件
+     * @param array $info 统计信息
+     * @param array $query
+     * @param string $method
+     * @param array $scope
+     * @param array $sort
+     * @param int $limit
+     * @throws \Exception
+     */
+    private function mapreduce($info, $query, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
+    {
         $map = "function(){
             var xAxisType = '{$info['xAxisType']}';
             var xAxisField = this.{$info['xAxisField']};  
@@ -540,47 +599,7 @@ class DataController extends Action
             return rst;
         }";
         
-        $rst = $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
-        if (is_array($rst) && isset($rst['ok']) && $rst['ok'] === 0) {
-            switch ($rst['code']) {
-                case 500:
-                    return $this->deny('根据查询条件，未检测到有效的统计数据');
-                    break;
-                case 501:
-                    return $this->deny('MapReduce执行失败，原因：' . $rst['msg']);
-                    break;
-                case 502:
-                    return $this->deny('程序正在执行中，请勿频繁尝试');
-                    break;
-                case 503:
-                    return $this->deny('程序异常：' . $rst['msg']);
-                    break;
-            }
-        }
-        
-        if (! $rst instanceof \MongoCollection) {
-            return $this->deny('$rst不是MongoCollection的子类实例');
-            throw new \Exception('$rst不是MongoCollection的子类实例');
-        }
-        
-        $outCollectionName = $rst->getName();//输出集合名称
-        
-        if ($export) {
-            $datas = $rst->findAll(array());
-            $excel = array();
-            $excel['title'] = array(
-                '键',
-                '值'
-            );
-            $excel['result'] = $datas;
-            arrayToExcel($excel);
-        } else {
-            $limit = intval($info['maxShowNumber']) > 0 ? intval($info['maxShowNumber']) : 100;
-            $datas = $rst->findAll(array(), array(
-                'value' => - 1
-            ), 0, $limit);
-            return $this->rst($datas, 0, true);
-        }
+        return $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
     }
 
     /**
