@@ -1,7 +1,7 @@
 <?php 
 namespace My\Common;
 
-class Queue extends SplPriorityQueue 
+class Queue extends \SplPriorityQueue 
 { 
     public function compare($priority1, $priority2) 
     { 

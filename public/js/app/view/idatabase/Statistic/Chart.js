@@ -99,7 +99,6 @@ Ext.define('icc.view.idatabase.Statistic.Chart', {
 			});
 		} else {
 			var chart = Ext.create('Ext.chart.Chart', {
-				xtype: 'chart',
 				animate: true,
 				store: store,
 				shadow: true,

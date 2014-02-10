@@ -15,6 +15,8 @@ use Zend\Json\Json;
 class DashboardController extends Action
 {
 
+    private $_dashboard;
+    
     private $_statistic;
 
     private $_project;
@@ -28,6 +30,7 @@ class DashboardController extends Action
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
+        $this->_dashboard = $this->model('Idatabase\Model\Dashboard');
         $this->_collection = $this->model('Idatabase\Model\Collection');
         $this->_statistic = $this->model('Idatabase\Model\Statistic');
         $this->_mapping = $this->model('Idatabase\Model\Mapping');
@@ -43,10 +46,11 @@ class DashboardController extends Action
     public function indexAction()
     {
         $rst = array();
-        $statistics = $this->_statistic->getAllStatisticsByProject($this->_project_id);
+        $statistics = $this->_dashboard->getAllStatisticsByProject($this->_project_id);
         foreach ($statistics as $statistic) {
             if (! empty($statistic['dashboardOut'])) {
                 $model = $this->collection($statistic['dashboardOut'], DB_MAPREDUCE, DEFAULT_CLUSTER);
+                $model->setNoAppendQuery(true);
                 $datas = $model->findAll(array(), array(
                     '$natural' => 1
                 ), 0, $statistic['maxShowNumber']);

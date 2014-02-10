@@ -22,7 +22,7 @@ class Dashboard extends Mongo
         $this->_collection = new Collection($this->config);
         $this->_project = new Project($this->config);
         $this->_mapping = new Mapping($this->config);
-        $this->_statistic = new Statistic($this->$config);
+        $this->_statistic = new Statistic($this->config);
     }
 
     /**

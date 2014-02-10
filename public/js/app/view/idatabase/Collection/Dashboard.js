@@ -14,26 +14,81 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 		height: 300
 	},
 	items: [],
+	renderDashboard: false,
 	initComponent: function() {
 		Ext.apply(this, {
 			items: this.items
 		});
 		this.callParent(arguments);
 	},
-	listeners : {
-		afterrender : function(panel) {
-			Ext.Ajax.request({
-			    url: '/idatabase/dashboard/index',
-			    params: {
-			        id: 1
-			    },
-			    success: function(response){
-			        var text = response.responseText;
-			        var result = Ext.JSON.decode(text,true);
-			        var component = '';
-			        panel.add(panel,component);
-			    }
-			});
+	listeners: {
+		afterrender: function(panel) {
+			if (!panel.renderDashboard) {
+				Ext.Ajax.request({
+					url: '/idatabase/dashboard/index',
+					params: {
+						__PROJECT_ID__: panel.__PROJECT_ID__
+					},
+					success: function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (Ext.isArray(result)) {
+							Ext.Array.forEach(result, function(items, index, allTtems) {
+								if (Ext.isArray(items['__DATAS__'])) {
+
+									var store = Ext.create('Ext.data.Store', {
+										fields: ["_id", "value"],
+										data: items['__DATAS__']
+									});
+
+									var chart = Ext.create('Ext.chart.Chart', {
+										animate: true,
+										store: store,
+										shadow: true,
+										legend: {
+											position: 'right'
+										},
+										insetPadding: 60,
+										theme: 'Base:gradients',
+										series: [{
+											type: 'pie',
+											field: 'value',
+											showInLegend: true,
+											donut: true,
+											tips: {
+												trackMouse: true,
+												width: 140,
+												height: 28,
+												renderer: function(storeItem, item) {
+													var total = 0;
+													store.each(function(rec) {
+														total += rec.get('value');
+													});
+													this.setTitle(storeItem.get('_id') + ': ' + Math.round(storeItem.get('value') / total * 100, 2) + '%');
+												}
+											},
+											highlight: {
+												segment: {
+													margin: 20
+												}
+											},
+											label: {
+												field: '_id',
+												display: 'rotate',
+												contrast: true,
+												font: '18px Arial'
+											}
+										}]
+									});
+									panel.add(panel, chart);
+								}
+							});
+							//panel.renderDashboard = true;
+							//panel.doLayout();
+							
+						}
+					}
+				});
+			}
 		}
 	}
 });
