@@ -329,7 +329,7 @@ class DataController extends Action
         $statisticInfo = $this->_statistic->findOne(array(
             '_id' => myMongoId($statistic_id)
         ));
-        if ($info == null) {
+        if ($statisticInfo == null) {
             throw new \Exception('统计方法不存在');
         }
         
@@ -372,7 +372,7 @@ class DataController extends Action
                 $excel['result'] = $datas;
                 arrayToExcel($excel);
             } else {
-                $limit = intval($info['maxShowNumber']) > 0 ? intval($info['maxShowNumber']) : 100;
+                $limit = intval($statisticInfo['maxShowNumber']) > 0 ? intval($statisticInfo['maxShowNumber']) : 100;
                 $datas = $rst->findAll(array(), array(
                     'value' => - 1
                 ), 0, $limit);

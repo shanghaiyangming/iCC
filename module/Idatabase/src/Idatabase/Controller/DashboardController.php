@@ -49,7 +49,7 @@ class DashboardController extends Action
                 $model = $this->collection($statistic['dashboardOut'], DB_MAPREDUCE, DEFAULT_CLUSTER);
                 $datas = $model->findAll(array(), array(
                     '$natural' => 1
-                ), 0, 100);
+                ), 0, $statistic['maxShowNumber']);
                 $statistic['__DATAS__'] = $datas;
                 $rst[] = $statistic;
             }
@@ -61,6 +61,7 @@ class DashboardController extends Action
     /**
      * 逐一统计所有需要统计的脚本信息
      * 脚本执行方法: php index.php statistics run
+     *
      * @throws \Exception
      */
     public function runAction()
@@ -71,6 +72,7 @@ class DashboardController extends Action
                 '_id' => $statisticInfo['_id']
             ), array(
                 '$set' => array(
+                    'dashboardOut' => '',
                     'dashboardError' => is_string($rst) ? $rst : Json::encode($rst)
                 )
             ));
@@ -104,7 +106,7 @@ class DashboardController extends Action
                         '$set' => array(
                             'dashboardOut' => $outCollectionName,
                             'lastExecuteTime' => new \MongoDate(),
-                            'resultExpireTime' => new \MongoDate(time() + $info['interval'])
+                            'resultExpireTime' => new \MongoDate(time() + $statisticInfo['interval'])
                         )
                     ));
                 } else {
