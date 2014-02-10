@@ -19,5 +19,21 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 			items: this.items
 		});
 		this.callParent(arguments);
+	},
+	listeners : {
+		afterrender : function(panel) {
+			Ext.Ajax.request({
+			    url: '/idatabase/dashboard/index',
+			    params: {
+			        id: 1
+			    },
+			    success: function(response){
+			        var text = response.responseText;
+			        var result = Ext.JSON.decode(text,true);
+			        var component = '';
+			        panel.add(panel,component);
+			    }
+			});
+		}
 	}
 });

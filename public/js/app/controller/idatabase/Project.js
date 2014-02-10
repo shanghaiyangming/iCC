@@ -228,7 +228,6 @@ Ext.define('icc.controller.idatabase.Project', {
 								Ext.Msg.alert('提示信息', '加载插件数据失败,请稍后重试');
 							}
 						});
-
 					}
 					this.getProjectAccordion().toggleCollapse();
 					this.getTabPanel().setActiveTab(id);

@@ -78,7 +78,17 @@ class DashboardController extends Action
             ));
         };
         
-        $statistics = $this->_statistic->findAll(array());
+        $statistics = $this->_statistic->findAll(array(
+            'resultExpireTime' => array(
+                '$lte' => new \MongoDate()
+            )
+        ));
+        
+        if (empty($statistics)) {
+            echo 'empty';
+            return $this->response;
+        }
+        
         foreach ($statistics as $statisticInfo) {
             try {
                 if (! empty($statisticInfo['dashboardOut'])) {
@@ -86,7 +96,17 @@ class DashboardController extends Action
                     $oldDashboardOut->physicalDrop();
                 }
                 
-                $dataModel = $this->collection(iCollectionName($statisticInfo['collection_id']));
+                //检查是否存在映射关系
+                $mapCollection = $this->_mapping->findOne(array(
+                    'collection_id' => $statisticInfo['collection_id'],
+                    'active' => true
+                ));
+                if ($mapCollection != null) {
+                    $dataModel = $this->collection($mapCollection['collection'], $mapCollection['database'], $mapCollection['cluster']);
+                } else {
+                    $dataModel = $this->collection(iCollectionName($statisticInfo['collection_id']));
+                }
+                
                 $query = array();
                 if (! empty($statisticInfo['dashboardQuery'])) {
                     $query['$and'][] = $statisticInfo['dashboardQuery'];
