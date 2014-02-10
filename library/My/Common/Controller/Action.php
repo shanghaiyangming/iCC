@@ -32,7 +32,7 @@ abstract class Action extends AbstractActionController
             $controller = $this->params('controller');
             $action = $this->params('action');
             
-            if ($namespace == 'Idatabase\Controller') {
+            if ($namespace == 'Idatabase\Controller' && php_sapi_name() !== 'cli') {
                 // 身份验证不通过的情况下，执行以下操作
                 if (! isset($_SESSION['account'])) {
                     $event->stopPropagation(true);

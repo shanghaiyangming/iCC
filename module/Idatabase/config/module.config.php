@@ -44,5 +44,20 @@ return array(
             )
         )
     ),
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'run-statistics' => array(
+                    'options' => array(
+                        'route' => 'statistics run',
+                        'defaults' => array(
+                            'controller' => 'Idatabase\Controller\Dashboard',
+                            'action' => 'run'
+                        )
+                    )
+                )
+            )
+        )
+    ),
     'service_manager' => array()
 );

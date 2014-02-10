@@ -326,7 +326,7 @@ class DataController extends Action
             throw new \Exception('请选择统计方法');
         }
         
-        $info = $this->_statistic->findOne(array(
+        $statisticInfo = $this->_statistic->findOne(array(
             '_id' => myMongoId($statistic_id)
         ));
         if ($info == null) {
@@ -336,7 +336,7 @@ class DataController extends Action
         try {
             $query = array();
             $query = $this->searchCondition();
-            $rst = $this->mapreduce($info, $query);
+            $rst = mapReduce($this->_data, $statisticInfo, $query);
             
             if (is_array($rst) && isset($rst['ok']) && $rst['ok'] === 0) {
                 switch ($rst['code']) {
@@ -408,7 +408,7 @@ class DataController extends Action
             )
         );
         
-        $rst = $this->mapreduce($info, $query, 'reduce');
+        $rst = mapReduce($this->_datas, $info, $query, 'reduce');
         if (is_array($rst) && isset($rst['ok']) && $rst['ok'] === 0) {
             switch ($rst['code']) {
                 case 500:
@@ -446,227 +446,6 @@ class DataController extends Action
             'value' => - 1
         ), 0, $limit);
         return $this->rst($datas, 0, true);
-    }
-
-    /**
-     * 执行map reduce统计条件
-     *
-     * @param array $info
-     *            统计信息
-     * @param array $query            
-     * @param string $method            
-     * @param array $scope            
-     * @param array $sort            
-     * @param int $limit            
-     * @throws \Exception
-     */
-    private function mapreduce($info, $query, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
-    {
-        $map = "function(){
-            var xAxisType = '{$info['xAxisType']}';
-            var xAxisField = this.{$info['xAxisField']};  
-            var yAxisField = this.{$info['yAxisField']};  
-            var xAxisTitle = '{$info['xAxisTitle']}'; 
-            var key = '';
-            var rst = {
-               total : !isNaN(yAxisField) ? yAxisField : 0,
-               count : yAxisField!==undefined ? 1 : 0,
-               max : !isNaN(yAxisField) ? yAxisField : Number.NEGATIVE_INFINITY,
-               min : !isNaN(yAxisField) ? yAxisField : Number.POSITIVE_INFINITY,
-               val : [yAxisField]
-            };
-
-            if(xAxisField==undefined ||yAxisField==undefined) {
-                key = '__OTHERS__';
-                return emit(key,rst);
-            }
-            if(xAxisType=='hour' || xAxisType=='day' || xAxisType=='month' || xAxisType=='year') {
-                if(xAxisField!==undefined) {
-                    try {
-                        var time = new Date(xAxisField);
-                        var timeSec = time.getTime();
-                        //time = new Date();
-                        //time.setTime(timeSec+8*3600000);
-                        var year = time.getFullYear();
-                        var m = time.getMonth() + 1;
-                        var month = m<10 ? '0'+m : m; 
-                        var d = time.getDate();
-                        var day = d<10 ? '0'+d : d; 
-                        var h = time.getHours();
-                        var hour = h<10 ? '0'+h : h; 
-                    } catch (e) {
-                        key = '__OTHERS__';
-                        return emit(key,rst);
-                    }
-                }
-                else {
-                    key = '__OTHERS__';
-                    return emit(key,rst);
-                }
-            }
-            else {
-                if(isNaN(yAxisField)) {
-                    yAxisField = 0;
-                }
-            }
-            
-            switch(xAxisType) {
-                case 'total':
-                     key = xAxisTitle;
-                     break;
-                case 'range':
-                    var	options = [
-                        0,
-						10, 20, 50,
-						100, 200, 500,
-						1000, 2000, 5000,
-						10000, 20000, 50000,
-						100000, 200000, 500000,
-						1000000, 2000000, 5000000,
-						10000000, 20000000, 50000000,
-						100000000, 200000000, 500000000,
-						1000000000, Number.POSITIVE_INFINITY
-					];
-    				
-					for(var index = 0; options[index] < field; index++) {
-						key = options[index]+'-'+options[index+1];
-					}
-                    break;
-                case 'day':
-                    key = year+'/'+month+'/'+day;
-                    break;
-                case 'month':
-                    key = year+'/'+month;
-                    break;
-                case 'year':
-                    key = year;
-                    break;
-                case 'hour':
-                    key = hour;
-                    break;
-                default : 
-                    key = xAxisField;
-                    break;
-            }
-            
-            return emit(key,rst);
-        }";
-        
-        $reduce = "function(key,values){
-              var rst = {
-                   total : 0,
-                   count : 0,
-                   max : Number.NEGATIVE_INFINITY,
-                   min : Number.POSITIVE_INFINITY,
-                   val : []
-              };
-
-              var yAxisType = '{$info['yAxisType']}';
-              var length = values.length;
-              for(var idx = 0; idx < length ; idx++) {  
-                  if(yAxisType=='count') {
-                      rst.count += values[idx].count;
-                  } else if(yAxisType=='sum') {
-                      rst.total += values[idx].total;
-                  } else if(yAxisType=='max') {
-                      if(rst.max==undefined)
-                          rst.max = values[idx].max;
-                      else if(rst.max <= values[idx].max) {
-                          rst.max = values[idx].max;
-                      }
-                  } else if(yAxisType=='min') {
-                      if(rst.min==undefined) {
-                          rst.min = values[idx].min;
-                      }
-                      else if(rst.min >= values[idx].min) {
-                          rst.min = values[idx].min;
-                      }
-                  } else if(yAxisType=='unique') {
-                      values[idx].val.forEach(function(v,i){
-                          rst.val.push(v);
-                      });   
-                  } else if(yAxisType=='avg') {
-                      rst.total += values[idx].total;
-                      rst.count += values[idx].count;
-                  } else if(yAxisType=='median') {
-                      values[idx].val.forEach(function(v,i){
-                          rst.val.push(v);
-                      });
-                  } else if(yAxisType=='variance') {
-                      rst.total += values[idx].total;
-                      rst.count += values[idx].count;
-                      values[idx].val.forEach(function(v,i){
-                          rst.val.push(v);
-                      });
-                  } else if(yAxisType=='standard') {
-                      rst.total += values[idx].total;
-                      rst.count += values[idx].count;
-                      values[idx].val.forEach(function(v,i){
-                          rst.val.push(v);
-                      });
-                  }
-              }
-              return rst;
-        }";
-        
-        $finalize = "function(key,reducedValue){
-            var rst = 0;
-            var uniqueData = [];
-            var uniqueNumber = 0;
-            var yAxisType = '{$info['yAxisType']}';  
-            if(yAxisType=='count') {
-                rst = reducedValue.count;
-            }
-            else if(yAxisType=='sum') {
-                rst = reducedValue.total;
-            }
-            else if(yAxisType=='max') {
-                rst = reducedValue.max;
-            }
-            else if(yAxisType=='min') {
-                rst = reducedValue.min;
-            }
-            else if(yAxisType=='unique') {
-                reducedValue.val.forEach(function(v,i){
-                    if(uniqueData.indexOf(v)===-1) {
-                        uniqueNumber += 1;
-                        uniqueData.push(v);
-                    }
-                });
-                rst = uniqueNumber;
-            }
-            else if(yAxisType=='avg') {
-                rst = Math.round(reducedValue.total / reducedValue.count,2);
-            }
-            else if(yAxisType=='median') {
-                reducedValue.val.sort(function(a,b){return a>b?1:-1});
-                var length = reducedValue.val.length;
-                rst = reducedValue.val[(length%2==1 ? Math.floor(length/2) : Math.floor(length/2))];
-            }
-            else if(yAxisType=='variance') {
-                var avg = Math.round(reducedValue.total / reducedValue.count,2);
-                var squared_Diff = 0;
-                var length = reducedValue.val.length;
-                for(var i=0;i<length;i++) {
-                    var deviation = reducedValue.val[i] - avg;
-                    squared_Diff += deviation * deviation;
-                }
-                rst = Math.round(squared_Diff/length,2);
-            }
-            else if(yAxisType=='standard') {
-                var avg = Math.round(reducedValue.total / reducedValue.count,2);
-                var squared_Diff = 0;
-                var length = reducedValue.val.length;
-                for(var i=0;i<length;i++) {
-                    var deviation = reducedValue.val[i] - avg;
-                    squared_Diff += deviation * deviation;
-                }
-                rst = Math.round(Math.sqrt(squared_Diff/length),2);
-            }
-            return rst;
-        }";
-        
-        return $this->_data->mapReduce($map, $reduce, $query, $finalize, 'replace');
     }
 
     /**

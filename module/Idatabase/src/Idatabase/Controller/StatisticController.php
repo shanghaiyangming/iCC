@@ -183,6 +183,7 @@ class StatisticController extends Action
         $datas['colspan'] = $colspan;
         $datas['priority'] = $priority;
         $datas['interval'] = $interval;
+        $datas['dashboardOut'] = '';
         $datas['lastExecuteTime'] = new \MongoDate(0);
         $datas['resultExpireTime'] = new \MongoDate(0 + $interval);
         $datas['isRunning'] = false;

@@ -3,13 +3,14 @@
  * iDatabase仪表盘控制，显示宏观统计视图
  *
  * @author young 
- * @version 2013.11.11
+ * @version 2014.02.10
  * 
  */
 namespace Idatabase\Controller;
 
 use My\Common\Controller\Action;
 use My\Common\Queue;
+use Zend\Json\Json;
 
 class DashboardController extends Action
 {
@@ -22,11 +23,14 @@ class DashboardController extends Action
 
     private $_project_id;
 
+    private $_mapping;
+
     public function init()
     {
         $this->_project_id = isset($_REQUEST['__PROJECT_ID__']) ? trim($_REQUEST['__PROJECT_ID__']) : '';
         $this->_collection = $this->model('Idatabase\Model\Collection');
         $this->_statistic = $this->model('Idatabase\Model\Statistic');
+        $this->_mapping = $this->model('Idatabase\Model\Mapping');
     }
 
     /**
@@ -38,77 +42,80 @@ class DashboardController extends Action
      */
     public function indexAction()
     {
-        $dashboard = new Queue();
-        $cursor = $this->_collection->find(array(
-            'project_id' => $this->_project_id
-        ));
-        while ($cursor->hasNext()) {
-            $row = $cursor->getNext();
-            $collection_id = $row['_id']->__toString();
-            $statisticInfos = $this->_statistic->findAll(array(
-                'collection_id' => $collection_id
-            ));
-            if (! empty($statisticInfos)) {
-                foreach ($statisticInfos as $statisticInfos) {
-                    $dashboard->insert($statisticInfos, $statisticInfos['priority']);
-                }
+        $rst = array();
+        $statistics = $this->_statistic->getAllStatisticsByProject($this->_project_id);
+        foreach ($statistics as $statistic) {
+            if (! empty($statistic['dashboardOut'])) {
+                $model = $this->collection($statistic['dashboardOut'], DB_MAPREDUCE, DEFAULT_CLUSTER);
+                $datas = $model->findAll(array(), array(
+                    '$natural' => 1
+                ), 0, 100);
+                $statistic['__DATAS__'] = $datas;
+                $rst[] = $statistic;
             }
         }
-        
-        $datas = array();
-        if (! $dashboard->isEmpty()) {
-            $dashboard->top();
-            while ($dashboard->valid()) {
-                $datas[] = $dashboard->current();
-                $dashboard->next();
-            }
-        }
-        
-        return $this->rst($datas, $dashboard->count(), true);
+        echo Json::encode($rst);
+        return $this->response;
     }
 
+    /**
+     * 逐一统计所有需要统计的脚本信息
+     * 脚本执行方法: php index.php statistics run
+     * @throws \Exception
+     */
     public function runAction()
     {
-        $statistic_id = $this->params()->fromQuery('__STATISTIC_ID__', null);
-        if (empty($statistic_id)) {
-            throw new \Exception('请选择统计方法');
+        $logError = function ($statisticInfo, $rst)
+        {
+            $this->_statistic->update(array(
+                '_id' => $statisticInfo['_id']
+            ), array(
+                '$set' => array(
+                    'dashboardError' => is_string($rst) ? $rst : Json::encode($rst)
+                )
+            ));
+        };
+        
+        $statistics = $this->_statistic->findAll(array());
+        foreach ($statistics as $statisticInfo) {
+            try {
+                if (! empty($statisticInfo['dashboardOut'])) {
+                    $oldDashboardOut = $this->collection($statisticInfo['dashboardOut'], DB_MAPREDUCE, DEFAULT_CLUSTER);
+                    $oldDashboardOut->physicalDrop();
+                }
+                
+                $dataModel = $this->collection(iCollectionName($statisticInfo['collection_id']));
+                $query = array();
+                if (! empty($statisticInfo['dashboardQuery'])) {
+                    $query['$and'][] = $statisticInfo['dashboardQuery'];
+                }
+                $query['$and'][] = array(
+                    '__CREATE_TIME__' => array(
+                        '$gte' => new \MongoDate(time() - $statisticInfo['statisticPeriod'])
+                    )
+                );
+                
+                $rst = mapReduce($dataModel, $statisticInfo, $query, 'reduce');
+                if ($rst instanceof \MongoCollection) {
+                    $outCollectionName = $rst->getName(); // 输出集合名称
+                    $this->_statistic->update(array(
+                        '_id' => $statisticInfo['_id']
+                    ), array(
+                        '$set' => array(
+                            'dashboardOut' => $outCollectionName,
+                            'lastExecuteTime' => new \MongoDate(),
+                            'resultExpireTime' => new \MongoDate(time() + $info['interval'])
+                        )
+                    ));
+                } else {
+                    $logError($statisticInfo, $rst);
+                }
+            } catch (\Exception $e) {
+                $logError($statisticInfo, $e->getMessage());
+            }
         }
         
-        $info = $this->_statistic->findOne(array(
-            '_id' => myMongoId($statistic_id)
-        ));
-        if ($info == null) {
-            throw new \Exception('统计方法不存在');
-        }
-        
-        $query = array();
-        $query['$and'][] = $info['dashboardQuery'];
-        $query['$and'][] = array(
-            '__CREATE_TIME__' => array(
-                '$gte' => new \MongoDate(time() - $info['statisticPeriod'])
-            )
-        );
-        
-        $rst = $this->mapreduce($info, $query, 'reduce');
-        if (! $rst instanceof \MongoCollection) {
-            return $this->deny('$rst不是MongoCollection的子类实例');
-            throw new \Exception('$rst不是MongoCollection的子类实例');
-        }
-        
-        $outCollectionName = $rst->getName(); // 输出集合名称
-        $this->_statistic->update(array(
-            '_id' => myMongoId($statistic_id)
-        ), array(
-            '$set' => array(
-                'dashboardOut' => $outCollectionName,
-                'lastExecuteTime' => new \MongoDate(),
-                'resultExpireTime' => new \MongoDate(time() + $info['interval'])
-            )
-        ));
-        $limit = intval($info['maxShowNumber']) > 0 ? intval($info['maxShowNumber']) : 100;
-        $datas = $rst->findAll(array(), array(
-            'value' => - 1
-        ), 0, $limit);
-        return $this->rst($datas, 0, true);
+        echo 'OK';
+        return $this->response;
     }
 }

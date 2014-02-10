@@ -29,60 +29,70 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 连接的集合名称
+     *
      * @var string
      */
     private $_collection = '';
 
     /**
      * 连接的数据库名称，默认为系统默认数据库
+     *
      * @var string
      */
     private $_database = DEFAULT_DATABASE;
 
     /**
      * 连接集群的名称，模拟人生为系统默认集合
+     *
      * @var string
      */
     private $_cluster = DEFAULT_CLUSTER;
 
     /**
      * 集合操作参数
+     *
      * @var array
      */
     private $_collectionOptions = NULL;
 
     /**
      * 当前数据库连接实例
+     *
      * @var object
      */
     private $_db;
 
     /**
      * 管理数据连接实例
+     *
      * @var object
      */
     private $_admin;
 
     /**
      * 备份数据库连接实例
+     *
      * @var object
      */
     private $_backup;
 
     /**
      * mapreduce保存数据的数据库连接实例
+     *
      * @var object
      */
     private $_mapreduce;
 
     /**
      * 相关数据库配置参数的数组
+     *
      * @var array
      */
     private $_config;
 
     /**
      * 相关数据库配置参数的Config实例
+     *
      * @var Config
      */
     private $_configInstance;
@@ -96,6 +106,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 查询操作列表
+     *
      * @var array
      */
     private $_queryHaystack = array(
@@ -108,6 +119,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 更新操作列表
+     *
      * @var array
      */
     private $_updateHaystack = array(
@@ -131,53 +143,61 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 是否开启追加参数__REMOVED__:true
+     *
      * @var boolean
      */
     private $_noAppendQuery = false;
 
     /**
      * 超时时间
+     *
      * @var int
      */
     const timeout = 6000000;
 
     /**
      * 强制同步写入操作
+     *
      * @var boolean
      */
     const fsync = false;
 
     /**
      * 是否开启更新不存在插入数据
+     *
      * @var boolean
      */
     const upsert = false;
 
     /**
      * 允许更改多项
+     *
      * @var boolean
      */
     const multiple = true;
 
     /**
      * 仅此一项
+     *
      * @var boolean
      */
     const justOne = false;
 
     /**
      * 开启调试模式
+     *
      * @var boolean
      */
     const debug = false;
 
     /**
      * 构造函数
-     * @param Config $config 
-     * @param string $collection
-     * @param string $database
-     * @param string $cluster
-     * @param string $collectionOptions
+     *
+     * @param Config $config            
+     * @param string $collection            
+     * @param string $database            
+     * @param string $cluster            
+     * @param string $collectionOptions            
      * @throws \Exception
      */
     public function __construct(Config $config, $collection = null, $database = DEFAULT_DATABASE, $cluster = DEFAULT_CLUSTER, $collectionOptions = null)
@@ -257,7 +277,8 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 是否开启追加模式
-     * @param boolean $boolean
+     *
+     * @param boolean $boolean            
      */
     public function setNoAppendQuery($boolean)
     {
@@ -395,6 +416,15 @@ class MongoCollection extends \MongoCollection
             unset($row['_id']);
             $target->insert($row);
         }
+        return parent::drop();
+    }
+
+    /**
+     * 物理删除数据集合
+     *    
+     */
+    public function physicalDrop()
+    {
         return parent::drop();
     }
 
@@ -796,8 +826,7 @@ class MongoCollection extends \MongoCollection
                     if ($check['isRunning'] && isset($check['expire']) && $check['expire'] instanceof \MongoDate) {
                         if ($check['expire']->sec > time()) {
                             return true;
-                        }
-                        else {
+                        } else {
                             $releaseLock($out);
                             return false;
                         }
@@ -828,7 +857,7 @@ class MongoCollection extends \MongoCollection
             
             $failure = function ($code, $msg)
             {
-                if(is_array($msg)) {
+                if (is_array($msg)) {
                     $msg = Json::encode($msg);
                 }
                 return array(
@@ -884,20 +913,20 @@ class MongoCollection extends \MongoCollection
                         return $outMongoCollection;
                     }
                     fb(Json::encode($rst['counts']), 'LOG');
-                    return $failure(500,$rst['counts']);
+                    return $failure(500, $rst['counts']);
                 } else {
                     fb($command, 'LOG');
                     fb($rst, 'LOG');
-                    return $failure(501,$rst);
+                    return $failure(501, $rst);
                 }
             } else {
                 fb('程序正在执行中，请勿频繁尝试', 'LOG');
-                return $failure(502,'程序正在执行中，请勿频繁尝试');
+                return $failure(502, '程序正在执行中，请勿频繁尝试');
             }
         } catch (\Exception $e) {
             fb($command, 'LOG');
             $releaseLock($out, exceptionMsg($e));
-            return $failure(503,exceptionMsg($e));
+            return $failure(503, exceptionMsg($e));
         }
     }
 
