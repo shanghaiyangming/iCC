@@ -2,7 +2,7 @@
 namespace Idatabase\Model;
 
 use My\Common\Model\Mongo;
-use My\Common\Queue;
+use My\Common\Stdlib\SplPriorityQueue;
 
 class Dashboard extends Mongo
 {
@@ -33,7 +33,7 @@ class Dashboard extends Mongo
      */
     public function getAllStatisticsByProject($project_id)
     {
-        $dashboard = new Queue();
+        $dashboard = new SplPriorityQueue();
         $cursor = $this->_collection->find(array(
             'project_id' => $project_id
         ));

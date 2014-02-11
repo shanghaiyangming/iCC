@@ -9,11 +9,13 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 		type: 'table',
 		columns: 3,
 		tableAttrs: {
-            style: {
-                width: '100%'
-            }
-        },
-        tdAttrs: { style: 'padding: 10px;'}
+			style: {
+				width: '100%'
+			}
+		},
+		tdAttrs: {
+			style: 'padding: 10px;'
+		}
 	},
 	defaults: {
 		frame: false,
@@ -58,12 +60,12 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 										variance: '方差',
 										standard: '标准差'
 									};
-									
+
 									if (seriesType !== 'pie') {
 										var chart = Ext.create('Ext.chart.Chart', {
 											style: 'background:#fff',
 											store: store,
-											width : Math.floor((panel.getWidth()-50)/3),
+											width: Math.floor((panel.getWidth() - 50) / 3),
 											height: 300,
 											axes: [{
 												type: 'Numeric',
@@ -103,14 +105,13 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 												}
 											}]
 										});
-									}
-									else {
+									} else {
 										var chart = Ext.create('Ext.chart.Chart', {
 											animate: true,
 											store: store,
-											title : items.name,
+											title: items.name,
 											shadow: true,
-											width : Math.floor((panel.getWidth()-50)/3),
+											width: Math.floor((panel.getWidth() - 50) / 3),
 											height: 300,
 											legend: {
 												position: 'right'
@@ -150,10 +151,10 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 									}
 									panel.add({
 										title: title,
-							            xtype: 'panel',
-							            width : Math.floor((panel.getWidth()-50)/3),
-							            height : 350,
-							            items:[chart]
+										xtype: 'panel',
+										width: Math.floor((panel.getWidth() - 50) / 3),
+										height: 350,
+										items: [chart]
 									});
 								}
 							});
