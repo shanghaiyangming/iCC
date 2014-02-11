@@ -210,7 +210,7 @@ Ext.define('icc.view.idatabase.Structure.Grid', {
 					valueField: 'alias'
 				},
 				renderer: function(value) {
-					var record = collectionStore.findRecord('alias', value);
+					var record = collectionStore.findRecord('alias', value, 0, false, true, true);
 					if (record != null) {
 						return record.get('name');
 					}

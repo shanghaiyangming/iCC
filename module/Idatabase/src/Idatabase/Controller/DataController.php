@@ -636,11 +636,15 @@ class DataController extends Action
      *
      * @param array $datas            
      * @name young
-     * @version 2014.01.21
+     * @version 2014.02.11
      * @return boolean
      */
     private function quickOperation($datas)
     {
+        if(empty($this->_schema['quick'])) {
+            return false;
+        }
+        
         $rshCollectionValueField = $this->_schema['combobox']['rshCollectionValueField'];
         if ($rshCollectionValueField == '_id') {
             $currentCollectionValue = $oldCollectionValue = $datas['_id']->__toString();
