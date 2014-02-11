@@ -63,7 +63,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 										var chart = Ext.create('Ext.chart.Chart', {
 											style: 'background:#fff',
 											store: store,
-											width : Math.floor((panel.getWidth()-20)/3),
+											width : Math.floor((panel.getWidth()-50)/3),
 											height: 300,
 											axes: [{
 												type: 'Numeric',
@@ -110,7 +110,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 											store: store,
 											title : items.name,
 											shadow: true,
-											width : Math.floor((panel.getWidth()-20)/3),
+											width : Math.floor((panel.getWidth()-50)/3),
 											height: 300,
 											legend: {
 												position: 'right'
@@ -151,7 +151,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 									panel.add({
 										title: title,
 							            xtype: 'panel',
-							            width : Math.floor((panel.getWidth()-20)/3),
+							            width : Math.floor((panel.getWidth()-50)/3),
 							            height : 350,
 							            items:[chart]
 									});
