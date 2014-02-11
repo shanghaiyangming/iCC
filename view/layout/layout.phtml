@@ -13,7 +13,7 @@ echo $this->headLink(array(
     'type' => 'image/vnd.microsoft.icon',
     'href' => $this->basePath() . '/img/favicon.ico'
 ))
-    ->appendStylesheet($this->basePath() . '/css/ext-theme-neptune-all.css')
+    ->appendStylesheet($this->basePath() . '/css/ext-theme-neptune-all.css'.$this->__VERSION__)
     ->appendStylesheet($this->basePath() . '/css/icon.css?v='.$this->__VERSION__)
     ->appendStylesheet($this->basePath() . '/css/BoxSelect.css?v='.$this->__VERSION__);
 echo $this->headScript()
