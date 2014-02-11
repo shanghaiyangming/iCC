@@ -49,7 +49,7 @@ class Module
         $this->initFirePHP();
         $this->initAuthentication();
         
-        //微软这个流氓，低于IE10版本一下的IE浏览器都需要使用text/html格式的Response，否则json在浏览器中会提示下载
+        // 微软这个流氓，低于IE10版本一下的IE浏览器都需要使用text/html格式的Response，否则json在浏览器中会提示下载
         $eventManager->attach(\Zend\Mvc\MvcEvent::EVENT_RENDER, function ($event)
         {
             $objHeaders = $event->getResponse()
