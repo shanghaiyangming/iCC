@@ -21,13 +21,35 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 		frame: false,
 		height: 350
 	},
-	renderDashboard: false,
+	renderLayout: false,
+	renderDashboard: true,
 	initComponent: function() {
+		Ext.apply(this, {});
 		this.callParent(arguments);
 	},
 	listeners: {
-		afterrender: function(panel) {
+		afterlayout: function(panel) {
+			if (!panel.renderLayout) {
+				var columns = 3;
+				var width = panel.getWidth();
+				if (width >= 1000) {
+					columns = 3;
+				} else if (width >= 400 && width < 1000) {
+					columns = 2;
+				} else {
+					columns = 1;
+				}
+				panel.layout.columns = columns;
+				panel.renderLayout = true;
+				panel.renderDashboard = false;
+				panel.doLayout();
+				return true;
+			}
+
 			if (!panel.renderDashboard) {
+				panel.renderDashboard = true;
+				var columns = panel.layout.columns;
+				var width = Math.floor((panel.getWidth() - 50) / columns);
 				Ext.Ajax.request({
 					url: '/idatabase/dashboard/index',
 					params: {
@@ -36,7 +58,6 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 					success: function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (Ext.isArray(result)) {
-							panel.renderDashboard = true;
 							Ext.Array.forEach(result, function(items, index, allTtems) {
 								if (Ext.isArray(items['__DATAS__'])) {
 
@@ -65,7 +86,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 										var chart = Ext.create('Ext.chart.Chart', {
 											style: 'background:#fff',
 											store: store,
-											width: Math.floor((panel.getWidth() - 50) / 3),
+											width: width,
 											height: 300,
 											axes: [{
 												type: 'Numeric',
@@ -111,7 +132,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 											store: store,
 											title: items.name,
 											shadow: true,
-											width: Math.floor((panel.getWidth() - 50) / 3),
+											width: width,
 											height: 300,
 											legend: {
 												position: 'right'
@@ -152,17 +173,17 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 									panel.add({
 										title: title,
 										xtype: 'panel',
-										width: Math.floor((panel.getWidth() - 50) / 3),
+										width: width,
 										height: 350,
 										items: [chart]
 									});
 								}
 							});
-							panel.doLayout();
 						}
 					}
 				});
 			}
+			return false;
 		}
 	}
 });
