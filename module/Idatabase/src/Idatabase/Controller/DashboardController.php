@@ -64,7 +64,7 @@ class DashboardController extends Action
 
     /**
      * 逐一统计所有需要统计的脚本信息
-     * 脚本执行方法: php index.php statistics run
+     * 脚本执行方法: php index.php dashboard run
      *
      * @throws \Exception
      */
