@@ -27,5 +27,8 @@ Ext.define('icc.model.idatabase.Key', {
 	}, {
 		name: 'active',
 		type: 'boolean'
+	},{
+		name : 'default',
+		type: 'boolean'
 	}]
 });

@@ -68,6 +68,7 @@ class KeyController extends Action
         $key = $this->params()->fromPost('key', null);
         $expire = $this->params()->fromPost('expire', null);
         $active = filter_var($this->params()->fromPost('active', ''), FILTER_VALIDATE_BOOLEAN);
+        $default = filter_var($this->params()->fromPost('default', ''), FILTER_VALIDATE_BOOLEAN);
         $project_id = $this->_project_id;
         
         if ($name == null) {
@@ -101,6 +102,7 @@ class KeyController extends Action
         $datas['key'] = $key;
         $datas['expire'] = new \MongoDate($expire);
         $datas['active'] = $active;
+        $datas['default'] = $default;
         $datas['project_id'] = $project_id;
         $this->_keys->insert($datas);
         
@@ -123,6 +125,7 @@ class KeyController extends Action
         $key = $this->params()->fromPost('key', null);
         $expire = $this->params()->fromPost('expire', null);
         $active = filter_var($this->params()->fromPost('active', ''), FILTER_VALIDATE_BOOLEAN);
+        $default = filter_var($this->params()->fromPost('default', ''), FILTER_VALIDATE_BOOLEAN);
         $project_id = $this->_project_id;
         
         if ($name == null) {
@@ -155,6 +158,7 @@ class KeyController extends Action
         $datas['desc'] = $desc;
         $datas['key'] = $key;
         $datas['expire'] = new \MongoDate($expire);
+        $datas['default'] = $default;
         $datas['active'] = $active;
         $datas['project_id'] = $project_id;
         $this->_keys->update(array(

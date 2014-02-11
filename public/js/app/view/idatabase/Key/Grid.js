@@ -56,6 +56,16 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 		}
 	}, {
 		xtype: 'booleancolumn',
+		text: '默认?',
+		dataIndex: 'default',
+		flex: 1,
+		trueText: '√',
+		falseText: '×',
+		field: {
+			xtype: 'commonComboboxBoolean'
+		}
+	}, {
+		xtype: 'booleancolumn',
 		text: '有效性',
 		dataIndex: 'active',
 		flex: 1,
