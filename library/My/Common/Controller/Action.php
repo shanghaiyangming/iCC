@@ -19,9 +19,6 @@ abstract class Action extends AbstractActionController
 
     public function __construct()
     {
-        // 确保输出为UTF-8
-        headerContentType('html');
-        
         // 添加初始化事件函数
         $eventManager = $this->getEventManager();
         $serviceLocator = $this->getServiceLocator();
@@ -124,10 +121,8 @@ abstract class Action extends AbstractActionController
         $datas = iterator_to_array($cursor, false);
         if ($jsonModel) {
             if ($jsonpCallback == null) {
-                headerContentType('json');
                 return new JsonModel($this->rst($datas));
             } else {
-                headerContentType('jsonp');
                 $obj = new JsonModel($this->rst($datas));
                 $obj->setJsonpCallback($jsonpCallback);
                 return $obj;
@@ -154,10 +149,8 @@ abstract class Action extends AbstractActionController
         );
         if ($jsonModel) {
             if ($jsonpCallback == null) {
-                headerContentType('json');
                 return new JsonModel($rst);
             } else {
-                headerContentType('jsonp');
                 $obj = new JsonModel($rst);
                 $obj->setJsonpCallback($jsonpCallback);
                 return $obj;
@@ -183,10 +176,8 @@ abstract class Action extends AbstractActionController
         
         if ($jsonModel) {
             if ($jsonpCallback == null) {
-                headerContentType('json');
                 return new JsonModel($rst);
             } else {
-                headerContentType('jsonp');
                 $obj = new JsonModel($rst);
                 $obj->setJsonpCallback($jsonpCallback);
                 return $obj;
@@ -203,7 +194,6 @@ abstract class Action extends AbstractActionController
      */
     public function deny($message = '很遗憾，您无权访问部分资源，请联系管理员开放权限；或者您的登录已经注销，请重新登录')
     {
-        headerContentType('json');
         return new JsonModel(array(
             'success' => false,
             'access' => 'deny',

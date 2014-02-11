@@ -1154,31 +1154,3 @@ function mapReduce($dataModel, $statisticInfo, $query, $method = 'replace', $sco
     return $dataModel->mapReduce($map, $reduce, $query, $finalize, $method, $scope, $sort, $limit);
 }
 
-/**
- * 设定头部的内容类型
- * @param string $type
- */
-function headerContentType($type) {
-    switch($type) {
-        case 'json':
-            if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')!==false) {
-                header('Content-Type: text/javascript; charset=utf-8');
-            }
-            else {
-                header('Content-Type: application/json; charset=utf-8');
-            }
-            break;
-        case 'jsonp':
-            if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')!==false) {
-                header('Content-Type: text/javascript; charset=utf-8');
-            }
-            else {
-                header('Content-Type: application/javascript; charset=utf-8');
-            }
-            break;
-        default:
-            header('Content-type:text/html;charset=utf-8');
-            break;
-    }
-    return true;
-}
