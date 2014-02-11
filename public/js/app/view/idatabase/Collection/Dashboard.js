@@ -137,7 +137,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 											legend: {
 												position: 'right'
 											},
-											insetPadding: 60,
+											insetPadding: 10,
 											theme: 'Base:gradients',
 											series: [{
 												type: 'pie',
@@ -146,7 +146,7 @@ Ext.define('icc.view.idatabase.Collection.Dashboard', {
 												donut: true,
 												tips: {
 													trackMouse: true,
-													width: 140,
+													width: 150,
 													height: 28,
 													renderer: function(storeItem, item) {
 														var total = 0;
