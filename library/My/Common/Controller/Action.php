@@ -9,6 +9,8 @@ use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use Zend\Permissions\Acl\Exception\InvalidArgumentException;
+use Zend\Soap\Server as SoapServer;
+use Zend\Soap\AutoDiscover;
 
 abstract class Action extends AbstractActionController
 {
@@ -199,5 +201,31 @@ abstract class Action extends AbstractActionController
             'access' => 'deny',
             'msg' => $message
         ));
+    }
+
+    /**
+     * 创建一个服务
+     */
+    public function soap($uri, $className, $params)
+    {
+        if (isset($_GET['wsdl'])) {
+            $autodiscover = new AutoDiscover();
+            $autodiscover->setClass($className)->setUri($uri);
+            return $autodiscover->toXml();
+        } else {
+            $wsdl = strpos($uri, '?') === false ? $uri . '?wsdl' : $uri . '&wsdl';
+            $options = array(
+                'soap_version' => SOAP_1_2,
+                'encoding' => 'UTF-8'
+            );
+            $server = new SoapServer($wsdl, $options);
+            $server->setObject(call_user_func_array($className, $params));
+            $server->handle();
+            $response = $server->getLastRequest();
+            if ($response instanceof \SoapFault) {
+                $this->log(exceptionMsg($response));
+            }
+            return $response;
+        }
     }
 }
