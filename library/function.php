@@ -926,8 +926,9 @@ function formatData($value, $type = 'textfield', $key = null)
  */
 function dataSignAlgorithm($datas, $key)
 {
+    $datas = !empty($datas) ? $datas : array();
     ksort($datas);
-    return substr(sha1(http_build_query($datas . $key)), 0, 32);
+    return substr(sha1(http_build_query($datas).$key), 0, 32);
 }
 
 /**
