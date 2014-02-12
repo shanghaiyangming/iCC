@@ -2,7 +2,7 @@
 return array(
     'router' => array(
         'routes' => array(
-            'idatabase' => array(
+            'service' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route' => '/service',

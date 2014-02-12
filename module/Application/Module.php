@@ -8,11 +8,6 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\EventManager\EventManager;
-use My\Common\CacheListenerAggregate;
-use Zend\EventManager\GlobalEventManager;
-use Monolog\Logger;
-use Monolog\Handler\MongoDBHandler;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\Session as SessionStorage;
 
@@ -50,7 +45,7 @@ class Module
         $this->initAuthentication();
         
         // 微软这个流氓，低于IE10版本一下的IE浏览器都需要使用text/html格式的Response，否则json在浏览器中会提示下载
-        $eventManager->attach(\Zend\Mvc\MvcEvent::EVENT_RENDER, function ($event)
+        $eventManager->attach(MvcEvent::EVENT_RENDER, function ($event)
         {
             $objHeaders = $event->getResponse()
                 ->getHeaders();
@@ -60,6 +55,9 @@ class Module
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false && strpos($contentType, 'application/json') !== false) {
                     $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
                 }
+            }
+            else {
+                $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
             }
         }, - 10000);
     }

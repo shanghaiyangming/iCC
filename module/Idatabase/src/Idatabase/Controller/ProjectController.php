@@ -238,7 +238,7 @@ class ProjectController extends Action
         $_SESSION['acl']['project'] = array();
         $_SESSION['acl']['collection'] = array();
         
-        if (! in_array($_SESSION['account']['role'], array(
+        if (isset($_SESSION['account']['role']) && ! in_array($_SESSION['account']['role'], array(
             'root',
             'admin'
         ), true)) {

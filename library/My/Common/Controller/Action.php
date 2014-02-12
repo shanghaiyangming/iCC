@@ -122,15 +122,13 @@ abstract class Action extends AbstractActionController
         
         $datas = iterator_to_array($cursor, false);
         if ($jsonModel) {
-            if ($jsonpCallback == null) {
-                return new JsonModel($this->rst($datas));
-            } else {
-                $obj = new JsonModel($this->rst($datas));
+            $obj = new JsonModel($this->rst($datas));
+            if ($jsonpCallback !== null) {
                 $obj->setJsonpCallback($jsonpCallback);
-                return $obj;
             }
-        } else
-            return $datas;
+            return $obj;
+        }
+        return $datas;
     }
 
     /**
@@ -150,13 +148,11 @@ abstract class Action extends AbstractActionController
             'total' => $total ? $total : count($datas)
         );
         if ($jsonModel) {
-            if ($jsonpCallback == null) {
-                return new JsonModel($rst);
-            } else {
-                $obj = new JsonModel($rst);
+            $obj = new JsonModel($rst);
+            if ($jsonpCallback !== null) {
                 $obj->setJsonpCallback($jsonpCallback);
-                return $obj;
             }
+            return $obj;
         }
         return $rst;
     }
@@ -177,13 +173,11 @@ abstract class Action extends AbstractActionController
         );
         
         if ($jsonModel) {
-            if ($jsonpCallback == null) {
-                return new JsonModel($rst);
-            } else {
-                $obj = new JsonModel($rst);
+            $obj = new JsonModel($rst);
+            if ($jsonpCallback !== null) {
                 $obj->setJsonpCallback($jsonpCallback);
-                return $obj;
             }
+            return $obj;
         }
         return $rst;
     }
@@ -206,7 +200,7 @@ abstract class Action extends AbstractActionController
     /**
      * 创建一个服务
      */
-    public function soap($uri, $className, $params)
+    public function soap($uri, $className, $config = null)
     {
         if (isset($_GET['wsdl'])) {
             $autodiscover = new AutoDiscover();
@@ -214,14 +208,12 @@ abstract class Action extends AbstractActionController
             return $autodiscover->toXml();
         } else {
             $wsdl = strpos($uri, '?') === false ? $uri . '?wsdl' : $uri . '&wsdl';
-            $options = array(
-                'soap_version' => SOAP_1_2,
-                'encoding' => 'UTF-8'
-            );
-            $server = new SoapServer($wsdl, $options);
-            $server->setObject(call_user_func_array($className, $params));
+            $server = new SoapServer($wsdl);
+            $obj = $config == null ? new $className() : new $className($config);
+            $server->setObject($obj);
             $server->handle();
             $response = $server->getLastRequest();
+            var_dump($response);
             if ($response instanceof \SoapFault) {
                 $this->log(exceptionMsg($response));
             }

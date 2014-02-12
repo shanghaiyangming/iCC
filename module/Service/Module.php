@@ -1,5 +1,5 @@
 <?php
-namespace Soa;
+namespace Service;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -27,15 +27,6 @@ class Module
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
                 )
-            )
-        );
-    }
-
-    public function getControllerConfig()
-    {
-        return array(
-            'abstract_factories' => array(
-                'My\Common\AbstractFactory\Controller'
             )
         );
     }
