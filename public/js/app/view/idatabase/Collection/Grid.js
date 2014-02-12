@@ -131,6 +131,11 @@ Ext.define('icc.view.idatabase.Collection.Grid', {
 							text : '同步插件',
 							iconCls : 'sync',
 							action : 'sync'
+						}  , {
+							xtype : 'button',
+							text : '触发动作',
+							iconCls : 'sync',
+							action : 'hook'
 						} ]
 					}
 				}, '-', {

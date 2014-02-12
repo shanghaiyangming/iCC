@@ -438,9 +438,10 @@ function exceptionMsg($e)
  *
  * @param string $url            
  * @param array $params            
+ * @param boolean $returnObj            
  * @return string
  */
-function doGet($url, $params = array())
+function doGet($url, $params = array(), $returnObj = false)
 {
     try {
         $url = trim($url);
@@ -468,7 +469,11 @@ function doGet($url, $params = array())
             'rfc3986strict' => false
         ));
         $response = $client->request('GET');
-        return $response->getBody();
+        if ($response->isSuccessful()) {
+            return $returnObj ? $response : $response->getBody();
+        } else {
+            throw new Exception('error status is ' . $response->getStatus());
+        }
     } catch (Exception $e) {
         fb(exceptionMsg($e), \FirePHP::LOG);
         return false;
@@ -480,9 +485,10 @@ function doGet($url, $params = array())
  *
  * @param string $url            
  * @param array $params            
+ * @param boolean $returnObj            
  * @return string
  */
-function doPost($url, $params = array())
+function doPost($url, $params = array(), $returnObj = false)
 {
     try {
         $url = trim($url);
@@ -510,7 +516,11 @@ function doPost($url, $params = array())
             'rfc3986strict' => false
         ));
         $response = $client->request('POST');
-        return $response->getBody();
+        if ($response->isSuccessful()) {
+            return $returnObj ? $response : $response->getBody();
+        } else {
+            throw new Exception('error status is ' . $response->getStatus());
+        }
     } catch (Exception $e) {
         fb(exceptionMsg($e), \FirePHP::LOG);
         return false;
@@ -523,9 +533,10 @@ function doPost($url, $params = array())
  * @param string $url            
  * @param array $get            
  * @param array $post            
+ * @param boolean $returnObj            
  * @return Zend_Http_Response false
  */
-function doRequest($url, $get = array(), $post = array())
+function doRequest($url, $get = array(), $post = array(), $returnObj = false)
 {
     try {
         $url = trim($url);
@@ -563,7 +574,7 @@ function doRequest($url, $get = array(), $post = array())
             $response = $client->request('GET');
         
         if ($response->isSuccessful()) {
-            return $response->getBody();
+            return $returnObj ? $response : $response->getBody();
         } else {
             throw new Exception('error status is ' . $response->getStatus());
         }
@@ -937,13 +948,14 @@ function iCollectionName($_id)
 
 /**
  * map reduce统一处理函数
- * @param resource $dataModel
- * @param array $statisticInfo
- * @param array $query
- * @param string $method
- * @param string $scope
- * @param array $sort
- * @param int $limit
+ *
+ * @param resource $dataModel            
+ * @param array $statisticInfo            
+ * @param array $query            
+ * @param string $method            
+ * @param string $scope            
+ * @param array $sort            
+ * @param int $limit            
  */
 function mapReduce($dataModel, $statisticInfo, $query, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
 {

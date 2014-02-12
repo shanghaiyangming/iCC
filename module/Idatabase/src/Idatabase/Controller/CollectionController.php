@@ -152,13 +152,45 @@ class CollectionController extends Action
                     $this->_plugin_collection->syncPluginCollection($this->_project_id, $this->_plugin_id, $row['alias']);
                 }
                 return $this->msg(true, '同步成功');
-            }
-            else {
+            } else {
                 return $this->msg(false, '该插件中的未发现有效集合');
             }
-        }
-        else {
+        } else {
             return $this->msg(false, '插件编号为空');
+        }
+    }
+
+    /**
+     * 触发关联动作
+     *
+     * @author young
+     * @name 触发关联动作
+     * @version 2014.02.12 young
+     */
+    public function hookAction()
+    {
+        $collection_id = isset($_REQUEST['__COLLECTION_ID__']) ? trim($_REQUEST['__COLLECTION_ID__']) : '';
+        $collectionInfo = $this->_collection->findOne(array(
+            '_id' => myMongoId($collection_id),
+            'project_id' => $this->_project_id
+        ));
+        if ($collectionInfo != null) {
+            try {
+                $postDatas = array(
+                    '__PROJECT_ID__' => $this->_project_id,
+                    '__COLLECTION_ID__' => $collection_id
+                );
+                $url = $collectionInfo['hook'];
+                $hookKey = $collectionInfo['hookKey'];
+                $sign = dataSignAlgorithm($postDatas, $hookKey);
+                $postDatas['__SIGN__'] = $sign;
+                $response = doPost($url, $postDatas, true);
+                return $this->msg(true, '触发联动操作成功');
+            } catch (\Exception $e) {
+                return $this->msg(false, $e->getMessage());
+            }
+        } else {
+            return $this->msg(false, '触发联动操作失败');
         }
     }
 

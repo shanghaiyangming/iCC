@@ -444,6 +444,35 @@ Ext.define('icc.controller.idatabase.Collection', {
 			}
 		};
 
+		listeners[controllerName + 'Grid button[action=hook]'] = {
+			click: function(button) {
+				Ext.Msg.confirm('提示信息', '请确认你要触发关联动作?', function(btn) {
+					if (btn == 'yes') {
+						var grid = button.up('gridpanel');
+						var selections = grid.getSelectionModel().getSelection();
+						if (selections.length == 1) {
+							var record = selections[0];
+							Ext.Ajax.request({
+								url: '/idatabase/collection/hook',
+								params: {
+									__PROJECT_ID__: grid.__PROJECT_ID__,
+									__PLUGIN_ID__: grid.__PLUGIN_ID__,
+									__COLLECTION_ID__: record.get('_id')
+								},
+								scope: me,
+								success: function(response) {
+									var text = Ext.JSON.decode(response.responseText, true);
+									Ext.Msg.alert('提示信息', text.msg);
+								}
+							});
+						} else {
+							Ext.Msg.alert('提示信息', '请选择一项您要编辑的集合');
+						}
+					}
+				}, me);
+			}
+		};
+
 		me.control(listeners);
 	},
 	buildDataPanel: function(grid, tabpanel, record) {
