@@ -7,7 +7,7 @@ defined('CACHE_ADAPTER') || define('CACHE_ADAPTER', 'fileCache'); // [fileCache|
 defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'development'); // [development|production]
 defined('DEFAULT_DATABASE') || define('DEFAULT_DATABASE', 'ICCv1');
 defined('DEFAULT_CLUSTER') || define('DEFAULT_CLUSTER', 'default');
-defined('DOMAIN') || define('DOMAIN', 'http://cloud.umaman.com/');
+defined('DOMAIN') || define('DOMAIN', 'http://localhost');
 
 /**
  * ICC指定数据库列表
