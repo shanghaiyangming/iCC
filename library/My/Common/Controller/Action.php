@@ -213,9 +213,9 @@ abstract class Action extends AbstractActionController
             $server->setObject($obj);
             $server->handle();
             $response = $server->getLastRequest();
-            var_dump($response);
             if ($response instanceof \SoapFault) {
-                $this->log(exceptionMsg($response));
+                $response = exceptionMsg($response);
+                $this->log($response);
             }
             return $response;
         }

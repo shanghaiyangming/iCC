@@ -22,6 +22,7 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 		text: '密钥描述',
 		dataIndex: 'desc',
 		flex: 1,
+		hidden: true,
 		field: {
 			xtype: 'textfield',
 			allowBlank: false
@@ -29,6 +30,14 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 	}, {
 		text: '项目编号',
 		dataIndex: 'project_id',
+		flex: 1,
+		field: {
+			xtype: 'textfield',
+			allowBlank: false
+		}
+	}, {
+		text: '密钥编号',
+		dataIndex: '_id',
 		flex: 1,
 		field: {
 			xtype: 'textfield',
@@ -43,17 +52,6 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 			allowBlank: false
 		}
 
-	}, {
-		xtype: 'datecolumn',
-		text: '过期时间',
-		dataIndex: 'expire',
-		format: 'Y-m-d H:i:s',
-		flex: 1,
-		field: {
-			xtype: 'datefield',
-			allowBlank: false,
-			format: 'Y-m-d H:i:s'
-		}
 	}, {
 		xtype: 'booleancolumn',
 		text: '默认?',
@@ -73,6 +71,17 @@ Ext.define('icc.view.idatabase.Key.Grid', {
 		falseText: '×',
 		field: {
 			xtype: 'commonComboboxBoolean'
+		}
+	}, {
+		xtype: 'datecolumn',
+		text: '过期时间',
+		dataIndex: 'expire',
+		format: 'Y-m-d H:i:s',
+		flex: 1,
+		field: {
+			xtype: 'datefield',
+			allowBlank: false,
+			format: 'Y-m-d H:i:s'
 		}
 	}, {
 		xtype: 'datecolumn',
