@@ -184,9 +184,16 @@ class CollectionController extends Action
                 $hookKey = $collectionInfo['hookKey'];
                 $sign = dataSignAlgorithm($postDatas, $hookKey);
                 $postDatas['__SIGN__'] = $sign;
-                $response = doPost($url, $postDatas, true);
-                if($response===false)
+                $response = doPost($url, $postDatas);
+                if ($response === false)
                     return $this->msg(false, '网络请求失败');
+                $this->_collection->update(array(
+                    '_id' => myMongoId($collection_id)
+                ), array(
+                    '$set' => array(
+                        'hookLastResponseResult' => $response
+                    )
+                ));
                 return $this->msg(true, '触发联动操作成功');
             } catch (\Exception $e) {
                 return $this->msg(false, $e->getMessage());

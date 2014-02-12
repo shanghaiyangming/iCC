@@ -641,7 +641,7 @@ class DataController extends Action
      */
     private function quickOperation($datas)
     {
-        if(empty($this->_schema['quick'])) {
+        if (empty($this->_schema['quick'])) {
             return false;
         }
         
@@ -1340,7 +1340,14 @@ class DataController extends Action
             if ($collectionInfo !== null && isset($collectionInfo['hook']) && filter_var($collectionInfo['hook'], FILTER_VALIDATE_URL) !== false) {
                 $sign = dataSignAlgorithm($_POST, $collectionInfo['hookKey']);
                 $_POST['__SIGN__'] = $sign;
-                doPost($collectionInfo['hook'], $_POST);
+                $response = doPost($collectionInfo['hook'], $_POST);
+                $this->_collection->update(array(
+                    '_id' => $collectionInfo['_id']
+                ), array(
+                    '$set' => array(
+                        'hookLastResponseResult' => $response
+                    )
+                ));
             }
         } catch (\Exception $e) {
             $this->log(exceptionMsg($e));
