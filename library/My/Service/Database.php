@@ -389,6 +389,11 @@ class Database
         return $this->_model->deleteIndexes();
     }
 
+    /**
+     * findAndModify
+     * @param string $options
+     * @return array
+     */
     public function findAndModify($options)
     {
         $options = $this->toArray($options);
