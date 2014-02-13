@@ -36,6 +36,16 @@ class Database
         $this->_config = $config;
         $this->_key = new MongoCollection($config, IDATABASE_KEYS);
     }
+    
+    /**
+     * 测试用例
+     * @param int $a
+     * @param int $b
+     * @return int
+     */
+    public function sum($a,$b) {
+        return $a+$b;
+    }
 
     /**
      * 身份认证，请在SOAP HEADER部分请求该函数进行身份校验

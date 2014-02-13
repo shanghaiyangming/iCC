@@ -471,7 +471,7 @@ class MongoCollection extends \MongoCollection
      */
     public function find($query = NULL, $fields = NULL)
     {
-        $fields = $fields == null ? array() : $fields;
+        $fields = empty($fields) ? array() : $fields;
         return parent::find($this->appendQuery($query), $fields);
     }
 
@@ -482,7 +482,7 @@ class MongoCollection extends \MongoCollection
      */
     public function findOne($query = NULL, $fields = NULL)
     {
-        $fields = $fields == null ? array() : $fields;
+        $fields = empty($fields) ? array() : $fields;
         return parent::findOne($this->appendQuery($query), $fields);
     }
 
@@ -502,7 +502,11 @@ class MongoCollection extends \MongoCollection
         if (! $cursor instanceof \MongoCursor)
             throw new \Exception('$query error:' . json_encode($query));
         
-        $cursor->sort($sort)->skip($skip);
+        if (! empty($sort))
+            $cursor->sort($sort);
+        if (! empty($skip))
+            $cursor->skip($skip);
+        
         if ($limit > 0) {
             $cursor->limit($limit);
         }

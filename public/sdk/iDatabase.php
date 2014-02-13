@@ -8,7 +8,7 @@ class iDatabase
      *
      * @var string
      */
-    private $_wsdl = 'http://cloud.umaman.com/service/database/index?wsdl';
+    private $_wsdl = 'http://localhost/service/database/index?wsdl';
 
     /**
      * 是否每次加载WSDL 默认为false
@@ -22,7 +22,7 @@ class iDatabase
      *
      * @var string
      */
-    private $_namespace = 'http://cloud.umaman.com/service/database/index';
+    private $_namespace = 'http://localhost/service/database/index';
 
     /**
      * 身份认证中的授权方法名
@@ -36,7 +36,7 @@ class iDatabase
      *
      * @var string
      */
-    private $_collection_alias = 'setCollection';
+    private $_set_collection = 'setCollection';
 
     /**
      * 项目编号
@@ -143,17 +143,17 @@ class iDatabase
         try {
             $options = array(
                 'soap_version' => SOAP_1_2, // 必须是1.2版本的soap协议，支持soapheader
-                'exceptions' => true,
+                'SoapFaults' => true,
                 'trace' => true,
                 'connection_timeout' => 300, // 避免网络延迟导致的链接丢失
                 'keep_alive' => true,
                 'compression' => true
             );
             
-            $this->_client = new MySoapClient($wsdl, $options);
+            $this->_client = new SoapClient($wsdl, $options);
             return $this->_client;
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -173,8 +173,8 @@ class iDatabase
         $authenticate = new SoapHeader($this->_namespace, $this->_authenticate, new SoapVar($auth, SOAP_ENC_OBJECT), false);
         
         $alias = array();
-        $alias['collectionAlias'] = '';
-        $setCollection = new SoapHeader($this->_namespace, $this->_collection_alias, new SoapVar($alias, SOAP_ENC_OBJECT), false);
+        $alias['collectionAlias'] = $this->_collection_alias;
+        $setCollection = new SoapHeader($this->_namespace, $this->_set_collection, new SoapVar($alias, SOAP_ENC_OBJECT), false);
         $this->_client = $this->callSoap($this->_wsdl, $this->_refresh);
         $this->_client->__setSoapHeaders(array(
             $authenticate,
@@ -219,8 +219,8 @@ class iDatabase
         try {
             $rst = $this->_client->count(serialize($query));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -237,8 +237,8 @@ class iDatabase
         try {
             $rst = $this->_client->distinct($key, serialize($query));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -258,8 +258,8 @@ class iDatabase
         try {
             $rst = $this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -275,8 +275,8 @@ class iDatabase
         try {
             $rst = $this->_client->findOne(serialize($query));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -294,8 +294,8 @@ class iDatabase
         try {
             $rst = $this->_client->findAll(serialize($query), serialize($sort), serialize($fields));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -311,8 +311,8 @@ class iDatabase
         try {
             $rst = $this->_client->findAndModify(serialize($options));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -328,8 +328,8 @@ class iDatabase
         try {
             $rst = $this->_client->remove(serialize($query));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -345,8 +345,8 @@ class iDatabase
         try {
             $rst = $this->_client->insert(serialize($datas));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -363,8 +363,8 @@ class iDatabase
         try {
             $rst = $this->_client->update(serialize($criteria), serialize($object));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -380,8 +380,8 @@ class iDatabase
         try {
             $rst = $this->_client->aggregate(serialize($ops));
             return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
+        } catch (SoapFault $e) {
+            $this->SoapFaultMsg($e);
             return false;
         }
     }
@@ -392,32 +392,9 @@ class iDatabase
      * @param object $e            
      * @return null
      */
-    private function exceptionMsg($e)
+    private function SoapFaultMsg($e)
     {
         $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
-    }
-
-    public function __call($funcname, $arguments = Array())
-    {
-        try {
-            $encodeArg = array();
-            if (is_array($arguments)) {
-                foreach ($arguments as $argument) {
-                    if (is_array($argument)) {
-                        $encodeArg[] = serialize($argument);
-                    } else {
-                        $encodeArg[] = $argument;
-                    }
-                }
-            }
-            return call_user_func_array(array(
-                $this->_client,
-                $funcname
-            ), $encodeArg);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            return false;
-        }
     }
 
     /**
@@ -427,170 +404,6 @@ class iDatabase
     {
         if ($this->_debug) {
             var_dump($this->_error, $this->_client->__getLastRequestHeaders(), $this->_client->__getLastRequest(), $this->_client->__getLastResponseHeaders(), $this->_client->__getLastResponse());
-        }
-    }
-}
-
-/**
- * 扩展SOAP客户端增加异步处理模式
- */
-class MySoapClient extends SoapClient
-{
-
-    public $asyncFunctionName = null;
-
-    protected $_asynchronous = false;
-
-    protected $_asyncResult = null;
-
-    protected $_asyncAction = null;
-
-    public function __call($functionName, $arguments)
-    {
-        if ($this->_asyncResult == null) {
-            $this->_asynchronous = false;
-            $this->_asyncAction = null;
-            
-            if (preg_match('/Async$/', $functionName) == 1) {
-                $this->_asynchronous = true;
-                $functionName = str_replace('Async', '', $functionName);
-                $this->asyncFunctionName = $functionName;
-            }
-        }
-        
-        try {
-            $result = @parent::__call($functionName, $arguments);
-        } catch (SoapFault $e) {
-            throw new Exception('There was an error querying the API: ' . $e->getMessage());
-        }
-        
-        if ($this->_asynchronous == true) {
-            return $this->_asyncAction;
-        }
-        return $result;
-    }
-
-    public function __doRequest($request, $location, $action, $version, $one_way = false)
-    {
-        if ($this->_asyncResult != null) {
-            $result = $this->_asyncResult;
-            unset($this->_asyncResult);
-            return $result;
-        }
-        
-        if ($this->_asynchronous == false) {
-            $result = parent::__doRequest($request, $location, $action, $version, $one_way);
-            return $result;
-        } else {
-            $this->_asyncAction = new SoapClientAsync($this, $this->asyncFunctionName, $request, $location, $action);
-            return '';
-        }
-    }
-
-    public function handleAsyncResult($functionName, $result)
-    {
-        $this->_asynchronous = false;
-        $this->_asyncResult = $result;
-        return $this->__call($functionName, array());
-    }
-}
-
-class SoapClientAsync
-{
-
-    /**
-     * 获取当前soapclient对象
-     */
-    protected $_soapClient;
-
-    /**
-     * 被叫方法名
-     *
-     * @var string
-     */
-    protected $_functionName;
-
-    /**
-     * 连接SOAP客户端的socket资源
-     *
-     * @var resource
-     */
-    protected $_socket;
-
-    public function __construct($soapClient, $functionName, $request, $location, $action)
-    {
-        preg_match('%^(http(?:s)?)://(.*?)(/.*?)$%', $location, $matches);
-        
-        $this->_soapClient = $soapClient;
-        $this->_functionName = $functionName;
-        
-        $protocol = $matches[1];
-        $host = $matches[2];
-        $endpoint = $matches[3];
-        
-        $headers = array(
-            'POST ' . $endpoint . ' HTTP/1.1',
-            'Host: ' . $host,
-            'User-Agent: PHP-SOAP/' . phpversion(),
-            'Content-Type: text/xml; charset=utf-8',
-            'SOAPAction: "' . $action . '"',
-            'Content-Length: ' . strlen($request),
-            'Connection: close'
-        );
-        
-        if ($protocol == 'https') {
-            $host = 'ssl://' . $host;
-            $port = 443;
-        } else {
-            $port = 80;
-        }
-        
-        $data = implode("\r\n", $headers) . "\r\n\r\n" . $request . "\r\n";
-        $this->_socket = fsockopen($host, $port, $errorNumber, $errorMessage);
-        stream_set_blocking($this->_socket, 0);
-        
-        if ($this->_socket === false) {
-            $this->_socket = null;
-            throw new Exception('Unable to make an asynchronous API call: ' . $errorNumber . ': ' . $errorMessage);
-        }
-        
-        if (fwrite($this->_socket, $data) === false) {
-            throw new Exception('Unable to write data to an asynchronous API call.');
-        }
-    }
-
-    public function wait()
-    {
-        $soapResult = '';
-        
-        while (! feof($this->_socket)) {
-            $soapResult .= fread($this->_socket, 8192);
-        }
-        
-        list ($headers, $data) = explode("\r\n\r\n", $soapResult);
-        
-        return $this->rst($this->_soapClient->handleAsyncResult($this->_functionName, $data));
-    }
-
-    /**
-     * 格式化返回结果
-     *
-     * @param string $rst            
-     * @return array
-     */
-    private function rst($rst)
-    {
-        $rst = json_decode($rst, true);
-        if (array_key_exists('err', $rst))
-            return $rst;
-        else
-            return $rst['result'];
-    }
-
-    public function __destruct()
-    {
-        if ($this->_socket != null) {
-            fclose($this->_socket);
         }
     }
 }
