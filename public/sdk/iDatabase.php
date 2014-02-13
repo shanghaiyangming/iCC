@@ -1,5 +1,6 @@
 <?php
 
+use Zend\Json\Json;
 class iDatabase
 {
 
@@ -86,6 +87,12 @@ class iDatabase
      * @var bool
      */
     private $_debug = false;
+    
+    /**
+     * socket连接的最大超时时间
+     * @var int
+     */
+    private $_maxConnectionTime = 300;
 
     /**
      * 记录错误信息
@@ -101,10 +108,10 @@ class iDatabase
      * @param string $password            
      * @param string $key_id            
      */
-    public function __construct($project_id, $collectionAlias, $password, $key_id = '')
+    public function __construct($collectionAlias, $project_id, $password, $key_id = '')
     {
-        $this->_project_id = $project_id;
         $this->_collection_alias = $collectionAlias;
+        $this->_project_id = $project_id;
         $this->_password = $password;
         $this->_rand = sha1(time());
         $this->_key_id = $key_id;
@@ -122,38 +129,29 @@ class iDatabase
     }
 
     /**
-     * 开启或者关闭soap客户端的wsdl缓存
-     *
-     * @param bool $refresh            
-     */
-    public function setRefresh($refresh = false)
-    {
-        $this->_refresh = is_bool($refresh) ? $refresh : false;
-    }
-
-    /**
      * 建立soap链接
      *
      * @param string $wsdl            
      * @param bool $refresh            
      * @return resource boolean
      */
-    private function callSoap($wsdl, $refresh = false)
+    private function callSoap($wsdl)
     {
         try {
             $options = array(
                 'soap_version' => SOAP_1_2, // 必须是1.2版本的soap协议，支持soapheader
-                'SoapFaults' => true,
+                'exceptions' => true,
                 'trace' => true,
-                'connection_timeout' => 300, // 避免网络延迟导致的链接丢失
+                'connection_timeout' => $this->_maxConnectionTime, // 避免网络延迟导致的链接丢失
                 'keep_alive' => true,
                 'compression' => true
             );
             
+            ini_set('default_socket_timeout', $this->_maxConnectionTime);
             $this->_client = new SoapClient($wsdl, $options);
             return $this->_client;
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -165,6 +163,7 @@ class iDatabase
      */
     private function connect()
     {
+        // 身份认证
         $auth = array();
         $auth['project_id'] = $this->_project_id;
         $auth['rand'] = $this->_rand;
@@ -172,10 +171,12 @@ class iDatabase
         $auth['key_id'] = $this->_key_id;
         $authenticate = new SoapHeader($this->_namespace, $this->_authenticate, new SoapVar($auth, SOAP_ENC_OBJECT), false);
         
+        // 设定集合
         $alias = array();
         $alias['collectionAlias'] = $this->_collection_alias;
         $setCollection = new SoapHeader($this->_namespace, $this->_set_collection, new SoapVar($alias, SOAP_ENC_OBJECT), false);
-        $this->_client = $this->callSoap($this->_wsdl, $this->_refresh);
+        
+        $this->_client = $this->callSoap($this->_wsdl);
         $this->_client->__setSoapHeaders(array(
             $authenticate,
             $setCollection
@@ -194,34 +195,17 @@ class iDatabase
     }
 
     /**
-     * 格式化返回结果
-     *
-     * @param string $rst            
-     * @return array
-     */
-    private function rst($rst)
-    {
-        return $rst;
-        //$rst = json_decode($rst, true);
-        if (array_key_exists('err', $rst))
-            return $rst;
-        else
-            return $rst['result'];
-    }
-
-    /**
      * 执行count操作
      *
      * @param array $query            
      * @return array boolean
      */
-    public function count(array $query)
+    public function count($query)
     {
         try {
-            $rst = $this->_client->count(serialize($query));
-            return $this->rst($rst);
+            return $this->_client->count(serialize($query));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -236,10 +220,9 @@ class iDatabase
     public function distinct($key, array $query)
     {
         try {
-            $rst = $this->_client->distinct($key, serialize($query));
-            return $this->rst($rst);
+            return $this->_client->distinct($key, serialize($query));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -254,13 +237,12 @@ class iDatabase
      * @param array $fields            
      * @return array boolean
      */
-    public function find(array $query, array $sort = null, $skip = 0, $limit = 10, Array $fields = array())
+    public function find(array $query, array $sort = null, $skip = 0, $limit = 10, array $fields = array())
     {
         try {
-            $rst = $this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields));
-            return $this->rst($rst);
+            return $this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -274,29 +256,27 @@ class iDatabase
     public function findOne(array $query)
     {
         try {
-            $rst = $this->_client->findOne(serialize($query));
-            return $this->rst($rst);
+            return $this->_client->findOne(serialize($query));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
 
-
     /**
      * 查询全部信息
-     * @param array $query
-     * @param array $sort
-     * @param array $fields
+     *
+     * @param array $query            
+     * @param array $sort            
+     * @param array $fields            
      * @return array
      */
     public function findAll(array $query, array $sort = array('_id'=>-1), array $fields = array())
     {
         try {
-            $rst = $this->_client->findAll(serialize($query), serialize($sort), serialize($fields));
-            return $this->rst($rst);
+            return $this->_client->findAll(serialize($query), serialize($sort), serialize($fields));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -310,10 +290,9 @@ class iDatabase
     public function findAndModify(array $options)
     {
         try {
-            $rst = $this->_client->findAndModify(serialize($options));
-            return $this->rst($rst);
+            return $this->_client->findAndModify(serialize($options));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -327,10 +306,9 @@ class iDatabase
     public function remove(array $query)
     {
         try {
-            $rst = $this->_client->remove(serialize($query));
-            return $this->rst($rst);
+            return $this->_client->remove(serialize($query));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -344,10 +322,9 @@ class iDatabase
     public function insert(array $datas)
     {
         try {
-            $rst = $this->_client->insert(serialize($datas));
-            return $this->rst($rst);
+            return $this->_client->insert(serialize($datas));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -362,10 +339,9 @@ class iDatabase
     public function update(array $criteria, array $object)
     {
         try {
-            $rst = $this->_client->update(serialize($criteria), serialize($object));
-            return $this->rst($rst);
+            return $this->_client->update(serialize($criteria), serialize($object));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -373,16 +349,17 @@ class iDatabase
     /**
      * aggregate框架操作
      *
-     * @param array $ops            
+     * @param array $ops1   
+     * @param array $ops2  
+     * @param array $ops3           
      * @return array boolean
      */
-    public function aggregate(array $ops)
+    public function aggregate(array $ops1,array $ops2,array $ops3)
     {
         try {
-            $rst = $this->_client->aggregate(serialize($ops));
-            return $this->rst($rst);
+            return $this->_client->aggregate(serialize($ops1),serialize($ops2),serialize($ops3));
         } catch (SoapFault $e) {
-            $this->SoapFaultMsg($e);
+            $this->soapFaultMsg($e);
             return false;
         }
     }
@@ -391,11 +368,11 @@ class iDatabase
      * 将异常信息记录到$this->_error中
      *
      * @param object $e            
-     * @return null
+     * @return string
      */
-    private function SoapFaultMsg($e)
+    private function soapFaultMsg($e)
     {
-        $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
+        return $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
     }
 
     /**

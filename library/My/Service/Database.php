@@ -36,15 +36,17 @@ class Database
         $this->_config = $config;
         $this->_key = new MongoCollection($config, IDATABASE_KEYS);
     }
-    
+
     /**
      * 测试用例
-     * @param int $a
-     * @param int $b
+     * 
+     * @param int $a            
+     * @param int $b            
      * @return int
      */
-    public function sum($a,$b) {
-        return $a+$b;
+    public function sum($a, $b)
+    {
+        return $a + $b;
     }
 
     /**
@@ -173,7 +175,7 @@ class Database
     /**
      * 统计数量
      *
-     * @param array $query            
+     * @param string $query            
      * @return int
      */
     public function count($query)
@@ -405,16 +407,15 @@ class Database
     public function aggregate($ops1, $ops2, $ops3)
     {
         $param_arr = array();
-        $param_arr[] = array();
-        
         $ops1 = $this->toArray($ops1);
+        $ops2 = $this->toArray($ops2);
+        $ops3 = $this->toArray($ops3);
+        
         $param_arr[] = $ops1;
         if (! empty($ops2)) {
-            $ops2 = $this->toArray($ops2);
             $param_arr[] = $ops2;
         }
         if (! empty($ops3)) {
-            $ops3 = $this->toArray($ops3);
             $param_arr[] = $ops3;
         }
         
@@ -439,7 +440,7 @@ class Database
             return $rst;
         
         if (! isJson($json))
-            throw new \SoapFault(500, 'json格式不正确，无法转化为PHP数组，请检查json格式');
+            throw new \SoapFault(500, 'Json格式不正确，无法转化为PHP数组，请检查Json格式');
         return Json::decode($string, Json::TYPE_ARRAY);
     }
 
