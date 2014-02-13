@@ -359,6 +359,29 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
+     * aggregate框架指令达成
+     *
+     * @return mixed
+     */
+    public function aggregate($pipeline, $op = NULL, $op1 = NULL)
+    {
+        $args = func_get_args();
+        if (! $this->_noAppendQuery) {
+            array_unshift($args, array(
+                array(
+                    '$match' => array(
+                        '__REMOVED__' => false
+                    )
+                )
+            ));
+        }
+        return call_user_func_array(array(
+            parent,
+            'aggregate'
+        ), $args);
+    }
+
+    /**
      * 批量插入数据
      *
      * @see MongoCollection::batchInsert()
@@ -421,7 +444,6 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 物理删除数据集合
-     *    
      */
     public function physicalDrop()
     {

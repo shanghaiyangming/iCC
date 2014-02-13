@@ -34,7 +34,7 @@ if (file_exists(__DIR__ . '/library/function.php')) {
 // 加载自己的函数库
 $myAutoLoaderClass = array(
     'My\Common' => __DIR__ . '/library/My/Common',
-    'Soa' => __DIR__ . '/library/My/Soa'
+    'Service' => __DIR__ . '/library/My/Service'
 );
 
 try {

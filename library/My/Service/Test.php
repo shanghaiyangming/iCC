@@ -1,10 +1,10 @@
 <?php
 /**
- * iCC新版idatabase服务
+ * iCC测试服务
  * @author yangming
  *
  */
-namespace My\Common\Service;
+namespace My\Service;
 
 use My\Common\MongoCollection;
 use Zend\Config\Config;
