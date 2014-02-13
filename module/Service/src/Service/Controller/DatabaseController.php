@@ -16,7 +16,7 @@ class DatabaseController extends Action
     public function indexAction()
     {
         $uri = DOMAIN.'/service/database/index';
-        $className = '\My\Common\Service\Database';
+        $className = '\My\Service\Database';
         $config = $this->getServiceLocator()->get('mongos');
         echo $this->soap($uri, $className, $config);
         return $this->response;
