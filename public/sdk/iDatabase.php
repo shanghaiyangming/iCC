@@ -1,6 +1,6 @@
 <?php
-
 use Zend\Json\Json;
+
 class iDatabase
 {
 
@@ -26,14 +26,14 @@ class iDatabase
     private $_namespace = 'http://localhost/service/database/index';
 
     /**
-     * 身份认证中的授权方法名
+     * 身份认证中的授权方法名称
      *
      * @var string
      */
     private $_authenticate = 'authenticate';
 
     /**
-     * 设定集合
+     * 设定集合方法名称
      *
      * @var string
      */
@@ -87,9 +87,10 @@ class iDatabase
      * @var bool
      */
     private $_debug = false;
-    
+
     /**
      * socket连接的最大超时时间
+     *
      * @var int
      */
     private $_maxConnectionTime = 300;
@@ -330,7 +331,23 @@ class iDatabase
     }
 
     /**
-     * 执行批量更新操作
+     * 执行batchInsert操作
+     *
+     * @param array $datas            
+     * @return array boolean
+     */
+    public function batchInsert(array $datas)
+    {
+        try {
+            return $this->_client->batchInsert(serialize($datas));
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * 执行更新操作
      *
      * @param array $criteria            
      * @param array $object            
@@ -347,17 +364,81 @@ class iDatabase
     }
 
     /**
-     * aggregate框架操作
-     *
-     * @param array $ops1   
-     * @param array $ops2  
-     * @param array $ops3           
-     * @return array boolean
+     * 保存操作，当包含_id时更新对应的_id所对应的文档，否则创建新的文档。
+     * 
+     * @param array $datas            
+     * @return array
      */
-    public function aggregate(array $ops1,array $ops2,array $ops3)
+    public function save($datas)
     {
         try {
-            return $this->_client->aggregate(serialize($ops1),serialize($ops2),serialize($ops3));
+            return $this->_client->save(serialize($criteria), serialize($object));
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * aggregate框架操作
+     *
+     * @param array $ops1            
+     * @param array $ops2            
+     * @param array $ops3            
+     * @return array boolean
+     */
+    public function aggregate(array $ops1, array $ops2, array $ops3)
+    {
+        try {
+            return $this->_client->aggregate(serialize($ops1), serialize($ops2), serialize($ops3));
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * 创建索引
+     *
+     * @param mixed $keys            
+     * @param array $options            
+     * @return boolean
+     */
+    public function ensureIndex($keys, $options)
+    {
+        try {
+            return $this->_client->ensureIndex(serialize($keys), serialize($options));
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * 删除指定索引
+     * 
+     * @param array $keys            
+     * @return boolean
+     */
+    public function deleteIndex($keys)
+    {
+        try {
+            return $this->_client->deleteIndex(serialize($keys));
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * 删除全部索引
+     * 
+     * @return boolean
+     */
+    public function deleteIndexes()
+    {
+        try {
+            return $this->_client->deleteIndexes();
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -372,7 +453,8 @@ class iDatabase
      */
     private function soapFaultMsg($e)
     {
-        return $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
+        $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
+        throw new SoapFault($e->getCode(), $e->getMessage());
     }
 
     /**
