@@ -29,6 +29,8 @@ class Database
 
     private $_collection_id = null;
 
+    private $_schema = array();
+
     public function __construct(Config $config)
     {
         $this->_config = $config;
@@ -66,7 +68,7 @@ class Database
      * @param string $project_id            
      * @param string $key_id            
      * @throws \SoapFault
-     * @return multitype:
+     * @return array
      */
     private function getKeysInfo($project_id, $key_id)
     {
@@ -94,7 +96,7 @@ class Database
      *
      * @param string $collectionAlias            
      * @throws \SoapFault
-     * @return boolean
+     * @return bool
      */
     public function setCollection($collectionAlias)
     {
@@ -127,6 +129,7 @@ class Database
      * 获取当前集合的文档结构
      *
      * @throws \SoapFault
+     * @return array
      */
     public function getSchema()
     {
@@ -144,6 +147,16 @@ class Database
         if ($cursor->count() == 0)
             throw new \SoapFault(500, '集合未定义文档结构');
         
+        while ($cursor->hasNext()) {
+            $row = $cursor->getNext();
+            if (strpos($row['field'], '.') !== false) {
+                $exp = explode('.', $row['field']);
+                $this->_schema[end($exp)] = $row['type'];
+            }
+            $this->_schema[$row['field']] = $row['type'];
+        }
+        
+        $cursor->rewind();
         return convertToPureArray(iterator_to_array($cursor, false));
     }
 
@@ -155,7 +168,7 @@ class Database
      */
     public function count($query)
     {
-        $query = $this->jsonToArray($query);
+        $query = $this->toArray($query);
         return intval($this->_model->count($query));
     }
 
@@ -171,13 +184,13 @@ class Database
      */
     public function find($query, $sort, $skip, $limit, $fields)
     {
-        $query = $this->jsonToArray($query);
-        $sort = $this->jsonToArray($sort);
+        $query = $this->toArray($query);
+        $sort = $this->toArray($sort);
         $skip = intval($skip) > 0 ? intval($skip) : 0;
         $limit = intval($limit) < 0 ? 10 : intval($limit);
         $limit = intval($limit) > 1000 ? 1000 : intval($limit);
         if (isJson($fields)) {
-            $fields = $this->jsonToArray($fields);
+            $fields = $this->toArray($fields);
         } else {
             $fields = array();
         }
@@ -195,9 +208,9 @@ class Database
      */
     public function findOne($query, $fields)
     {
-        $query = $this->jsonToArray($query);
+        $query = $this->toArray($query);
         if (isJson($fields)) {
-            $fields = $this->jsonToArray($fields);
+            $fields = $this->toArray($fields);
         } else {
             $fields = array();
         }
@@ -214,10 +227,10 @@ class Database
      */
     public function findAll($query, $sort, $fields)
     {
-        $query = $this->jsonToArray($query);
-        $sort = $this->jsonToArray($sort);
+        $query = $this->toArray($query);
+        $sort = $this->toArray($sort);
         if (isJson($fields)) {
-            $fields = $this->jsonToArray($fields);
+            $fields = $this->toArray($fields);
         } else {
             $fields = array();
         }
@@ -234,7 +247,7 @@ class Database
     public function distinct($key, $query)
     {
         $key = is_string($key) ? trim($key) : '';
-        $query = $this->jsonToArray($query);
+        $query = $this->toArray($query);
         $rst = $this->_model->distinct($key, $query);
         return convertToPureArray($rst);
     }
@@ -248,7 +261,7 @@ class Database
      */
     public function save($datas)
     {
-        $datas = $this->jsonToArray($datas);
+        $datas = $this->toArray($datas);
         $rst = $this->_model->save($datas);
         return convertToPureArray($rst);
     }
@@ -262,26 +275,28 @@ class Database
      */
     public function insert($datas)
     {
-        $datas = $this->jsonToArray($datas);
+        $datas = $this->toArray($datas);
         $rst = $this->_model->insertByFindAndModify($datas);
         return convertToPureArray($rst);
     }
 
     /**
      * 批量插入
+     *
      * @param string $a            
      * @throws \SoapFault
      * @return array
      */
     public function batchInsert($a)
     {
-        $a = $this->jsonToArray($a);
+        $a = $this->toArray($a);
         $rst = $this->_model->batchInsert($datas);
         return convertToPureArray($rst);
     }
 
     /**
      * 更新操作
+     *
      * @param string $criteria            
      * @param string $object            
      * @throws \SoapFault
@@ -289,21 +304,22 @@ class Database
      */
     public function update($criteria, $object)
     {
-        $criteria = $this->jsonToArray($criteria);
-        $object = $this->jsonToArray($object);
+        $criteria = $this->toArray($criteria);
+        $object = $this->toArray($object);
         $rst = $this->_model->update($criteria, $object);
         return convertToPureArray($rst);
     }
 
     /**
      * 删除操作
-     * @param string $criteria
+     *
+     * @param string $criteria            
      * @throws \SoapFault
      * @return array
      */
     public function remove($criteria)
     {
-        $criteria = $this->jsonToArray($criteria);
+        $criteria = $this->toArray($criteria);
         return $this->_model->remove($criteria);
     }
 
@@ -317,20 +333,21 @@ class Database
 
     /**
      * 创建索引
-     * @param string $keys
-     * @param string $options
+     *
+     * @param string $keys            
+     * @param string $options            
      * @return boolean
      */
     public function ensureIndex($keys, $options)
     {
         if (isJson($keys)) {
-            $keys = $this->jsonToArray($keys);
+            $keys = $this->toArray($keys);
         } else {
             $keys = trim($keys);
         }
         
         if (isJson($options)) {
-            $options = $this->jsonToArray($options);
+            $options = $this->toArray($options);
         } else {
             $options = array(
                 'background' => true
@@ -346,7 +363,7 @@ class Database
      */
     public function deleteIndex($keys)
     {
-        $keys = $this->jsonToArray($keys);
+        $keys = $this->toArray($keys);
         return $this->_model->deleteIndex($keys);
     }
 
@@ -362,50 +379,141 @@ class Database
 
     public function findAndModify($options)
     {
-        $options = $this->jsonToArray($options);
+        $options = $this->toArray($options);
         $rst = $this->_model->findAndModifyByCommand($options);
         return convertToPureArray($rst);
     }
-    
+
     /**
      * aggregate框架支持
-     * 
-     * @param string $ops1
-     * @param string $ops2
-     * @param string $ops3
+     *
+     * @param string $ops1            
+     * @param string $ops2            
+     * @param string $ops3            
      * @return array
      */
-    public function aggregate($ops1,$ops2,$ops3)
+    public function aggregate($ops1, $ops2, $ops3)
     {
         $param_arr = array();
         $param_arr[] = array();
         
-        $ops1 = $this->jsonToArray($ops1);
+        $ops1 = $this->toArray($ops1);
         $param_arr[] = $ops1;
-        if(!empty($ops2)) {
-            $ops2 = $this->jsonToArray($ops2);
+        if (! empty($ops2)) {
+            $ops2 = $this->toArray($ops2);
             $param_arr[] = $ops2;
         }
-        if(!empty($ops3)) {
-            $ops3 = $this->jsonToArray($ops3);
+        if (! empty($ops3)) {
+            $ops3 = $this->toArray($ops3);
             $param_arr[] = $ops3;
         }
-
-        $rst = call_user_func_array(array($this->_model,'aggregate'), $param_arr);
+        
+        $rst = call_user_func_array(array(
+            $this->_model,
+            'aggregate'
+        ), $param_arr);
         return convertToPureArray($rst);
     }
 
     /**
-     * 将json字符串转化为数组
-     * @param string $json
+     * 将字符串转化为数组
+     *
+     * @param string $string            
      * @throws \SoapFault
-     * @return Ambigous <\Zend\Json\mixed, mixed, NULL, \Zend\Json\$_tokenValue, multitype:, stdClass, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, multitype:, multitype:Ambigous <\Zend\Json\mixed, \Zend\Json\$_tokenValue, NULL, multitype:, stdClass> , NULL, stdClass> >
+     * @return array
      */
-    private function jsonToArray($json)
+    private function toArray($string)
     {
+        $rst = @unserialize($string);
+        if ($rst !== false)
+            return $rst;
+        
         if (! isJson($json))
             throw new \SoapFault(500, 'json格式不正确，无法转化为PHP数组，请检查json格式');
-        return Json::decode($json, Json::TYPE_ARRAY);
+        return Json::decode($string, Json::TYPE_ARRAY);
+    }
+
+    /**
+     * 强行转换query中的消息类型，以便匹配后台设定的消息类型
+     *
+     * @param string $formId            
+     * @param array $query            
+     * @param string $parentKey            
+     * @return mixed
+     */
+    private function convertQuery($query, $parentKey = '')
+    {
+        foreach ($query as $key => $value) {
+            if (is_array($value)) {
+                if (isset($this->_schema[$key]))
+                    $query[$key] = $this->convertQuery($formId, $value, $key);
+                else
+                    $query[$key] = $this->convertQuery($formId, $value, $parentKey);
+            } elseif (substr($key, 0, 1) == '$' && is_bool($value)) {
+                $query[$key] = $value;
+            } elseif ($value === null || $value === 'null' || $value === 'NULL' || $value === NULL) {
+                $query[$key] = null;
+            } else {
+                $value = $this->convertType($keys[$key], $value, $keys[$parentKey]);
+                if (preg_match("/^\/.*\/[imxs]{0,4}$/i", $value)) {
+                    $value = new MongoRegex($value);
+                }
+                $query[$key] = $value;
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * 类型转换
+     *
+     * @param string $type            
+     * @param mixed $value            
+     * @param string $parentType            
+     * @return mixed
+     */
+    private function convertType($type, $value, $parentType = '')
+    {
+        switch ($type) {
+            case 'datefield':
+                $value = new \MongoDate(strtotime($value));
+                break;
+            case 'numberfield':
+                $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
+                break;
+            case 'textfield':
+            case 'textareafield':
+            case 'htmleditor':
+                $value = trim($value);
+                break;
+            case 'md5field':
+                $value = trim($value);
+                $value = preg_match('/^[0-9a-f]{32}$/i', $value) ? $value : md5($value);
+                break;
+            case 'sha1field':
+                $value = trim($value);
+                $value = preg_match('/^[0-9a-f]{40}$/i', $value) ? $value : sha1($value);
+                break;
+            case 'boolfield':
+                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                break;
+            case '_idfield':
+                try {
+                    $value = MongoId($value);
+                } catch (Exception $e) {
+                    $value = new MongoId();
+                }
+                break;
+            case '2dfield':
+                $value = floatval($value);
+                break;
+            default:
+                if (! empty($parentType))
+                    $value = $this->convertType($parentType, $value, '');
+                break;
+        }
+        
+        return $value;
     }
 
     public function __destruct()

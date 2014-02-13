@@ -46,6 +46,13 @@ class iDatabase
     private $_project_id;
 
     /**
+     * 集合别名
+     *
+     * @var string
+     */
+    private $_collection_alias;
+
+    /**
      * 密钥
      *
      * @var string
@@ -90,12 +97,14 @@ class iDatabase
     /**
      *
      * @param string $project_id            
+     * @param string $collectionAlias            
      * @param string $password            
      * @param string $key_id            
      */
-    public function __construct($project_id, $password, $key_id = '')
+    public function __construct($project_id, $collectionAlias, $password, $key_id = '')
     {
         $this->_project_id = $project_id;
+        $this->_collection_alias = $collectionAlias;
         $this->_password = $password;
         $this->_rand = sha1(time());
         $this->_key_id = $key_id;
@@ -135,15 +144,11 @@ class iDatabase
             $options = array(
                 'soap_version' => SOAP_1_2, // 必须是1.2版本的soap协议，支持soapheader
                 'exceptions' => true,
-                'trace' => $this->_debug,
+                'trace' => true,
                 'connection_timeout' => 300, // 避免网络延迟导致的链接丢失
                 'keep_alive' => true,
                 'compression' => true
             );
-            if ($refresh == true)
-                $options['cache_wsdl'] = WSDL_CACHE_NONE;
-            else
-                $options['cache_wsdl'] = WSDL_CACHE_BOTH;
             
             $this->_client = new MySoapClient($wsdl, $options);
             return $this->_client;
@@ -204,20 +209,15 @@ class iDatabase
     }
 
     /**
-     * 查询某个表中的数据
+     * 执行count操作
      *
-     * @param string $form            
      * @param array $query            
-     * @param array $sort            
-     * @param int $skip            
-     * @param int $limit            
-     * @param array $fields            
      * @return array boolean
      */
-    public function find($form, array $query, array $sort = null, $skip = 0, $limit = 10, Array $fields = array())
+    public function count(array $query)
     {
         try {
-            $rst = $this->_client->find($form, json_encode($query), json_encode($sort), $skip, $limit, json_encode($fields));
+            $rst = $this->_client->count(serialize($query));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -228,15 +228,35 @@ class iDatabase
     /**
      * 查询某个表中的数据,并根据指定的key字段进行distinct唯一处理
      *
-     * @param string $form            
      * @param string $key            
      * @param array $query            
      * @return array boolean
      */
-    public function distinct($form, $key, array $query)
+    public function distinct($key, array $query)
     {
         try {
-            $rst = $this->_client->distinct($form, $key, json_encode($query));
+            $rst = $this->_client->distinct($key, serialize($query));
+            return $this->rst($rst);
+        } catch (Exception $e) {
+            $this->exceptionMsg($e);
+            return false;
+        }
+    }
+
+    /**
+     * 查询某个表中的数据
+     *
+     * @param array $query            
+     * @param array $sort            
+     * @param int $skip            
+     * @param int $limit            
+     * @param array $fields            
+     * @return array boolean
+     */
+    public function find(array $query, array $sort = null, $skip = 0, $limit = 10, Array $fields = array())
+    {
+        try {
+            $rst = $this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -247,14 +267,32 @@ class iDatabase
     /**
      * 查询单条信息
      *
-     * @param string $form            
      * @param array $query            
      * @return array boolean
      */
-    public function findOne($form, array $query)
+    public function findOne(array $query)
     {
         try {
-            $rst = $this->_client->findOne($form, json_encode($query));
+            $rst = $this->_client->findOne(serialize($query));
+            return $this->rst($rst);
+        } catch (Exception $e) {
+            $this->exceptionMsg($e);
+            return false;
+        }
+    }
+
+
+    /**
+     * 查询全部信息
+     * @param array $query
+     * @param array $sort
+     * @param array $fields
+     * @return array
+     */
+    public function findAll(array $query, array $sort = array('_id'=>-1), array $fields = array())
+    {
+        try {
+            $rst = $this->_client->findAll(serialize($query), serialize($sort), serialize($fields));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -265,32 +303,13 @@ class iDatabase
     /**
      * 执行findAndModify操作
      *
-     * @param string $form            
      * @param array $options            
      * @return array boolean
      */
-    public function findAndModify($form, array $options)
+    public function findAndModify(array $options)
     {
         try {
-            $rst = $this->_client->findAndModify($form, json_encode($options));
-            return $this->rst($rst);
-        } catch (Exception $e) {
-            $this->exceptionMsg($e);
-            return false;
-        }
-    }
-
-    /**
-     * 执行count操作
-     *
-     * @param string $form            
-     * @param array $query            
-     * @return array boolean
-     */
-    public function count($form, array $query)
-    {
-        try {
-            $rst = $this->_client->count($form, json_encode($query));
+            $rst = $this->_client->findAndModify(serialize($options));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -301,14 +320,13 @@ class iDatabase
     /**
      * 执行remove操作
      *
-     * @param string $form            
      * @param array $query            
      * @return array boolean
      */
-    public function remove($form, array $query)
+    public function remove(array $query)
     {
         try {
-            $rst = $this->_client->remove($form, json_encode($query));
+            $rst = $this->_client->remove(serialize($query));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -319,14 +337,13 @@ class iDatabase
     /**
      * 执行insert操作
      *
-     * @param string $form            
      * @param array $datas            
      * @return array boolean
      */
-    public function insert($form, array $datas)
+    public function insert(array $datas)
     {
         try {
-            $rst = $this->_client->insert($form, json_encode($datas));
+            $rst = $this->_client->insert(serialize($datas));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -337,15 +354,14 @@ class iDatabase
     /**
      * 执行批量更新操作
      *
-     * @param string $form            
      * @param array $criteria            
      * @param array $object            
      * @return array boolean
      */
-    public function update($form, array $criteria, array $object)
+    public function update(array $criteria, array $object)
     {
         try {
-            $rst = $this->_client->update($form, json_encode($criteria), json_encode($object));
+            $rst = $this->_client->update(serialize($criteria), serialize($object));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -356,14 +372,13 @@ class iDatabase
     /**
      * aggregate框架操作
      *
-     * @param string $form            
      * @param array $ops            
      * @return array boolean
      */
-    public function aggregate($form, array $ops)
+    public function aggregate(array $ops)
     {
         try {
-            $rst = $this->_client->aggregate($form, json_encode($ops));
+            $rst = $this->_client->aggregate(serialize($ops));
             return $this->rst($rst);
         } catch (Exception $e) {
             $this->exceptionMsg($e);
@@ -389,7 +404,7 @@ class iDatabase
             if (is_array($arguments)) {
                 foreach ($arguments as $argument) {
                     if (is_array($argument)) {
-                        $encodeArg[] = json_encode($argument);
+                        $encodeArg[] = serialize($argument);
                     } else {
                         $encodeArg[] = $argument;
                     }

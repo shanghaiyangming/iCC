@@ -857,7 +857,8 @@ function formatData($value, $type = 'textfield', $key = null)
             $value = preg_match("/^[0-9]+\.[0-9]+$/", $value) ? floatval($value) : intval($value);
             break;
         case 'datefield':
-            $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
+            if (! ($value instanceof \MongoDate))
+                $value = preg_match("/^[0-9]+$/", $value) ? new \MongoDate(intval($value)) : new \MongoDate(strtotime($value));
             break;
         case '2dfield':
             $value = is_array($value) ? array(
@@ -926,9 +927,9 @@ function formatData($value, $type = 'textfield', $key = null)
  */
 function dataSignAlgorithm($datas, $key)
 {
-    $datas = !empty($datas) ? $datas : array();
+    $datas = ! empty($datas) ? $datas : array();
     ksort($datas);
-    return substr(sha1(http_build_query($datas).$key), 0, 32);
+    return substr(sha1(http_build_query($datas) . $key), 0, 32);
 }
 
 /**
