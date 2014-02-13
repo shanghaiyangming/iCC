@@ -39,7 +39,7 @@ class Database
 
     /**
      * 测试用例
-     * 
+     *
      * @param int $a            
      * @param int $b            
      * @return int
@@ -425,13 +425,15 @@ class Database
         ), $param_arr);
         return $this->result($rst);
     }
-    
+
     /**
      * 规范范围数据的格式
-     * @param array $rst
+     * 
+     * @param array $rst            
      * @return array
      */
-    private function result($rst) {
+    private function result($rst)
+    {
         return convertToPureArray($rst);
     }
 
@@ -445,8 +447,16 @@ class Database
     private function toArray($string)
     {
         $rst = @unserialize($string);
-        if ($rst !== false)
+        if ($rst !== false) {
+            array_walk_recursive($rst, function (&$value, $key)
+            {
+                if ($key === '_id') {
+                    if (! ($value instanceof \MongoId))
+                        $value = new \MongoId($value);
+                }
+            });
             return $rst;
+        }
         throw new \SoapFault(500, '参数格式错误无法进行有效的反序列化');
     }
 
