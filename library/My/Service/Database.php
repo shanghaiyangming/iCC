@@ -169,7 +169,7 @@ class Database
         }
         
         $cursor->rewind();
-        return convertToPureArray(iterator_to_array($cursor, false));
+        return $this->result(iterator_to_array($cursor, false));
     }
 
     /**
@@ -208,7 +208,7 @@ class Database
         }
         
         $rst = $this->_model->findAll($query, $sort, $skip, $limit, $fields);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -227,7 +227,7 @@ class Database
             $fields = array();
         }
         $rst = $this->_model->findOne($query, $fields);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -247,7 +247,7 @@ class Database
             $fields = array();
         }
         $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -261,7 +261,7 @@ class Database
         $key = is_string($key) ? trim($key) : '';
         $query = $this->toArray($query);
         $rst = $this->_model->distinct($key, $query);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -275,7 +275,7 @@ class Database
     {
         $datas = $this->toArray($datas);
         $rst = $this->_model->save($datas);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -289,7 +289,7 @@ class Database
     {
         $datas = $this->toArray($datas);
         $rst = $this->_model->insertByFindAndModify($datas);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -303,7 +303,7 @@ class Database
     {
         $a = $this->toArray($a);
         $rst = $this->_model->batchInsert($datas);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -319,7 +319,7 @@ class Database
         $criteria = $this->toArray($criteria);
         $object = $this->toArray($object);
         $rst = $this->_model->update($criteria, $object);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -393,7 +393,7 @@ class Database
     {
         $options = $this->toArray($options);
         $rst = $this->_model->findAndModifyByCommand($options);
-        return convertToPureArray($rst);
+        return $this->result($rst);
     }
 
     /**
@@ -423,6 +423,15 @@ class Database
             $this->_model,
             'aggregate'
         ), $param_arr);
+        return $this->result($rst);
+    }
+    
+    /**
+     * 规范范围数据的格式
+     * @param array $rst
+     * @return array
+     */
+    private function result($rst) {
         return convertToPureArray($rst);
     }
 
