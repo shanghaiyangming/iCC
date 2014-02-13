@@ -634,13 +634,6 @@ class StructureController extends Action
         if (! preg_match($this->_fieldRgex, $name)) {
             return false;
         }
-        
-        if (strpos($name, '.') !== false) {
-            if (! preg_match("/\.[a-z]{1}/i", $name)) {
-                return false;
-            }
-        }
-        
         return true;
     }
 }
