@@ -1,5 +1,4 @@
 <?php
-use Zend\Json\Json;
 
 class iDatabase
 {
@@ -454,7 +453,7 @@ class iDatabase
     private function soapFaultMsg($e)
     {
         $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
-        throw new SoapFault($e->getCode(), $e->getMessage());
+        //throw new SoapFault($e->getCode(), $e->getMessage());
     }
 
     /**
