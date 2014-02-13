@@ -201,7 +201,8 @@ class iDatabase
      */
     private function rst($rst)
     {
-        $rst = json_decode($rst, true);
+        return $rst;
+        //$rst = json_decode($rst, true);
         if (array_key_exists('err', $rst))
             return $rst;
         else
