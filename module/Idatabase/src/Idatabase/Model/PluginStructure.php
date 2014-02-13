@@ -35,7 +35,7 @@ class PluginStructure extends Mongo
      * @param string $plugin_id            
      * @param string $datas            
      */
-    private function removePluginStructure($plugin_id, $datas)
+    public function removePluginStructure($plugin_id, $datas)
     {
         if (! empty($plugin_id) && ! empty($field)) {
             return $this->_plugin_structure->remove(array(
