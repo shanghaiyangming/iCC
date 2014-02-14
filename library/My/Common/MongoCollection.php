@@ -896,7 +896,7 @@ class MongoCollection extends \MongoCollection
             
             if (! $checkLock($out)) {
                 $command = array();
-                $command['mapReduce'] = $this->_collection;
+                $command['mapreduce'] = $this->_collection;
                 $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
                 $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
                 $command['query'] = $this->appendQuery($query);

@@ -17,7 +17,8 @@
     "gregwar/captcha" : "dev-master",
     "lusitanian/oauth" : "~0.2",
     "firephp/firephp-core" : "dev-master",
-    "phpmailer/phpmailer" : "v5.2.7"
+    "phpmailer/phpmailer" : "v5.2.7",
+    "weixin/weixin": "dev-master"
   },
   "keywords" : [ "framework", "zf2" ],
   "config" : {
