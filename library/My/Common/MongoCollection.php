@@ -941,7 +941,6 @@ class MongoCollection extends \MongoCollection
                     return $failure(501, $rst);
                 }
             } else {
-                fb('程序正在执行中，请勿频繁尝试', 'LOG');
                 return $failure(502, '程序正在执行中，请勿频繁尝试');
             }
         } catch (\Exception $e) {
