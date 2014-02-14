@@ -183,6 +183,15 @@ class iDatabase
         ));
         return $this->_client;
     }
+    
+    /**
+     * 设定被操作集合别名
+     * @param string $alias
+     */
+    public function setCollection($alias) {
+        $this->_collection_alias = $alias;
+        $this->connect();
+    }
 
     /**
      * 签名算法
@@ -203,7 +212,7 @@ class iDatabase
     public function count($query)
     {
         try {
-            return $this->_client->count(serialize($query));
+            return $this->result($this->_client->count(serialize($query)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -220,7 +229,7 @@ class iDatabase
     public function distinct($key, array $query)
     {
         try {
-            return $this->_client->distinct($key, serialize($query));
+            return $this->result($this->_client->distinct($key, serialize($query)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -240,7 +249,7 @@ class iDatabase
     public function find(array $query, array $sort = null, $skip = 0, $limit = 10, array $fields = array())
     {
         try {
-            return $this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields));
+            return $this->result($this->_client->find(serialize($query), serialize($sort), $skip, $limit, serialize($fields)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -256,7 +265,7 @@ class iDatabase
     public function findOne(array $query)
     {
         try {
-            return $this->_client->findOne(serialize($query));
+            return $this->result($this->_client->findOne(serialize($query)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -274,7 +283,7 @@ class iDatabase
     public function findAll(array $query, array $sort = array('_id'=>-1), array $fields = array())
     {
         try {
-            return $this->_client->findAll(serialize($query), serialize($sort), serialize($fields));
+            return $this->result($this->_client->findAll(serialize($query), serialize($sort), serialize($fields)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -290,7 +299,7 @@ class iDatabase
     public function findAndModify(array $options)
     {
         try {
-            return $this->_client->findAndModify(serialize($options));
+            return $this->result($this->_client->findAndModify(serialize($options)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -306,7 +315,7 @@ class iDatabase
     public function remove(array $query)
     {
         try {
-            return $this->_client->remove(serialize($query));
+            return $this->result($this->_client->remove(serialize($query)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -322,7 +331,7 @@ class iDatabase
     public function insert(array $datas)
     {
         try {
-            return $this->_client->insert(serialize($datas));
+            return $this->result($this->_client->insert(serialize($datas)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -338,7 +347,7 @@ class iDatabase
     public function batchInsert(array $datas)
     {
         try {
-            return $this->_client->batchInsert(serialize($datas));
+            return $this->result($this->_client->batchInsert(serialize($datas)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -355,7 +364,7 @@ class iDatabase
     public function update(array $criteria, array $object)
     {
         try {
-            return $this->_client->update(serialize($criteria), serialize($object));
+            return $this->result($this->_client->update(serialize($criteria), serialize($object)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -371,7 +380,7 @@ class iDatabase
     public function save($datas)
     {
         try {
-            return $this->_client->save(serialize($criteria), serialize($object));
+            return $this->result($this->_client->save(serialize($criteria), serialize($object)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -389,7 +398,7 @@ class iDatabase
     public function aggregate(array $ops1, array $ops2, array $ops3)
     {
         try {
-            return $this->_client->aggregate(serialize($ops1), serialize($ops2), serialize($ops3));
+            return $this->result($this->_client->aggregate(serialize($ops1), serialize($ops2), serialize($ops3)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -406,7 +415,7 @@ class iDatabase
     public function ensureIndex($keys, $options)
     {
         try {
-            return $this->_client->ensureIndex(serialize($keys), serialize($options));
+            return $this->result($this->_client->ensureIndex(serialize($keys), serialize($options)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -422,7 +431,7 @@ class iDatabase
     public function deleteIndex($keys)
     {
         try {
-            return $this->_client->deleteIndex(serialize($keys));
+            return $this->result($this->_client->deleteIndex(serialize($keys)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -437,11 +446,20 @@ class iDatabase
     public function deleteIndexes()
     {
         try {
-            return $this->_client->deleteIndexes();
+            return $this->result($this->_client->deleteIndexes());
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
         }
+    }
+    
+    /**
+     * 输出结果，如此输出的原因，统一Soap服务端输出格式为数组
+     * @param array $rst
+     * @return mixed
+     */
+    private function result($rst) {
+        return $rst['result'];
     }
 
     /**

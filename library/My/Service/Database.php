@@ -391,7 +391,8 @@ class Database
 
     /**
      * findAndModify
-     * @param string $options
+     *
+     * @param string $options            
      * @return array
      */
     public function findAndModify($options)
@@ -432,14 +433,18 @@ class Database
     }
 
     /**
-     * 规范范围数据的格式
-     * 
-     * @param array $rst            
+     * 规范返回数据的格式为数组
+     *
+     * @param mixed $rst            
      * @return array
      */
     private function result($rst)
     {
-        return convertToPureArray($rst);
+        $rst = is_array($rst) ? convertToPureArray($rst) : $rst;
+        return array(
+            'result' => $rst,
+            'success' => true
+        );
     }
 
     /**
