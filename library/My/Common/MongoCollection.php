@@ -827,7 +827,6 @@ class MongoCollection extends \MongoCollection
     public function mapReduce($map, $reduce, $query = array(), $finalize = null, $method = 'replace', $scope = null, $sort = array('$natural'=>1), $limit = null)
     {
         $out = md5(serialize(func_get_args()));
-        fb(func_get_args(), 'LOG');
         try {
             // map reduce执行锁管理开始
             $locks = new self($this->_configInstance, 'locks', DB_MAPREDUCE, $this->_cluster);
@@ -876,7 +875,7 @@ class MongoCollection extends \MongoCollection
                 ), array(
                     '$set' => array(
                         'isRunning' => false,
-                        'rst' => $rst
+                        'rst' => is_string($rst) ? $rst : Json::encode($rst)
                     )
                 ));
             };
@@ -896,7 +895,7 @@ class MongoCollection extends \MongoCollection
             
             if (! $checkLock($out)) {
                 $command = array();
-                $command['mapReduce'] = $this->_collection;
+                $command['mapreduce'] = $this->_collection;
                 $command['map'] = ($map instanceof \MongoCode) ? $map : new \MongoCode($map);
                 $command['reduce'] = ($reduce instanceof \MongoCode) ? $reduce : new \MongoCode($reduce);
                 $command['query'] = $this->appendQuery($query);
@@ -909,7 +908,6 @@ class MongoCollection extends \MongoCollection
                     $command['limit'] = $limit;
                 if (! empty($scope))
                     $command['scope'] = $scope;
-                $command['jsMode'] = false;
                 $command['verbose'] = true;
                 
                 if (! in_array($method, array(
@@ -929,7 +927,6 @@ class MongoCollection extends \MongoCollection
                         'reduce'
                     ), true) ? true : false
                 );
-                fb($command,'LOG');
                 $rst = $this->command($command);
                 $releaseLock($out, $rst);
                 
@@ -939,11 +936,8 @@ class MongoCollection extends \MongoCollection
                         $outMongoCollection->setNoAppendQuery(true);
                         return $outMongoCollection;
                     }
-                    fb(Json::encode($rst['counts']), 'LOG');
                     return $failure(500, $rst['counts']);
                 } else {
-                    fb($command, 'LOG');
-                    fb($rst, 'LOG');
                     return $failure(501, $rst);
                 }
             } else {
@@ -951,7 +945,6 @@ class MongoCollection extends \MongoCollection
                 return $failure(502, '程序正在执行中，请勿频繁尝试');
             }
         } catch (\Exception $e) {
-            fb($command, 'LOG');
             $releaseLock($out, exceptionMsg($e));
             return $failure(503, exceptionMsg($e));
         }
