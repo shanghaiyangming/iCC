@@ -32,6 +32,8 @@ class Database
 
     private $_fieldAndType = array();
 
+    private $_fileField = array();
+
     public function __construct(Config $config)
     {
         $this->_config = $config;
@@ -164,10 +166,17 @@ class Database
             $row = $cursor->getNext();
             if (strpos($row['field'], '.') !== false) {
                 $exp = explode('.', $row['field']);
-                $this->_schema[end($exp)] = $row;
+                $subField = end($exp);
+                $this->_schema[$subField] = $row;
+                if ($row['type'] == 'filefield') {
+                    $this->_fileField[$subField] = $row;
+                }
             }
             $this->_schema[$row['field']] = $row;
             $this->_fieldAndType[$row['field']] = $row['type'];
+            if ($row['type'] == 'filefield') {
+                $this->_fileField[$row['field']] = $row;
+            }
         }
         
         $cursor->rewind();
@@ -443,6 +452,16 @@ class Database
     private function result($rst)
     {
         $rst = is_array($rst) ? convertToPureArray($rst) : $rst;
+        // 处理文件格式
+        if (! empty($this->_fileField) && is_array($rst)) {
+            array_walk_recursive($rst, function (&$item, $key)
+            {
+                if (in_array($key, array_keys($this->_fileField), true) && $this->_fileField[$key]['type'] === 'filefield') {
+                    $item = (empty($this->_fileField[$key]['cdnUrl']) ? DOMAIN : $this->_fileField[$key]['cdnUrl']) . '/file/' . $item;
+                }
+            });
+        }
+        
         return array(
             'result' => $rst,
             'success' => true

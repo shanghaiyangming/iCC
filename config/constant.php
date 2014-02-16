@@ -47,6 +47,7 @@ defined('IDATABASE_MAPPING') || define('IDATABASE_MAPPING', 'idatabase_mapping')
 defined('IDATABASE_LOCK') || define('IDATABASE_LOCK', 'idatabase_lock');
 defined('IDATABASE_QUICK') || define('IDATABASE_QUICK', 'idatabase_quick');
 defined('IDATABASE_DASHBOARD') || define('IDATABASE_DASHBOARD', 'idatabase_dashboard');
+defined('IDATABASE_FILES') || define('IDATABASE_FILES', 'idatabase_files');
 
 /**
  * 自定义事件
