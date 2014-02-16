@@ -304,7 +304,7 @@ class Database
     public function batchInsert($a)
     {
         $a = $this->toArray($a);
-        $rst = $this->_model->batchInsert($datas);
+        $rst = $this->_model->batchInsert($a);
         return $this->result($rst);
     }
 
