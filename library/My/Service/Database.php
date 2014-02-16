@@ -8,7 +8,6 @@ namespace My\Service;
 
 use My\Common\MongoCollection;
 use Zend\Config\Config;
-use Zend\Json\Json;
 
 class Database
 {
@@ -30,6 +29,8 @@ class Database
     private $_collection_id = null;
 
     private $_schema = array();
+
+    private $_fieldAndType = array();
 
     public function __construct(Config $config)
     {
@@ -163,9 +164,10 @@ class Database
             $row = $cursor->getNext();
             if (strpos($row['field'], '.') !== false) {
                 $exp = explode('.', $row['field']);
-                $this->_schema[end($exp)] = $row['type'];
+                $this->_schema[end($exp)] = $row;
             }
-            $this->_schema[$row['field']] = $row['type'];
+            $this->_schema[$row['field']] = $row;
+            $this->_fieldAndType[$row['field']] = $row['type'];
         }
         
         $cursor->rewind();
@@ -458,6 +460,9 @@ class Database
     {
         $rst = @unserialize($string);
         if ($rst !== false) {
+            if (empty($rst)) {
+                return array();
+            }
             array_walk_recursive($rst, function (&$value, $key)
             {
                 if ($key === '_id') {
@@ -467,7 +472,7 @@ class Database
             });
             return $rst;
         }
-        throw new \SoapFault(500, '参数格式错误无法进行有效的反序列化');
+        throw new \SoapFault(500, '参数格式错误:无法进行有效的反序列化');
     }
 
     public function __destruct()

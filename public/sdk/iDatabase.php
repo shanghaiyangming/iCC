@@ -183,12 +183,14 @@ class iDatabase
         ));
         return $this->_client;
     }
-    
+
     /**
      * 设定被操作集合别名
-     * @param string $alias
+     *
+     * @param string $alias            
      */
-    public function setCollection($alias) {
+    public function setCollection($alias)
+    {
         $this->_collection_alias = $alias;
         $this->connect();
     }
@@ -373,14 +375,14 @@ class iDatabase
 
     /**
      * 保存操作，当包含_id时更新对应的_id所对应的文档，否则创建新的文档。
-     * 
+     *
      * @param array $datas            
      * @return array
      */
     public function save($datas)
     {
         try {
-            return $this->result($this->_client->save(serialize($criteria), serialize($object)));
+            return $this->result($this->_client->save(serialize($datas)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -395,9 +397,15 @@ class iDatabase
      * @param array $ops3            
      * @return array boolean
      */
-    public function aggregate(array $ops1, array $ops2, array $ops3)
+    public function aggregate(array $ops1, array $ops2 = null, array $ops3 = null)
     {
         try {
+            if (empty($ops2)) {
+                $ops2 = array();
+            }
+            if (empty($ops3)) {
+                $ops3 = array();
+            }
             return $this->result($this->_client->aggregate(serialize($ops1), serialize($ops2), serialize($ops3)));
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
@@ -424,7 +432,7 @@ class iDatabase
 
     /**
      * 删除指定索引
-     * 
+     *
      * @param array $keys            
      * @return boolean
      */
@@ -440,7 +448,7 @@ class iDatabase
 
     /**
      * 删除全部索引
-     * 
+     *
      * @return boolean
      */
     public function deleteIndexes()
@@ -452,14 +460,18 @@ class iDatabase
             return false;
         }
     }
-    
+
     /**
      * 输出结果，如此输出的原因，统一Soap服务端输出格式为数组
-     * @param array $rst
+     *
+     * @param array $rst            
      * @return mixed
      */
-    private function result($rst) {
-        return $rst['result'];
+    private function result($rst)
+    {
+        return isset($rst['result']) ? $rst['result'] : array(
+            'err' => 'unset result'
+        );
     }
 
     /**
