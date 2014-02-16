@@ -458,7 +458,7 @@ class Database
      */
     private function toArray($string)
     {
-        $rst = @unserialize($string);
+        $rst = @unserialize(trim($string));
         if ($rst !== false) {
             if (empty($rst)) {
                 return array();
