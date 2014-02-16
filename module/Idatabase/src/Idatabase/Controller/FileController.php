@@ -14,8 +14,17 @@ use My\Common\Controller\Action;
 class IndexController extends Action
 {
 
+    private $_file;
+
+    public function init()
+    {
+        $this->_file = $this->model('Idatabase\Model\File');
+    }
+
     public function index()
     {
-    	
+        $id = $this->params()->fromRouter('id',null);
+        echo $this->_file->getFileFromGridFS($id);
+        return $this->response;
     }
 }
