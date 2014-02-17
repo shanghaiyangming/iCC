@@ -18,8 +18,8 @@ class File extends Mongo
         setHeaderExpires();
         $fileInfo = $gridFsFile->file;
         $fileName = $fileInfo['filename'];
-        if (isset($fileInfo['contentType'])) {
-            header('Content-Type: ' . $fileInfo['contentType'] . ';');
+        if (isset($fileInfo['mime'])) {
+            header('Content-Type: ' . $fileInfo['mime'] . ';');
         }
         
         if ($download)

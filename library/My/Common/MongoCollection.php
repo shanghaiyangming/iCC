@@ -962,6 +962,11 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$_FILES[$fieldName]无效');
         
         $metadata = array_merge($metadata, $_FILES[$fieldName]);
+        $finfo = new finfo(FILEINFO_MIME);
+        $mime = $finfo->file($_FILES[$fieldName]['tmp_name']);
+        if($mime!==false)
+            $metadata['mime'] = $mime;
+        
         $id = $this->_fs->storeUpload($fieldName, $metadata);
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
@@ -970,14 +975,20 @@ class MongoCollection extends \MongoCollection
     /**
      * 存储二进制内容
      *
-     * @param bytes $bytes   
-     * @param string $filename         
+     * @param bytes $bytes            
+     * @param string $filename            
      * @param array $metadata            
      */
-    public function storeBytesToGridFS($bytes, $filename='', $metadata = array())
+    public function storeBytesToGridFS($bytes, $filename = '', $metadata = array())
     {
-        if(!empty($filename))
+        if (! empty($filename))
             $metadata['filename'] = $filename;
+        
+        $finfo = new finfo(FILEINFO_MIME);
+        $mime = $finfo->buffer($bytes);
+        if ($mime !== false)
+            $metadata['mime'] = $mime;
+        
         $id = $this->_fs->storeBytes($bytes, $metadata);
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
@@ -985,7 +996,7 @@ class MongoCollection extends \MongoCollection
 
     /**
      * 获取指定ID的GridFSFile对象
-     * 
+     *
      * @param string $id            
      * @return \MongoGridFSFile object
      */
