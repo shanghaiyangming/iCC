@@ -958,13 +958,16 @@ class MongoCollection extends \MongoCollection
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
+        if (! is_array($metadata))
+            $metadata = array();
+        
         if (! isset($_FILES[$fieldName]))
             throw new \Exception('$_FILES[$fieldName]无效');
         
         $metadata = array_merge($metadata, $_FILES[$fieldName]);
         $finfo = new finfo(FILEINFO_MIME);
         $mime = $finfo->file($_FILES[$fieldName]['tmp_name']);
-        if($mime!==false)
+        if ($mime !== false)
             $metadata['mime'] = $mime;
         
         $id = $this->_fs->storeUpload($fieldName, $metadata);
@@ -981,6 +984,9 @@ class MongoCollection extends \MongoCollection
      */
     public function storeBytesToGridFS($bytes, $filename = '', $metadata = array())
     {
+        if (! is_array($metadata))
+            $metadata = array();
+        
         if (! empty($filename))
             $metadata['filename'] = $filename;
         
