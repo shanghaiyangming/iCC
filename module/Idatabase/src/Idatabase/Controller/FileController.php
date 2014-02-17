@@ -23,8 +23,6 @@ class IndexController extends Action
 
     public function index()
     {
-        $id = $this->params()->fromRouter('id',null);
-        echo $this->_file->getFileFromGridFS($id);
-        return $this->response;
+
     }
 }

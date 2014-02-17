@@ -13,7 +13,7 @@ class File extends Mongo
      *
      * @param MongoGridFSFile $gridFsFile            
      */
-    private function output(\MongoGridFSFile $gridFsFile, $download = false)
+    public function output(\MongoGridFSFile $gridFsFile, $download = false)
     {
         setHeaderExpires();
         $fileInfo = $gridFsFile->file;

@@ -49,10 +49,7 @@ return array(
                     'default' => array(
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => array(
-                            'route' => '/[:id[/download]]',
-                            'constraints' => array(
-                                'id' => '^[a-zA-Z0-9]*$',
-                            ),
+                            'route' => '/:id',
                             'defaults' => array()
                         ),
                         'may_terminate' => true,

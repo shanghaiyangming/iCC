@@ -953,8 +953,8 @@ class MongoCollection extends \MongoCollection
     /**
      * 云存储文件
      *
-     * @param array $file
-     *            $_FILES['name']
+     * @param string $fieldName 上传表单字段的名称
+     * 
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
@@ -965,7 +965,7 @@ class MongoCollection extends \MongoCollection
             throw new \Exception('$_FILES[$fieldName]无效');
         
         $metadata = array_merge($metadata, $_FILES[$fieldName]);
-        $finfo = new finfo(FILEINFO_MIME);
+        $finfo = new \finfo(FILEINFO_MIME);
         $mime = $finfo->file($_FILES[$fieldName]['tmp_name']);
         if ($mime !== false)
             $metadata['mime'] = $mime;
@@ -990,7 +990,7 @@ class MongoCollection extends \MongoCollection
         if (! empty($filename))
             $metadata['filename'] = $filename;
         
-        $finfo = new finfo(FILEINFO_MIME);
+        $finfo = new \finfo(FILEINFO_MIME);
         $mime = $finfo->buffer($bytes);
         if ($mime !== false)
             $metadata['mime'] = $mime;

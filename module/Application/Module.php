@@ -60,6 +60,12 @@ class Module
                 $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
             }
         }, - 10000);
+        
+        //错误提示的时候，执行特殊的layout
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event) {
+            $viewModel = $event->getViewModel();
+            $viewModel->setTemplate('layout/error');
+        }, -200);
     }
 
     public function initFirePHP()

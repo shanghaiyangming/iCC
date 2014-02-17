@@ -20,10 +20,17 @@ class FileController extends Action
         $this->_file = $this->model('Idatabase\Model\File');
     }
 
+    /**
+     * 提供外部文件下载服务
+     */
     public function indexAction()
     {
-        $id = $this->params()->fromRouter('id', null);
-        $download = $this->params()->fromRouter('download', false);
+        $id = $this->params()->fromRoute('id', null);
+        if ($id == null) {
+            header("HTTP/1.1 404 Not Found");
+            return $this->response;
+        }
+        
         $gridFsFile = $this->_file->getGridFsFileById($id);
         if ($gridFsFile instanceof \MongoGridFSFile) {
             $this->_file->output($gridFsFile, false);

@@ -8,6 +8,7 @@ echo $this->headTitle($this->translate('ICC品牌云平台'))
     ->setSeparator(' - ')
     ->setAutoEscape(false);
 echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
+
 echo $this->headLink(array(
     'rel' => 'shortcut icon',
     'type' => 'image/vnd.microsoft.icon',
@@ -21,6 +22,7 @@ echo $this->headScript()
     ->appendFile($this->basePath() . '/js/resources/common.js?v='.$this->__VERSION__)
     ->appendFile($this->basePath() . '/js/resources/htmlspecialchars.js?v='.$this->__VERSION__)
     ->appendFile($this->basePath() . '/css/BoxSelect.js?v='.$this->__VERSION__);
+
 ?>
 </head>
 <body>
