@@ -23,6 +23,7 @@ namespace My\Common;
 use Zend\Config\Config;
 use Zend\EventManager\GlobalEventManager;
 use Zend\Json\Json;
+use Doctrine\MongoDB\GridFSFile;
 
 class MongoCollection extends \MongoCollection
 {
@@ -969,14 +970,31 @@ class MongoCollection extends \MongoCollection
     /**
      * 存储二进制内容
      *
-     * @param bytes $bytes            
+     * @param bytes $bytes   
+     * @param string $filename         
      * @param array $metadata            
      */
-    public function storeBytesToGridFS($bytes, $metadata = array())
+    public function storeBytesToGridFS($bytes, $filename='', $metadata = array())
     {
+        if(!empty($filename))
+            $metadata['filename'] = $filename;
         $id = $this->_fs->storeBytes($bytes, $metadata);
         $gridfsFile = $this->_fs->get($id);
         return $gridfsFile->file;
+    }
+
+    /**
+     * 获取指定ID的GridFSFile对象
+     * 
+     * @param string $id            
+     * @return \MongoGridFSFile object
+     */
+    public function getGridFsFileById($id)
+    {
+        if (! $id instanceof \MongoId) {
+            $id = new \MongoId($id);
+        }
+        return $this->_fs->get($id);
     }
 
     /**
