@@ -3,7 +3,7 @@
  * File下载处理函数
  *
  * @author young 
- * @version 2014.02.12
+ * @version 2014.02.17
  * 
  */
 namespace Service\Controller;
@@ -25,16 +25,13 @@ class FileController extends Action
         $id = $this->params()->fromRouter('id', null);
         $download = $this->params()->fromRouter('download', false);
         $gridFsFile = $this->_file->getGridFsFileById($id);
-        if($gridFsFile instanceof \MongoGridFSFile) {
-            $this->output($gridFsFile,false);
+        if ($gridFsFile instanceof \MongoGridFSFile) {
+            $this->_file->output($gridFsFile, false);
             return $this->response;
-        }
-        else {
+        } else {
             header("HTTP/1.1 404 Not Found");
             return $this->response;
         }
     }
-
-
 }
 
