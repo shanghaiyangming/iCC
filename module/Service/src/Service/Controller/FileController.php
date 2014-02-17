@@ -26,6 +26,8 @@ class FileController extends Action
     public function indexAction()
     {
         $id = $this->params()->fromRoute('id', null);
+        $download = $this->params()->fromRoute('download', null);
+        
         if ($id == null) {
             header("HTTP/1.1 404 Not Found");
             return $this->response;
@@ -33,7 +35,7 @@ class FileController extends Action
         
         $gridFsFile = $this->_file->getGridFsFileById($id);
         if ($gridFsFile instanceof \MongoGridFSFile) {
-            $this->_file->output($gridFsFile, false);
+            $this->_file->output($gridFsFile, false, true, $download == null ? false : true);
             return $this->response;
         } else {
             header("HTTP/1.1 404 Not Found");

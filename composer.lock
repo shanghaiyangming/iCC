@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cboden/Ratchet.git",
-                "reference": "3dc69de9d31612e6fe45e2755deb3605ce94dc5e"
+                "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/3dc69de9d31612e6fe45e2755deb3605ce94dc5e",
-                "reference": "3dc69de9d31612e6fe45e2755deb3605ce94dc5e",
+                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/984cfbfbee152e2ef2203741b4113822091b1ed6",
+                "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "server",
                 "sockets"
             ],
-            "time": "2014-02-06 12:54:56"
+            "time": "2014-02-17 00:10:03"
         },
         {
             "name": "codeplex/phpexcel",

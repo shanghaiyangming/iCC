@@ -13,23 +13,28 @@ class File extends Mongo
      *
      * @param MongoGridFSFile $gridFsFile            
      */
-    public function output(\MongoGridFSFile $gridFsFile, $download = false)
+    public function output(\MongoGridFSFile $gridFsFile, $output = true, $download = false)
     {
-        setHeaderExpires();
         $fileInfo = $gridFsFile->file;
         $fileName = $fileInfo['filename'];
-        if (isset($fileInfo['mime'])) {
-            header('Content-Type: ' . $fileInfo['mime'] . ';');
-        }
         
-        if ($download)
-            header('Content-Disposition:attachment;filename="' . $fileName . '"');
-        else
-            header('Content-Disposition:filename="' . $fileName . '"');
-        
-        $stream = $gridFsFile->getResource();
-        while (! feof($stream)) {
-            echo fread($stream, 8192);
+        if ($output) {
+            setHeaderExpires();
+            if (isset($fileInfo['mime'])) {
+                header('Content-Type: ' . $fileInfo['mime'] . ';');
+            }
+            
+            if ($download)
+                header('Content-Disposition:attachment;filename="' . $fileName . '"');
+            else
+                header('Content-Disposition:filename="' . $fileName . '"');
+            
+            $stream = $gridFsFile->getResource();
+            while (! feof($stream)) {
+                echo fread($stream, 8192);
+            }
+        } else {
+            return $gridFsFile->getBytes();
         }
     }
 }

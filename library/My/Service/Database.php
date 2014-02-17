@@ -444,6 +444,23 @@ class Database
     }
 
     /**
+     * 存储文件到集群
+     * 
+     * @param string $fileBytes            
+     * @param string $fileName            
+     * @return array
+     */
+    public function uploadFile($fileBytes, $fileName)
+    {
+        $fileBytes = base64_decode($fileBytes);
+        $rst = $this->_model->storeBytesToGridFS($fileBytes, $fileName, array(
+            'collection_id' => $this->_collection_id,
+            'project_id' => $this->_project_id
+        ));
+        return $this->result($rst);
+    }
+
+    /**
      * 规范返回数据的格式为数组
      *
      * @param mixed $rst            

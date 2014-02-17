@@ -1654,57 +1654,6 @@
         ]
     },
     {
-        "name": "cboden/ratchet",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/cboden/Ratchet.git",
-            "reference": "3dc69de9d31612e6fe45e2755deb3605ce94dc5e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/cboden/Ratchet/zipball/3dc69de9d31612e6fe45e2755deb3605ce94dc5e",
-            "reference": "3dc69de9d31612e6fe45e2755deb3605ce94dc5e",
-            "shasum": ""
-        },
-        "require": {
-            "guzzle/http": ">=3.6.0,<3.9.0-dev",
-            "php": ">=5.3.9",
-            "react/socket": ">=0.3.0,<0.5-dev",
-            "symfony/http-foundation": "~2.2",
-            "symfony/routing": "~2.2"
-        },
-        "time": "2014-02-06 12:54:56",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Ratchet": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Chris Boden",
-                "email": "cboden@gmail.com",
-                "homepage": "http://res.im",
-                "role": "Developer"
-            }
-        ],
-        "description": "PHP WebSocket library",
-        "homepage": "http://socketo.me",
-        "keywords": [
-            "Ratchet",
-            "WebSockets",
-            "server",
-            "sockets"
-        ]
-    },
-    {
         "name": "symfony/console",
         "version": "v2.4.2",
         "version_normalized": "2.4.2.0",
@@ -2026,5 +1975,56 @@
         ],
         "description": "Traditional FirePHPCore library for sending PHP variables to the browser.",
         "homepage": "https://github.com/firephp/firephp-core"
+    },
+    {
+        "name": "cboden/ratchet",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cboden/Ratchet.git",
+            "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cboden/Ratchet/zipball/984cfbfbee152e2ef2203741b4113822091b1ed6",
+            "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6",
+            "shasum": ""
+        },
+        "require": {
+            "guzzle/http": ">=3.6.0,<3.9.0-dev",
+            "php": ">=5.3.9",
+            "react/socket": ">=0.3.0,<0.5-dev",
+            "symfony/http-foundation": "~2.2",
+            "symfony/routing": "~2.2"
+        },
+        "time": "2014-02-17 00:10:03",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Ratchet": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Chris Boden",
+                "email": "cboden@gmail.com",
+                "homepage": "http://res.im",
+                "role": "Developer"
+            }
+        ],
+        "description": "PHP WebSocket library",
+        "homepage": "http://socketo.me",
+        "keywords": [
+            "Ratchet",
+            "WebSockets",
+            "server",
+            "sockets"
+        ]
     }
 ]
