@@ -1060,6 +1060,21 @@ Ext.define('icc.controller.idatabase.Collection', {
 
 				// 创建数据的model
 				var dataModelName = 'dataModel' + __COLLECTION_ID__;
+				modelFields.push({
+					name: '__DOMAIN__',
+					type: 'string',
+					defaultValue : __DOMAIN__
+				});
+				modelFields.push({
+					name: '__PROJECT_ID__',
+					type: 'string',
+					defaultValue : __PROJECT_ID__
+				});
+				modelFields.push({
+					name: '__COLLECTION_ID__',
+					type: 'string',
+					defaultValue : __COLLECTION_ID__
+				});
 				var dataModel = Ext.define(dataModelName, {
 					extend: 'icc.model.common.Model',
 					fields: modelFields

@@ -2,7 +2,10 @@
 <html lang="zh-cn">
 <head>
 <meta charset="utf-8">
-<script>var isSystem = true;</script>
+<script>
+var isSystem = true;
+var __DOMAIN__ = '<?php echo $this->__DOMAIN__;?>';
+</script>
 <?php
 echo $this->headTitle($this->translate('ICC品牌云平台'))
     ->setSeparator(' - ')
