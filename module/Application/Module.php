@@ -53,23 +53,23 @@ class Module
             $contentType = $objHeaders->get('Content-Type');
             if ($contentType) {
                 $contentType = $contentType->getFieldValue();
-                    if(strpos($contentType, 'application/json') !== false) {
-                        $bc = new Browscap(ROOT_PATH.'/cache/');
-                        $current_browser = $bc->getBrowser();
-                        if($current_browser['Browser']=='IE')
-                            $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
-                    }
-            }
-            else {
+                if (strpos($contentType, 'application/json') !== false) {
+                    $bc = new Browscap(ROOT_PATH . '/cache/');
+                    $current_browser = $bc->getBrowser();
+                    if ($current_browser->Browser === 'IE')
+                        $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
+                }
+            } else {
                 $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
             }
         }, - 10000);
         
-        //错误提示的时候，执行特殊的layout
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function(MvcEvent $event) {
+        // 错误提示的时候，执行特殊的layout
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function (MvcEvent $event)
+        {
             $viewModel = $event->getViewModel();
             $viewModel->setTemplate('layout/error');
-        }, -200);
+        }, - 200);
     }
 
     public function initFirePHP()
