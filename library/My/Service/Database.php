@@ -96,6 +96,12 @@ class Database
      */
     private $_serialize = 'serialize';
 
+    const MSGPACK = 'msgpack';
+
+    const JSON = 'json';
+
+    const SERIALIZE = 'serialize';
+
     /**
      * 初始化
      *
@@ -225,11 +231,8 @@ class Database
             case 'json':
                 $this->_serialize = 'json';
                 break;
-            case 'serialize':
-                $this->_serialize = 'serialize';
-                break;
             default:
-                $this->_serialize = 'array';
+                $this->_serialize = 'serialize';
                 break;
         }
         return true;
@@ -354,8 +357,8 @@ class Database
      *
      * @param string $query            
      * @param string $sort            
-     * @param string $fields  
-     * @return string           
+     * @param string $fields            
+     * @return string
      */
     public function findAll($query, $sort, $fields)
     {
@@ -374,8 +377,8 @@ class Database
      * 某一列唯一的数据
      *
      * @param string $key            
-     * @param string $query  
-     * @return string          
+     * @param string $query            
+     * @return string
      */
     public function distinct($key, $query)
     {
@@ -390,7 +393,7 @@ class Database
      *
      * @param string $datas            
      * @throws \SoapFault
-     * @return string      
+     * @return string
      */
     public function save($datas)
     {
@@ -404,7 +407,7 @@ class Database
      *
      * @param string $datas            
      * @throws \SoapFault
-     * @return string      
+     * @return string
      */
     public function insert($datas)
     {
@@ -418,7 +421,7 @@ class Database
      *
      * @param string $a            
      * @throws \SoapFault
-     * @return string      
+     * @return string
      */
     public function batchInsert($a)
     {
@@ -433,7 +436,7 @@ class Database
      * @param string $criteria            
      * @param string $object            
      * @throws \SoapFault
-     * @return string      
+     * @return string
      */
     public function update($criteria, $object)
     {
@@ -448,7 +451,7 @@ class Database
      *
      * @param string $criteria            
      * @throws \SoapFault
-     * @return string      
+     * @return string
      */
     public function remove($criteria)
     {
@@ -459,7 +462,8 @@ class Database
 
     /**
      * 清空整个集合
-     * @return string    
+     *
+     * @return string
      */
     public function drop()
     {
@@ -496,7 +500,7 @@ class Database
     /**
      * 删除特定索引
      *
-     * @param string $keys   
+     * @param string $keys            
      * @return string
      */
     public function deleteIndex($keys)
@@ -594,9 +598,9 @@ class Database
         }
         foreach ($ops as $cmd => $param_arr) {
             $execute = call_user_func_array(array(
-                    $this->_model,
-                    $cmd
-                ), $param_arr);
+                $this->_model,
+                $cmd
+            ), $param_arr);
             
             if ($last)
                 $rst = $execute;
@@ -624,13 +628,13 @@ class Database
         }
         
         switch ($this->_serialize) {
-            case 'msgpack':
+            case self::MSGPACK:
                 $rst = msgpack_pack(array(
                     'result' => convertToPureArray($rst),
                     'success' => true
                 ));
                 break;
-            case 'json':
+            case self::JSON:
                 $rst = json_encode(array(
                     'result' => convertToPureArray($rst),
                     'success' => true
@@ -656,10 +660,21 @@ class Database
      */
     private function toArray($string)
     {
-        //传入如果是非序列化类型，需要进行数据的转换处理
+        // 传入如果是非序列化类型，需要进行数据的转换处理
         
-        //默认PHP调用采用标准内建序列化方式进行处理
-        $rst = @unserialize(trim($string));
+        // 默认PHP调用采用标准内建序列化方式进行处理
+        switch ($this->_serialize) {
+            case self::SERIALIZE:
+                $rst = @unserialize(trim($string));
+                break;
+            case self::MSGPACK:
+                $rst = @msgpack_unpack(trim($string));
+                break;
+            case self::JSON:
+                $rst = @json_decode(trim($string),true);
+                break;
+        }
+        
         if ($rst !== false) {
             if (empty($rst)) {
                 return array();
