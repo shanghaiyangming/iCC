@@ -350,15 +350,19 @@ class Database
      */
     public function findAll($query, $sort, $fields)
     {
-        $query = $this->toArray($query);
-        $sort = $this->toArray($sort);
-        if (empty($sort)) {
-            $sort = array(
-                '_id' => - 1
-            );
+        try {
+            $query = $this->toArray($query);
+            $sort = $this->toArray($sort);
+            if (empty($sort)) {
+                $sort = array(
+                    '_id' => - 1
+                );
+            }
+            $fields = $this->toArray($fields);
+            $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
+        } catch (\Exception $e) {
+            $rst = $e->getFile() . $e->getLine() . $e->getMessage();
         }
-        $fields = $this->toArray($fields);
-        $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
         return $this->result($rst);
     }
 
@@ -670,7 +674,7 @@ class Database
             }
             array_walk_recursive($rst, function (&$value, $key)
             {
-                if ($key === '_id') {
+                if ($key === '_id' && strlen($value) === 24) {
                     if (! ($value instanceof \MongoId))
                         $value = new \MongoId($value);
                 }

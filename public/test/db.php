@@ -10,6 +10,7 @@ $obj = new iDatabase($project_id, $password, $key_id);
 $obj->setDebug(true);
 $obj->setCollection($collectionAlias);
 try {
+    // var_dump($obj->findAll(array()));
     var_dump($obj->findAll(array()));
 } catch (SoapFault $e) {
     var_dump($e);
