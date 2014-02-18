@@ -94,7 +94,7 @@ class Database
      *
      * @var string
      */
-    private $_serialize = 'array';
+    private $_serialize = 'serialize';
 
     /**
      * 初始化
@@ -239,7 +239,7 @@ class Database
      * 获取当前集合的文档结构
      *
      * @throws \SoapFault
-     * @return array
+     * @return string
      */
     public function getSchema()
     {
@@ -298,7 +298,7 @@ class Database
      * @param int $skip            
      * @param int $limit            
      * @param string $fields            
-     * @return array
+     * @return string
      */
     public function find($query, $sort, $skip, $limit, $fields)
     {
@@ -335,7 +335,7 @@ class Database
      *
      * @param string $query            
      * @param string $fields            
-     * @return array
+     * @return string
      */
     public function findOne($query, $fields)
     {
@@ -354,7 +354,8 @@ class Database
      *
      * @param string $query            
      * @param string $sort            
-     * @param string $fields            
+     * @param string $fields  
+     * @return string           
      */
     public function findAll($query, $sort, $fields)
     {
@@ -373,7 +374,8 @@ class Database
      * 某一列唯一的数据
      *
      * @param string $key            
-     * @param string $query            
+     * @param string $query  
+     * @return string          
      */
     public function distinct($key, $query)
     {
@@ -388,7 +390,7 @@ class Database
      *
      * @param string $datas            
      * @throws \SoapFault
-     * @return array
+     * @return string      
      */
     public function save($datas)
     {
@@ -402,7 +404,7 @@ class Database
      *
      * @param string $datas            
      * @throws \SoapFault
-     * @return array
+     * @return string      
      */
     public function insert($datas)
     {
@@ -416,7 +418,7 @@ class Database
      *
      * @param string $a            
      * @throws \SoapFault
-     * @return array
+     * @return string      
      */
     public function batchInsert($a)
     {
@@ -431,7 +433,7 @@ class Database
      * @param string $criteria            
      * @param string $object            
      * @throws \SoapFault
-     * @return array
+     * @return string      
      */
     public function update($criteria, $object)
     {
@@ -446,20 +448,23 @@ class Database
      *
      * @param string $criteria            
      * @throws \SoapFault
-     * @return array
+     * @return string      
      */
     public function remove($criteria)
     {
         $criteria = $this->toArray($criteria);
-        return $this->_model->remove($criteria);
+        $rst = $this->_model->remove($criteria);
+        return $this->result($rst);
     }
 
     /**
      * 清空整个集合
+     * @return string    
      */
     public function drop()
     {
-        $this->_model->drop();
+        $rst = $this->_model->drop();
+        return $this->result($rst);
     }
 
     /**
@@ -490,29 +495,32 @@ class Database
     /**
      * 删除特定索引
      *
-     * @return array
+     * @param string $keys   
+     * @return string
      */
     public function deleteIndex($keys)
     {
         $keys = $this->toArray($keys);
-        return $this->_model->deleteIndex($keys);
+        $rst = $this->_model->deleteIndex($keys);
+        return $this->result($rst);
     }
 
     /**
      * 删除全部索引
      *
-     * @return array
+     * @return string
      */
     public function deleteIndexes()
     {
-        return $this->_model->deleteIndexes();
+        $rst = $this->_model->deleteIndexes();
+        return $this->result($rst);
     }
 
     /**
      * findAndModify
      *
      * @param string $options            
-     * @return array
+     * @return string
      */
     public function findAndModify($options)
     {
@@ -527,7 +535,7 @@ class Database
      * @param string $ops1            
      * @param string $ops2            
      * @param string $ops3            
-     * @return array
+     * @return string
      */
     public function aggregate($ops1, $ops2, $ops3)
     {
@@ -556,7 +564,7 @@ class Database
      *
      * @param string $fileBytes            
      * @param string $fileName            
-     * @return array
+     * @return string
      */
     public function uploadFile($fileBytes, $fileName)
     {
@@ -565,6 +573,35 @@ class Database
             'collection_id' => $this->_collection_id,
             'project_id' => $this->_project_id
         ));
+        return $this->result($rst);
+    }
+
+    /**
+     * 一次请求，执行一些列操作，降低网络传输导致的效率问题
+     *
+     * @param string $ops            
+     * @param bool $last
+     *            只返回最后一条处理的结果
+     * @return string
+     */
+    public function pipe($ops, $last = true)
+    {
+        $rst = array();
+        $ops = $this->toArray($ops);
+        if (empty($ops)) {
+            return $this->result($ops);
+        }
+        foreach ($ops as $cmd => $param_arr) {
+            $execute = call_user_func_array(array(
+                    $this->_model,
+                    $cmd
+                ), $param_arr);
+            
+            if ($last)
+                $rst = $execute;
+            else
+                $rst[] = $execute;
+        }
         return $this->result($rst);
     }
 
@@ -598,19 +635,11 @@ class Database
                     'success' => true
                 ));
                 break;
-            case 'serialize':
+            default:
                 $rst = serialize(array(
                     'result' => $rst,
                     'success' => true
                 ));
-                break;
-            case 'array':
-            default:
-                $rst = is_array($rst) ? convertToPureArray($rst) : $rst;
-                $rst = array(
-                    'result' => $rst,
-                    'success' => true
-                );
                 break;
         }
         
