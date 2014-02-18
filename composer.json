@@ -19,7 +19,8 @@
     "firephp/firephp-core" : "dev-master",
     "phpmailer/phpmailer" : "v5.2.7",
     "weixin/weixin": "dev-master",
-    "nicmart/tree": "dev-master"
+    "nicmart/tree": "dev-master",
+    "browscap/browscap-php": "1.0.*@dev"
   },
   "keywords" : [ "framework", "zf2" ],
   "config" : {

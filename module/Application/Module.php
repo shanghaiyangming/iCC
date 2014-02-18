@@ -10,6 +10,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\Session as SessionStorage;
+use phpbrowscap\Browscap;
 
 class Module
 {
@@ -52,9 +53,12 @@ class Module
             $contentType = $objHeaders->get('Content-Type');
             if ($contentType) {
                 $contentType = $contentType->getFieldValue();
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false && strpos($contentType, 'application/json') !== false) {
-                    $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
-                }
+                    if(strpos($contentType, 'application/json') !== false) {
+                        $bc = new Browscap(ROOT_PATH.'/cache/');
+                        $current_browser = $bc->getBrowser();
+                        if($current_browser['Browser']=='IE')
+                            $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');
+                    }
             }
             else {
                 $objHeaders->addHeaderLine('Content-Type', 'text/html;charset=utf-8');

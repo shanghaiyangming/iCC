@@ -3,8 +3,60 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "353f645abd4c227a09e640d42351f12b",
+    "hash": "de145a4eea2c3a00939cc65cc794374f",
     "packages": [
+        {
+            "name": "browscap/browscap-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/browscap/browscap-php.git",
+                "reference": "9831019fa4e96e3fe77d1ba854911aa3f9378c49"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/browscap/browscap-php/zipball/9831019fa4e96e3fe77d1ba854911aa3f9378c49",
+                "reference": "9831019fa4e96e3fe77d1ba854911aa3f9378c49",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "phpbrowscap": "src/",
+                    "phpbrowscapTest": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Stoppani",
+                    "email": "jonathan.stoppani@gmail.com"
+                }
+            ],
+            "description": "Standalone replacement for php's native get_browser() function",
+            "homepage": "https://github.com/browscap/browscap-php",
+            "keywords": [
+                "browser",
+                "capabilities",
+                "get_browser",
+                "user agent"
+            ],
+            "time": "2014-02-17 10:12:52"
+        },
         {
             "name": "cboden/ratchet",
             "version": "dev-master",
@@ -2020,7 +2072,8 @@
         "gregwar/captcha": 20,
         "firephp/firephp-core": 20,
         "weixin/weixin": 20,
-        "nicmart/tree": 20
+        "nicmart/tree": 20,
+        "browscap/browscap-php": 20
     },
     "platform": {
         "php": ">=5.3.3"

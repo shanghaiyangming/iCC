@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpbrowscapTest' => array($vendorDir . '/browscap/browscap-php/tests'),
+    'phpbrowscap' => array($vendorDir . '/browscap/browscap-php/src'),
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
     'ZendService' => array($vendorDir . '/zendframework/zendservice-apple-apns/library'),
     'Weixin' => array($vendorDir . '/weixin/weixin/lib'),
