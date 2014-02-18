@@ -472,7 +472,7 @@ class Database
      *
      * @param string $keys            
      * @param string $options            
-     * @return boolean
+     * @return string
      */
     public function ensureIndex($keys, $options)
     {
@@ -489,7 +489,8 @@ class Database
                 'background' => true
             );
         }
-        return $this->_model->ensureIndex($keys, $options);
+        $rst = $this->_model->ensureIndex($keys, $options);
+        return $this->result($rst);
     }
 
     /**
@@ -625,13 +626,13 @@ class Database
         switch ($this->_serialize) {
             case 'msgpack':
                 $rst = msgpack_pack(array(
-                    'result' => $rst,
+                    'result' => convertToPureArray($rst),
                     'success' => true
                 ));
                 break;
             case 'json':
                 $rst = json_encode(array(
-                    'result' => $rst,
+                    'result' => convertToPureArray($rst),
                     'success' => true
                 ));
                 break;
@@ -655,6 +656,9 @@ class Database
      */
     private function toArray($string)
     {
+        //传入如果是非序列化类型，需要进行数据的转换处理
+        
+        //默认PHP调用采用标准内建序列化方式进行处理
         $rst = @unserialize(trim($string));
         if ($rst !== false) {
             if (empty($rst)) {
