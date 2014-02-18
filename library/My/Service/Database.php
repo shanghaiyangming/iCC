@@ -350,19 +350,16 @@ class Database
      */
     public function findAll($query, $sort, $fields)
     {
-        try {
-            $query = $this->toArray($query);
-            $sort = $this->toArray($sort);
-            if (empty($sort)) {
-                $sort = array(
-                    '_id' => - 1
-                );
-            }
-            $fields = $this->toArray($fields);
-            $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
-        } catch (\Exception $e) {
-            $rst = $e->getFile() . $e->getLine() . $e->getMessage();
+        $query = $this->toArray($query);
+        $sort = $this->toArray($sort);
+        if (empty($sort)) {
+            $sort = array(
+                '_id' => - 1
+            );
         }
+        $fields = $this->toArray($fields);
+        $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
+        
         return $this->result($rst);
     }
 
