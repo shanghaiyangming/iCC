@@ -146,7 +146,7 @@ class iDatabase
             );
             
             ini_set('default_socket_timeout', $this->_maxConnectionTime);
-            $this->_client = new SoapClient($wsdl, $options);
+            $this->_client = new MySoapClient($wsdl, $options);
             return $this->_client;
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
