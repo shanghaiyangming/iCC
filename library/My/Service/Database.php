@@ -114,18 +114,6 @@ class Database
     }
 
     /**
-     * 测试用例
-     *
-     * @param int $a            
-     * @param int $b            
-     * @return int
-     */
-    public function sum($a, $b)
-    {
-        return $a + $b;
-    }
-
-    /**
      * 身份认证，请在SOAP HEADER部分请求该函数进行身份校验
      * 签名算法:md5($project_id.$rand.$sign) 请转化为长度为32位的16进制字符串
      *
@@ -285,12 +273,12 @@ class Database
      * 统计数量
      *
      * @param string $query            
-     * @return int
+     * @return string
      */
     public function count($query)
     {
         $query = $this->toArray($query);
-        return intval($this->_model->count($query));
+        return $this->result($this->_model->count($query));
     }
 
     /**
@@ -671,7 +659,7 @@ class Database
                 $rst = @msgpack_unpack(trim($string));
                 break;
             case self::JSON:
-                $rst = @json_decode(trim($string),true);
+                $rst = @json_decode(trim($string), true);
                 break;
         }
         
