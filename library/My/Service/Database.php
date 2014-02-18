@@ -352,11 +352,12 @@ class Database
     {
         $query = $this->toArray($query);
         $sort = $this->toArray($sort);
-        if (isJson($fields)) {
-            $fields = $this->toArray($fields);
-        } else {
-            $fields = array();
+        if (empty($sort)) {
+            $sort = array(
+                '_id' => - 1
+            );
         }
+        $fields = $this->toArray($fields);
         $rst = $this->_model->findAll($query, $sort, 0, 0, $fields);
         return $this->result($rst);
     }

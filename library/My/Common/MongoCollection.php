@@ -499,7 +499,8 @@ class MongoCollection extends \MongoCollection
      */
     public function findAll($query, $sort = array('$natural'=>1), $skip = 0, $limit = 0, $fields = array())
     {
-        $cursor = $this->find($this->appendQuery($query), $fields);
+        $fields = empty($fields) ? array() : $fields;
+        $cursor = $this->find($query, $fields);
         if (! $cursor instanceof \MongoCursor)
             throw new \Exception('$query error:' . json_encode($query));
         
@@ -513,7 +514,8 @@ class MongoCollection extends \MongoCollection
         }
         
         if ($cursor->count() == 0)
-            return null;
+            return array();
+        
         return iterator_to_array($cursor, false);
     }
 
@@ -953,8 +955,9 @@ class MongoCollection extends \MongoCollection
     /**
      * 云存储文件
      *
-     * @param string $fieldName 上传表单字段的名称
-     * 
+     * @param string $fieldName
+     *            上传表单字段的名称
+     *            
      */
     public function storeToGridFS($fieldName, $metadata = array())
     {
