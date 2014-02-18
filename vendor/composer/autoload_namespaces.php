@@ -9,6 +9,8 @@ return array(
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
     'ZendService' => array($vendorDir . '/zendframework/zendservice-apple-apns/library'),
     'Weixin' => array($vendorDir . '/weixin/weixin/lib'),
+    'Tree\\Test' => array($vendorDir . '/nicmart/tree/tests'),
+    'Tree' => array($vendorDir . '/nicmart/tree/src'),
     'Symfony\\Component\\Routing\\' => array($vendorDir . '/symfony/routing'),
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),

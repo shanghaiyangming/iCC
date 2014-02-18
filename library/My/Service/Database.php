@@ -12,28 +12,95 @@ use Zend\Config\Config;
 class Database
 {
 
+    /**
+     * 操作集合的MongoCollection实例
+     *
+     * @var MongoCollection
+     */
     private $_model = null;
 
+    /**
+     * 连接MongoDB的配置文件类
+     *
+     * @var Config
+     */
     private $_config = null;
 
+    /**
+     * 获取访问密钥的MongoCollection实例
+     *
+     * @var MongoCollection
+     */
     private $_key = null;
 
+    /**
+     * 获取物理集合的映射关系
+     *
+     * @var MongoCollection
+     */
     private $_mapping = null;
 
+    /**
+     * 获取idb集合信息
+     *
+     * @var MongoCollection
+     */
     private $_collection = null;
 
+    /**
+     * 获取集合的文档结构定义信息
+     *
+     * @var MongoCollection
+     */
     private $_structure = null;
 
+    /**
+     * 被操作集合所属的项目编号
+     *
+     * @var string
+     */
     private $_project_id = null;
 
+    /**
+     * 被操作集合的集合编号
+     *
+     * @var array
+     */
     private $_collection_id = null;
 
+    /**
+     * 文档结构数组，字段名做键 结构详情数组做值
+     *
+     * @var array
+     */
     private $_schema = array();
 
+    /**
+     * 字段与类型对应关系数组
+     *
+     * @var array
+     */
     private $_fieldAndType = array();
 
+    /**
+     * 上传文件字段列表
+     *
+     * @var array
+     */
     private $_fileField = array();
 
+    /**
+     * 序列化方式的类型
+     *
+     * @var string
+     */
+    private $_serialize = 'array';
+
+    /**
+     * 初始化
+     *
+     * @param Config $config            
+     */
     public function __construct(Config $config)
     {
         $this->_config = $config;
@@ -141,6 +208,34 @@ class Database
     }
 
     /**
+     * 设定序列化类型，默认是php的serialize方式
+     *
+     * @param string $type            
+     * @return bool
+     */
+    public function setSerialize($type = '')
+    {
+        $type = trim(strtolower($type));
+        if (empty($type))
+            return false;
+        switch ($type) {
+            case 'msgpack':
+                $this->_serialize = 'msgpack';
+                break;
+            case 'json':
+                $this->_serialize = 'json';
+                break;
+            case 'serialize':
+                $this->_serialize = 'serialize';
+                break;
+            default:
+                $this->_serialize = 'array';
+                break;
+        }
+        return true;
+    }
+
+    /**
      * 获取当前集合的文档结构
      *
      * @throws \SoapFault
@@ -209,16 +304,29 @@ class Database
     {
         $query = $this->toArray($query);
         $sort = $this->toArray($sort);
-        $skip = intval($skip) > 0 ? intval($skip) : 0;
-        $limit = intval($limit) < 0 ? 10 : intval($limit);
-        $limit = intval($limit) > 1000 ? 1000 : intval($limit);
+        $skip = intval($skip);
+        $skip = $skip > 0 ? $skip : 0;
+        $limit = intval($limit);
+        $limit = $limit < 0 ? 10 : $limit;
+        $limit = $limit > 1000 ? 1000 : $limit;
         if (isJson($fields)) {
             $fields = $this->toArray($fields);
         } else {
             $fields = array();
         }
         
-        $rst = $this->_model->findAll($query, $sort, $skip, $limit, $fields);
+        $cursor = $this->_model->find($query, $fields);
+        $total = $cursor->count();
+        if (! empty($sort))
+            $cursor->sort($sort);
+        if ($skip > 0)
+            $cursor->skip($skip);
+        $cursor->limit($limit);
+        
+        $rst = array(
+            'datas' => iterator_to_array($cursor, false),
+            'total' => $total
+        );
         return $this->result($rst);
     }
 
@@ -445,7 +553,7 @@ class Database
 
     /**
      * 存储文件到集群
-     * 
+     *
      * @param string $fileBytes            
      * @param string $fileName            
      * @return array
@@ -468,8 +576,6 @@ class Database
      */
     private function result($rst)
     {
-        $rst = is_array($rst) ? convertToPureArray($rst) : $rst;
-        // 处理文件格式
         if (! empty($this->_fileField) && is_array($rst)) {
             array_walk_recursive($rst, function (&$item, $key)
             {
@@ -479,10 +585,36 @@ class Database
             });
         }
         
-        return array(
-            'result' => $rst,
-            'success' => true
-        );
+        switch ($this->_serialize) {
+            case 'msgpack':
+                $rst = msgpack_pack(array(
+                    'result' => $rst,
+                    'success' => true
+                ));
+                break;
+            case 'json':
+                $rst = json_encode(array(
+                    'result' => $rst,
+                    'success' => true
+                ));
+                break;
+            case 'serialize':
+                $rst = serialize(array(
+                    'result' => $rst,
+                    'success' => true
+                ));
+                break;
+            case 'array':
+            default:
+                $rst = is_array($rst) ? convertToPureArray($rst) : $rst;
+                $rst = array(
+                    'result' => $rst,
+                    'success' => true
+                );
+                break;
+        }
+        
+        return $rst;
     }
 
     /**

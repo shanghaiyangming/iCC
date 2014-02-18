@@ -18,7 +18,8 @@
     "lusitanian/oauth" : "~0.2",
     "firephp/firephp-core" : "dev-master",
     "phpmailer/phpmailer" : "v5.2.7",
-    "weixin/weixin": "dev-master"
+    "weixin/weixin": "dev-master",
+    "nicmart/tree": "dev-master"
   },
   "keywords" : [ "framework", "zf2" ],
   "config" : {

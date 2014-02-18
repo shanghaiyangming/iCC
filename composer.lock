@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ab12d378c787d1bee91e5a31a4292a63",
+    "hash": "353f645abd4c227a09e640d42351f12b",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cboden/Ratchet.git",
-                "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6"
+                "reference": "f2c67b346084e70c66922cde6af909b74c2a1ca8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/984cfbfbee152e2ef2203741b4113822091b1ed6",
-                "reference": "984cfbfbee152e2ef2203741b4113822091b1ed6",
+                "url": "https://api.github.com/repos/cboden/Ratchet/zipball/f2c67b346084e70c66922cde6af909b74c2a1ca8",
+                "reference": "f2c67b346084e70c66922cde6af909b74c2a1ca8",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "server",
                 "sockets"
             ],
-            "time": "2014-02-17 00:10:03"
+            "time": "2014-02-17 21:06:37"
         },
         {
             "name": "codeplex/phpexcel",
@@ -1347,6 +1347,44 @@
             "time": "2013-11-14 19:48:31"
         },
         {
+            "name": "nicmart/tree",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nicmart/Tree.git",
+                "reference": "d5b0607d51a2e855c40c035784d01a71331e539a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nicmart/Tree/zipball/d5b0607d51a2e855c40c035784d01a71331e539a",
+                "reference": "d5b0607d51a2e855c40c035784d01a71331e539a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Tree": "src/",
+                    "Tree\\Test": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolò Martini",
+                    "email": "nicmartnic@gmail.com",
+                    "homepage": "http://nicolo.martini.io"
+                }
+            ],
+            "description": "A basic but flexible php tree data structure and a fluent tree builder implementation.",
+            "time": "2013-04-22 09:49:08"
+        },
+        {
             "name": "phpmailer/phpmailer",
             "version": "v5.2.7",
             "source": {
@@ -1981,7 +2019,8 @@
         "cboden/ratchet": 20,
         "gregwar/captcha": 20,
         "firephp/firephp-core": 20,
-        "weixin/weixin": 20
+        "weixin/weixin": 20,
+        "nicmart/tree": 20
     },
     "platform": {
         "php": ">=5.3.3"
