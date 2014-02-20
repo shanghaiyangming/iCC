@@ -387,9 +387,14 @@ class Database
      */
     public function save($datas)
     {
-        $datas = $this->toArray($datas);
-        $rst = $this->_model->save($datas);
-        return $this->result($rst);
+        try {
+            $datas = $this->toArray($datas);
+            $rst = $this->_model->saveRef($datas);
+            return $this->result($datas);
+        }
+        catch(\SoapFault $e) {
+            return $this->result(exceptionMsg($e));
+        }
     }
 
     /**

@@ -377,10 +377,13 @@ class iDatabase
      * @param array $datas            
      * @return array
      */
-    public function save($datas)
+    public function save(&$datas)
     {
         try {
-            return $this->result($this->_client->save(serialize($datas)));
+            $result = $this->result($this->_client->save(serialize($datas)));
+            return $this->result($result);
+            $datas = $result['datas'];
+            return $this->result($result['return']);
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -519,8 +522,10 @@ class iDatabase
     private function result($rst)
     {
         $unserialize = @unserialize($rst);
-        if ($unserialize === false)
-            throw new Exception("返回结果无法进行反序列化");
+        if ($unserialize === false) {
+            var_dump($rst);
+            throw new Exception("返回结果无法进行反序列化:");
+        }
         
         return isset($unserialize['result']) ? $unserialize['result'] : array(
             'err' => $rst
@@ -536,7 +541,6 @@ class iDatabase
     private function soapFaultMsg($e)
     {
         $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
-        // throw new SoapFault($e->getCode(), $e->getMessage());
     }
 
     /**
@@ -561,7 +565,6 @@ class iDatabase
      */
     public function __destruct()
     {
-        // if ($this->_debug && !empty($this->_error)) {
         if ($this->_debug) {
             var_dump($this->_error, $this->_client->__getLastRequestHeaders(), $this->_client->__getLastRequest(), $this->_client->__getLastResponseHeaders(), $this->_client->__getLastResponse());
         }

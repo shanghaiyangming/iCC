@@ -170,4 +170,12 @@ class TestController extends AbstractActionController
         var_dump($o->findAll(array(),array('_id'=>-1),0,0,array('a.b'=>true)));
         return $this->response;
     }
+    
+    public function saveAction() {
+        $o = $this->collection('test');
+        $data = array('a'=>123);
+        $o->saveRef($data);
+        var_dump($data);
+        return $this->response;
+    }
 }

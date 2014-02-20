@@ -811,6 +811,54 @@ class MongoCollection extends \MongoCollection
     }
 
     /**
+     * 保存并保持引用修改状态
+     *
+     * @param array $a            
+     * @param array $options            
+     * @return mixed
+     */
+    public function save($a, array $options = NULL)
+    {
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        $a['__REMOVED__'] = false;
+        $a['__MODIFY_TIME__'] = new \MongoDate();
+        if ($options == null) {
+            $options = array(
+                'w' => 1
+            );
+        }
+        return parent::save($a, $options);
+    }
+
+    /**
+     * 保存并保持引用修改状态
+     *
+     * @param array $a            
+     * @param array $options            
+     * @return mixed
+     */
+    public function saveRef(&$a, array $options = NULL)
+    {
+        if (! isset($a['__CREATE_TIME__'])) {
+            $a['__CREATE_TIME__'] = new \MongoDate();
+        }
+        $a['__REMOVED__'] = false;
+        $a['__MODIFY_TIME__'] = new \MongoDate();
+        if ($options == null) {
+            $options = array(
+                'w' => 1
+            );
+        }
+        
+        $b = $a;
+        $res = parent::save($b, $options);
+        $a = $b;
+        return $res;
+    }
+
+    /**
      * 执行DB的command操作
      *
      * @param array $command            
@@ -974,9 +1022,9 @@ class MongoCollection extends \MongoCollection
             $metadata['mime'] = $mime;
         
         $id = $this->_fs->storeUpload($fieldName, $metadata);
-        fb($id,'LOG');
+        fb($id, 'LOG');
         $gridfsFile = $this->_fs->get($id);
-        if(!($gridfsFile instanceof \MongoGridFSFile))
+        if (! ($gridfsFile instanceof \MongoGridFSFile))
             throw new \Exception('$gridfsFile is not instanceof MongoGridFSFile');
         return $gridfsFile->file;
     }
