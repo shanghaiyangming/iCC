@@ -10,7 +10,6 @@ return array(
     'phpbrowscap' => array($vendorDir . '/browscap/browscap-php/src'),
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
     'ZendService' => array($vendorDir . '/zendframework/zendservice-apple-apns/library'),
-    'Weixin' => array($vendorDir . '/weixin/weixin/lib'),
     'Tree\\Test' => array($vendorDir . '/nicmart/tree/tests'),
     'Tree' => array($vendorDir . '/nicmart/tree/src'),
     'Symfony\\Component\\Routing\\' => array($vendorDir . '/symfony/routing'),

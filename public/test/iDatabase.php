@@ -8,7 +8,7 @@ class iDatabase
      *
      * @var string
      */
-    private $_wsdl = 'http://localhost/service/database/index?wsdl';
+    private $_wsdl = 'http://cloud.umaman.com/service/database/index?wsdl';
 
     /**
      * 是否每次加载WSDL 默认为false
@@ -22,7 +22,7 @@ class iDatabase
      *
      * @var string
      */
-    private $_namespace = 'http://localhost/service/database/index';
+    private $_namespace = 'http://cloud.umaman.com/service/database/index';
 
     /**
      * 身份认证中的授权方法名称
@@ -496,6 +496,21 @@ class iDatabase
     }
 
     /**
+     * 获取集合的数据结构设定
+     * 
+     * @return Ambigous <mixed, multitype:string , array>|boolean
+     */
+    public function getSchema()
+    {
+        try {
+            return $this->result($this->_client->getSchema());
+        } catch (SoapFault $e) {
+            $this->soapFaultMsg($e);
+            return false;
+        }
+    }
+
+    /**
      * 输出结果，如此输出的原因，统一Soap服务端输出格式为数组
      *
      * @param string $rst            
@@ -503,12 +518,12 @@ class iDatabase
      */
     private function result($rst)
     {
-        $rst = @unserialize($rst);
-        if ($rst === false)
+        $unserialize = @unserialize($rst);
+        if ($unserialize === false)
             throw new Exception("返回结果无法进行反序列化");
         
-        return isset($rst['result']) ? $rst['result'] : array(
-            'err' => 'unset result'
+        return isset($unserialize['result']) ? $unserialize['result'] : array(
+            'err' => $rst
         );
     }
 
@@ -521,7 +536,7 @@ class iDatabase
     private function soapFaultMsg($e)
     {
         $this->_error = $e->getMessage() . $e->getFile() . $e->getLine() . $e->getTraceAsString();
-        //throw new SoapFault($e->getCode(), $e->getMessage());
+        // throw new SoapFault($e->getCode(), $e->getMessage());
     }
 
     /**
@@ -546,6 +561,7 @@ class iDatabase
      */
     public function __destruct()
     {
+        // if ($this->_debug && !empty($this->_error)) {
         if ($this->_debug) {
             var_dump($this->_error, $this->_client->__getLastRequestHeaders(), $this->_client->__getLastRequest(), $this->_client->__getLastResponseHeaders(), $this->_client->__getLastResponse());
         }
@@ -587,7 +603,7 @@ class MySoapClient extends SoapClient
         try {
             $result = @parent::__call($functionName, $arguments);
         } catch (SoapFault $e) {
-            throw new Exception('There was an error querying the API: ' . $e->getMessage());
+            throw new Exception(exceptionMsg($e));
         }
         
         if ($this->_asynchronous == true) {

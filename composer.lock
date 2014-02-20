@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "de145a4eea2c3a00939cc65cc794374f",
+    "hash": "b432827e491fdc9dac484c42002b4d04",
     "packages": [
         {
             "name": "browscap/browscap-php",
@@ -1858,47 +1858,6 @@
             "time": "2014-02-11 13:52:09"
         },
         {
-            "name": "weixin/weixin",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/handsomegyr/weixin.git",
-                "reference": "3d4d99a0e3e36ce6ebee5bc738ed0050a4bbd8df"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/handsomegyr/weixin/zipball/3d4d99a0e3e36ce6ebee5bc738ed0050a4bbd8df",
-                "reference": "3d4d99a0e3e36ce6ebee5bc738ed0050a4bbd8df",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Weixin": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "guoyongrong",
-                    "email": "handsomegyr@gmail.com",
-                    "homepage": "http://www.cnblogs.com/guoyongrong/"
-                }
-            ],
-            "description": "A simple PHP client library for weixin",
-            "homepage": "http://github.com/handsomegyr/weixin",
-            "keywords": [
-                "weixin"
-            ],
-            "time": "2014-02-14 04:04:24"
-        },
-        {
             "name": "zendframework/zendframework",
             "version": "2.2.5",
             "source": {
@@ -2071,7 +2030,6 @@
         "cboden/ratchet": 20,
         "gregwar/captcha": 20,
         "firephp/firephp-core": 20,
-        "weixin/weixin": 20,
         "nicmart/tree": 20,
         "browscap/browscap-php": 20
     },

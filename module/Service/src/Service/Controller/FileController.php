@@ -35,7 +35,7 @@ class FileController extends Action
         
         $gridFsFile = $this->_file->getGridFsFileById($id);
         if ($gridFsFile instanceof \MongoGridFSFile) {
-            $this->_file->output($gridFsFile, false, true, $download == null ? false : true);
+            $this->_file->output($gridFsFile, true, $download == null ? false : true);
             return $this->response;
         } else {
             header("HTTP/1.1 404 Not Found");
