@@ -390,9 +390,11 @@ class Database
         try {
             $datas = $this->toArray($datas);
             $rst = $this->_model->saveRef($datas);
-            return $this->result($datas);
-        }
-        catch(\SoapFault $e) {
+            return $this->result(array(
+                'datas' => $datas,
+                'rst' => $rst
+            ));
+        } catch (\SoapFault $e) {
             return $this->result(exceptionMsg($e));
         }
     }

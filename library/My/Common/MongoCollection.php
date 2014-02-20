@@ -273,7 +273,8 @@ class MongoCollection extends \MongoCollection
          * MongoClient::RP_SECONDARY 只读从db优先
          * MongoClient::RP_SECONDARY_PREFERRED 读取从db优先
          */
-        $this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
+        //$this->db->setReadPreference(\MongoClient::RP_SECONDARY_PREFERRED);
+        $this->db->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
     }
 
     /**
@@ -1024,8 +1025,10 @@ class MongoCollection extends \MongoCollection
         $id = $this->_fs->storeUpload($fieldName, $metadata);
         fb($id, 'LOG');
         $gridfsFile = $this->_fs->get($id);
-        if (! ($gridfsFile instanceof \MongoGridFSFile))
+        if (! ($gridfsFile instanceof \MongoGridFSFile)) {
+            fb($gridfsFile,'LOG');
             throw new \Exception('$gridfsFile is not instanceof MongoGridFSFile');
+        }
         return $gridfsFile->file;
     }
 

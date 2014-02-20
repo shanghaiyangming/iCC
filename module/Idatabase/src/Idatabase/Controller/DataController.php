@@ -757,7 +757,9 @@ class DataController extends Action
             foreach ($_FILES as $fieldName => $file) {
                 if ($file['name'] != '') {
                     if ($file['error'] == UPLOAD_ERR_OK) {
-                        $this->_data->removeFileFromGridFS($oldDataInfo[$fieldName]);
+                        if(isset($oldDataInfo[$fieldName])) {
+                            $this->_data->removeFileFromGridFS($oldDataInfo[$fieldName]);
+                        }
                         $fileInfo = $this->_data->storeToGridFS($fieldName);
                         if (isset($fileInfo['_id']) && $fileInfo['_id'] instanceof \MongoId)
                             $datas[$fieldName] = $fileInfo['_id']->__toString();

@@ -381,9 +381,8 @@ class iDatabase
     {
         try {
             $result = $this->result($this->_client->save(serialize($datas)));
-            return $this->result($result);
             $datas = $result['datas'];
-            return $this->result($result['return']);
+            return $result['rst'];
         } catch (SoapFault $e) {
             $this->soapFaultMsg($e);
             return false;
@@ -524,7 +523,7 @@ class iDatabase
         $unserialize = @unserialize($rst);
         if ($unserialize === false) {
             var_dump($rst);
-            throw new Exception("返回结果无法进行反序列化:");
+            throw new Exception("返回结果无法进行反序列化");
         }
         
         return isset($unserialize['result']) ? $unserialize['result'] : array(
@@ -565,6 +564,7 @@ class iDatabase
      */
     public function __destruct()
     {
+        // if ($this->_debug && !empty($this->_error)) {
         if ($this->_debug) {
             var_dump($this->_error, $this->_client->__getLastRequestHeaders(), $this->_client->__getLastRequest(), $this->_client->__getLastResponseHeaders(), $this->_client->__getLastResponse());
         }
