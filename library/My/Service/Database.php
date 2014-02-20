@@ -198,6 +198,8 @@ class Database
         } else {
             $this->_model = new MongoCollection($this->_config, $mapping['collection'], $mapping['database'], $mapping['cluster']);
         }
+        
+        $this->getSchema();
         return true;
     }
 
