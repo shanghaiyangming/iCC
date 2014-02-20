@@ -582,7 +582,8 @@ class Database
 
     /**
      * 一次请求，执行一些列操作，降低网络传输导致的效率问题
-     *
+     * $ops = array('findOne'=>array(),'update'=>array())
+     * 
      * @param string $ops            
      * @param bool $last
      *            只返回最后一条处理的结果
